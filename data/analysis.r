@@ -32,6 +32,18 @@ p  <- ggplot(data = data, aes(RT)) +
   ggtitle('RT')
 p
 
+p  <- ggplot(data = data, aes(PMT)) +
+  geom_histogram()  +
+  facet_wrap( ~ subject_id) +
+  ggtitle('PMT')
+p
+
+p  <- ggplot(data = data, aes(MT)) +
+  geom_histogram()  +
+  facet_wrap( ~ subject_id) +
+  ggtitle('MT')
+p
+
 
 d <- data  %>%
   group_by(Coherence,delay) %>%
@@ -72,108 +84,71 @@ plot.MT
 ggsave('des_MT.jpeg', plot.MT)
 
 ## * Accuracy
-l.acc <- lmer_alt(Accuracy  ~ Coherence * delay * RT + (1 + Coherence * delay * RT_centered  || subject_id),
+l.acc <- lmer_alt(Accuracy  ~ Coherence * delay * RT_centered + (1 + Coherence * delay * RT_centered  || subject_id),
                   family = binomial(link = "logit"),
                   data = data)
-
-## ** frequentist
-## Planned model
-l.acc <- lmer_alt(accuracy_gabor  ~ size * position * rt_gabor_centered + (1 + size * position * rt_gabor_centered +  || subject_id),
-                 family = binomial(link = "logit"),
-                 data = data)
 summary(l.acc)
-summary(rePCA(l.acc))
-
-## remove interactions
-l.acc <- lmer_alt(accuracy_gabor  ~ size * position * rt_gabor_centered + (1 + size + position + rt_gabor_centered  || subject_id),
-                 family = binomial(link = "logit"),
-                 data = data)
+## singular
+l.acc <- lmer_alt(Accuracy  ~ Coherence * delay * RT_centered + (1 + Coherence * delay + RT_centered  || subject_id),
+                  family = binomial(link = "logit"),
+                  data = data)
 summary(l.acc)
+## singular
 
-## remove: position
-l.acc <- lmer_alt(accuracy_gabor  ~ size * position * rt_gabor_centered  + OOZ_time_centered  + (1 + size  + rt_gabor_centered +  OOZ_time_centered || subject_id),
-                 family = binomial(link = "logit"),
-                 data = data)
+l.acc <- lmer_alt(Accuracy  ~ Coherence * delay * RT_centered + (1 + Coherence + delay + RT_centered  || subject_id),
+                  family = binomial(link = "logit"),
+                  data = data)
+save(l.acc, file = 'reg_accuracy.rdata')
 summary(l.acc)
+tab_model(l.acc, file = "accuracy.html")
 
-save(l.acc, file = 'fit_acc_MG5.rdata')
-tab_model(l.acc, file = "acc_MG5.html")
-
-## interaction: size*position*rt
-predict <- ggemmeans(l.acc, c('rt_gabor_centered','size','position'))
+predict <- ggemmeans(l.acc, c('delay','Coherence'))
 plot(predict)
 plot <- plot(predict) + 
-  labs(x = "Centered Response Time (ms)", 
+  labs(x = "Delay (s)", 
        y = "Accuracy", 
-       title = "Response Time x Size x Position interaction on Accuracy") +
+       title = "Delay:Coherence interaction") +
     theme(plot.title = element_text(hjust = 0.5))
-ggsave('acc_MG5.jpeg', plot)
+ggsave('acc.jpeg', plot)
 
-## ** Bayesian lmer
 
-fit_acc <- brm(accuracy_gabor  ~ size * position * rt_gabor_centered + (1 + size * position * rt_gabor_centered || subject_id),
-               family = bernoulli(link = "logit"),
-           data = data,
-           prior = c(set_prior("normal(0,1)", class = "b")),
-           cores = 4, chains = 4,
-           control = list(adapt_delta = .98,  max_treedepth = 12),
-           iter = 6000,  warmup = 4000, seed = 123,
-           save_model = 'acc.stan',
-           save_pars = save_pars(all = TRUE)
-           )
-summary(fit_acc)
-save(fit_acc, file ='fit_acc_bayes_MG5.rdata')
-tab_model(fit_acc, file = "acc_bayes_MG5.html")
 
-## * Confidence
+## * MT
+l.MT <- lmer_alt(MT  ~ delay * Coherence * Accuracy + (1 + delay + Coherence   || subject_id),
+                 data = data)
+summary(l.MT)
+tab_model(l.MT, file = "MT.html")
 
-## ** frequentist
-
-## planned model
-
-l.conf <- clmm(conf_ord ~ (accuracy_gabor * size * position) * (rt_gabor_centered +  OOZ_time_centered)  + (1 * size * position * rt_gabor_centered +  OOZ_time_centered | subject_id),
-                  data = data,
-                  link = c("probit"))
-summary(l.conf)
-
-save(l.conf, file = "fit_conf_MG5.rdata")
-tab_model(l.conf, file = "conf_MG5.html")
-
-## plot
-predict <- ggemmeans(l.conf, c('size','accuracy_gabor'))
-plot(predict)
-ggsave('conf_MG5_1.jpeg', plot)
-
-predict <- ggemmeans(l.conf, c('size'))
-predict <- as.data.frame(predict) %>%
-    rename( confidence = response.level, size = x)
-
-plot <- ggplot(data = predict, aes(x = confidence, y = predicted, colour = size)) +
+predict <- ggemmeans(l.MT, c('delay','Coherence','Accuracy')) %>%
+    rename(Coherence = group, delay = x, Accuracy = facet)
+plot.MT <- ggplot(data = predict, aes(x = delay, y = predicted, colour = Coherence)) +
     geom_point(position = position_dodge(width = .5)) +
     geom_errorbar(aes(ymin = conf.low, ymax = conf.high),
                   width = .5, position = "dodge") + 
-    labs(y = "Probabilty", 
-        title = "Effect of Size on Confidence") +
-    theme(plot.title = element_text(hjust = 0.5))
-print(plot)
-ggsave('conf_MG5_2.jpeg', plot)
+     labs(y = "predicted MT", 
+         title = "MT") +
+         theme(plot.title = element_text(hjust = 0.5))+
+    facet_wrap(~ Accuracy)
+plot.MT
+ggsave('MT.jpeg', plot.MT)
 
 
-## ** bayesian
-fit_conf <- brm(conf ~ accuracy_gabor * size * position * rt_gabor_centered + (1 * size * position * rt_gabor_centered | subject_id),
-                init_r = 0.05,
-        data = data,
-    family=cumulative("probit"),
-    prior = c(set_prior("normal(0,1)", class = "b")),
-    cores = 4, chains = 4,
-    control = list(adapt_delta = .95,  max_treedepth = 12),
-    iter = 6000,  warmup = 4000, seed = 123,
-    save_model = 'conf.stan',
-    save_pars = save_pars(all = TRUE)
-)
-save(fit_conf, file = 'conf.rdata')
-tab_model(fit_conf, file = "conf_bayes_MG5.html")
-
-
-l.time <- lmer_alt(MT_centered  ~  OOZ_time_centered  + (1 | subject_id),
+## * PMT
+l.PMT <- lmer_alt(PMT  ~ delay * Coherence * Accuracy + (1 + delay + Coherence   || subject_id),
                  data = data)
+summary(l.PMT)
+tab_model(l.PMT, file = "PMT.html")
+
+predict <- ggemmeans(l.PMT, c('delay','Coherence','Accuracy')) %>%
+    rename(Coherence = group, delay = x, Accuracy = facet)
+plot.PMT <- ggplot(data = predict, aes(x = delay, y = predicted, colour = Coherence)) +
+    geom_point(position = position_dodge(width = .5)) +
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high),
+                  width = .5, position = "dodge") + 
+     labs(y = "predicted PMT", 
+         title = "PMT") +
+         theme(plot.title = element_text(hjust = 0.5))+
+    facet_wrap(~ Accuracy)
+plot.PMT
+ggsave('PMT.jpeg', plot.PMT)
+

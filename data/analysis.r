@@ -84,6 +84,7 @@ plot.MT
 ggsave('des_MT.jpeg', plot.MT)
 
 ## * Accuracy
+## ** Frequentist
 l.acc <- lmer_alt(Accuracy  ~ Coherence * delay * RT_centered + (1 + Coherence * delay * RT_centered  || subject_id),
                   family = binomial(link = "logit"),
                   data = data)
@@ -111,9 +112,34 @@ plot <- plot(predict) +
     theme(plot.title = element_text(hjust = 0.5))
 ggsave('acc.jpeg', plot)
 
+## ** Bayesian
+fit_acc <- brm(Accuracy  ~ Coherence * delay * RT_centered + (1 + Coherence + delay + RT_centered  || subject_id),
+               family = bernoulli(link = "logit"),
+           data = data,
+           prior = c(set_prior("normal(0,1)", class = "b")),
+           cores = 4, chains = 4,
+           control = list(adapt_delta = .98,  max_treedepth = 12),
+           iter = 6000,  warmup = 4000, seed = 123,
+           save_model = 'acc.stan',
+           save_pars = save_pars(all = TRUE)
+           )
+summary(fit_acc)
+save(fit_acc, file ='fit_acc_bayes.rdata')
+tab_model(fit_acc, file = "acc_bayes.html")
+## interaction cohernce:delay:rt appears (instead of coherence:delay)
+## !! Rt is centered 
 
+predict <- ggpredict(fit_acc, c('RT_centered','Coherence','delay'))
+plot(predict)
+plot <- plot(predict) + 
+  labs(x = "Delay (s)", 
+       y = "Accuracy", 
+       title = "Delay:Coherence:RT interaction") +
+    theme(plot.title = element_text(hjust = 0.5))
+ggsave('acc_bayes.jpeg', plot)
 
 ## * MT
+## ** frequantist
 l.MT <- lmer_alt(MT  ~ delay * Coherence * Accuracy + (1 + delay + Coherence   || subject_id),
                  data = data)
 summary(l.MT)
@@ -132,8 +158,36 @@ plot.MT <- ggplot(data = predict, aes(x = delay, y = predicted, colour = Coheren
 plot.MT
 ggsave('MT.jpeg', plot.MT)
 
+## ** Bayesian
+fit_MT <- brm(MT  ~ delay * Coherence * Accuracy + (1 + delay + Coherence    || subject_id),
+           data = data,
+           prior = c(set_prior("normal(0,1)", class = "b")),
+           cores = 4, chains = 4,
+           control = list(adapt_delta = .9,  max_treedepth = 12),
+           iter = 6000,  warmup = 4000, seed = 123,
+           save_model = 'MT.stan',
+           save_pars = save_pars(all = TRUE)
+           )
+summary(fit_MT)
+save(fit_MT, file ='fit_MT_bayes.rdata')
+tab_model(fit_MT, file = "MT_bayes.html")
+
+predict <- ggpredict(fit_MT, c('delay','Coherence','Accuracy')) %>%
+    rename(Coherence = group, delay = x, Accuracy = facet)
+plot.MT <- ggplot(data = predict, aes(x = delay, y = predicted, colour = Coherence)) +
+    geom_point(position = position_dodge(width = .5)) +
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high),
+                  width = .5, position = "dodge") + 
+     labs(y = "predicted MT", 
+         title = "MT") +
+         theme(plot.title = element_text(hjust = 0.5))+
+    facet_wrap(~ Accuracy)
+plot.MT
+ggsave('MT_bayes.jpeg', plot.MT)
+
 
 ## * PMT
+## ** frequentist
 l.PMT <- lmer_alt(PMT  ~ delay * Coherence * Accuracy + (1 + delay + Coherence   || subject_id),
                  data = data)
 summary(l.PMT)
@@ -152,3 +206,29 @@ plot.PMT <- ggplot(data = predict, aes(x = delay, y = predicted, colour = Cohere
 plot.PMT
 ggsave('PMT.jpeg', plot.PMT)
 
+## ** Bayesian
+fit_PMT <- brm(MT  ~ delay * Coherence * Accuracy + (1 + delay + Coherence    || subject_id),
+           data = data,
+           prior = c(set_prior("normal(0,1)", class = "b")),
+           cores = 4, chains = 4,
+           control = list(adapt_delta = .9,  max_treedepth = 12),
+           iter = 6000,  warmup = 4000, seed = 123,
+           save_model = 'PMT.stan',
+           save_pars = save_pars(all = TRUE)
+           )
+summary(fit_PMT)
+save(fit_PMT, file ='fit_PMT_bayes.rdata')
+tab_model(fit_PMT, file = "PMT_bayes.html")
+
+predict <- ggpredict(fit_PMT, c('delay','Coherence','Accuracy')) %>%
+    rename(Coherence = group, delay = x, Accuracy = facet)
+plot.PMT <- ggplot(data = predict, aes(x = delay, y = predicted, colour = Coherence)) +
+    geom_point(position = position_dodge(width = .5)) +
+    geom_errorbar(aes(ymin = conf.low, ymax = conf.high),
+                  width = .5, position = "dodge") + 
+     labs(y = "predicted PMT", 
+         title = "PMT") +
+         theme(plot.title = element_text(hjust = 0.5))+
+    facet_wrap(~ Accuracy)
+plot.PMT
+ggsave('PMT_bayes.jpeg', plot.PMT)

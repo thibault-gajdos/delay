@@ -16,7 +16,6 @@ data {
   vector[N] Z_1_3;
   vector[N] Z_1_4;
   vector[N] Z_1_5;
-  vector[N] Z_1_6;
   int prior_only;  // should the likelihood be ignored?
 }
 transformed data {
@@ -41,20 +40,18 @@ transformed parameters {
   vector[N_1] r_1_3;  // actual group-level effects
   vector[N_1] r_1_4;  // actual group-level effects
   vector[N_1] r_1_5;  // actual group-level effects
-  vector[N_1] r_1_6;  // actual group-level effects
   real lprior = 0;  // prior contributions to the log posterior
   r_1_1 = (sd_1[1] * (z_1[1]));
   r_1_2 = (sd_1[2] * (z_1[2]));
   r_1_3 = (sd_1[3] * (z_1[3]));
   r_1_4 = (sd_1[4] * (z_1[4]));
   r_1_5 = (sd_1[5] * (z_1[5]));
-  r_1_6 = (sd_1[6] * (z_1[6]));
   lprior += normal_lpdf(b | 0,1);
-  lprior += student_t_lpdf(Intercept | 3, 0.2, 2.5);
+  lprior += student_t_lpdf(Intercept | 3, 0.6, 2.5);
   lprior += student_t_lpdf(sigma | 3, 0, 2.5)
     - 1 * student_t_lccdf(0 | 3, 0, 2.5);
   lprior += student_t_lpdf(sd_1 | 3, 0, 2.5)
-    - 6 * student_t_lccdf(0 | 3, 0, 2.5);
+    - 5 * student_t_lccdf(0 | 3, 0, 2.5);
 }
 model {
   // likelihood including constants
@@ -64,7 +61,7 @@ model {
     mu += Intercept;
     for (n in 1:N) {
       // add more terms to the linear predictor
-      mu[n] += r_1_1[J_1[n]] * Z_1_1[n] + r_1_2[J_1[n]] * Z_1_2[n] + r_1_3[J_1[n]] * Z_1_3[n] + r_1_4[J_1[n]] * Z_1_4[n] + r_1_5[J_1[n]] * Z_1_5[n] + r_1_6[J_1[n]] * Z_1_6[n];
+      mu[n] += r_1_1[J_1[n]] * Z_1_1[n] + r_1_2[J_1[n]] * Z_1_2[n] + r_1_3[J_1[n]] * Z_1_3[n] + r_1_4[J_1[n]] * Z_1_4[n] + r_1_5[J_1[n]] * Z_1_5[n];
     }
     target += normal_id_glm_lpdf(Y | Xc, mu, b, sigma);
   }
@@ -75,7 +72,6 @@ model {
   target += std_normal_lpdf(z_1[3]);
   target += std_normal_lpdf(z_1[4]);
   target += std_normal_lpdf(z_1[5]);
-  target += std_normal_lpdf(z_1[6]);
 }
 generated quantities {
   // actual population-level intercept

@@ -12,7 +12,10 @@ data <- data %>%
         RT>.20,
         MT>0,
         RT<5,
-        delay>0)
+        delay>0,
+        response_moment == 1,
+        Trial_Type == 5
+    )
 
 ## define variables and  contrasts
 data$MT_centered  <- data$MT -mean(data$MT, na.rm = TRUE)
@@ -27,41 +30,25 @@ contrasts(data$Coherence) <- contr.sdif(3)
 
 ## * preliminary analysis
 p  <- ggplot(data = data, aes(RT)) +
-  geom_histogram()  +
-  facet_wrap( ~ subject_id) +
-  ggtitle('RT')
-p
+    geom_histogram()  +
+    facet_wrap( ~ subject_id) +
+    ggtitle('RT')
+
 
 p  <- ggplot(data = data, aes(PMT)) +
   geom_histogram()  +
   facet_wrap( ~ subject_id) +
   ggtitle('PMT')
-p
 
 p  <- ggplot(data = data, aes(MT)) +
   geom_histogram()  +
   facet_wrap( ~ subject_id) +
   ggtitle('MT')
-p
 
 
 d <- data  %>%
   group_by(Coherence,delay) %>%
   summarise(accuracy = mean(as.numeric(Accuracy)), RT = mean(RT), PMT = mean(PMT), MT = mean(MT))
-kable(d, digits = 3)
-
-
-## |Coherence |delay | accuracy|    RT|   PMT|    MT|
-## |:---------|:-----|--------:|-----:|-----:|-----:|
-## |0.02      |3     |    1.561| 0.611| 0.441| 0.170|
-## |0.02      |5     |    1.563| 0.574| 0.402| 0.172|
-## |0.02      |7     |    1.546| 0.588| 0.410| 0.178|
-## |0.11      |3     |    1.865| 0.615| 0.445| 0.170|
-## |0.11      |5     |    1.877| 0.564| 0.391| 0.173|
-## |0.11      |7     |    1.861| 0.574| 0.399| 0.174|
-## |0.4       |3     |    1.982| 0.615| 0.446| 0.169|
-## |0.4       |5     |    1.982| 0.565| 0.392| 0.173|
-## |0.4       |7     |    1.983| 0.568| 0.393| 0.176|
 
 
 plot.accuracy <- ggplot(data = d, aes(x = Coherence, y = accuracy, color = delay)) +
@@ -93,10 +80,8 @@ l.acc <- lmer_alt(Accuracy  ~ Coherence * delay * RT_centered + (1 + Coherence *
                   family = binomial(link = "logit"),
                   data = data)
 summary(l.acc)
-## singular
 
 save(l.acc, file = 'reg_accuracy.rdata')
-summary(l.acc)
 tab_model(l.acc, file = "accuracy.html")
 
 predict <- ggemmeans(l.acc, c('delay','Coherence'))
@@ -140,7 +125,7 @@ l.MT <- lmer_alt(MT  ~ delay * Coherence * Accuracy + (1 + delay + Coherence   |
 summary(l.MT)
 tab_model(l.MT, file = "MT.html")
 
-ems <- emmeans(l.MT, pairwise ~ Coherence | c(Accuracy,delay))
+ems <- emmeans(l.MT, pairwise ~ Coherence | c(delay,Accuracy))
 ems
 
 predict <- ggemmeans(l.MT, c('delay','Coherence','Accuracy')) %>%
@@ -170,8 +155,8 @@ summary(fit_MT)
 tab_model(fit_MT, file = "MT_bayes.html")
 save(fit_MT, file ='fit_MT_bayes.rdata')
 
-##load('fit_MT_bayes.rdata')
-ems <- emmeans(fit_MT, pairwise ~ Coherence | c(Accuracy,delay))
+load('fit_MT_bayes.rdata')
+ems <- emmeans(fit_MT, pairwise ~ Coherence | c(delay,Accuracy))
 ems
 
 predict <- ggpredict(fit_MT, c('delay','Coherence','Accuracy')) %>%
@@ -195,7 +180,7 @@ l.PMT <- lmer_alt(PMT  ~ delay * Coherence * Accuracy + (1 + delay + Coherence  
 summary(l.PMT)
 tab_model(l.PMT, file = "PMT.html")
 
-ems <- emmeans(l.PMT, pairwise ~ Coherence | c(Accuracy,delay))
+ems <- emmeans(l.PMT, pairwise ~ Coherence | c(delay,Accuracy))
 ems
 
 
@@ -227,7 +212,8 @@ save(fit_PMT, file ='fit_PMT_bayes.rdata')
 tab_model(fit_PMT, file = "PMT_bayes.html")
 
 load('fit_PMT_bayes.rdata')
-ems <- emmeans(fit_PMT, pairwise ~ Coherence | c(Accuracy,delay))
+
+ems <- emmeans(fit_PMT, pairwise ~ Coherence | c(delay,Accuracy))
 ems
 
 predict <- ggpredict(fit_PMT, c('delay','Coherence','Accuracy')) %>%

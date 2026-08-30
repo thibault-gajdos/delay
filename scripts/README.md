@@ -78,7 +78,6 @@ the managed virtualenv.
 python delaymodel/empirical.py       -> (printout only)     extraction, checked against the archive
 python delaymodel/targets.py         -> (printout only)     calibration targets, printed summary
 python calibrate.py N M              -> results/fit_modelM.json        one chunk of N evaluations, model M
-BLOCKS=behav python calibrate.py N M -> results/fitb_modelM.json       behaviour-only fit
 python export_for_R.py               -> pma_counts.csv      counts and exposures, empirical
                                          sim_counts_mM.csv   the same from each fitted model
                                                               (written at scripts/ root: R's
@@ -121,7 +120,8 @@ python model1_bound.py                                   the Model 1 ceiling, Se
 python build_targets_q.py         -> results/targets_q.json   RT-quantile calibration targets
                                                           (correct/incorrect, two-stage
                                                           Vincentized/pooled; supersedes
-                                                          build_targets.py's targets_behav.json)
+                                                          the original mean/SD/proportion
+                                                          targets -- see "Removed" below)
 python calib_behav_q.py {m1,m2}   -> results/calibq_{tag}.json  behavior-only quantile/G²
                                       results/ckptq_{tag}.json  calibration (three-stage
                                                           Nelder-Mead restart, checkpointed);
@@ -202,19 +202,29 @@ combinations are weakly conditioned rather than unidentified, and are reported a
 combinations: `lam * kappa`, `alpha = beta / Delta`, and `Lmotor + r / muRS`.
 
 `BLOCKS=behav` restricts the criterion to accuracy, mean response time, its interquartile
-range and the anticipation rate -- what a study without electromyography would see -- and
-writes `fitb_modelM.json`. This `fitb_modelM.json` is used only as a *starting point* for
-the behavior-only calibration below, not as the manuscript's own behavioral fit.
+range and the anticipation rate -- what a study without electromyography would see. This
+was a diagnostic-only path exploring what behaviour alone constrains; nothing in the
+current pipeline reads its `fitb_modelM.json` output, and the stale (Aug-22) copies of it
+were deleted in the 2026-08-30 cleanup, alongside every other orphaned file (below).
 
-### `build_targets.py`, `calib_behav.py`, `behav_sim.py` -- superseded 2026-08-30
-The manuscript's first behavior-only calibration this project (six per-cell quantities --
-accuracy, mean RT, RT IQR, and the pre-signal/fast/no-response proportions -- matched by
-mean-squared standardized error). Superseded by the quantile/G² pipeline below at the
-user's request, once it became clear the model cannot produce non-negligible
-no-response-by-deadline trials at any parameter setting compatible with the observed RT
-distribution (a parametric consequence of the post-signal ramp's drift-to-noise ratio, not
-an architectural impossibility -- see `calibb_m1.json`/`calibb_m2.json`, its last outputs).
-Kept for reference; `calib_behav_q.py` does not import from `calib_behav.py`.
+### Removed 2026-08-30: `build_targets.py`, `calib_behav.py`
+The project's first behavior-only calibration (six per-cell quantities -- accuracy, mean
+RT, RT IQR, and the pre-signal/fast/no-response proportions -- matched by mean-squared
+standardized error). Superseded by the quantile/G² pipeline below at the user's request,
+once it became clear the model cannot produce non-negligible no-response-by-deadline
+trials at any parameter setting compatible with the observed RT distribution (a parametric
+consequence of the post-signal ramp's drift-to-noise ratio, not an architectural
+impossibility). `build_targets.py` (and its `targets_behav.json` output) and `calib_behav.py`
+were deleted once nothing referenced them any more; recover them from git history
+(`git log --all --diff-filter=D -- '*calib_behav.py' '*build_targets.py'`) if the old
+MSE-based approach is ever needed again.
+
+**`results/calibb_m1.json`/`calibb_m2.json`, however, are `calib_behav.py`'s own last
+outputs and are *not* orphaned -- keep them.** `calib_behav_q.py` still reads them as its
+from-scratch starting point (see below), and since the script that produced them is gone,
+nothing in this repository can regenerate them if they are deleted; a from-scratch run of
+the G² calibration (no `results/ckptq_{tag}.json` checkpoint) would have no starting point
+without them.
 
 ### `build_targets_q.py`, `behav_sim.py`, `calib_behav_q.py`
 The manuscript's actual behavior-only calibration (Materials and Methods, "Calibration of
@@ -486,10 +496,14 @@ hardcoded, so both constants are exact sample counts at the recording's own rate
 `theory_checks.py` keeps its own separate `DT` (not imported from `sim.py`) and was
 updated by hand to match -- if you add a third place that hardcodes a timestep, it will not
 follow `sim.py` automatically. Everything downstream of `sim.py`'s `DT` (`calibrate.py`,
-`behav_sim.py`, `calib_behav.py`, `calib_behav_q.py`, `sweep.py`, `fused_sweep.py` after its
-2026-08-30 fix, `export_for_R.py`, `figures.py`) was re-run or re-checked under the new
-rate; `fit_model1.json`/`fit_model2.json` were refreshed by `run_emg_recal.sh`, and the
-pre-refresh values are kept at `fit_model{1,2}_pre1024.json` for comparison.
+`behav_sim.py`, `calib_behav_q.py`, `sweep.py`, `fused_sweep.py` after its 2026-08-30 fix,
+`export_for_R.py`, `figures.py`) was re-run or re-checked under the new rate.
+`results/fit_model1.json`/`fit_model2.json` were refreshed by `run_emg_recal.sh` on
+2026-08-30 (final objective 128.80 for model 1; 37.6 for model 2 and still improving
+slightly after 4 chunks -- rerun `run_emg_recal.sh` for more if that matters for a given
+number). The pre-refresh backups (`fit_model{1,2}_pre1024.json`) were deleted once the
+refresh was confirmed complete; recover them from git history if you need the exact
+pre-1024-Hz values again.
 
 **The lateralised readiness potential during the stimulus** reproduces only to about 3%,
 in the same direction on all three values. Every effect there is null before and after.

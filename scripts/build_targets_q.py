@@ -1,13 +1,14 @@
 """Ratcliff-style RT-quantile calibration targets (replaces the mean/SD/proportion
-targets of build_targets.py for the model-vs-behaviour comparison).
+targets of the original build_targets.py (removed 2026-08-30) for the
+model-vs-behaviour comparison).
 
 Per condition, correct and incorrect responses are treated separately (the classic
 quantile-probability decomposition): the 5 Ratcliff quantiles (.1/.3/.5/.7/.9) of RT
 partition each response type into 6 bins holding, by construction, 10/20/20/20/20/10 %
 of that response type's trials. Premature, sub-0.2-s and no-response-by-4s trials are
 dropped from the calibration entirely (not scored, not counted in the denominator):
-p(correct) + p(incorrect) = 1 over VALID trials only, exactly as valid is defined in
-build_targets.py.
+p(correct) + p(incorrect) = 1 over VALID trials only, exactly as valid was defined in
+the original build_targets.py (removed 2026-08-30; see README).
 
 Two-stage aggregation is used where the data support it, one-stage (pooled) where they
 do not:

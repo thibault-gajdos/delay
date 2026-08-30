@@ -82,23 +82,3 @@ def behav_rt_split(out):
     incorrect = valid & (out['s'] != out['sresp'])
     return rt[correct], rt[incorrect]
 
-
-def behav_stats(out):
-    """The six per-cell quantities of the calibration objective, classified exactly as
-    the empirical trials are (build_targets.py)."""
-    ri, i_phys, Lm = out['resp_i'], out['i_phys'], out['Lmotor']
-    n = ri.size
-    responded = ri >= 0
-    prem = responded & (ri < i_phys)
-    rt = np.where(responded & ~prem, (ri - i_phys) * DT + Lm, np.nan)
-    fast = responded & ~prem & (rt < 0.2)
-    noresp = ~responded
-    valid = responded & ~prem & (rt >= 0.2) & (rt <= 4.0)
-    d = dict(prem=prem.mean(), fast=fast.mean(), noresp=noresp.mean())
-    if valid.sum() < 10:
-        d.update(acc=np.nan, rt=np.nan, rt_iqr=np.nan); return d
-    d['acc'] = (out['s'][valid] == out['sresp'][valid]).mean()
-    rv = rt[valid]
-    d['rt'] = rv.mean()
-    d['rt_iqr'] = np.subtract(*np.percentile(rv, [75, 25]))
-    return d

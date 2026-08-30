@@ -161,6 +161,51 @@ def fig_shape(E, fname='plots/fig_shape.pdf'):
     fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
 
 
+# --------------------------------------------------- out-of-sample delay slope
+def fig_oos_slope(p1_behav, p2_behav, E, fname='plots/fig_oos_slope.pdf', n=30000):
+    """Out-of-sample validation (Results, Simulation validation / Delay-locked): each
+    model calibrated on behavior alone (results/calibq_m{1,2}.json), then simulated,
+    without recalibration, at the delay-period partial-activation log-rate slope --
+    a quantity neither calibration was allowed to see. Returns the numbers that fill
+    the manuscript's SLOPE1/SLOPE2/ERR1/ERR2/ERRFAC placeholders."""
+    TB = np.arange(20) * 0.1 + 0.05; TB = TB - TB.mean()
+
+    def model_slope(p, model, seed0):
+        out = np.zeros(6)
+        for k, (c, D) in enumerate(CELLS):
+            s = simulate(p, c, D, n, model, seed=seed0 + k)
+            m = measures(s)
+            pr = rate_profile(m, D + 1, D + 3, 20)
+            out[k] = poisson_slope(pr, TB)[1] if (pr > 0).sum() >= 4 else np.nan
+        return out
+
+    s1 = model_slope(p1_behav, 1, 9000)
+    s2 = model_slope(p2_behav, 2, 9100)
+    obs_persub = E['slope']                              # (nsub, 6)
+    obs_mean = np.nanmean(obs_persub, axis=0)
+    obs_n = np.sum(np.isfinite(obs_persub), axis=0)
+    obs_se = np.nanstd(obs_persub, axis=0, ddof=1) / np.sqrt(np.maximum(obs_n, 1))
+    err1 = float(np.mean(np.abs(s1 - obs_mean) / obs_se))
+    err2 = float(np.mean(np.abs(s2 - obs_mean) / obs_se))
+
+    fig, ax = plt.subplots(figsize=(4.6, 3.2))
+    x = np.arange(6)
+    ax.errorbar(x, obs_mean, yerr=obs_se, fmt='o', color='k', ms=5, capsize=3,
+                label='observed (±1 SE)', zorder=3)
+    ax.plot(x, s1, 's--', color='#c1272d', ms=5, label='Model 1 (behavior-only fit)')
+    ax.plot(x, s2, '^-', color='#3182bd', ms=5, label='Model 2 (behavior-only fit)')
+    ax.axhline(0, color='0.7', lw=.7, zorder=0)
+    ax.set_xticks(x); ax.set_xticklabels(LAB, rotation=30, ha='right', fontsize=7)
+    ax.set_ylabel('delay-period log-rate slope (s$^{-1}$)')
+    ax.set_title('Out-of-sample: neither calibration saw this quantity', fontsize=8)
+    ax.legend(fontsize=6.5, frameon=False, loc='upper right')
+    fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
+
+    return dict(obs_mean=obs_mean.tolist(), obs_se=obs_se.tolist(),
+                model1_slope=s1.tolist(), model2_slope=s2.tolist(),
+                err1=err1, err2=err2, errfac=err1 / err2)
+
+
 # ---------------------------------------------------------------- Model 1
 if __name__ == '__main__':
     P2 = json.load(open('results/fit_model2.json')); P1 = json.load(open('results/fit_model1.json'))
@@ -170,4 +215,18 @@ if __name__ == '__main__':
     fig_single(P2)
     fig_rates(P2, E)
     fig_shape(E)
+
+    p1b = json.load(open('results/calibq_m1.json'))
+    p2b = json.load(open('results/calibq_m2.json'))
+    oos = fig_oos_slope(p1b, p2b, E)
+    disc1 = json.load(open('results/ckptq_m1.json'))['obj']
+    disc2 = json.load(open('results/ckptq_m2.json'))['obj']
+    json.dump(dict(disc1=disc1, disc2=disc2, **oos),
+              open('results/oos_slope_check.json', 'w'), indent=1)
     print('figures written')
+    print(f"\nDISC1 (model 1 behavior-only G2) = {disc1:.2f}")
+    print(f"DISC2 (model 2 behavior-only G2) = {disc2:.2f}")
+    print(f"SLOPE1 (model 1 predicted slopes) = {oos['model1_slope']}")
+    print(f"SLOPE2 (model 2 predicted slopes) = {oos['model2_slope']}")
+    print(f"observed slope range = {min(oos['obs_mean']):.3f} to {max(oos['obs_mean']):.3f} s^-1")
+    print(f"ERR1 = {oos['err1']:.2f}, ERR2 = {oos['err2']:.2f}, ERRFAC = {oos['errfac']:.2f}")

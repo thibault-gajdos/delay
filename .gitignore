@@ -1,0 +1,29 @@
+# OS / editor
+.DS_Store
+**/.DS_Store
+.#*
+*~
+
+# Python
+__pycache__/
+*.pyc
+scripts/.venv/
+
+# regenerable / large / log outputs from the model-calibration pipeline
+# (small provenance JSON such as fit_model*.json, calibb_*.json, ckptq_*.json,
+# calibq_*.json, targets_*.json ARE tracked -- they are the calibration results
+# the manuscript cites, not scratch)
+scripts/results/logs/
+scripts/results/*.jsonl
+scripts/results/DONE_EMG_RECAL
+scripts/__pycache__/
+
+# renv (renv itself manages scripts/R/renv/.gitignore once renv::init() has run;
+# this covers the same ground before that file exists)
+scripts/R/renv/library/
+scripts/R/renv/local/
+scripts/R/renv/cellar/
+scripts/R/renv/lock/
+scripts/R/renv/python/
+scripts/R/renv/sandbox/
+scripts/R/renv/staging/

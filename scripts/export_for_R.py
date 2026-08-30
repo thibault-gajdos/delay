@@ -121,6 +121,6 @@ if __name__ == '__main__':
     write(empirical_rows(), 'pma_counts.csv',
           ['subj', 'cell', 'period', 'bin', 'count', 'ntrial'])
     for mdl in (1, 2):
-        P = json.load(open(f'results/fit_model{mdl}.json'))
+        P = json.load(open(f'results/calibq_m{mdl}.json'))
         write(sim_rows(P, mdl), f'sim_counts_m{mdl}.csv',
               ['subj', 'cell', 'period', 'bin', 'count', 'ntrial', 'rate'])

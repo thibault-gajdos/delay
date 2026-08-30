@@ -257,7 +257,8 @@ def fig_oos_rate_profile(oos, E, fname='plots/fig_oos_rate_profile.pdf'):
 
 # ---------------------------------------------------------------- Model 1
 if __name__ == '__main__':
-    P2 = json.load(open('results/fit_model2.json')); P1 = json.load(open('results/fit_model1.json'))
+    P1 = json.load(open('results/calibq_m1.json'))
+    P2 = json.load(open('results/calibq_m2.json'))
     E = build()
     fig_trajectories(P2, 2, fname='plots/fig_traj_m2.pdf')
     fig_trajectories(P1, 1, fname='plots/fig_traj_m1.pdf')
@@ -265,9 +266,7 @@ if __name__ == '__main__':
     fig_rates(P2, E)
     fig_shape(E)
 
-    p1b = json.load(open('results/calibq_m1.json'))
-    p2b = json.load(open('results/calibq_m2.json'))
-    oos_raw = _oos_predictions(p1b, p2b)
+    oos_raw = _oos_predictions(P1, P2)
     fig_oos_rate_profile(oos_raw, E)
     oos = fig_oos_slope(oos_raw, E)
     disc1 = json.load(open('results/ckptq_m1.json'))['obj']

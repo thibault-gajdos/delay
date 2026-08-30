@@ -1,41 +1,46 @@
 """
-calibrate.py -- calibration of the model to the electromyographic and behavioural data.
+calibrate.py -- shared simulation/statistics utility, `model_stats()`.
 
-Procedure, in two stages.
+Removed 2026-08-30: the joint EMG+behaviour fit that used to live here (Nelder-Mead
+search over all thirteen free parameters against nine blocks per cell -- accuracy,
+premotor/motor execution time and their spread, delay-period rate and log-rate slope,
+stimulus-period rate, premature-response rate -- each standardized by its
+between-participant SE). That fit's own match to the delay-period rate slope was
+necessarily in-sample, since `slope` was one of the nine blocks in its objective --
+it could not serve as a validation of the model's electromyographic predictions.
 
-STAGE A, closed form.  The identities of the note determine a starting point without
-any search:
-    omega   := sqrt(lambda kappa)   from the crossing rate,  nu = (omega/2pi) exp(-a^2/2)
-    a                               from the count-only identity  abar = 1.43 sqrt(A)
-    r/mu_RS := mean MET - L_motor
-    (g-|m|-beta)/mu_RS := mean PMET - L_RS - 1/lambda
-    sigma_Y := (g-|m|-beta)/a
-    rho_r   := r/sigma_Y            checked against the premature-response rate through
-                                    nu(g+r)/nu(g) = exp[-rho_r (a + rho_r/2)]
-    alpha   := sigma_Y * slope / a  from the delay log-rate slope
-Only ratios are determined, so sigma_x fixes the amplitude unit and one latency has to
-be chosen; the search then relaxes everything.
+The project's calibration is now behaviour alone (`calib_behav_q.py`, an RT-quantile
+G² criterion with no EMG term at all -- see its own docstring and the README), and the
+electromyographic comparison is instead an honest out-of-sample check: simulate the
+behaviour-only-calibrated parameters and compare their predicted delay-period rate
+profile against the real EMG (`figures.py`'s `_oos_predictions`/`fig_oos_*`, and
+`results/oos_slope_check.json`).
 
-STAGE B, search.  Nelder-Mead on all thirteen free parameters, minimising a normalised
-squared error over nine blocks of six cells each: accuracy, mean and SD of premotor
-execution time, mean and SD of motor execution time, delay-period partial-activation
-rate, delay-period log-rate slope, stimulus-period rate, and the premature-response
-rate.  Each block is divided by the between-participant standard error of the
-corresponding target, so that a unit of error means one standard error.  Common random
-numbers are used across evaluations so the objective is deterministic.
+`model_stats()` below is retained because it is the one place that turns a parameter
+dict into the full set of per-cell simulated quantities -- accuracy, execution times,
+delay/stimulus rate, premature rate, the delay log-rate slope and the full rate
+profile -- and both `sweep.py` (robustness table) and the out-of-sample check need it.
+It computes; it does not fit.
+
+Recover the removed fitting code (`make_objective`, `ALL_BLOCKS`/`BEHAV_BLOCKS`,
+`START`/`LO`/`HI`/`clip`/`pack`/`unpack`, the `__main__` optimizer) from git history if
+the question of fitting the model to actual EMG (using the same G²-style methods as
+the behaviour-only fit, once we've decided what belongs in that G²) comes back --
+`git log --all -p -- calibrate.py` around the 2026-08-30 commits.
 """
-import numpy as np, sys, time, json, os
-from scipy.optimize import minimize
+import numpy as np, sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from delaymodel.sim import simulate, measures, rate_profile, PARAM_NAMES
-from delaymodel.targets import CELLS, LAB, build, summary, poisson_slope
+from delaymodel.sim import simulate, measures, rate_profile
+from delaymodel.targets import CELLS, poisson_slope
 
 NTR = 200
 TB = np.arange(20) * 0.1 + 0.05; TB = TB - TB.mean()
 
+STAT_KEYS = ['acc', 'pmet', 'met', 'pmet_sd', 'met_sd', 'dly', 'stim', 'prem', 'slope']
+
 
 def model_stats(p, n=NTR, model=2, seed0=1000, gamma=0.0):
-    out = {k: np.zeros(6) for k in ALL_BLOCKS}
+    out = {k: np.zeros(6) for k in STAT_KEYS}
     prof = np.zeros((6, 20))
     out['rt'] = np.zeros(6); out['rt_sd'] = np.zeros(6)
     for k, (c, D) in enumerate(CELLS):
@@ -59,82 +64,3 @@ def model_stats(p, n=NTR, model=2, seed0=1000, gamma=0.0):
         out['slope'][k] = poisson_slope(pr, TB)[1] if (pr > 0).sum() >= 4 else np.nan
     out['profile'] = prof
     return out
-
-
-ALL_BLOCKS = ['acc', 'pmet', 'met', 'pmet_sd', 'met_sd', 'dly', 'stim', 'prem', 'slope']
-BEHAV_BLOCKS = ['acc', 'rt', 'rt_sd', 'prem']      # what a behaviour-only study sees
-BLOCKS = ALL_BLOCKS
-
-
-def make_objective(E):
-    S = summary(E)
-    scale = {}
-    for b in BLOCKS:
-        key = {'dly': 'dly', 'stim': 'stim'}.get(b, b)
-        arr = E[key]
-        if arr.ndim == 3:
-            arr = arr.mean(-1)
-        se = np.nanstd(arr, 0, ddof=1) / np.sqrt(arr.shape[0])
-        scale[b] = np.maximum(se, 1e-6)
-    tgt = {b: S[b] for b in BLOCKS}
-
-    def obj(p, n=NTR, model=2, detail=False, gamma=0.0):
-        M = model_stats(p, n, model, gamma=gamma)
-        tot = 0.0; parts = {}
-        for b in BLOCKS:
-            d = (M[b] - tgt[b]) / scale[b]
-            d = d[np.isfinite(d)]
-            parts[b] = float(np.mean(d ** 2)) if d.size else 100.0
-            tot += parts[b]
-        return (tot, parts, M) if detail else tot
-    return obj, tgt, scale
-
-
-def unpack(v):
-    q = dict(zip(PARAM_NAMES, np.exp(v)))
-    return q
-
-
-def pack(p):
-    return np.log([p[k] for k in PARAM_NAMES])
-
-
-START = dict(k=1.10, lam=22.0, theta=0.085, g=0.150, kappa=11.8, SDe=0.038,
-             alpha=0.0125, muRS=0.60, sigq=0.14, r=0.070, Lmotor=0.020,
-             Lmotion=0.20, LRS=0.20)
-
-LO = dict(k=0.3, lam=5.0, theta=0.01, g=0.02, kappa=1.0, SDe=0.005, alpha=0.001,
-          muRS=0.05, sigq=0.01, r=0.005, Lmotor=0.005, Lmotion=0.05, LRS=0.05)
-HI = dict(k=4.0, lam=60.0, theta=0.60, g=0.80, kappa=60.0, SDe=0.20, alpha=0.10,
-          muRS=5.0, sigq=1.0, r=0.40, Lmotor=0.15, Lmotion=0.40, LRS=0.40)
-
-
-def clip(p):
-    return {k: float(min(max(p[k], LO[k]), HI[k])) for k in PARAM_NAMES}
-
-
-if __name__ == '__main__':
-    # chunked operation: each call runs a bounded number of evaluations, then
-    # checkpoints, so the search can be resumed.
-    import os
-    steps = int(sys.argv[1]) if len(sys.argv) > 1 else 90
-    model = int(sys.argv[2]) if len(sys.argv) > 2 else 2
-    blocks = os.environ.get('BLOCKS', 'all')
-    globals()['BLOCKS'] = BEHAV_BLOCKS if blocks == 'behav' else ALL_BLOCKS
-    ckpt = f'results/fit_model{model}.json' if blocks == 'all' else f'results/fitb_model{model}.json'
-    import calibrate as _c
-    _c.BLOCKS = globals()['BLOCKS']
-    E = build(); obj, tgt, scale = make_objective(E)
-    P = json.load(open(ckpt)) if os.path.exists(ckpt) else dict(START)
-    f = lambda v: obj(clip(unpack(v)), model=model)
-    t0 = time.time()
-    x0 = pack(P)
-    step = float(os.environ.get('STEP', '0.12'))
-    sim0 = np.vstack([x0] + [x0 + step * np.eye(len(x0))[i] for i in range(len(x0))])
-    res = minimize(f, x0, method='Nelder-Mead',
-                   options=dict(maxfev=steps, xatol=1e-4, fatol=1e-4, adaptive=True,
-                                initial_simplex=sim0))
-    P = clip(unpack(res.x))
-    json.dump(P, open(ckpt, 'w'), indent=1)
-    print(f"model {model}: objective {res.fun:.2f} after {res.nfev} evaluations "
-          f"({(time.time()-t0)/60:.1f} min).  " + " ".join(f"{k}={P[k]:.4g}" for k in PARAM_NAMES))

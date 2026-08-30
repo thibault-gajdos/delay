@@ -67,19 +67,16 @@ def table(rows):
 
 
 if __name__ == '__main__':
-    p0 = json.load(open('results/fit_model2.json'))
+    p0 = json.load(open('results/calibq_m2.json'))
     n = int(sys.argv[1]) if len(sys.argv) > 1 else 200
     rows = run(p0, model=2, n=n)
     print("\nMODEL 2 (with temporal preparation)")
     table(rows)
     json.dump({k: {kk: float(vv) for kk, vv in v.items()} for k, v in rows.items()},
               open('results/sweep_model2.json', 'w'), indent=1)
-    try:
-        p1 = json.load(open('results/fit_model1.json'))
-        rows1 = run(p1, model=1, n=n)
-        print("\nMODEL 1 (no temporal preparation, recalibrated in its own right)")
-        table(rows1)
-        json.dump({k: {kk: float(vv) for kk, vv in v.items()} for k, v in rows1.items()},
-                  open('results/sweep_model1.json', 'w'), indent=1)
-    except FileNotFoundError:
-        print("\n(Model 1 fit not found; run calibrate_m1.py first)")
+    p1 = json.load(open('results/calibq_m1.json'))
+    rows1 = run(p1, model=1, n=n)
+    print("\nMODEL 1 (no temporal preparation, calibrated in its own right)")
+    table(rows1)
+    json.dump({k: {kk: float(vv) for kk, vv in v.items()} for k, v in rows1.items()},
+              open('results/sweep_model1.json', 'w'), indent=1)

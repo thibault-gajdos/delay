@@ -10,12 +10,12 @@ __pycache__/
 scripts/.venv/
 
 # regenerable / large / log outputs from the model-calibration pipeline
-# (small provenance JSON such as fit_model*.json, calibb_*.json, ckptq_*.json,
-# calibq_*.json, targets_*.json ARE tracked -- they are the calibration results
-# the manuscript cites, not scratch)
+# (small provenance JSON such as calibb_*.json, ckptq_*.json, calibq_*.json,
+# sweep_model*.json, targets_*.json ARE tracked -- they are the calibration
+# results the manuscript cites, not scratch. fit_model*.json -- the joint
+# EMG+behaviour fit's output -- was removed 2026-08-30, see scripts/README.md)
 scripts/results/logs/
 scripts/results/*.jsonl
-scripts/results/DONE_EMG_RECAL
 scripts/plots/*.pdf
 scripts/__pycache__/
 

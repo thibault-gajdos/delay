@@ -77,7 +77,6 @@ the managed virtualenv.
 ```
 python delaymodel/empirical.py       -> (printout only)     extraction, checked against the archive
 python delaymodel/targets.py         -> (printout only)     calibration targets, printed summary
-python calibrate.py N M              -> results/fit_modelM.json        one chunk of N evaluations, model M
 python export_for_R.py               -> pma_counts.csv      counts and exposures, empirical
                                          sim_counts_mM.csv   the same from each fitted model
                                                               (written at scripts/ root: R's
@@ -130,10 +129,9 @@ python calib_behav_q.py {m1,m2}   -> results/calibq_{tag}.json  behavior-only qu
                                                           Supersedes calib_behav.py.
 ```
 
-`calibrate.py` is chunked and resumable: each call runs a bounded number of evaluations,
-writes the checkpoint, and picks up next time -- useful whether you are re-launching by
-hand or via `run_emg_recal.sh`/`supervise_calib.sh`. `STEP` controls the restart simplex
-size (`STEP=0.2 python calibrate.py 120 2`).
+`calib_behav_q.py` is the one that is chunked and resumable: each call runs a bounded
+number of evaluations, writes the checkpoint, and picks up next time --
+`supervise_calib.sh {tag}` re-launches it in a loop until done.
 
 ---
 
@@ -192,20 +190,44 @@ number, and only the number is counted. For the same reason simulated burst dura
 not comparable with the reported ones and are not used.
 
 ### `calibrate.py`
-Objective and search. `model_stats` runs the six cells and returns the target families;
-`make_objective` divides each by the between-participant standard error of the target, so
-one unit of error is one standard error. Parameters are searched in logarithmic
-coordinates and clipped to the bounds in `LO`/`HI`.
+Shared simulation/statistics utility only, as of 2026-08-30 -- see its own docstring.
+`model_stats(p, n, model, seed0, gamma)` runs the six cells and returns, per cell,
+accuracy, premotor/motor execution time and their spread, delay/stimulus rate, the
+premature rate, the delay log-rate slope and the full 20-bin rate profile. It computes;
+it does not fit anything. `sweep.py` and `figures.py`'s out-of-sample check both import it.
 
-Thirteen free parameters. `sigx` is fixed at 0.100 and fixes the amplitude unit. Three
-combinations are weakly conditioned rather than unidentified, and are reported as
-combinations: `lam * kappa`, `alpha = beta / Delta`, and `Lmotor + r / muRS`.
+Thirteen model parameters in total (`delaymodel.sim.PARAM_NAMES`). `sigx` is fixed at
+0.100 in `sim.py`'s `DEFAULTS` and fixes the model's overall amplitude unit -- without
+that anchor, `theta`/`g`/`r`/`SDe`/`sigq` (all in the same units as the accumulators `x`/
+`y`/`qq`) would trade off against a free amplitude scale and the fit would be
+unidentified. `sigq` (stage-2, post-response-signal noise) is a separate, physically
+distinct noise source and remains free; there is no mathematical necessity to fix it
+equal to `sigx`, though it is only weakly constrained by behaviour alone in practice (see
+the response-letter discussion of `calibq_m1.json`/`calibq_m2.json`'s `sigq` values).
 
-`BLOCKS=behav` restricts the criterion to accuracy, mean response time, its interquartile
-range and the anticipation rate -- what a study without electromyography would see. This
-was a diagnostic-only path exploring what behaviour alone constrains; nothing in the
-current pipeline reads its `fitb_modelM.json` output, and the stale (Aug-22) copies of it
-were deleted in the 2026-08-30 cleanup, alongside every other orphaned file (below).
+### Removed 2026-08-30: the joint EMG+behaviour fit
+`calibrate.py` used to run a Nelder-Mead search over all thirteen parameters against nine
+per-cell blocks -- accuracy, premotor/motor execution time and their spread, delay-period
+rate, delay-period **log-rate slope**, stimulus-period rate, premature-response rate --
+each standardized by its between-participant SE (`make_objective`, `ALL_BLOCKS`,
+`START`/`LO`/`HI`/`clip`/`pack`/`unpack`, and the chunked, resumable `__main__`), writing
+`results/fit_model1.json`/`fit_model2.json` (`run_emg_recal.sh` drove it to convergence in
+chunks). Because the delay-period log-rate **slope** -- the model's key electromyographic
+prediction -- was itself one of the nine blocks being fit, that fit's match to the EMG
+delay-rate curve was necessarily **in-sample**; it could not double as a validation of the
+model's EMG predictions, only as a joint fit of everything at once. `BLOCKS=behav`
+restricted the same machinery to accuracy/RT/RT-IQR/anticipation-rate only, as a
+diagnostic of what behaviour alone constrains (`results/fitb_modelM.json`, itself
+superseded by `calib_behav_q.py` below and already removed once nothing read it).
+
+Removed at the user's request in favor of one fit that is behaviour-only from the start
+(`calib_behav_q.py` below, with *no* EMG term anywhere in its objective) plus a genuinely
+out-of-sample EMG check: simulate that behaviour-only fit and compare its *predicted*
+delay-rate slope and full rate profile against the real EMG, never having seen it
+(`figures.py`'s `_oos_predictions`/`fig_oos_slope`/`fig_oos_rate_profile`,
+`results/oos_slope_check.json`). Recover the removed fitting code from git history
+(`git log --all -p -- calibrate.py`, around the 2026-08-30 commits) if fitting the model to
+actual EMG turns out to be needed after all -- see "Deferred" below.
 
 ### Removed 2026-08-30: `build_targets.py`, `calib_behav.py`
 The project's first behavior-only calibration (six per-cell quantities -- accuracy, mean
@@ -225,6 +247,14 @@ from-scratch starting point (see below), and since the script that produced them
 nothing in this repository can regenerate them if they are deleted; a from-scratch run of
 the G² calibration (no `results/ckptq_{tag}.json` checkpoint) would have no starting point
 without them.
+
+### Deferred: fitting the model to actual EMG
+Once the out-of-sample check above exists, the next question is whether the model should
+also be *fit* to the real EMG rather than only checked against it. If we do, the same
+methodology as the behaviour-only fit should be used (an explicit G² criterion, not the
+old SE-standardized sum-of-squares), which first requires deciding what belongs in that
+G² for EMG data (which per-cell/per-bin quantities, over what window, at what
+granularity). Parked until the out-of-sample check shows it is actually needed.
 
 ### `build_targets_q.py`, `behav_sim.py`, `calib_behav_q.py`
 The manuscript's actual behavior-only calibration (Materials and Methods, "Calibration of
@@ -434,8 +464,8 @@ reconciled with the value `run_stats.R` now uses -- a possible follow-up, not do
 | Section 5, the data | `empirical.py` |
 | Section 6, statistical re-analysis | `R/run_stats.R`, `R/emit_tex.R` |
 | Section 7, corrected data | `R/run_stats.R` |
-| Section 8, behaviour does not discriminate | `calibrate.py` with `BLOCKS=behav` (starting point only); `build_targets_q.py`, `calib_behav_q.py` (the manuscript's actual behavior-only calibration) |
-| Section 9, simulations and calibration | `calibrate.py`; `sweep.py`/`fused_sweep.py` (letter only, not the manuscript, since 2026-08-27) |
+| Section 8, behaviour does not discriminate | `build_targets_q.py`, `calib_behav_q.py` (the manuscript's actual, behavior-only calibration) |
+| Section 9, simulations and calibration | `calib_behav_q.py`; `calibrate.py` (shared `model_stats` utility only); `sweep.py`/`fused_sweep.py` (letter only, not the manuscript, since 2026-08-27) |
 | Figures | `figures.py` |
 | Appendices A, B, D, E (predictions, no closed form) | derived by hand, not separately checked numerically |
 | Appendix C, the rate | `theory_checks.py` |
@@ -498,12 +528,10 @@ updated by hand to match -- if you add a third place that hardcodes a timestep, 
 follow `sim.py` automatically. Everything downstream of `sim.py`'s `DT` (`calibrate.py`,
 `behav_sim.py`, `calib_behav_q.py`, `sweep.py`, `fused_sweep.py` after its 2026-08-30 fix,
 `export_for_R.py`, `figures.py`) was re-run or re-checked under the new rate.
-`results/fit_model1.json`/`fit_model2.json` were refreshed by `run_emg_recal.sh` on
-2026-08-30 (final objective 128.80 for model 1; 37.6 for model 2 and still improving
-slightly after 4 chunks -- rerun `run_emg_recal.sh` for more if that matters for a given
-number). The pre-refresh backups (`fit_model{1,2}_pre1024.json`) were deleted once the
-refresh was confirmed complete; recover them from git history if you need the exact
-pre-1024-Hz values again.
+`results/calibq_m1.json`/`calibq_m2.json` (the behavior-only fit, since re-run under the
+1024 Hz rate) are the only calibration point in the repository now that the joint
+EMG+behaviour fit and its `results/fit_model1.json`/`fit_model2.json` have been removed
+(see "Removed 2026-08-30: the joint EMG+behaviour fit" above).
 
 **The lateralised readiness potential during the stimulus** reproduces only to about 3%,
 in the same direction on all three values. Every effect there is null before and after.

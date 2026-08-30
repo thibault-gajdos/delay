@@ -45,9 +45,13 @@ install step) resolved because every entry-point script inserts its own director
 
 `DELAY_DATA` points at the unpacked archive (default `/home/claude/data`, the original
 cloud-container path -- always set it explicitly when running locally, e.g. in your shell
-profile or before each session: `export DELAY_DATA="$HOME/mnt/delay/data/86cbw-osfstorage-archive"`).
+profile or before each session: `export DELAY_DATA="$HOME/thib/projects/delay/data/86cbw-osfstorage-archive"`).
 `SIMDIR` (an R-side variable, see below) points at the directory holding the CSV bridge
-files, default the parent of `R/`, i.e. `scripts/`.
+files, default the parent of `R/`, i.e. `scripts/`. `ARCHIVE` (also R-side, `R/run_stats.R`)
+points at the same unpacked archive as `DELAY_DATA` but is read independently by R, default
+`../data` relative to wherever `Rscript` is invoked from -- set it explicitly too, e.g.
+`export ARCHIVE="$HOME/thib/projects/delay/data/86cbw-osfstorage-archive"` before running
+`run_stats.R` from `scripts/R/`.
 
 ## R (renv)
 
@@ -56,6 +60,7 @@ cd scripts/R
 Rscript -e 'renv::init()'            # once: creates renv/, renv.lock, .Rprofile
 Rscript -e 'renv::install(c("afex","emmeans","dplyr","tidyr","lme4","lmerTest"))'
 Rscript -e 'renv::snapshot()'        # records the installed versions in renv.lock
+export ARCHIVE="$HOME/thib/projects/delay/data/86cbw-osfstorage-archive"
 Rscript run_stats.R --with-sim
 ```
 

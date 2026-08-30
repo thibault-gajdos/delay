@@ -5,9 +5,9 @@
 # (closed terminal, killed process) resumes from the last completed stage rather than
 # restarting. tag is 'm1' or 'm2'.
 tag=$1
-cd "$HOME/mnt/delay/scripts"
+cd "$HOME/thib/projects/delay/scripts"
 while [ ! -f results/calibq_${tag}.json ]; do
-  python3 calib_behav_q.py ${tag} >> results/logs/logq_${tag}_stdout.txt 2>&1
+  uv run python3 calib_behav_q.py ${tag} >> results/logs/logq_${tag}_stdout.txt 2>&1
   sleep 2
 done
 echo "DONE $tag" >> results/logs/logq_${tag}_stdout.txt

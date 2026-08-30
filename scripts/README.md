@@ -313,6 +313,13 @@ checkpoints were kept for the record at `results/ckptq_{m1,m2}_pre-premature.jso
 than overwritten; `results/ckptq_m1.json`/`ckptq_m2.json` no longer exist, so the next
 `supervise_calib.sh {tag}` run starts fresh (from `calibb_{tag}.json`, as before) under the
 new three-family objective rather than silently resuming the old, now-invalid checkpoint.
+The stale fits themselves were renamed the same way, to
+`results/calibq_{m1,m2}_pre-premature.json` -- necessarily so, since `supervise_calib.sh`'s
+loop condition is just `[ ! -f results/calibq_{tag}.json ]`: with the old file still at
+that name it would have exited on the first check without calibrating anything under the
+new objective. **To recalibrate: run `./supervise_calib.sh m1` and `./supervise_calib.sh
+m2` (each ~15-20 minutes); `results/calibq_{m1,m2}.json` will be the new, premature-aware
+fits once each finishes.**
 
 ### `sweep.py`
 Multiplies each free parameter by 0.5 and by 2 in turn, adds three leak rates, and records

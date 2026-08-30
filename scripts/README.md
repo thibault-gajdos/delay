@@ -270,22 +270,49 @@ Delay-locked > Simulation validation). Response-time quantile method after Denda
   `.1/.3/.5/.7/.9` quantiles of correct-response RT (two-stage, Vincentized across
   participants) and of incorrect-response RT (pooled across participants -- several
   participants have too few error trials at the higher coherence levels for a
-  per-participant quantile to mean anything; see the file's own docstring). Premature,
-  sub-0.2-s and no-response trials are dropped entirely, not scored: `p_correct +
-  p_incorrect = 1` over valid trials only.
+  per-participant quantile to mean anything; see the file's own docstring), and (added
+  2026-08-30) `p_premature` (one-stage/pooled, for the same sparsity reason as incorrect
+  quantiles -- premature is rarer still). Premature identification is `rm == 0` in the raw
+  arrays, verified against all 22 subjects: it matches the literature's reported premature
+  rate almost exactly (1.39% here vs 1.46% in AGPS 2025) and still carries an interpretable
+  accuracy value, confirming it means "responded before RS" and not something else. Checked
+  in passing: no-response-by-deadline does not occur as a distinct category in this archive
+  at all (0/21120 trials) -- `p_correct`/`p_incorrect` keep their original meaning (accuracy
+  conditional on a valid response, summing to 1 by themselves); sub-0.2-s and
+  no-response-by-4s trials are still dropped entirely from every denominator.
 - `behav_sim.py`'s `simulate_behav` is `sim.simulate` without the stored EMG-like trace,
-  run to the 4.25 s deadline; `behav_rt_split` returns its correct/incorrect RT arrays,
-  filtered the same way as the data side.
-- `calib_behav_q.py` computes G² per cell: the model's simulated RTs are passed through the
-  *data's own* quantile-defined bin edges (10/20/20/20/20% by construction) and compared to
-  that reference partition, together with the correct/incorrect proportion itself. Each
-  cell's G² uses a fixed pseudo-sample size of `N_SUBJ = 22` (participants, not pooled
-  trials), keeping the two-stage weighting; G² is a scalar discrepancy for calibration
-  here, not a chi-square test with an interpretable p-value (`FLOOR` prevents
-  log(0)/division-by-zero from an empty simulated bin or response type). `run(model, ...)`
-  is a three-stage Nelder-Mead restart (`STAGES`, increasing `n` and shrinking the simplex),
-  checkpointed to `ckptq_{tag}.json` after every stage so a run can be interrupted and
-  resumed; `supervise_calib.sh {tag}` loops it until `results/calibq_{tag}.json` exists.
+  run to the 4.25 s deadline; `behav_rt_split` returns correct/incorrect RT arrays (filtered
+  the same way as the data side) plus the premature count.
+- `calib_behav_q.py` computes G² per cell over **three** response-type families --
+  premature, correct, incorrect (added 2026-08-30; previously two) -- because theta, g, r
+  and kappa, the parameters hardest to bound independently (see "Deferred" above), are
+  exactly the ones that set the premature rate, and until this change nothing in the
+  objective was sensitive to it at all, only a loose 10% ceiling three steps downstream in
+  the parameter sweep's admissibility screen. Correct and incorrect are still split into
+  the *data's own* quantile-defined bin edges (10/20/20/20/20% by construction); premature
+  is a single proportion with no RT substructure. `p_correct`/`p_incorrect` from the target
+  file are rescaled by `(1-p_premature)` at the point of use to get the three absolute
+  proportions the G² needs. Every family goes through the same `g2_term()`, which is what
+  makes the sum a valid additive deviance (individual family subtotals can and do come out
+  negative -- only the per-cell/grand total is guaranteed >= 0, by Gibbs' inequality over
+  the complete 13-category distribution, not any arbitrary subset of it). Each cell's G²
+  uses a fixed pseudo-sample size of `N_SUBJ = 22` (participants, not pooled trials),
+  keeping the two-stage weighting; G² is a scalar discrepancy for calibration here, not a
+  chi-square test with an interpretable p-value (`FLOOR` prevents log(0)/division-by-zero
+  from an empty simulated bin or response type). `run(model, ...)` is a three-stage
+  Nelder-Mead restart (`STAGES`, increasing `n` and shrinking the simplex), checkpointed to
+  `ckptq_{tag}.json` after every stage so a run can be interrupted and resumed;
+  `supervise_calib.sh {tag}` loops it until `results/calibq_{tag}.json` exists.
+
+**Recalibration required as of 2026-08-30.** Adding the premature family changed the
+objective itself, not just a starting point or a range: `results/calibq_m1.json`/
+`calibq_m2.json` (and everything downstream that reads them -- `sweep.py`, `figures.py`,
+`export_for_R.py`, and the numbers already quoted from them in the manuscript/response
+letter) were fit under the OLD, premature-blind objective and are now stale. The old
+checkpoints were kept for the record at `results/ckptq_{m1,m2}_pre-premature.json` rather
+than overwritten; `results/ckptq_m1.json`/`ckptq_m2.json` no longer exist, so the next
+`supervise_calib.sh {tag}` run starts fresh (from `calibb_{tag}.json`, as before) under the
+new three-family objective rather than silently resuming the old, now-invalid checkpoint.
 
 ### `sweep.py`
 Multiplies each free parameter by 0.5 and by 2 in turn, adds three leak rates, and records

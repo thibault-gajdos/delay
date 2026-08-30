@@ -7,7 +7,10 @@
    "n_valid": 3474,
    "n_correct": 1714,
    "n_incorrect": 1760,
+   "n_premature": 25,
+   "n_scored": 3499,
    "n_subj_vincent_correct": 22,
+   "p_premature": 0.007144898542440698,
    "p_correct": 0.49345034560959694,
    "p_incorrect": 0.5065496543904031,
    "correct_quantiles": [
@@ -32,7 +35,10 @@
    "n_valid": 3474,
    "n_correct": 2460,
    "n_incorrect": 1014,
+   "n_premature": 21,
+   "n_scored": 3495,
    "n_subj_vincent_correct": 22,
+   "p_premature": 0.006008583690987125,
    "p_correct": 0.7078363690016682,
    "p_incorrect": 0.29216363099833176,
    "correct_quantiles": [
@@ -57,7 +63,10 @@
    "n_valid": 3472,
    "n_correct": 3291,
    "n_incorrect": 181,
+   "n_premature": 34,
+   "n_scored": 3506,
    "n_subj_vincent_correct": 22,
+   "p_premature": 0.009697661152310326,
    "p_correct": 0.9478657420451232,
    "p_incorrect": 0.052134257954876806,
    "correct_quantiles": [
@@ -82,7 +91,10 @@
    "n_valid": 3449,
    "n_correct": 1747,
    "n_incorrect": 1702,
+   "n_premature": 54,
+   "n_scored": 3503,
    "n_subj_vincent_correct": 22,
+   "p_premature": 0.015415358264344847,
    "p_correct": 0.5064900882382845,
    "p_incorrect": 0.49350991176171555,
    "correct_quantiles": [
@@ -107,7 +119,10 @@
    "n_valid": 3436,
    "n_correct": 2712,
    "n_incorrect": 724,
+   "n_premature": 58,
+   "n_scored": 3494,
    "n_subj_vincent_correct": 22,
+   "p_premature": 0.01659988551803091,
    "p_correct": 0.7883899252348251,
    "p_incorrect": 0.2116100747651749,
    "correct_quantiles": [
@@ -132,7 +147,10 @@
    "n_valid": 3395,
    "n_correct": 3212,
    "n_incorrect": 183,
+   "n_premature": 101,
+   "n_scored": 3496,
    "n_subj_vincent_correct": 22,
+   "p_premature": 0.028890160183066362,
    "p_correct": 0.946214889816029,
    "p_incorrect": 0.05378511018397103,
    "correct_quantiles": [
@@ -159,5 +177,5 @@
   0.9
  ],
  "nsub": 22,
- "note": "premature / <0.2s / no-response-by-4s trials excluded entirely; p_correct+p_incorrect=1 over valid trials only."
+ "note": "premature scored again as of 2026-08-30: p_premature added (one-stage/pooled, see docstring). p_correct/p_incorrect KEEP their original meaning -- accuracy conditional on a valid response, p_correct+p_incorrect=1 by themselves, unchanged from before -- so any code/manuscript text already reading them is unaffected. calib_behav_q.py derives the three ABSOLUTE proportions used in its G^2 (p_premature, (1-p_premature)*p_correct, (1-p_premature)*p_incorrect) at the point of use, not here. <0.2s and no-response-by-4s trials remain excluded entirely, not scored, not counted in n_scored."
 }

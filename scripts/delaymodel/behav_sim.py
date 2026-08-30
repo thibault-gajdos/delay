@@ -71,8 +71,13 @@ def simulate_behav(p, c, D, n, model=2, seed=0, deadline=4.25, gamma=0.0):
 
 
 def behav_rt_split(out):
-    """Correct- and incorrect-response RT arrays on valid trials only (premature,
-    <0.2 s and no-response-by-deadline trials dropped), for the quantile calibration."""
+    """Correct- and incorrect-response RT arrays on valid trials, plus the premature
+    count, for the quantile+premature-rate calibration (2026-08-30: premature responses
+    are scored again, as a proportion alongside correct/incorrect -- see
+    calib_behav_q.py's docstring). <0.2 s and no-response-by-deadline trials are still
+    dropped entirely, not scored, not counted in any denominator: the historical finding
+    that no-response-by-deadline is not reproducible at any behaviourally-plausible
+    setting (README, "Removed 2026-08-30") is untouched by this change."""
     ri, i_phys, Lm = out['resp_i'], out['i_phys'], out['Lmotor']
     responded = ri >= 0
     prem = responded & (ri < i_phys)
@@ -80,5 +85,5 @@ def behav_rt_split(out):
     valid = responded & ~prem & (rt >= 0.2) & (rt <= 4.0)
     correct = valid & (out['s'] == out['sresp'])
     incorrect = valid & (out['s'] != out['sresp'])
-    return rt[correct], rt[incorrect]
+    return rt[correct], rt[incorrect], int(prem.sum())
 

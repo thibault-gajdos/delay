@@ -16,6 +16,7 @@ scripts/.venv/
 scripts/results/logs/
 scripts/results/*.jsonl
 scripts/results/DONE_EMG_RECAL
+scripts/plots/*.pdf
 scripts/__pycache__/
 
 # renv (renv itself manages scripts/R/renv/.gitignore once renv::init() has run;

@@ -236,10 +236,13 @@ standardized error). Superseded by the quantile/G² pipeline below at the user's
 once it became clear the model cannot produce non-negligible no-response-by-deadline
 trials at any parameter setting compatible with the observed RT distribution (a parametric
 consequence of the post-signal ramp's drift-to-noise ratio, not an architectural
-impossibility). `build_targets.py` (and its `targets_behav.json` output) and `calib_behav.py`
-were deleted once nothing referenced them any more; recover them from git history
-(`git log --all --diff-filter=D -- '*calib_behav.py' '*build_targets.py'`) if the old
-MSE-based approach is ever needed again.
+impossibility). `build_targets.py` (and its `targets_behav.json` output) is recoverable from
+git history (`git log --all --oneline -- '**/build_targets.py'`; it was added in the
+2026-08-30 reorganization commit and removed in the cleanup commit right after). `calib_behav.py`
+is **not** recoverable the same way -- it was deleted before ever being committed to this
+repository, so no commit holds its source; only its last numeric outputs survive, at
+`results/calibb_m1.json`/`calibb_m2.json` (see below). If the old MSE-based approach is
+ever needed again, it has to be rewritten from this description, not restored from git.
 
 **`results/calibb_m1.json`/`calibb_m2.json`, however, are `calib_behav.py`'s own last
 outputs and are *not* orphaned -- keep them.** `calib_behav_q.py` still reads them as its

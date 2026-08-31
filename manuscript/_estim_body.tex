@@ -1,0 +1,83 @@
+\RR{The reviewer's objection to the bin factor is well taken, and the quantities in
+\eqref{eq:slope} do not require bins at all.} The onsets of partial activations are
+a point process on the delay window with intensity $\nu(t)$. Writing
+$\ln\nu(t)=c_0+c_1t+c_2t^{2}$, the log likelihood of an inhomogeneous Poisson process
+observed on $[T_0,T_1]$ is
+\begin{equation}
+\ell(c)=\sum_i \ln\nu(t_i)-\int_{T_0}^{T_1}\nu(t)\,\dd t,
+\label{eq:ppll}
+\end{equation}
+a function of the exact event times, from which $c_1$ and $c_2$ are read off directly.
+Three remarks.
+
+\NN{Three estimands, not one.} They are not interchangeable, and this note uses all
+three. A \emph{linear contrast} on the raw rate estimates $\dd\nu/\dd t$, an additive
+slope, and is what Section~\ref{sec:reanalysis} reports. A \emph{Poisson regression with
+a log link}, binned or not, estimates $\dd\ln\nu/\dd t$, a multiplicative slope, and is
+what \eqref{eq:slope} predicts. The \emph{point-process likelihood} \eqref{eq:ppll}
+is the unbinned form of the second, not of the first.
+
+The two scales can disagree, and they do. During the stimulus period the coherence
+effect on the slope is significant on the raw scale ($p=.007$) and absent on the log
+scale ($p=.25$), because the log slope divides by the level and the high-coherence cell
+has a much higher rate, so the same additive rise is a smaller relative rise. That is
+not a power problem: the log slopes are non-monotone in coherence at short duration
+($0.550$, $0.782$, $0.703$) where the raw contrasts are monotone. Neither scale is
+privileged during the stimulus, because the model predicts no functional form there.
+During the delay it predicts a log-linear one, which is why the point-process analysis
+is restricted to that window.
+
+\emph{Bins are harmless if they are an offset rather than a factor.} A Poisson
+regression of the count in a bin of width $w$ on the bin centre, with $\log(w\times
+n_{\text{trials}})$ as offset, is the discretised form of the same estimating equation,
+because
+$\E[\text{count}]=w\nu(t)\bigl[1+\tfrac{w^{2}}{24}\bigl((\ln\nu)''+((\ln\nu)')^{2}\bigr)+O(w^{4})\bigr]$;
+at $w=0.1$~s and the values estimated here that is a relative error of
+$2.5\times10^{-4}$ on the rate and none on the slope. The bin width is therefore not an
+arbitrary analytic choice in the sense the reviewer objects to. What was arbitrary was
+entering the bin as a nineteen-level factor.
+
+\emph{The process is not Poisson, so the likelihood is a quasi-likelihood.} Upcrossings
+cluster: an excursion that dips briefly below the gate and returns produces two events a
+few milliseconds apart, which is also why the detection procedure merges them. Counts
+are consequently overdispersed and the Poisson information understates the variance.
+The Poisson likelihood is therefore best read as a quasi-likelihood, or an estimating
+equation for the first-order intensity, rather than as the likelihood of the process.
+Standard errors must come from between-participant variation. A further caveat belongs
+here: what the detector delivers is the intensity of clusters, which is the upcrossing
+intensity times a retention factor slightly below one, and that factor depends on the
+distance to the gate and so drifts across the window. The measured log-rate slope is thus
+the sum of the quantity of interest and the derivative of $\log$ of that factor, which is
+small but not identically zero.
+
+\emph{Clustering also enters the intensity.} What the detector delivers is the intensity
+of clusters, which is the upcrossing intensity times a factor slightly below one. That
+factor depends on the distance to the gate and so drifts across the window, contributing
+a small bias to the estimated slope.
+
+\paragraph{Results.} \NN{Two estimators are computed, in R, and they agree.} The
+two-stage version fits the intensity separately for each participant and cell and enters
+the coefficients into the same repeated-measures analysis as any other score, so that the
+second level supplies the standard errors and the clustering does not bias inference. The
+one-stage version fits a single log-linear model to all participants with cluster-robust
+standard errors.
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+& two-stage & one-stage, robust\\
+\midrule
+log-rate slope & $+0.929$, $F(1,21)=102.95$, $p<.001$ & $+0.841$, $z=11.23$, $p<.001$\\
+slope $\times$ duration & $F(1,21)=4.78$, $p=.040$ & $-0.179$, $z=-3.17$, $p=.002$\\
+slope $\times$ coherence & $F(1.38,29.04)=4.20$, $p=.038$ & $-0.263$, $z=-5.02$, $p<.001$\\
+slope $\times$ both & $F(1.87,39.23)=0.39$, $p=.663$ & ---\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The slope is positive, shallower after a long stimulus and shallower at high coherence
+--- both of which follow from \eqref{eq:slope}, since either raises the maintained level
+and so reduces the distance to the gate. The coefficients differ between the two estimators by about a tenth, which is expected: the
+two-stage estimator weights participants equally and the one-stage weights them by
+precision. A difference in sign would not have been expected.
+

@@ -1,0 +1,71 @@
+* Accuracy
+
+** Pred 1.1 [PRED1]:  accuracy should decrease as motion coherence decreases, with possible variations between FR and RS blocks depending on the evidence sampling and accumulation strategy 
+Within the framework of GCD and GCDRS, the manipulation of motion coherence should modulate the accumulation rate v during stimulus presentation. Consequently, both models predict a decrease in response accuracy as motion coherence decreases (Prediction 1) The comparison of accuracy performance between RS and FR blocks will be informative with respect to the amount of evidence used to inform the choice. For instance, a higher accuracy for RS than FR blocks would suggest that subjects sampled and accumulated more evidence from the stimulus on average in the former.
+** Pred 2.1 [PRED1] : accuracy performance should decrease as stimulus presentation decreases in the intermediate motion coherence condition (11 %).
+accuracy performance should decrease as stimulus duration decreases (Prediction 1), because the accuracy of terminated evidence accumulation trajectories is higher compared to the accuracy of nonterminated trajectories (Ratcliff, 2006). This modulation should be most apparent in the intermediate coherence condition (11 %), due to floor and ceiling effects in the 2 % and 40 % coherence conditions respectively
+
+* MT 
+
+** Pred 1.2 [PRED2]:  mean MT in FR blocks should increase as motion coherence decreases, with the latter being caused by a decrease in the slope of muscle activation on average. 
+GCD predicts an increase of both mean PMT and mean MT as motion coherence decreases in FR blocks, due to the decrease of parameter v.  The increase of mean MT should be associated with a decrease in the slope of muscular activation on average (Prediction 2).
+
+** Pred 1.3 [PRED3]: mean MT in RS blocks should not be modulated by motion coherence, contrary to FR blocks. 
+GCDRS predictions regarding muscle activation and mean MT in RS blocks are straightforward. Because muscle activation is driven by evidence sampled from the RS, it should not vary on average as a function of motion coherence.  Thus, mean MT should not be modulated by motion coherence (Figures 1B and 1C;
+
+
+* PMT
+** Pred 1.2 (bis) [PRED4]: mean PMT and mean MT in FR blocks should increase as motion coherence decreases
+** Pred 2.2 [PRED4] : mean PMT should increase as stimulus duration decreases, and should also increase as motion coherence decreases
+mean PMT should increase as stimulus duration decreases (Prediction 2), because the starting point of evidence accumulation in phase 2 is located farther away from the gate on average (Figure 1C).
+** Pred 1.4 [PRED 5]: Mean PMT in RS blocks should be much shorter compared to FR blocks.
+Mean PMT in RS blocks should be much shorter compared to FR blocks, because it does not incorporate decision-related latencies (Prediction 4)
+** Pred 1.5: [PRED 7] Motion coherence may (Prediction 5b) or may not (Prediction 5a) modulate mean PMT in RS blocks, depending on underlying processing assumptions.
+The predicted effect of motion coherence on mean PMT in RS blocks is more complex, and depends on the mechanism that governs the transition between the first phase of evidence accumulation and sustained activity at the motor preparation level. Based on our literature review in the previous section, two processing schemes can be dissociated. If, on every trial, motor preparation accumulation trajectories reach the same level of sustained activity, then the starting point of motor preparation for the second phase of evidence accumulation should be the same across motion coherence levels. Consequently, mean PMT should not be modulated by motion coherence (Figure 1B; Prediction 5a). If, on the other hand, motor preparation accumulation trajectories reach a lower asymptotic level on average as the quality of evidence decreases and this phenomenon is not due to some kind of averaging artifact, GCDRS predicts an increase of mean PMT as motion coherence decreases, because the starting point for the second phase of evidence accumulation is located father away from the gate (Figure 2C; Prediction 5b).
+Si la cohérence module le niveau d'activité persistante pendant le délai, comme nous l'avons proposé, alors on devrait observer plus d'ébauches
+dans le canal EMG associé à la réponse en condition de cohérence élevée par rapport à une condition de cohérence faible. 
+
+** Pred 1.6: If this manipulation modulates temporal preparation, mean PMT and mean MT should increase and the slope of muscle activation should decrease as the delay increases. 
+- If so, mean PMT and mean MT should increase and muscle activation slope should decrease as the delay increases (Prediction 6),
+
+
+* Exp 2 
+
+
+
+** Pred 2.3: the slope of muscle activation should slightly decrease on average as motion coherence decreases
+the subtle effect of coherence on the slope of muscle activation observed in the previous experiment
+
+
+* Exp 3:
+** Pred 3.2a[PRED 8]: accuracy, mean PMT, mean MT and the slope of muscle activation in RS blocks should be very similar to FR blocks, and should be modulated by experimental manipulations in a similar way 
+Subjects may store samples of motion evidence in working memory, and start evidence accumulation only when they get the stimulus-response mapping (after the RS). If so, accuracy, mean PMT, mean MT and the slope of muscle activation in RS blocks should be very similar to FR blocks, and should be modulated by experimental manipulations in a similar way (Prediction 2a; Shushruth et al., 2022)
+**  Pred 3.2b[PRED 8]: mean PMT in RS blocks should be slower compared that observed in Experiments 1 and 2. In addition, motion coherence should not modulate mean PMT, mean MT, and the slope of muscle activation 
+Alternatively, subjects may perform a decision about the category of the stimulus (upward vs. downward), and maintain the representation of the chosen category in working memory until the RS.
+** Pred 3.2.c: This modulation may not be sufficient to affect mean MT, but it should be detectable on the slower mean PMT (
+mixture of the two previous ones: subjects initially perform a decision about the stimulus category and maintain the representation of the selected category during the delay, but phase 2 of evidence accumulation also incorporates a few samples of evidence from the motion stimulus (retrieved from memory). 
+
+
+*  [PRED 6]: La proportion d'activités EMG partielles devrait donc être plus importante pour le canal EMG associé à la réponse comparé au canal EMG opposé, et ceci pour les trois périodes analysées (présentation du stim, délai, post-RS). 
+GCDRS prédit une préparation de la réponse dès la présentation du stimulus. Cette préparation est maintenue pendant le délai.
+La proportion d'activités EMG partielles devrait donc être plus importante pour le canal EMG associé à la réponse comparé au canal EMG opposé, et
+ceci pour les trois périodes analysées (présentation du stim, délai, post-RS). 
+Dans l'EXP 3, y (qui représente le différentiel d'évidence pour chaque réponse) devrait être à 0 jusqu'au RS. La proportion d'activités EMG partielles
+devrait donc être similaire pour les 2 canaux EMG, mais uniquement pendant la présentation du stimulus et le délai. Après le RS, la proportion
+d'activités partielles devrait être plus importante dans le canal EMG associé à la réponse. 
+
+
+
+
+
+
+
+It should be noted that recent studies considered DR tasks where the stimulus-response mapping is not known before the stimulus presentation, but only delivered by the RS (Shushruth et al., 2022). In such cases, subjects may store samples of motion evidence in working memory, and start evidence accumulation only when they get the stimulus-response mapping (after the RS). If so, accuracy, mean PMT, mean MT and the slope of muscle activation in RS blocks should be very similar to FR blocks, and should be modulated by experimental manipulations in a similar way (Shushruth et al., 2022). Alternatively, subjects may perform a decision about the category of the stimulus (upward vs. downward), and maintain the representation of the chosen category in working memory until the RS. We designed a third experiment to specifically investigate this issue:
+
+
+
+While the GCDDR model does not directly make any prediction in this case, this experiment nevertheless provides an important sanity check of our interpretation of muscular activity during the delay between the stimulus presentation and the RS. =
+Beyond providing insights on delayed response when the stimulus-response mapping is not known before RS, it will provide an auxillary test of the check of the 
+
+
+when the stimulus-response mapping is known during stimulus presentation. When the stimulus-response mapping is delivered by the RS, the proportion of partial muscular activation should be close to zero for both hands until the RS, and be larger on the response side after the RS

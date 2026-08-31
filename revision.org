@@ -1,0 +1,129 @@
+* Editorial Office 
+
+
+—Authors should include a final paragraph titled "Constraints on Generality" which "explicitly identifies and justifies the target populations for the reported findings" (Simons, Shoda, & Lindsay, 2017). The paragraph will be included in the word count for brief reports. Authors should also include a Public Significance Statement that briefly communicates the importance of the work to the general public; this statement should be written in paragraph form and will appear in a box below the abstract in published articles. Information about these journal policies are described in the editor's interview and the journal's web page. For a recent example, see: https://psycnet.apa.org/fulltext/2023-83147-001.pdf
+
+—Authors should include a subsection in the method section titled "Transparency and openness." Effective August 1, 2022, empirical research, including meta-analyses, submitted to the Journal of Experimental Psychology: General must meet the "requirement" level for citation, and data and code transparency, as well as the "disclosure" level for preregistration, materials transparency and design and analysis transparency. The Transparency and Openness subsection should detail the efforts the authors have made to comply with each of the seven the TOP guidelines. Please include the dataset's repository link (e.g. on ResearchBox or OSF) in this section, and include the data citation in your reference list. If you are unable to share the de-identified data and/or code due to legal or ethical reasons, this in and of itself is not a barrier to publication in the journal. In such situations, please mention the concern in the cover letter to the editor. The editorial team will consider exceptions to these requirements on a case-by-case basis.
+
+—As part of your Author Note, please provide details (2-4 sentences) of prior dissemination of the ideas and data appearing in the
+manuscript (e.g., if some or all of the data and ideas in the manuscript were presented at a conference or meeting posted on a listserv,
+shared on a website, etc.).
+
+—Identify the contributions of all authors using the CRediT taxonomy. If the manuscript is accepted for publication, the CRediT designations will be published as an Author Contributions Statement in the author note of the final article.
+
+— APA guidelines recommend detailed and inclusive reporting of demographic information. For studies with participant samples, authors should report how the demographic information was collected. For example, were participants asked about their gender or sex? How was information about race and ethnicity collected? Were participants given options to choose from [If so, what were the options?] or was it a free-response box, etc.). In addition, please also report the number of participants in each group, rather than reporting the numbers for a single group.  Please avoid using "female" and "male" as nouns, as per the APA style guidelines (7th ed, pp. 138-141, section 5.5).
+
+—Please be sure to follow APA style guidelines. Double-space all content and use minimum 11-point font. For readability during review
+include figures and tables in the text. 
+
+* Reviewer #1
+
+In this manuscript the authors present evidence from three experiments testing the predictions of a model extension describing decision-making in delayed-report paradigms, including when the response-mapping is unknown until the delayed response cue. This is important for understanding how models of decision-making (mostly formulated in immediate report conditions) could also describe decisions when the behavioural response is delayed (or even when no behavioural response is required).
+
+On first read of this manuscript I was in the mood to read some high-quality, well-written, rigorous science. This would normally bias my review to be more critical. Instead, this manuscript surpassed my expectations. The manuscript is impressive in explaining complicated concepts with clarity, and presenting detailed analyses in a well-ordered, and comprehensible manner. The experimental methods are thorough in testing different aspects of the model predictions and allowing room for model falsification. The discussion is comprehensive in describing not only the findings and implications, but also potential limitations of the work. I only have minor comments. 
+
+Figure 1 very clearly presents the predictions for the mean premotor time and mean motor time. I was wondering if the predictions concerning the rate of partial muscle activation could also be incorporated, for example, with a vertical arrow from the accumulated evidence to the gate.  Then this figure could also be referenced in explaining the predictions for the rate of partial muscle activation under Experiment 1.
+
+ =R1.1 Good idea...=
+
+The authors do well at summarising the main findings with respect to the model predictions in the discussion sections after each experiment. There are multiple predictions, and part of me wondered whether a table would help to quickly and clearly summarise which predictions were supported and what is consistent across experiments. A table may also be distracting and ugly, the authors should feel free to ignore this suggestion.
+
+=R1.2 A discuter. J'étais favorable.=
+
+In the first paragraph of the introduction, "Formal characterizations of these mechanisms have recently been proposed…" I was surprised earlier models suggesting a transfer of evidence to motor processes were not cited here - work from Jeffrey Schall's lab, and Thura and Cisek. Perhaps these models do not specifically capture this 'continuous flow' aspect, which might be worth expanding on.
+
+=R1.3 TBD=
+
+The text describes the 'slope of muscle activation' but the figures describe the 'rising slope' although it's fairly clear these refer to the same thing, it would avoid confusion to use the exact same term. 
+
+=R1.4 TBD=
+
+The insets of these figures are really very small, perhaps they deserve to be full-sized. If someone were to print the manuscript I'm not certain they would be capable of reading the axis labels. 
+
+=R1.5 TBD=
+
+Under Experiment 1 results, page 25, it is stated (incorrectly, I believe) that Mean PMT decreased as motion coherence decreased. (Page 29 correctly states that mean PMT increased as motion coherence decreased). 
+
+=R1.6 TBD=
+
+Page 20, under 'Stimuli', were the dots square (as opposed to round)? ("White dots (0.05 degrees square)"). The dots in the figures are round. Did the dots have a 'lifetime' after which they were replaced? And was the reassignment of dot directions each frame (dot1 may move in the coherent direction on frame 1 and in a random direction frame 2)? 
+
+=R1.7 TBD=
+
+Page 20, under 'procedure', the 'Blocks were presented in a pseudorandom order, with the constraint of presenting each of the 4 block types consecutively'. I found this ambiguous on first read (I thought it meant the order had to be RS3, RS5, then RS7). Perhaps 'three repetitions of a random ordering of the 4 block types'? 
+
+=R1.8 TBD=
+
+Top of page 24, it is written that 'the delay manipulation … did not interact with coherence…', I think this should be more like 'there was no interaction effect'
+
+=R1.9 TBD=
+
+* Reviewer #2: 
+
+The paper presents an interesting modeling extension of the gated cascade diffusion model (GCD) to delayed response paradigms during decision-making tasks. The work is well-framed in the current literature and well-argued for the necessity of the new model. The experimental results are interesting in relation to the model. I feel as though the work is an important contribution to the study of decision-making.
+
+The main problem I see with the paper is that I'm not sure how the GCD model is falsifiable. The authors are presenting the experimental results in support of the GCD, but do not offer (clear) examples of how possible experimental data could have shown evidence against the GCD. 
+
+=R2.1 TBD=
+
+** Major
+
+The theory does not (cannot) make separate behavior predictions for a continuous accumulation of evidence after the stimulus onset to a fixed threshold. For instance, in Figure 1B if evidence accumulation continued in the light green line to the fixed threshold immediately before the RS, the behavioural predictions would be the same.
+
+=R2.2 TBD=
+
+Top of page 11: If the choice is already made and the stimulus-response mapping is known, what could the second evidence accumulation step after the RS plausibly be for?
+
+=R2.3 TBD=
+
+It is not clear to me from Figure 1 nor the text how the GCD model makes predictions about the slope of muscle activation nor the number of partial muscle activations.
+
+=R2.4 TBD=
+
+It is also not clear from Figure 1 how the theory is actually simulated with noise. What do trials of the GCD actually look like? Diffusion evidence accumulation paths are extremely noisy with a constant drift rate across trials (see Figure 2a by Nunez et al., 2024 preprint) and not a good reflection of the drift rate itself. Does the GCD predict linear ballistic accumulation or diffusion accumulation or some other form of accumulation?
+
+=R2.5 TBD=
+
+Minor
+
+Bottom of page 3: The authors should define the two signals here. I am only familiar with the CPP, as I am sure other readers will be. Therefore, I'm not sure what the second motor response signal is. If it is the (Lateralized) Readiness Potential, then other authors could be cited as well, such as Gluth et al. (2013) and Lui et al. (2021). It is also noted that the (L)RP rises to a negative peak, though negative vs positive is not so important in scalp electrophysiology (and if anything negative potentials are thought to reflect increased activity in classical ERP work). The Limitations and future directions section later suggests that the authors may be instead referring to a mu/beta power increase, though the same papers (Rogge et al., 2022; Twomey et al., 2016) were not cited above in the introduction.
+
+=R2.6=
+
+From the equations on page 6, I expected the dark green line in the lower quadrant of Figure 1A to start accumulating when the upper dark green line crosses g. However, this is not the case as the bottom green line accumulates clearly much earlier. Is this a mistake in the figure?
+
+=R2.7=
+
+Code was not made available (to reviewers): https://osf.io/vsm53/.
+
+=R2.8=
+
+In Experiment 1, the fact that the RS onset delays were fixed in a block means that participants could predict the delay ahead of time. Does this affect the model results? How do the authors know that the same predictions would hold to an experiment without predictable delays? Participants could strategically stop accumulating evidence (in working memory after the stimulus is off) if they can predict the RS onset.
+
+=R2.9=
+
+The paragraph that begins in the middle of page 17 meanders and it is not clear if the authors are making a prediction about the data given the GCD in RS tasks or just discussing the literature.
+
+=R2.10=
+
+Figure 2 C; Figure 3 A,B,C; Figure 4 B: p-value significance and/or Bayes Factors should be shown on this plot in some way. The standard error bars are not useful for this.
+
+=R2.11=
+
+Experiment 2 Predictions on page 31: The authors make the assumption that participants cannot sample from working memory, e.g. a shorter stimulus duration should be more difficult. I'm not sure this is justified.
+
+
+References
+
+Gluth, S., Rieskamp, J.,& Büchel, C. (2013). Classic EEG motor potentials track the emergence of value-based decisions. NeuroImage, 79,
+394-403.
+
+Lui, K.K., Nunez,M.D., Cassidy, J.M.,Vandekerckhove, J.,Cramer, S. C.,&Srinivasan,R. (2021). Timing of readiness potentials reflect a
+decision-making process in the human brain. Computational Brain & Behavior, 4(3), 264-283.
+
+Nunez, M. D., Schubert, A. L., Frischkorn, G. T., & Oberauer, K. (2023). Cognitive models of decision-making with identifiable parameters:
+Diffusion Decision Models with within-trial noise. PsyArXiv.
+
+__________________________________________________
+In compliance with data protection regulations, you may request that we remove your personal registration details at any time.  (Use the
+following URL: https://www.editorialmanager.com/xge/login.asp?a=r). Please contact the publication office if you have any questions.

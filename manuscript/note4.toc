@@ -1,0 +1,107 @@
+\babel@toc {english}{}\relax 
+\contentsline {section}{\numberline {1}The model}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Accumulation}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Commitment}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Maintenance}{3}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Response stage}{3}{subsection.1.4}%
+\contentsline {section}{\numberline {2}Theoretical predictions}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Behaviour}{4}{subsection.2.1}%
+\contentsline {paragraph}{Accuracy rises with coherence and with duration (R1, R2).}{4}{section*.2}%
+\contentsline {paragraph}{The duration benefit is confined to intermediate coherence (R3).}{4}{section*.3}%
+\contentsline {paragraph}{Response time falls with coherence and with duration (R4, R5).}{4}{section*.4}%
+\contentsline {paragraph}{The coherence effect on response time is larger after a short stimulus (R6).}{4}{section*.5}%
+\contentsline {subsection}{\numberline {2.2}During the delay}{4}{subsection.2.2}%
+\contentsline {paragraph}{The duration effects in the onset-locked window separate the two models (R11, R14).}{5}{section*.6}%
+\contentsline {paragraph}{The rate rises through the onset-locked window, faster at higher coherence (R12, R13, R15).}{5}{section*.7}%
+\contentsline {paragraph}{The offset-locked rate rises with the maintained level (R16, R17).}{5}{section*.8}%
+\contentsline {paragraph}{The rate ramps if and only if there is temporal preparation, and the ramp decelerates (R18).}{5}{section*.9}%
+\contentsline {paragraph}{A model without preparation cannot produce the offset-locked ramp (R18, R21).}{6}{section*.10}%
+\contentsline {paragraph}{Cells with a higher rate must ramp more slowly (R20, R27).}{6}{section*.11}%
+\contentsline {paragraph}{Saturation bounds the coherence effect, and reverses the expected interaction (R19).}{6}{section*.12}%
+\contentsline {subsection}{\numberline {2.3}After the response signal}{7}{subsection.2.3}%
+\contentsline {paragraph}{The condition effects sit before muscle activation, not after (R7--R10).}{7}{section*.13}%
+\contentsline {paragraph}{The rate of partial activations falls (R22, R24, R25, R26).}{7}{section*.14}%
+\contentsline {paragraph}{The closed forms do not apply here.}{7}{section*.15}%
+\contentsline {section}{\numberline {3}From the process to the observable}{7}{section.3}%
+\contentsline {paragraph}{The count is a cluster count.}{7}{section*.16}%
+\contentsline {paragraph}{The published counts already implement the rule.}{7}{section*.17}%
+\contentsline {paragraph}{Burst durations are not usable.}{8}{section*.18}%
+\contentsline {paragraph}{What the simulation does.}{8}{section*.19}%
+\contentsline {section}{\numberline {4}The statistical re-analysis}{8}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Method}{8}{subsection.4.1}%
+\contentsline {paragraph}{Windows.}{9}{section*.20}%
+\contentsline {paragraph}{Replication.}{9}{section*.21}%
+\contentsline {subsection}{\numberline {4.2}Results}{9}{subsection.4.2}%
+\contentsline {paragraph}{Partial-activation rate, stimulus period.}{10}{section*.22}%
+\contentsline {paragraph}{Partial-activation rate, delay period.}{10}{section*.23}%
+\contentsline {paragraph}{Partial-activation rate, RS period.}{10}{section*.24}%
+\contentsline {paragraph}{Partial-activation rate, response period.}{10}{section*.25}%
+\contentsline {paragraph}{Mu--beta lateralisation, stimulus period.}{11}{section*.26}%
+\contentsline {paragraph}{Mu--beta lateralisation, delay period.}{11}{section*.27}%
+\contentsline {paragraph}{Mu--beta lateralisation, RS period.}{11}{section*.28}%
+\contentsline {paragraph}{Mu--beta lateralisation, response period.}{12}{section*.29}%
+\contentsline {paragraph}{Lateralised readiness potential, stimulus period.}{12}{section*.30}%
+\contentsline {paragraph}{Lateralised readiness potential, delay period.}{12}{section*.31}%
+\contentsline {paragraph}{Lateralised readiness potential, RS period.}{13}{section*.32}%
+\contentsline {paragraph}{Lateralised readiness potential, response period.}{13}{section*.33}%
+\contentsline {subsection}{\numberline {4.3}What changes}{13}{subsection.4.3}%
+\contentsline {paragraph}{Partial activations: everything survives, including the decisive null (R13--R15, R18, R20, R21).}{13}{section*.34}%
+\contentsline {paragraph}{The quadratic component.}{14}{section*.35}%
+\contentsline {paragraph}{Mu--beta lateralisation: one claim changes, and one effect appears.}{14}{section*.36}%
+\contentsline {paragraph}{Lateralised readiness potential: unchanged.}{14}{section*.37}%
+\contentsline {section}{\numberline {5}Two analyses the manuscript does not contain}{14}{section.5}%
+\contentsline {subsection}{\numberline {5.1}The rate without bins}{15}{subsection.5.1}%
+\contentsline {paragraph}{Results.}{16}{section*.38}%
+\contentsline {subsection}{\numberline {5.2}A shape prediction}{16}{subsection.5.2}%
+\contentsline {section}{\numberline {6}What changed with the corrected data}{16}{section.6}%
+\contentsline {subsection}{\numberline {6.1}The signal-locked window now reproduces}{16}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}The response-locked window changes conclusion}{17}{subsection.6.2}%
+\contentsline {paragraph}{What this costs, and what it does not.}{18}{section*.39}%
+\contentsline {paragraph}{The alternative, not taken.}{18}{section*.40}%
+\contentsline {paragraph}{Consequence for the manuscript (R26).}{18}{section*.41}%
+\contentsline {section}{\numberline {7}Behaviour does not discriminate between the two models}{18}{section.7}%
+\contentsline {section}{\numberline {8}Simulations and calibration}{20}{section.8}%
+\contentsline {subsection}{\numberline {8.1}What is fixed and what is free}{20}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Procedure}{20}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Result}{21}{subsection.8.3}%
+\contentsline {paragraph}{The timescale agrees with three independent routes.}{21}{section*.42}%
+\contentsline {paragraph}{Two inherited constants do not transfer.}{21}{section*.43}%
+\contentsline {paragraph}{Table~S1, cell by cell.}{21}{section*.44}%
+\contentsline {paragraph}{Where the fit fails.}{22}{section*.45}%
+\contentsline {subsection}{\numberline {8.4}Model 1, recalibrated in its own right}{22}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}Robustness}{23}{subsection.8.5}%
+\contentsline {section}{\numberline {9}What does not follow}{23}{section.9}%
+\contentsline {paragraph}{R19.}{23}{section*.46}%
+\contentsline {paragraph}{R26, which may not be assessable.}{23}{section*.47}%
+\contentsline {section}{\numberline {10}Point-by-point response to the reviews}{23}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Reviewer 1}{24}{subsection.10.1}%
+\contentsline {paragraph}{C1.1 Slopes rather than bins.}{24}{section*.48}%
+\contentsline {paragraph}{C1.2 Clearer statement of the hypotheses and of what each measure does.}{24}{section*.49}%
+\contentsline {paragraph}{C1.3 Muscle-activation onset procedure.}{24}{section*.50}%
+\contentsline {paragraph}{C1.4 Coherence range used by others.}{25}{section*.51}%
+\contentsline {paragraph}{C1.5 Error bars and individual data.}{25}{section*.52}%
+\contentsline {paragraph}{C1.6 Reminder of MET and PMET.}{25}{section*.53}%
+\contentsline {paragraph}{C1.7 Different delays, to show build-up.}{25}{section*.54}%
+\contentsline {paragraph}{C1.8 A quantitative model.}{26}{section*.55}%
+\contentsline {paragraph}{C1.9 Statistics in the text.}{26}{section*.56}%
+\contentsline {subsection}{\numberline {10.2}Reviewer 2}{26}{subsection.10.2}%
+\contentsline {paragraph}{C2.1 Simulate the model; show the predictions hold across parameters.}{26}{section*.57}%
+\contentsline {paragraph}{C2.2 The specific ordering in Fig.~1.}{26}{section*.58}%
+\contentsline {paragraph}{C2.3 Leak.}{26}{section*.59}%
+\contentsline {paragraph}{C2.4 What is accumulated in the second phase.}{27}{section*.60}%
+\contentsline {paragraph}{C2.5 Scholarship: motor and premotor circuits.}{27}{section*.61}%
+\contentsline {paragraph}{C2.6 Writing: abbreviations and placement of the reasoning.}{27}{section*.62}%
+\contentsline {paragraph}{C2.7 Broader evidence on selective motor preparation.}{27}{section*.63}%
+\contentsline {subsection}{\numberline {10.3}Editorial note}{27}{subsection.10.3}%
+\contentsline {subsection}{\numberline {10.4}Four things we recommend volunteering}{27}{subsection.10.4}%
+\contentsline {paragraph}{R15.}{28}{section*.64}%
+\contentsline {paragraph}{The two branches invoked for R6, R9 and R19.}{28}{section*.65}%
+\contentsline {paragraph}{Two inherited constants do not transfer.}{28}{section*.66}%
+\contentsline {paragraph}{A significant effect that is never mentioned.}{28}{section*.67}%
+\contentsline {paragraph}{The mu--beta buildup-rate sentence.}{28}{section*.68}%
+\contentsline {section}{\numberline {11}Figures}{28}{section.11}%
+\contentsline {section}{\numberline {A}Tables S1 and S2, with the observations identified}{28}{appendix.A}%
+\contentsline {paragraph}{On the window names.}{31}{section*.73}%
+\contentsline {section}{\numberline {B}The rate of partial activations}{33}{appendix.B}%
+\contentsline {section}{\numberline {C}Draft text for the missing Methods section}{34}{appendix.C}%
+\contentsline {section}{\numberline {D}Software}{36}{appendix.D}%

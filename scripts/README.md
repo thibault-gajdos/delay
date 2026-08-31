@@ -533,6 +533,52 @@ draws reaching a quarter of the rate also reaching the observed slope range. Mod
 admissible count falls from 219 to 199 because the larger beta values produce premature
 responses and are screened out -- the screen doing exactly what the range note says it does.
 
+#### The EMG criterion in the screen (2026-08-31)
+
+Every criterion in `admissible()` up to this point was behavioural: premature rate, very
+fast responses, no-responses, accuracy at 50% coherence. None mentioned muscle activity.
+The consequence was easy to miss and hard to defend: **101 of the 216 behaviourally
+admissible Model 1 draws in `fused_sweep_2026-08-31c.jsonl` produce exactly zero
+delay-period partial activations**, and were carried into the effect-size summaries
+anyway. Nearly half the sampled space was dead for the phenomenon the experiment measures.
+
+The near-miss fix was to reparameterise -- to sample `a = (g - theta)/SDe`, the
+standardised distance to the gate, instead of `SDe`, since the stationary crossing rate
+goes as exp(-a^2/2) and the raw ranges put half the box above a = 3. That was implemented
+(commit 48583b7) and then **rejected**, on the author's objection, and the objection is
+right. Reparameterising changes the *distribution over the parameter space*, not the
+acceptance set; doing it in terms of the quantity that governs the outcome under test
+redefines the space in a way that is chosen for its effect on the result. That is the weak
+form of the circularity the 2026-08-30 revision exists to remove. The screen, by contrast,
+acts on the acceptance set and is neutral with respect to parameterisation.
+
+So: `SDe` is sampled directly again over its independently derived range, and
+`admissible()` gains one criterion, stated at the level where it is interpretable. A draw
+of parameters stands for a hypothetical participant, so the criterion asks whether that
+participant's mean delay-window partial-activation rate falls inside the range real
+participants span. Observed (132 subject x condition cells, none empty): 0.085-2.785 /s,
+mean 0.709, median 0.603; per-participant means 0.180-1.863 /s. The screen window
+`RATE_LO..RATE_HI = 0.04..3.0` is deliberately wider than either, because the conclusion
+the sweep supports is an *exclusion* of Model 1 and erring wide is the conservative
+direction. In practice the ceiling never binds -- no admissible draw of either model
+exceeded 3.0 /s -- so the criterion is a floor.
+
+Two things worth recording about the floor. **It is not a near-threshold decision.** At
+NTR = 4000 a draw sitting exactly at 0.04 /s yields 0.04 x 2 s x 4000 = 320 events per
+cell, 1920 over six, whose Poisson SE is 5.6% per cell and 2.3% pooled; the draws the floor
+removes sit at 0 exactly, or (Model 1's ramp candidates) at 0.001-0.005 /s, one to two
+orders of magnitude below it. Misclassification is confined to a thin slice within ~10% of
+the boundary. **And it does not induce a winner's curse**, because it selects on the *rate*
+while the reported statistic is the *slope*: unlike a max-over-noisy-draws rule, it removes
+the draws whose slope is estimated from a handful of events, which lowers rather than
+inflates the noise in the reported extremes. Any statistic that is itself a maximum over
+cells or draws still needs the two-stage re-simulation `ramp_check.py` performs.
+
+Cost, measured on `fused_sweep_2026-08-31c.jsonl`: of 250 draws, 59 (Model 1) and 84
+(Model 2) survive behaviour + screen, against 93 and 94 under the rejected
+reparameterisation -- about 40% fewer usable draws, bought back by raising `N_DRAWS` to
+600 (and `NTR` to 4000). Output: `results/sweep_screened.jsonl`.
+
 **Result at the final, corrected ranges (`results/fused_sweep_2026-08-31.jsonl`, 250
 draws, `summarize_fused_sweep.py` -> `results/fused_sweep_summary_2026-08-31.json`)** --
 these are the citable numbers, and the ones now quoted in the manuscript (Results,

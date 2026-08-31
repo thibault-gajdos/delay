@@ -48,8 +48,29 @@ calibq_{m1,m2}.json or from targets_q.json.
                                                 WIDE is the conservative direction.
                                                 1/kappa here spans 5s -- slower than the
                                                 whole 3s delay -- down to 33ms.)
-  SDe      in [0.003, 0.030]                  (unchanged, architectural)
-  beta     in [0.0015, 0.024] (Model 2 only)  (unchanged, architectural)
+  SDe      in [0.003, 0.060]  log-uniform     (upper end RAISED 2026-08-31, and beta
+  beta     in [0.0015, 0.100] log-uniform      likewise, on a COVERAGE criterion that is
+                                               not the discarded circular one. Choosing a
+                                               range BECAUSE the fit sits in it would be
+                                               circular; requiring the range to CONTAIN
+                                               the fit is a minimum condition for the
+                                               effect sizes reported from it to describe
+                                               the model as actually fitted. The bounds
+                                               stay independently derived -- the fit is
+                                               used only as a check. Both fits fell
+                                               outside the old ranges: SDe 0.040 (M1) and
+                                               0.043 (M2) against a top of 0.030, and
+                                               beta 0.050 (M2) against a top of 0.024,
+                                               i.e. the sweep was evaluating Model 2 at a
+                                               ramp at most half the height it actually
+                                               adopts. Both now span more than an order of
+                                               magnitude, so both are log-uniform, per this
+                                               file's own convention. beta's upper end is
+                                               not derived: the admissibility screen
+                                               enforces it, since a ramp large enough to
+                                               carry the signal past the response criterion
+                                               during the delay shows up as premature
+                                               responses and is rejected.)
   muRS     in [0.30, 1.50]                    (unchanged, architectural)
   r        in [0.010, 0.200]  log-uniform     (unchanged -- already a task/design range,
                                                 not derived from the fit)
@@ -141,14 +162,16 @@ DELAY_TB = DELAY_TB - DELAY_TB.mean()
 
 FIXED = dict(sigx=0.100, Lmotion=0.200, LRS=0.200, delay=3.0)
 
-DIMS = ['g', 'theta_ratio', 'log_kappa', 'SDe', 'muRS', 'log_r', 'log_Lmotor',
-        'log_k', 'log_lam', 'log_sigq', 'beta']
-LO = dict(g=0.050, theta_ratio=0.25, log_kappa=np.log(0.20), SDe=0.003, muRS=0.30,
-          log_r=np.log(0.010), log_Lmotor=np.log(0.008),
-          log_k=np.log(0.5), log_lam=np.log(10.0), log_sigq=np.log(0.03), beta=0.0015)
-HI = dict(g=0.200, theta_ratio=0.90, log_kappa=np.log(30.0), SDe=0.030, muRS=1.50,
-          log_r=np.log(0.200), log_Lmotor=np.log(0.080),
-          log_k=np.log(2.0), log_lam=np.log(50.0), log_sigq=np.log(0.30), beta=0.024)
+DIMS = ['g', 'theta_ratio', 'log_kappa', 'log_SDe', 'muRS', 'log_r', 'log_Lmotor',
+        'log_k', 'log_lam', 'log_sigq', 'log_beta']
+LO = dict(g=0.050, theta_ratio=0.25, log_kappa=np.log(0.20), log_SDe=np.log(0.003),
+          muRS=0.30, log_r=np.log(0.010), log_Lmotor=np.log(0.008),
+          log_k=np.log(0.5), log_lam=np.log(10.0), log_sigq=np.log(0.03),
+          log_beta=np.log(0.0015))
+HI = dict(g=0.200, theta_ratio=0.90, log_kappa=np.log(30.0), log_SDe=np.log(0.060),
+          muRS=1.50, log_r=np.log(0.200), log_Lmotor=np.log(0.080),
+          log_k=np.log(2.0), log_lam=np.log(50.0), log_sigq=np.log(0.30),
+          log_beta=np.log(0.100))
 
 
 def lhs(n, dims, rng):
@@ -168,14 +191,14 @@ def to_param(row):
     g = LO['g'] + v['g'] * (HI['g'] - LO['g'])
     theta_ratio = LO['theta_ratio'] + v['theta_ratio'] * (HI['theta_ratio'] - LO['theta_ratio'])
     kappa = np.exp(LO['log_kappa'] + v['log_kappa'] * (HI['log_kappa'] - LO['log_kappa']))
-    SDe = LO['SDe'] + v['SDe'] * (HI['SDe'] - LO['SDe'])
+    SDe = np.exp(LO['log_SDe'] + v['log_SDe'] * (HI['log_SDe'] - LO['log_SDe']))
     muRS = LO['muRS'] + v['muRS'] * (HI['muRS'] - LO['muRS'])
     r = np.exp(LO['log_r'] + v['log_r'] * (HI['log_r'] - LO['log_r']))
     Lmotor = np.exp(LO['log_Lmotor'] + v['log_Lmotor'] * (HI['log_Lmotor'] - LO['log_Lmotor']))
     k = np.exp(LO['log_k'] + v['log_k'] * (HI['log_k'] - LO['log_k']))
     lam = np.exp(LO['log_lam'] + v['log_lam'] * (HI['log_lam'] - LO['log_lam']))
     sigq = np.exp(LO['log_sigq'] + v['log_sigq'] * (HI['log_sigq'] - LO['log_sigq']))
-    beta_frac = v['beta']  # in [0,1]; mapped to alpha below per-model
+    beta_frac = v['log_beta']  # in [0,1]; mapped to alpha below per-model
     theta = g * theta_ratio
     p = dict(FIXED)
     p.update(g=g, theta=theta, kappa=kappa, SDe=SDe, muRS=muRS, r=r, Lmotor=Lmotor,
@@ -323,7 +346,8 @@ def main():
         for i in range(done, N_DRAWS):
             t0 = time.time()
             p, beta_frac = to_param(cube[i])
-            beta2 = LO['beta'] + beta_frac * (HI['beta'] - LO['beta'])
+            beta2 = np.exp(LO['log_beta'] + beta_frac *
+                           (HI['log_beta'] - LO['log_beta']))
             # alpha := beta/Delta with Delta = t_RS - t_off = (delay+LRS) - Lmotion,
             # constant across cells since delay/LRS/Lmotion are fixed.
             Delta = (FIXED['delay'] + FIXED['LRS']) - FIXED['Lmotion']

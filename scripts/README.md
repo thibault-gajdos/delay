@@ -372,6 +372,29 @@ identical when it is multiplied by 50), so searching it wastes a simplex dimensi
 Run with `./supervise_fitB.sh m1` and `./supervise_fitB.sh m2`, ~25 min each; output
 `results/fitB_{m1,m2}.json`, checkpoints `results/ckptb_{m1,m2}.json`.
 
+**Fit B results, 2026-08-31.** M1 G2 = 238.7, M2 G2 = 155.2 (three stages, ~20 min each).
+The gap is 84.2 against fit A's 5.9 -- but the two are on different scales and must not be
+compared; within fit B it removes 35% of Model 1's total discrepancy, against 21% within
+fit A. Where the gap lives is the informative part:
+
+    any_stim      M1 40.0   M2  1.8    +38.2   45% of the gap
+    any_rs        M1 46.7   M2 10.9    +35.9   43%
+    delay_shape   M1 29.2   M2  0.7    +28.5   34%
+    delay_count   M1 59.6   M2 68.8     -9.1  -11%   (Model 1 better)
+    met_correct   M1 17.9   M2 30.4    -12.5  -15%   (Model 1 better)
+
+Model 2 essentially solves the delay ramp (0.7 across six cells) and both activation-
+probability windows, and pays for it on the activation count and the MET distribution.
+The mechanism behind the two biggest terms is visible in the parameters and is worth
+stating: Model 1 settles at a gate distance g - theta of 0.069 against Model 2's 0.095.
+Sitting closer to the gate is how Model 1 tries to generate delay-period activity without a
+ramp, and it over-produces in the stimulus window as a result -- P(>=1 activation) 0.20 to
+0.49 against 0.11 to 0.17 observed, up to four times too many -- while still under-producing
+at the RS, 0.02 to 0.05 against 0.16 to 0.24 observed. The two windows require the gate
+distance to move in opposite directions and Model 1 has only the one knob. Model 2 uses the
+ramp to lift the signal during the delay and can afford the wider gate. Both models
+under-predict the RS window; Model 2 less badly.
+
 ### `g2_uncertainty.py`
 Re-evaluates both fitted models at their own parameters over independent seed sets, and
 decomposes the Model 1 / Model 2 gap by family and by cell. The gap is 5.9 +/- 0.5 over 16
@@ -458,6 +481,27 @@ both renamed with a `_circular-ranges` suffix (2026-08-31) precisely so that a f
 starts a genuinely fresh file instead of silently resuming -- appending new,
 non-circular-range draws on top of old, circular-range ones in the same file, which the
 resumable-by-line-count design would otherwise do without complaint.
+
+**Coverage correction, 2026-08-31.** Two fitted parameters fell OUTSIDE the sampled
+ranges: SDe (0.040 M1, 0.043 M2, against a top of 0.030) and beta (0.050 M2, against a top
+of 0.024 -- the sweep was evaluating Model 2 at a ramp at most half the height it actually
+adopts). Both upper ends were raised, to 0.060 and 0.100, and both dimensions are now
+log-uniform since both span more than an order of magnitude.
+
+This is a different criterion from the circular one discarded on 2026-08-30, and the
+distinction matters: choosing a range BECAUSE the fit sits inside it is circular; requiring
+the range to CONTAIN the fit is a minimum condition for the effect sizes reported from it
+to describe the model as actually fitted. The bounds stay independently derived; the fit is
+used only as a check that the region evaluated is the relevant one.
+
+The conclusion is unchanged, which is the point of recording it. At the widened ranges
+(`results/fused_sweep_2026-08-31c.jsonl`): Model 1 216/250 admissible, none with all six
+delay slopes positive; among the 20 draws reaching a quarter of the observed rate the
+largest slope anywhere is +0.072 /s (it was +0.078 before the widening, against an analytic
+bound of 0.067). Model 2 199/250 admissible, 39 with all six slopes positive, 4 of the 30
+draws reaching a quarter of the rate also reaching the observed slope range. Model 2's
+admissible count falls from 219 to 199 because the larger beta values produce premature
+responses and are screened out -- the screen doing exactly what the range note says it does.
 
 **Result at the final, corrected ranges (`results/fused_sweep_2026-08-31.jsonl`, 250
 draws, `summarize_fused_sweep.py` -> `results/fused_sweep_summary_2026-08-31.json`)** --

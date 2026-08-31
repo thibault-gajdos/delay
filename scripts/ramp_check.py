@@ -14,19 +14,31 @@ activation rate (the honest conditional question), and the best overall regardle
 rate (in case a ramp hides at an implausibly low rate) -- and reports both.
 
 Appends one record per (draw, seed) to results/ramp_check.jsonl; resumable.
-Usage: python3 ramp_check.py [N_SEEDS] [NTR]
+Usage: python3 ramp_check.py [N_SEEDS] [NTR] [DUMP.jsonl]
 """
 import numpy as np, json, os, sys, time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import fused_sweep as F
 
 N_SEEDS = int(sys.argv[1]) if len(sys.argv) > 1 else 3
 NTR = int(sys.argv[2]) if len(sys.argv) > 2 else 40000
+DUMP = sys.argv[3] if len(sys.argv) > 3 else 'results/sweep_screened.jsonl'
+# fused_sweep.py parses sys.argv at import time; hide this script's arguments from it.
+_argv, sys.argv = sys.argv, sys.argv[:1]
+import fused_sweep as F
+sys.argv = _argv
 F.NTR = NTR
 OUT = 'results/ramp_check.jsonl'
-OBS_RATE, OBS_SLOPE_LO = 1.446, 0.659
+# Observed delay-period partial-activation statistics, all from the 132 subject x
+# condition cells (22 participants x 6 cells, none empty; see README "The EMG criterion").
+# OBS_RATE is the MEAN rate over the 1-3 s analysis window -- the quantity the simulation
+# reports.  It is NOT 1.446 /s: that figure, used here until 2026-08-31, is the
+# END-OF-DELAY PEAK (last 0.1 s bin), a different quantity, and comparing the simulated
+# window mean against it overstated both models' shortfall by roughly a factor of two.
+# OBS_LO/OBS_HI are the observed per-condition log-rate SLOPES, unaffected by that error.
+OBS_RATE, OBS_RATE_MIN, OBS_RATE_MAX = 0.709, 0.085, 2.785
+OBS_SLOPE_LO = 0.659
 
-recs = [json.loads(l) for l in open('results/sweep_a.jsonl')]
+recs = [json.loads(l) for l in open(DUMP)]
 cand = []
 for r in recs:
     m = r['model1']

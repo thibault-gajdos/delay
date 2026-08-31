@@ -21,7 +21,15 @@ import fused_sweep as F
 plt.rcParams.update({'font.size': 8, 'axes.labelsize': 8.5, 'legend.fontsize': 7,
                      'xtick.labelsize': 7.5, 'ytick.labelsize': 7.5})
 C_M1, C_M2 = '#c1272d', '#3182bd'
-OBS_RATE, OBS_LO, OBS_HI = 1.446, 0.659, 1.029
+# Observed delay-period partial-activation statistics, all from the 132 subject x
+# condition cells (22 participants x 6 cells, none empty; see README "The EMG criterion").
+# OBS_RATE is the MEAN rate over the 1-3 s analysis window -- the quantity the simulation
+# reports.  It is NOT 1.446 /s: that figure, used here until 2026-08-31, is the
+# END-OF-DELAY PEAK (last 0.1 s bin), a different quantity, and comparing the simulated
+# window mean against it overstated both models' shortfall by roughly a factor of two.
+# OBS_LO/OBS_HI are the observed per-condition log-rate SLOPES, unaffected by that error.
+OBS_RATE, OBS_RATE_MIN, OBS_RATE_MAX = 0.709, 0.085, 2.785
+OBS_LO, OBS_HI = 0.659, 1.029
 recs = [json.loads(l) for l in open('results/sweep_a.jsonl')]
 
 # ---------------------------------------------------------------- 1. ramp vs rate

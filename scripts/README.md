@@ -374,7 +374,12 @@ The optional fourth argument, `GAMMA`, threads a common leak into every `simulat
 (`sim.py`'s `gamma`) for the leak-robustness check (Methods, Behavior > Simulation
 validation; Results §130) -- NOT yet rerun at the non-circular ranges; the existing
 `fused_sweep_leak_g{0.25,0.50,1.00}.jsonl` outputs are from the old, circular ranges and
-are stale in the same way `fused_sweep_results.jsonl` (`GAMMA=0`, the old ranges) is.
+are stale in the same way `fused_sweep_results.jsonl` (`GAMMA=0`, the old ranges) was --
+both renamed with a `_circular-ranges` suffix (2026-08-31) precisely so that a future bare
+`python3 fused_sweep.py` (whose default `OUT` is the unsuffixed `fused_sweep_results.jsonl`)
+starts a genuinely fresh file instead of silently resuming -- appending new,
+non-circular-range draws on top of old, circular-range ones in the same file, which the
+resumable-by-line-count design would otherwise do without complaint.
 
 **Result at the non-circular ranges (`results/fused_sweep_2026-08-30.jsonl`, 250 draws,
 `summarize_fused_sweep.py` -> `results/fused_sweep_summary_2026-08-30.json`)**: Model 1
@@ -385,8 +390,9 @@ admissible 214/250, discriminates 52/214. This closely tracks the old (circular-
 numbers -- 226/250 and 219/250 admissible, 0/226 and 57/219 discriminating -- which is
 some reassurance that the original conclusion was not an artefact of the ranges having
 been drawn around the fit, but it is the new numbers that are the non-circular,
-citable ones. `fused_sweep_results.jsonl` and its `fused_sweep_leak_g*` siblings (the old
-ranges) are superseded, not deleted -- kept for the record alongside the new dump. A
+citable ones. `fused_sweep_results_circular-ranges.jsonl` and its `fused_sweep_leak_g*`
+siblings (the old ranges, renamed 2026-08-31 -- see above) are superseded, not deleted --
+kept for the record alongside the new dump. A
 fresh run with a different seed will not reproduce the exact admissibility counts (the
 criteria and their signs are robust; the percentages are not guaranteed identical run to
 run), so keep the summary JSON alongside the script rather than regenerating it casually.

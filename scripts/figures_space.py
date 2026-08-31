@@ -63,57 +63,89 @@ row = np.full(len(F.DIMS), 0.5)
 Pmed, bfrac = F.to_param(row)
 Delta = (F.FIXED['delay'] + F.FIXED['LRS']) - F.FIXED['Lmotion']
 beta_med = np.exp(F.LO['log_beta'] + bfrac*(F.HI['log_beta'] - F.LO['log_beta']))
-COLS = {0.0: '#4d4d4d', 0.12: '#7fa8c9', 0.50: '#1a5c8a'}
+COLS = {0.0: '#9e9e9e', 0.12: '#5b9bd5', 0.50: '#12456b'}
 STY = {0.3: '--', 2.0: '-'}
+XLO, XHI = -0.3, 3.25
 
 
-def traj(P, model, alpha, n=600, seed=41):
-    """mean gated signal per cell, on a common stimulus-offset-locked axis"""
+def traj(P, model, alpha, cells, n=500, seed=41):
+    """mean gated signal per cell, on a stimulus-offset-locked axis"""
     out = []
-    for k, (c, D) in enumerate(CELLS):
+    for k, (c, D) in enumerate(cells):
         q = dict(P); q['alpha'] = alpha
-        s = simulate(q, c, D, n, model=model, seed=seed + k, post=2.0)
+        s = simulate(q, c, D, n, model=model, seed=seed + 7*k, post=2.0)
         m = measures(s); ri = s['resp_i']; v = np.flatnonzero(m['valid'])
+        if v.size == 0:
+            out.append(None); continue
         Y = s['Z'] + P['g']
-        t = np.arange(Y.shape[1])*DT - D                 # from stimulus offset
+        t = np.arange(Y.shape[1])*DT - D
         M = np.array([np.where(np.arange(Y.shape[1]) <= ri[j], Y[j], np.nan) for j in v])
         out.append((t, np.nanmean(M, 0), np.nanstd(M, 0), c, D))
     return out
 
 
-fig, axs = plt.subplots(2, 1, figsize=(6.4, 5.6), sharex=True)
+fig, axs = plt.subplots(2, 2, figsize=(9.4, 6.0), sharex=True,
+                        gridspec_kw=dict(width_ratios=[1.35, 1.0]))
+REP = [(0.50, 2.0)]                      # representative cell for the spaghetti panel
 for r, (model, alpha, name, col) in enumerate(
-        [(2, beta_med/Delta, 'Model 2 (with temporal preparation)', C_M2),
-         (1, 0.0, 'Model 1 (maintenance only)', C_M1)]):
-    ax = axs[r]
-    # band across the admissible parameter space: 5-95% of the mean signal over draws
-    key = 'model2' if model == 2 else 'model1'
-    env = []
-    for rr in recs[:60]:
-        if not rr[key]['admissible']:
+        [(2, beta_med/Delta, 'Model 2  (maintenance + temporal preparation)', C_M2),
+         (1, 0.0, 'Model 1  (maintenance only)', C_M1)]):
+
+    # -- left: the median point, all six cells, exactly the Figure 1 content
+    ax = axs[r, 0]
+    for tr in traj(Pmed, model, alpha, CELLS):
+        if tr is None:
             continue
-        tt, mu, sd, _, _ = traj(rr['params'], model,
-                                rr['alpha'] if model == 2 else 0.0, n=120, seed=900)[4]
-        env.append(np.interp(np.linspace(-0.3, 3.2, 200), tt, mu))
-    if env:
-        E = np.vstack(env)
-        xx = np.linspace(-0.3, 3.2, 200)
-        ax.fill_between(xx, np.nanpercentile(E, 5, 0), np.nanpercentile(E, 95, 0),
-                        color=col, alpha=.13, lw=0,
-                        label='5-95% across the admissible space')
-    for tt, mu, sd, c, D in traj(Pmed, model, alpha):
-        w = (tt >= -0.3) & (tt <= 3.2)
-        ax.plot(tt[w], mu[w], STY[D], color=COLS[c], lw=1.1)
-        ax.fill_between(tt[w], (mu-sd)[w], (mu+sd)[w], color=COLS[c], alpha=.06, lw=0)
-    ax.axhline(Pmed['theta'], color='0.5', ls=':', lw=.8)
-    ax.axhline(Pmed['g'], color='0.3', ls=':', lw=.8)
-    ax.text(3.15, Pmed['theta'], r' $\theta$', fontsize=7, va='center', color='0.4')
-    ax.text(3.15, Pmed['g'], ' g', fontsize=7, va='center', color='0.3')
+        t, mu, sd, c, D = tr
+        w = (t >= XLO) & (t <= XHI)
+        ax.plot(t[w], mu[w], STY[D], color=COLS[c], lw=1.3)
+    ax.axhline(Pmed['theta'], color='0.55', ls=':', lw=.8)
+    ax.axhline(Pmed['g'], color='0.25', ls=':', lw=.9)
+    ax.text(XHI, Pmed['theta'], r'  $\theta$', fontsize=7.5, va='center', color='0.45')
+    ax.text(XHI, Pmed['g'], '  g', fontsize=7.5, va='center', color='0.25')
     ax.set_ylabel('gated motor-preparatory signal')
-    ax.set_title(name, fontsize=8.5, loc='left')
-    ax.legend(frameon=False, loc='upper left', fontsize=6.5)
-axs[1].set_xlabel('time from stimulus offset (s)')
-fig.suptitle('At the median of the sampled ranges — no fitted parameter', fontsize=9.5)
-fig.tight_layout(rect=[0, 0, 1, 0.97])
+    ax.set_title(name, fontsize=9, loc='left', color=col)
+    if r == 1:
+        h = ([plt.Line2D([], [], color=COLS[c], lw=1.3, label=f'coherence {int(c*100)}%')
+              for c in (0.0, 0.12, 0.50)] +
+             [plt.Line2D([], [], color='0.4', lw=1.3, ls=STY[D],
+                         label=f'stimulus {D} s') for D in (0.3, 2.0)])
+        ax.legend(handles=h, frameon=False, fontsize=6.8, ncol=5,
+                  loc='upper center', bbox_to_anchor=(0.5, -0.18))
+
+    # -- right: variability ACROSS the parameter space, as real trajectories
+    ax = axs[r, 1]
+    key = 'model2' if model == 2 else 'model1'
+    drawn = [rr for rr in recs if rr[key]['admissible']][:40]
+    for rr in drawn:
+        tr = traj(rr['params'], model, rr['alpha'] if model == 2 else 0.0,
+                  REP, n=140, seed=900)[0]
+        if tr is None:
+            continue
+        t, mu, sd, c, D = tr
+        gap = rr['params']['g'] - rr['params']['theta']
+        w = (t >= XLO) & (t <= XHI)
+        # each trajectory in units of its OWN gate distance, so settings are comparable
+        ax.plot(t[w], (mu[w] - rr['params']['theta'])/gap, '-', color=col, lw=.7, alpha=.30)
+    tr = traj(Pmed, model, alpha, REP)[0]
+    gapm = Pmed['g'] - Pmed['theta']
+    w = (tr[0] >= XLO) & (tr[0] <= XHI)
+    ax.plot(tr[0][w], (tr[1][w] - Pmed['theta'])/gapm, '-', color='k', lw=1.8,
+            label='median of the ranges')
+    ax.axhline(1.0, color='0.25', ls=':', lw=.9); ax.axhline(0.0, color='0.55', ls=':', lw=.8)
+    ax.text(XHI, 1.0, '  g', fontsize=7.5, va='center', color='0.25')
+    ax.text(XHI, 0.0, r'  $\theta$', fontsize=7.5, va='center', color='0.45')
+    ax.set_ylabel('signal, in units of the\ndistance from $\\theta$ to g')
+    ax.set_ylim(-0.6, 1.35)
+    if r == 0:
+        ax.set_title(f'{len(drawn)} admissible parameter settings,\none trajectory each '
+                     '(50% coherence, 2 s)', fontsize=8, loc='left', color='0.35')
+        ax.legend(frameon=False, fontsize=6.8, loc='lower right')
+for a in axs[1, :]:
+    a.set_xlabel('time from stimulus offset (s)')
+axs[1, 0].xaxis.labelpad = 2
+fig.suptitle('Simulated dynamics at the median of the sampled ranges, and across them '
+             '— no fitted parameter', fontsize=9.5)
+fig.tight_layout(rect=[0, 0.05, 1, 0.96])
 fig.savefig('plots/fig_traj_median.pdf', bbox_inches='tight'); plt.close(fig)
 print('written: fig_ramp_vs_rate.pdf, fig_traj_median.pdf')

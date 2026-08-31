@@ -92,48 +92,106 @@ def qp_panel(ax, x_obs, q_obs_cor, q_obs_inc, preds, ylab, title, xlim=(-0.02, 1
     ax.set_xlim(*xlim)
 
 
+def _srt(x, qs, i):
+    """the i-th quantile across conditions, ordered by response proportion"""
+    pair = sorted((xx, q[i]) for xx, q in zip(x, qs) if np.isfinite(q[i]))
+    return [p[0] for p in pair], [p[1] for p in pair]
+
+
+def qp_grid(fname, title, obs_x, obs_qc, obs_qi, pred, ylab, pooled=None):
+    """Quantile-probability, one ROW per model and one COLUMN per stimulus duration.
+
+    Splitting this way is what makes it readable: the full six-condition version puts
+    3 series x 5 quantiles x 2 response types = 30 lines in one frame.  Here each panel
+    carries one model against the data over three coherences, and correct and error
+    responses fall on opposite halves of the axis.
+
+    obs_x/obs_qc/obs_qi are per-cell (6).  pred is {model_tag: (x, qcor, qinc)}.
+    `pooled`, if given, is (obs5, {tag: pred5}) for errors pooled over all conditions.
+    """
+    ncol = 2 + (1 if pooled else 0)
+    fig, axs = plt.subplots(2, ncol, figsize=(4.1 * ncol, 6.4),
+                            gridspec_kw=dict(width_ratios=[1, 1] + ([0.42] if pooled else [])))
+    for r, (tag, col, mk, name) in enumerate([('m1', C_M1, 's', 'Model 1'),
+                                              ('m2', C_M2, '^', 'Model 2')]):
+        px, pqc, pqi = pred[tag]
+        for cix, (D, dlab) in enumerate([(0.3, 'stimulus 0.3 s'), (2.0, 'stimulus 2.0 s')]):
+            ax = axs[r, cix]
+            sel = [k for k, c in enumerate(TA['cells']) if c['dur'] == D]
+            if obs_qi is not None:
+                ax.axvspan(-0.02, 0.5, color='0.94', zorder=0)
+                ax.axvline(0.5, color='0.75', lw=.7, zorder=1)
+            ox = [obs_x[k] for k in sel]
+            for i in range(5):
+                ax.plot(*_srt(ox, [obs_qc[k] for k in sel], i), 'o-', color=C_OBS,
+                        ms=4.5, lw=1.1, zorder=4, label='observed' if i == 0 else None)
+                ax.plot(*_srt(px[sel[0]:sel[-1] + 1] if False else [px[k] for k in sel],
+                              [pqc[k] for k in sel], i), mk + '--', color=col, ms=4,
+                        lw=.9, zorder=3, label=name if i == 0 else None)
+                if obs_qi is not None:
+                    ax.plot(*_srt([1 - obs_x[k] for k in sel], [obs_qi[k] for k in sel], i),
+                            'o-', color=C_OBS, ms=4.5, lw=1.1, mfc='w', zorder=4)
+                    ax.plot(*_srt([1 - px[k] for k in sel], [pqi[k] for k in sel], i),
+                            mk + '--', color=col, ms=4, lw=.9, mfc='w', zorder=3)
+            # fit B has no per-condition error quantiles (they are pooled over all
+            # conditions and drawn in their own panel), so the error half would be blank
+            ax.set_xlim(-0.02 if obs_qi is not None else 0.45, 1.02)
+            if r == 0:
+                ax.set_title(dlab, fontsize=9)
+            if r == 1:
+                ax.set_xlabel('response proportion')
+            if cix == 0:
+                ax.set_ylabel(f'{name}\n{ylab}')
+                if r == 0:
+                    ax.legend(frameon=False, loc='upper center', ncol=2)
+            if obs_qi is not None:
+                ax.text(0.25, 0.965, 'errors', transform=ax.transAxes, ha='center',
+                        fontsize=7, color='0.45')
+                ax.text(0.75, 0.965, 'correct', transform=ax.transAxes, ha='center',
+                        fontsize=7, color='0.45')
+            else:
+                ax.text(0.5, 0.965, 'correct responses', transform=ax.transAxes,
+                        ha='center', fontsize=7, color='0.45')
+        if pooled:
+            ax = axs[r, 2]
+            o5, pr = pooled
+            ax.plot([0]*5, o5, 'o', color=C_OBS, ms=5, label='observed')
+            ax.plot([1]*5, pr[tag], mk, color=col, ms=5, label=name)
+            for i in range(5):
+                ax.plot([0, 1], [o5[i], pr[tag][i]], '-', color='0.8', lw=.7, zorder=0)
+            ax.set_xlim(-0.6, 1.6); ax.set_xticks([0, 1])
+            ax.set_xticklabels(['obs', name.split()[-1]], fontsize=7.5)
+            ax.set_title('errors,\npooled over\nall conditions', fontsize=7.5)
+    fig.suptitle(title, fontsize=10)
+    fig.tight_layout(rect=[0, 0, 1, 0.97])
+    fig.savefig(f'plots/{fname}', bbox_inches='tight'); plt.close(fig)
+
+
 # ---------------------------------------------------------------- 1. RT, fit A
 obsA = TA['cells']
 p1, p2 = fitA_pred(PA['m1'], 1), fitA_pred(PA['m2'], 2)
-x_obs = [c['p_correct'] for c in obsA]
-fig, ax = plt.subplots(figsize=(5.4, 4.0))
-qp_panel(ax, x_obs,
-         [c['correct_quantiles'] for c in obsA],
-         [c['incorrect_quantiles'] for c in obsA],
-         [('Model 1', C_M1, 's', [d['p_cor'] for d in p1],
-           [d['q_cor'] for d in p1], [d['q_inc'] for d in p1]),
-          ('Model 2', C_M2, '^', [d['p_cor'] for d in p2],
-           [d['q_cor'] for d in p2], [d['q_inc'] for d in p2])],
-         'response time (s)',
-         'Fit A (behaviour only): quantile-probability')
-ax.legend(frameon=False, loc='upper left', bbox_to_anchor=(1.01, 1.0))
-ax.text(.02, .02, 'filled = correct, open = errors', transform=ax.transAxes, fontsize=6.5,
-        color='0.35')
-fig.savefig('plots/fig_qp_rt.pdf', bbox_inches='tight'); plt.close(fig)
+qp_grid('fig_qp_rt.pdf', 'Fit A (behaviour only): response-time quantile-probability',
+        [c['p_correct'] for c in obsA],
+        [c['correct_quantiles'] for c in obsA],
+        [c['incorrect_quantiles'] for c in obsA],
+        {'m1': ([d['p_cor'] for d in p1], [d['q_cor'] for d in p1], [d['q_inc'] for d in p1]),
+         'm2': ([d['p_cor'] for d in p2], [d['q_cor'] for d in p2], [d['q_inc'] for d in p2])},
+        'response time (s)')
 
 # ---------------------------------------------------------------- 2. PMET / MET, fit B
 b1, pool1 = fitB_pred(PB['m1'], 1)
 b2, pool2 = fitB_pred(PB['m2'], 2)
 obsB = TB['cells']
-xB = [c['p_correct'] for c in obsB]
-fig, axs = plt.subplots(1, 2, figsize=(9.2, 3.9))
-for ax, key, okey, pkey, lab in [
-        (axs[0], 'q_pmet', 'pmet_quantiles_correct', 'pmet', 'premotor time PMET (s)'),
-        (axs[1], 'q_met', 'met_quantiles_correct', 'met', 'motor execution time MET (s)')]:
-    qp_panel(ax, xB, [c[okey] for c in obsB], None,
-             [('Model 1', C_M1, 's', [d['p_cor'] for d in b1], [d[key] for d in b1], None),
-              ('Model 2', C_M2, '^', [d['p_cor'] for d in b2], [d[key] for d in b2], None)],
-             lab, f'Fit B (all data): {lab.split()[0]}', xlim=(0.18, 1.02))
-    # the pooled error distribution, drawn once at the mean error proportion
-    xe = 1 - np.mean(xB)
-    ax.plot([xe]*5, TB[f'{pkey}_quantiles_incorrect_pooled'], 'o', color=C_OBS, ms=4,
-            mfc='w', zorder=3)
-    ax.plot([xe]*5, pool1[pkey], 's', color=C_M1, ms=4, mfc='w', alpha=.85)
-    ax.plot([xe]*5, pool2[pkey], '^', color=C_M2, ms=4, mfc='w', alpha=.85)
-    ax.annotate('errors\n(pooled over cells)', (xe, max(TB[f'{pkey}_quantiles_incorrect_pooled'])),
-                textcoords='offset points', xytext=(6, 2), fontsize=6.2, color='0.35')
-axs[0].legend(frameon=False, loc='upper left')
-fig.savefig('plots/fig_qp_fitB.pdf', bbox_inches='tight'); plt.close(fig)
+for key, okey, pkey, fname, lab in [
+        ('q_pmet', 'pmet_quantiles_correct', 'pmet', 'fig_qp_pmet.pdf', 'premotor time PMET (s)'),
+        ('q_met', 'met_quantiles_correct', 'met', 'fig_qp_met.pdf', 'motor execution time MET (s)')]:
+    qp_grid(fname, f'Fit B (all data): {lab}',
+            [c['p_correct'] for c in obsB], [c[okey] for c in obsB], None,
+            {'m1': ([d['p_cor'] for d in b1], [d[key] for d in b1], None),
+             'm2': ([d['p_cor'] for d in b2], [d[key] for d in b2], None)},
+            lab,
+            pooled=(TB[f'{pkey}_quantiles_incorrect_pooled'],
+                    {'m1': pool1[pkey], 'm2': pool2[pkey]}))
 
 # ---------------------------------------------------------------- 3. delay PMA
 tb = np.arange(TB['n_shape_bins']) * 0.4 + 1.2      # bin centres, s from stimulus offset
@@ -180,4 +238,4 @@ for j, (key, name) in enumerate([('p_any_stim', 'stimulus window'),
         a.set_ylabel('P(at least one partial activation)'); a.legend(frameon=False)
 fig.savefig('plots/fig_pma_windows.pdf', bbox_inches='tight'); plt.close(fig)
 
-print("written: fig_qp_rt.pdf, fig_qp_fitB.pdf, fig_pma_delay.pdf, fig_pma_windows.pdf")
+print("written: fig_qp_rt.pdf, fig_qp_pmet.pdf, fig_qp_met.pdf, fig_pma_delay.pdf, fig_pma_windows.pdf")

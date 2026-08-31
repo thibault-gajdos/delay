@@ -336,6 +336,23 @@ qualitative predictions are now proved to hold at *every* admissible parameter s
 redundant rather than wrong. Its output is quoted only in the response letter (C2.1,
 C2.3), not the manuscript.
 
+**Correction, 2026-08-31: the kappa floor imposed on 2026-08-30 was wrong and is
+reverted.** It was justified by the stationary crossing-rate approximation losing validity
+below kappa ~ 2. That is not a reason to exclude small kappa from the model's admissible
+space: Results (Delay-locked) and Appendix C both compute from the exact kernel there,
+precisely BECAUSE stationarity fails, so nothing in the paper depends on the approximation
+holding at small kappa. And small kappa is Model 1's only route to a delay rate still
+rising at the end of the delay, so a floor at 2.0 deletes the region most favourable to
+the model the sweep exists to exclude -- manufacturing a cleaner result by construction.
+For a range whose purpose is exclusion, erring WIDE is the conservative direction; the
+circularity risk runs the opposite way from what the 2026-08-30 pass assumed. kappa is
+back to [0.20, 30.0]. In the same pass lambda's upper end was cut from 100 to 50, for a
+reason documented in the module docstring and in the manuscript's Table A1 note: the
+Model 1 ceiling argument degrades as lambda grows (exact ceiling at kappa=0.2 is 0.58/s
+at lambda=21.5, 0.87/s at lambda=50, 1.22/s at lambda=100, against an observed 1.45/s),
+and 1/lambda is a motor-preparation filter time constant, so lambda=100 would mean 10 ms,
+faster than plausible neuromuscular filtering.
+
 **Ranges made non-circular, 2026-08-30/31.** Every range through 2026-08-27 bracketed the
 fitted or observed point itself (e.g. kappa's old floor, and the old r/Lmotor ranges,
 were centred on `calibq_*.json`/`targets_q.json` values) -- which cannot license an
@@ -343,17 +360,15 @@ INDEPENDENT robustness claim about that same fit. Every bound is now either a fi
 architectural constant (unchanged since before any behavioural fit: `sigx`, `Lmotion`,
 `LRS`, and `delay` itself, the task's own 3s constant) or derived from something that
 does not reference the fit or the data:
-  - `kappa` in [2.0, 30.0] s^-1, log-uniform: the floor comes from `model1_bound.py`'s
-    `relaxation(kappa)` at tau = 1s (the fixed post-commitment analysis-window offset) --
-    97.7% of the stationary asymptote is reached by kappa = 2.0, which is where the
-    stationary crossing-rate approximation used throughout the window stops being a good
-    description of the process, independent of what any fit says kappa should be.
+  - `kappa` in [0.20, 30.0] s^-1, log-uniform: UNCHANGED from the published range, and
+    deliberately so -- see the correction note above. 1/kappa spans 5s (slower than the
+    whole delay) to 33ms; deliberately generous, and generous towards Model 1.
   - `r` in [0.010, 0.200], `Lmotor` in [0.008, 0.080], both log-uniform: unchanged, and
     were already task/design ranges, not fit-derived.
   - `g` in [0.050, 0.200] (widened from [0.050, 0.160]), `theta/g` in [0.25, 0.90]:
     unchanged reasoning -- no independent bound for theta/g's lower end survived being
     checked at a second representative point, so it stays at the Table A1 range.
-  - `k` in [0.5, 2.0] and `lam` in [10.0, 100.0], both log-uniform, and `sigma_q` in
+  - `k` in [0.5, 2.0] and `lam` in [10.0, 50.0], both log-uniform, and `sigma_q` in
     [0.03, 0.30] log-uniform: newly freed from `FIXED` (previously pinned at the
     immediate-report architecture's inherited values, same status r and Lmotor had before
     2026-08-24). `sigma_q`'s range has the softest justification of the three: no fixed
@@ -381,16 +396,19 @@ starts a genuinely fresh file instead of silently resuming -- appending new,
 non-circular-range draws on top of old, circular-range ones in the same file, which the
 resumable-by-line-count design would otherwise do without complaint.
 
-**Result at the non-circular ranges (`results/fused_sweep_2026-08-30.jsonl`, 250 draws,
-`summarize_fused_sweep.py` -> `results/fused_sweep_summary_2026-08-30.json`)**: Model 1
-admissible 221/250, discriminates (admissible AND both RT-effects AND all six delay
-slopes significantly positive) 0/221 -- Model 1 never produces a positive delay-period
-slope in any admissible draw, at any of these wider, non-circular ranges. Model 2
-admissible 214/250, discriminates 52/214. This closely tracks the old (circular-range)
-numbers -- 226/250 and 219/250 admissible, 0/226 and 57/219 discriminating -- which is
-some reassurance that the original conclusion was not an artefact of the ranges having
-been drawn around the fit, but it is the new numbers that are the non-circular,
-citable ones. `fused_sweep_results_circular-ranges.jsonl` and its `fused_sweep_leak_g*`
+**Result at the final, corrected ranges (`results/fused_sweep_2026-08-31.jsonl`, 250
+draws, `summarize_fused_sweep.py` -> `results/fused_sweep_summary_2026-08-31.json`)** --
+these are the citable numbers, and the ones now quoted in the manuscript (Results,
+Delay-locked): Model 1 admissible 229/250, all six delay slopes significantly positive in
+**0** of them; Model 2 admissible 219/250, all six slopes positive in 37, of which 32 also
+reproduce both RT effects. Model 1's failure is now established WITH kappa sampled down to
+0.20 -- its own most favourable region -- which is what makes it a statement about the
+architecture rather than about the sampled box. Superseded runs: the 2026-08-30 dump
+(kappa floored at 2.0, lambda to 100: 221/250 and 0/221; 214/250 and 52/214) and the
+2026-08-24 circular-range dump (226/250 and 0/226; 219/250 and 57/219). All three agree
+that Model 1 never discriminates, which is worth knowing -- the conclusion is not an
+artefact of any of these range choices -- but only the 2026-08-31 numbers are both
+non-circular and generous to Model 1. `fused_sweep_results_circular-ranges.jsonl` and its `fused_sweep_leak_g*`
 siblings (the old ranges, renamed 2026-08-31 -- see above) are superseded, not deleted --
 kept for the record alongside the new dump. A
 fresh run with a different seed will not reproduce the exact admissibility counts (the

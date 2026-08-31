@@ -25,17 +25,29 @@ calibq_{m1,m2}.json or from targets_q.json.
                                                 that survives being checked at a second,
                                                 independent representative point; see
                                                 README)
-  kappa    in [2.0, 30.0]     log-uniform     (lower end from a stationarity argument,
-                                                NOT the fit: model1_bound.py's
-                                                relaxation(kappa) at tau=1s -- the fixed
-                                                post-commitment analysis-window offset,
-                                                model1_bound.T0 -- reaches 97.7% of its
-                                                asymptote at kappa=2.0; below that the
-                                                stationary crossing-rate approximation
-                                                used throughout the analysis window is
-                                                no longer a good description of the
-                                                process, independent of what the fit
-                                                says kappa should be)
+  kappa    in [0.20, 30.0]    log-uniform     (UNCHANGED, and deliberately so. A
+                                                stationarity-based floor of 2.0 was
+                                                briefly imposed here on 2026-08-30 and
+                                                is now reverted: it was wrong twice
+                                                over. The paper does not rely on the
+                                                stationary crossing-rate form at small
+                                                kappa -- Results (Delay-locked) and
+                                                Appendix C both compute from the exact
+                                                kernel there precisely BECAUSE
+                                                stationarity fails -- so validity of
+                                                that approximation is no reason to
+                                                exclude small kappa from the model's
+                                                admissible space. Worse, small kappa is
+                                                Model 1's ONLY route to a delay rate
+                                                still rising at the end of the delay, so
+                                                a floor at 2.0 would delete exactly the
+                                                region most favourable to the model the
+                                                sweep is trying to exclude, manufacturing
+                                                a cleaner result by construction. For a
+                                                range whose purpose is exclusion, erring
+                                                WIDE is the conservative direction.
+                                                1/kappa here spans 5s -- slower than the
+                                                whole 3s delay -- down to 33ms.)
   SDe      in [0.003, 0.030]                  (unchanged, architectural)
   beta     in [0.0015, 0.024] (Model 2 only)  (unchanged, architectural)
   muRS     in [0.30, 1.50]                    (unchanged, architectural)
@@ -47,7 +59,26 @@ calibq_{m1,m2}.json or from targets_q.json.
                                                 nothing ties it to the immediate-report
                                                 architecture's inherited value any more
                                                 than r or Lmotor were)
-  lam      in [10.0, 100.0]   log-uniform     (NEW -- freed from FIXED; same reasoning)
+  lam      in [10.0, 50.0]    log-uniform     (NEW -- freed from FIXED; same
+                                                transfer reasoning as k, but the upper
+                                                end is NOT symmetric with it. 1/lam is
+                                                the motor-preparation filter time
+                                                constant, so [10,50] is tau in
+                                                [100, 20] ms; lam = 100 would be a 10 ms
+                                                constant, faster than plausible
+                                                neuromuscular filtering. This bound also
+                                                does argumentative work and the
+                                                manuscript says so: the Model 1 ceiling
+                                                argument (Results, Delay-locked) weakens
+                                                as lam grows -- the exact ceiling at
+                                                kappa=0.2 is 0.58/s at lam=21.5, 0.87/s
+                                                at lam=50 and 1.22/s at lam=100, against
+                                                an observed 1.45/s -- so an unbounded lam
+                                                would quietly dissolve it. The bound is
+                                                defensible on the time-constant argument
+                                                alone; it is stated in the Table A1 note
+                                                so that it cannot look chosen to protect
+                                                the conclusion.)
   sigma_q  in [0.03, 0.30]    log-uniform     (NEW -- freed from FIXED per the user's
                                                 "let it free" on identifiability grounds.
                                                 No task/design constant pins its scale
@@ -112,12 +143,12 @@ FIXED = dict(sigx=0.100, Lmotion=0.200, LRS=0.200, delay=3.0)
 
 DIMS = ['g', 'theta_ratio', 'log_kappa', 'SDe', 'muRS', 'log_r', 'log_Lmotor',
         'log_k', 'log_lam', 'log_sigq', 'beta']
-LO = dict(g=0.050, theta_ratio=0.25, log_kappa=np.log(2.0), SDe=0.003, muRS=0.30,
+LO = dict(g=0.050, theta_ratio=0.25, log_kappa=np.log(0.20), SDe=0.003, muRS=0.30,
           log_r=np.log(0.010), log_Lmotor=np.log(0.008),
           log_k=np.log(0.5), log_lam=np.log(10.0), log_sigq=np.log(0.03), beta=0.0015)
 HI = dict(g=0.200, theta_ratio=0.90, log_kappa=np.log(30.0), SDe=0.030, muRS=1.50,
           log_r=np.log(0.200), log_Lmotor=np.log(0.080),
-          log_k=np.log(2.0), log_lam=np.log(100.0), log_sigq=np.log(0.30), beta=0.024)
+          log_k=np.log(2.0), log_lam=np.log(50.0), log_sigq=np.log(0.30), beta=0.024)
 
 
 def lhs(n, dims, rng):

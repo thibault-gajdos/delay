@@ -1,0 +1,38 @@
+{
+ "source": "results/fused_sweep_2026-08-31.jsonl",
+ "n_draws": 250,
+ "model1": {
+  "n_admissible": 229,
+  "n_discriminates": 0,
+  "n_coh_supported": 213,
+  "n_dur_supported": 220,
+  "n_slope_all_positive": 0,
+  "met_range_ms": {
+   "median": 3.38232421875001,
+   "p95": 55.39316406249996,
+   "max": 253.55175781250006
+  }
+ },
+ "model2": {
+  "n_admissible": 219,
+  "n_discriminates": 32,
+  "n_coh_supported": 205,
+  "n_dur_supported": 215,
+  "n_slope_all_positive": 37,
+  "weakest_cell_slope": {
+   "min": 0.08079881991038315,
+   "median": 0.41058928448270926,
+   "max": 2.971877186889664
+  },
+  "strongest_cell_slope": {
+   "min": 0.1475316114770953,
+   "median": 0.646148965678922,
+   "max": 3.0527887756279872
+  },
+  "met_range_ms": {
+   "median": 5.000976562500009,
+   "p95": 220.12429392665584,
+   "max": 903.5341796874997
+  }
+ }
+}

@@ -383,13 +383,23 @@ def met_invariance(res):
 def main():
     rng = np.random.default_rng(SEED0)
     cube = lhs(N_DRAWS, DIMS, rng)
+    # Optional sharding (2026-08-31). The draws are independent and the LHS cube is
+    # regenerated identically from the fixed seed in every process, so a run can be split
+    # across cores by having shard j of n take the draws i with i % n == j, each writing
+    # its own OUT file; `cat` the shard files to recover the full dump (records carry
+    # `draw`, so order is recoverable). Set SHARD_N/SHARD_I in the environment. Default
+    # 1/0 = no sharding, byte-identical to the unsharded run for the same draw indices.
+    shard_n = int(os.environ.get('SHARD_N', '1'))
+    shard_i = int(os.environ.get('SHARD_I', '0'))
+    idx = [i for i in range(N_DRAWS) if i % shard_n == shard_i]
     if os.path.exists(OUT):
         done = sum(1 for _ in open(OUT))
     else:
         done = 0
-    print(f"resuming at draw {done}/{N_DRAWS}", flush=True)
+    print(f"resuming at {done}/{len(idx)} of shard {shard_i}/{shard_n} "
+          f"(N_DRAWS={N_DRAWS}, NTR={NTR})", flush=True)
     with open(OUT, 'a') as f:
-        for i in range(done, N_DRAWS):
+        for i in idx[done:]:
             t0 = time.time()
             p, beta_frac = to_param(cube[i])
             beta2 = np.exp(LO['log_beta'] + beta_frac *

@@ -304,22 +304,18 @@ Delay-locked > Simulation validation). Response-time quantile method after Denda
   `ckptq_{tag}.json` after every stage so a run can be interrupted and resumed;
   `supervise_calib.sh {tag}` loops it until `results/calibq_{tag}.json` exists.
 
-**Recalibration required as of 2026-08-30.** Adding the premature family changed the
-objective itself, not just a starting point or a range: `results/calibq_m1.json`/
-`calibq_m2.json` (and everything downstream that reads them -- `sweep.py`, `figures.py`,
-`export_for_R.py`, and the numbers already quoted from them in the manuscript/response
-letter) were fit under the OLD, premature-blind objective and are now stale. The old
-checkpoints were kept for the record at `results/ckptq_{m1,m2}_pre-premature.json` rather
-than overwritten; `results/ckptq_m1.json`/`ckptq_m2.json` no longer exist, so the next
-`supervise_calib.sh {tag}` run starts fresh (from `calibb_{tag}.json`, as before) under the
-new three-family objective rather than silently resuming the old, now-invalid checkpoint.
-The stale fits themselves were renamed the same way, to
-`results/calibq_{m1,m2}_pre-premature.json` -- necessarily so, since `supervise_calib.sh`'s
-loop condition is just `[ ! -f results/calibq_{tag}.json ]`: with the old file still at
-that name it would have exited on the first check without calibrating anything under the
-new objective. **To recalibrate: run `./supervise_calib.sh m1` and `./supervise_calib.sh
-m2` (each ~15-20 minutes); `results/calibq_{m1,m2}.json` will be the new, premature-aware
-fits once each finishes.**
+**Recalibrated 2026-08-30/31** under the new three-family objective (both fresh runs from
+`calibb_{tag}.json`, all three stages, ~17 minutes each): M1 converged to G2 = 27.678
+(cold-start 30.832), M2 to G2 = 22.320 (cold-start 25.014) -- both higher than the old
+2-category numbers (29.49, 21.34) would suggest by themselves, but that is comparing
+different objectives, not a regression: the new G2 is scored against three families
+instead of two, and the old points were never asked to fit the premature family at all.
+The old checkpoints/fits remain at `results/{ckptq,calibq}_{m1,m2}_pre-premature.json` for
+the record. `sweep.py`, `export_for_R.py` and `figures.py` have all been rerun against the
+new `results/calibq_{m1,m2}.json`; the manuscript's out-of-sample placeholders now read
+DISC1 = 27.68, DISC2 = 22.32, ERR1 = 8.40, ERR2 = 2.25, ERRFAC = 3.73 (figures.py's stdout
+-- see `fig_oos_slope`'s docstring for exactly what ERR1/ERR2 measure). Not yet propagated
+into `w.docx`/`L.docx` themselves.
 
 ### `sweep.py`
 Multiplies each free parameter by 0.5 and by 2 in turn, adds three leak rates, and records
@@ -331,40 +327,69 @@ Latin-hypercube sweep of the space -- and its Table B3 output is quoted only in 
 response letter (C2.1) since the Appendix that originally reported it was removed from the
 manuscript itself (2026-08-23 restructuring).
 
-### `fused_sweep.py` -- no longer used in the manuscript, 2026-08-27
+### `fused_sweep.py` -- letter only, not the manuscript, since 2026-08-27
 Was the manuscript's broad-parameter Monte-Carlo sweep (Results, Behavior > Simulation
 validation; Methods, "First-stage parameter-space evaluation"). Both the manuscript
 subsection and that Methods heading were removed in the 2026-08-27 restructuring: the
 qualitative predictions are now proved to hold at *every* admissible parameter setting
 (Appendices A-E) rather than checked at a sample of them, which the sweep below made
-redundant rather than wrong. `fused_sweep_results.jsonl` and the `fused_sweep_leak_g*`
-outputs are quoted only in the response letter now (C2.1, C2.3), not the manuscript. Its
-one hardcoded timestep (`i_phys` in `run_one`) was still `1e-3` until 2026-08-30 even
-though it imports `simulate`/`measures` from `sim.py` -- fixed to import and use `sim.py`'s
-`DT` instead, for consistency with the current 1024 Hz rate, even though the script is
-retained only for the letter's numbers. The method itself, unchanged: a Latin-hypercube
-sample over the full Table A1 hybrid ranges (`g`, `theta/g`, `kappa` in [0.20, 30.0] s^-1
-log-uniform, `SDe`, `muRS`, `r` and `Lmotor` both freed and log-uniform, `beta`), 250 draws
-by default, 2000 trials per cell per model per draw. At every draw: the task-admissibility
-screen, the two RT-effect criteria (coherence, duration), and -- since 2026-08-24 -- two
-out-of-sample criteria checked only at the single calibrated point before that date: the
-delay-period log-rate slope criterion (all six cells significantly positive; Results,
-Delay-locked) and the motor-execution-time invariance criterion (Results, RS-locked /
-Response-locked). Resumable (`os.path.exists(OUT)` picks up where a previous call for the
-same `OUT` left off).
+redundant rather than wrong. Its output is quoted only in the response letter (C2.1,
+C2.3), not the manuscript.
+
+**Ranges made non-circular, 2026-08-30/31.** Every range through 2026-08-27 bracketed the
+fitted or observed point itself (e.g. kappa's old floor, and the old r/Lmotor ranges,
+were centred on `calibq_*.json`/`targets_q.json` values) -- which cannot license an
+INDEPENDENT robustness claim about that same fit. Every bound is now either a fixed
+architectural constant (unchanged since before any behavioural fit: `sigx`, `Lmotion`,
+`LRS`, and `delay` itself, the task's own 3s constant) or derived from something that
+does not reference the fit or the data:
+  - `kappa` in [2.0, 30.0] s^-1, log-uniform: the floor comes from `model1_bound.py`'s
+    `relaxation(kappa)` at tau = 1s (the fixed post-commitment analysis-window offset) --
+    97.7% of the stationary asymptote is reached by kappa = 2.0, which is where the
+    stationary crossing-rate approximation used throughout the window stops being a good
+    description of the process, independent of what any fit says kappa should be.
+  - `r` in [0.010, 0.200], `Lmotor` in [0.008, 0.080], both log-uniform: unchanged, and
+    were already task/design ranges, not fit-derived.
+  - `g` in [0.050, 0.200] (widened from [0.050, 0.160]), `theta/g` in [0.25, 0.90]:
+    unchanged reasoning -- no independent bound for theta/g's lower end survived being
+    checked at a second representative point, so it stays at the Table A1 range.
+  - `k` in [0.5, 2.0] and `lam` in [10.0, 100.0], both log-uniform, and `sigma_q` in
+    [0.03, 0.30] log-uniform: newly freed from `FIXED` (previously pinned at the
+    immediate-report architecture's inherited values, same status r and Lmotor had before
+    2026-08-24). `sigma_q`'s range has the softest justification of the three: no fixed
+    design constant pins its scale, so it is anchored to `sigx = 0.100` (the model's other,
+    architecturally-fixed diffusion-noise SD, playing the structurally analogous role for
+    the post-response-signal process) with a +-3x bracket.
+Ten free dimensions shared by both models now (was seven), plus `beta` for Model 2 only.
+See the module docstring for the exact numbers and reasoning behind each.
+
+The method itself is otherwise unchanged: Latin-hypercube sample, 250 draws by default,
+2000 trials per cell per model per draw (~3s/draw on this hardware, ~13 minutes total for
+250). At every draw: the task-admissibility screen, the two RT-effect criteria (coherence,
+duration), the delay-period log-rate slope criterion (all six cells significantly
+positive), and the motor-execution-time invariance criterion. Resumable
+(`os.path.exists(OUT)` picks up where a previous call for the same `OUT` left off).
 
 The optional fourth argument, `GAMMA`, threads a common leak into every `simulate()` call
-(`sim.py`'s `gamma`) and reruns the identical sweep -- this is the leak-robustness check in
-Methods (Behavior > Simulation validation) and Results (§130), which used to run the
-narrower, pre-widening ranges via a since-superseded script; production runs used `GAMMA`
-in `{0.25, 0.50, 1.00}` at the current hybrid ranges, one output `.jsonl` per rate
-(`fused_sweep_leak_g<rate>.jsonl`).
+(`sim.py`'s `gamma`) for the leak-robustness check (Methods, Behavior > Simulation
+validation; Results §130) -- NOT yet rerun at the non-circular ranges; the existing
+`fused_sweep_leak_g{0.25,0.50,1.00}.jsonl` outputs are from the old, circular ranges and
+are stale in the same way `fused_sweep_results.jsonl` (`GAMMA=0`, the old ranges) is.
 
-`fused_sweep_results.jsonl` (no leak, `GAMMA=0`) is the source-of-truth artifact behind
-every broad-sweep number reported in the manuscript as of 2026-08-24 -- keep it alongside
-the script rather than regenerating it casually, since a fresh run with a different seed
-will not reproduce the exact admissibility counts (the criteria and their signs are
-robust; the third-decimal percentages are not guaranteed identical run to run).
+**Result at the non-circular ranges (`results/fused_sweep_2026-08-30.jsonl`, 250 draws,
+`summarize_fused_sweep.py` -> `results/fused_sweep_summary_2026-08-30.json`)**: Model 1
+admissible 221/250, discriminates (admissible AND both RT-effects AND all six delay
+slopes significantly positive) 0/221 -- Model 1 never produces a positive delay-period
+slope in any admissible draw, at any of these wider, non-circular ranges. Model 2
+admissible 214/250, discriminates 52/214. This closely tracks the old (circular-range)
+numbers -- 226/250 and 219/250 admissible, 0/226 and 57/219 discriminating -- which is
+some reassurance that the original conclusion was not an artefact of the ranges having
+been drawn around the fit, but it is the new numbers that are the non-circular,
+citable ones. `fused_sweep_results.jsonl` and its `fused_sweep_leak_g*` siblings (the old
+ranges) are superseded, not deleted -- kept for the record alongside the new dump. A
+fresh run with a different seed will not reproduce the exact admissibility counts (the
+criteria and their signs are robust; the percentages are not guaranteed identical run to
+run), so keep the summary JSON alongside the script rather than regenerating it casually.
 
 ### `export_for_R.py`
 Writes the bridge files. `pma_counts.csv` has one row per participant, cell, period and

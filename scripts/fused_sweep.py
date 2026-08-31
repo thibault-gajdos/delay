@@ -10,40 +10,68 @@ behaviorally-calibrated point:
       prediction common to both models, checked here across the sampled space rather
       than only at the fitted point -- this is the R7-R10 argument from note4.tex)
 
-Sampling plan (the "hybrid" range agreed with the user 2026-08-24): keep Table A1's
-existing ranges for g, theta/g, the stationary SD feeding sigma_epsilon, beta, and muRS;
-WIDEN kappa from [0.20, 2.00] to [0.20, 30.0] s^-1 so the sampled region actually covers
-the calibrated point (kappa = 12.8 s^-1, note4.tex Section 9); and newly FREE r and
-Lmotor (previously fixed at values "inherited" from the immediate-report architecture
-that the full calibration found were wrong by factors of 3x and 5x respectively --
-note4.tex Section 9, "Two inherited constants do not transfer"). k and lambda stay fixed
-at their inherited values, since only the product lambda*kappa enters the crossing rate
-(note4.tex Section 9.1), so widening kappa alone already explores the relevant product
-range without a second free dimension.
+Sampling plan (revised 2026-08-30 to remove circularity: the previous ranges bracketed
+the fitted/observed point itself, which is not a valid way to define an INDEPENDENT
+robustness check of that same fit -- see README "Non-circular parameter ranges" note
+below). Every bound here now comes from either a task/design constant or a pre-existing
+architectural constant that was fixed before any behavioural fit was run -- never from
+calibq_{m1,m2}.json or from targets_q.json.
 
-Ranges (log-uniform for scale/rate parameters, uniform for bounded ratios):
-  g        in [0.050, 0.160]                 (Table A1, unchanged)
-  theta/g  in [0.25, 0.90]                    (Table A1, unchanged; theta = g * ratio)
-  kappa    in [0.20, 30.0]   log-uniform      (WIDENED from [0.20, 2.00])
-  SDe      in [0.003, 0.030]                  (Table A1, unchanged; this is the
-                                                stationary SD -- sim.py derives the
-                                                actual diffusion coefficient as
-                                                SDe*sqrt(2*kappa), so widening kappa
-                                                already widens the effective range)
-  beta     in [0.0015, 0.024] (Model 2 only)  (Table A1, unchanged; Model 1 forced 0)
-  muRS     in [0.30, 1.50]                    (Table A1, unchanged)
-  r        in [0.010, 0.200]  log-uniform     (NEW; brackets both the old assumed 0.022
-                                                and the fitted 0.0694, well inside
-                                                calibrate.py's search bounds [0.005,0.40])
-  Lmotor   in [0.008, 0.080]  log-uniform     (NEW; brackets both the old assumed 0.093s
-                                                and the fitted 0.019s, inside calibrate.py's
-                                                search bounds [0.005,0.15])
-k, lam, sigx, Lmotion, LRS, sigq fixed at Table A1's inherited point values.
+  g        in [0.050, 0.200]                 (task/design: g is the distance from the
+                                                gate at theta to the response bound;
+                                                widened upper end from 0.160 to bracket
+                                                a wider admissible fraction of theta)
+  theta/g  in [0.25, 0.90]                    (unchanged -- no independent bound found
+                                                that survives being checked at a second,
+                                                independent representative point; see
+                                                README)
+  kappa    in [2.0, 30.0]     log-uniform     (lower end from a stationarity argument,
+                                                NOT the fit: model1_bound.py's
+                                                relaxation(kappa) at tau=1s -- the fixed
+                                                post-commitment analysis-window offset,
+                                                model1_bound.T0 -- reaches 97.7% of its
+                                                asymptote at kappa=2.0; below that the
+                                                stationary crossing-rate approximation
+                                                used throughout the analysis window is
+                                                no longer a good description of the
+                                                process, independent of what the fit
+                                                says kappa should be)
+  SDe      in [0.003, 0.030]                  (unchanged, architectural)
+  beta     in [0.0015, 0.024] (Model 2 only)  (unchanged, architectural)
+  muRS     in [0.30, 1.50]                    (unchanged, architectural)
+  r        in [0.010, 0.200]  log-uniform     (unchanged -- already a task/design range,
+                                                not derived from the fit)
+  Lmotor   in [0.008, 0.080]  log-uniform     (unchanged, architectural)
+  k        in [0.5, 2.0]      log-uniform     (NEW -- freed from FIXED per the same
+                                                task/design reasoning as r and Lmotor:
+                                                nothing ties it to the immediate-report
+                                                architecture's inherited value any more
+                                                than r or Lmotor were)
+  lam      in [10.0, 100.0]   log-uniform     (NEW -- freed from FIXED; same reasoning)
+  sigma_q  in [0.03, 0.30]    log-uniform     (NEW -- freed from FIXED per the user's
+                                                "let it free" on identifiability grounds.
+                                                No task/design constant pins its scale
+                                                the way tau=1s pins kappa, so this range
+                                                is anchored instead to sigx = 0.100, the
+                                                OTHER diffusion-noise SD in the model,
+                                                fixed since before any fitting: sigma_q
+                                                plays the structurally analogous role for
+                                                the post-response-signal process, so a
+                                                +-3x bracket around sigx's own fixed
+                                                value is the least arbitrary anchor
+                                                available that still does not reference
+                                                the fit. Flagged as the softest of these
+                                                bounds -- revisit if asked.
+sigx, Lmotion, LRS, delay stay fixed at Table A1's architectural point values (delay is
+the task's own 3s delay duration, not a free parameter at all).
 
-Latin-hypercube over the 6 continuous dimensions shared by both models (g, theta/g,
-kappa, SDe, muRS, r, Lmotor -- 7 dims; beta is an 8th dimension sampled only for
-Model 2, mirroring the original design where "the same sampled vectors were evaluated
-in both models, with beta set to zero in Model 1").
+Latin-hypercube over the 10 continuous dimensions shared by both models (g, theta/g,
+kappa, SDe, muRS, r, Lmotor, k, lam, sigma_q -- 10 dims; beta is an 11th dimension
+sampled only for Model 2, mirroring the original design where "the same sampled vectors
+were evaluated in both models, with beta set to zero in Model 1"). Three more free
+dimensions than the 2026-08-24 design at the same N_DRAWS give substantially sparser
+per-dimension coverage; consider raising N_DRAWS above 250 if the admissible set turns
+out small enough that its composition looks noisy.
 
 Task-admissibility screen: IDENTICAL criteria to the existing manuscript text (Results >
 Behavior > Simulation validation, para 85): in every condition, <=10% premature, <=10%
@@ -80,14 +108,16 @@ SEED0 = 20260824
 DELAY_TB = np.arange(20) * 0.1 + 0.05
 DELAY_TB = DELAY_TB - DELAY_TB.mean()
 
-FIXED = dict(k=1.183, lam=21.471, sigx=0.100, Lmotion=0.200, LRS=0.200, sigq=0.100,
-             delay=3.0)
+FIXED = dict(sigx=0.100, Lmotion=0.200, LRS=0.200, delay=3.0)
 
-DIMS = ['g', 'theta_ratio', 'log_kappa', 'SDe', 'muRS', 'log_r', 'log_Lmotor', 'beta']
-LO = dict(g=0.050, theta_ratio=0.25, log_kappa=np.log(0.20), SDe=0.003, muRS=0.30,
-          log_r=np.log(0.010), log_Lmotor=np.log(0.008), beta=0.0015)
-HI = dict(g=0.160, theta_ratio=0.90, log_kappa=np.log(30.0), SDe=0.030, muRS=1.50,
-          log_r=np.log(0.200), log_Lmotor=np.log(0.080), beta=0.024)
+DIMS = ['g', 'theta_ratio', 'log_kappa', 'SDe', 'muRS', 'log_r', 'log_Lmotor',
+        'log_k', 'log_lam', 'log_sigq', 'beta']
+LO = dict(g=0.050, theta_ratio=0.25, log_kappa=np.log(2.0), SDe=0.003, muRS=0.30,
+          log_r=np.log(0.010), log_Lmotor=np.log(0.008),
+          log_k=np.log(0.5), log_lam=np.log(10.0), log_sigq=np.log(0.03), beta=0.0015)
+HI = dict(g=0.200, theta_ratio=0.90, log_kappa=np.log(30.0), SDe=0.030, muRS=1.50,
+          log_r=np.log(0.200), log_Lmotor=np.log(0.080),
+          log_k=np.log(2.0), log_lam=np.log(100.0), log_sigq=np.log(0.30), beta=0.024)
 
 
 def lhs(n, dims, rng):
@@ -111,10 +141,14 @@ def to_param(row):
     muRS = LO['muRS'] + v['muRS'] * (HI['muRS'] - LO['muRS'])
     r = np.exp(LO['log_r'] + v['log_r'] * (HI['log_r'] - LO['log_r']))
     Lmotor = np.exp(LO['log_Lmotor'] + v['log_Lmotor'] * (HI['log_Lmotor'] - LO['log_Lmotor']))
+    k = np.exp(LO['log_k'] + v['log_k'] * (HI['log_k'] - LO['log_k']))
+    lam = np.exp(LO['log_lam'] + v['log_lam'] * (HI['log_lam'] - LO['log_lam']))
+    sigq = np.exp(LO['log_sigq'] + v['log_sigq'] * (HI['log_sigq'] - LO['log_sigq']))
     beta_frac = v['beta']  # in [0,1]; mapped to alpha below per-model
     theta = g * theta_ratio
     p = dict(FIXED)
-    p.update(g=g, theta=theta, kappa=kappa, SDe=SDe, muRS=muRS, r=r, Lmotor=Lmotor)
+    p.update(g=g, theta=theta, kappa=kappa, SDe=SDe, muRS=muRS, r=r, Lmotor=Lmotor,
+             k=k, lam=lam, sigq=sigq)
     return p, beta_frac
 
 

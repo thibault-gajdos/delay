@@ -1,5 +1,5 @@
 {
- "source": "results/fused_sweep_2026-08-31.jsonl",
+ "source": "results/fused_sweep_2026-08-31b.jsonl",
  "n_draws": 250,
  "model1": {
   "n_admissible": 229,

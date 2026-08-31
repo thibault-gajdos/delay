@@ -229,7 +229,7 @@ def run_model(p, alpha, model, seed0, gamma=0.0):
     q['alpha'] = alpha
     prem = np.zeros(6); early = np.zeros(6); noresp = np.zeros(6)
     acc = np.zeros(6); rt_mean = np.zeros(6); rt_se = np.zeros(6); rt_n = np.zeros(6)
-    slope = np.zeros(6); slope_se = np.zeros(6)
+    slope = np.zeros(6); slope_se = np.zeros(6); rate = np.zeros(6)
     met_mean = np.zeros(6); met_se = np.zeros(6)
     for k, (c, D) in enumerate(CELLS):
         s = simulate(q, c, D, NTR, model=model, seed=seed0 + k, gamma=gamma)
@@ -250,13 +250,16 @@ def run_model(p, alpha, model, seed0, gamma=0.0):
         met_mean[k] = np.nanmean(mv) if v.sum() else np.nan
         met_se[k] = np.nanstd(mv) / np.sqrt(max(np.sum(~np.isnan(mv)), 1))
         h, expo = counts_profile(m, D + 1, D + 3, 20)
+        # mean delay-period partial-activation rate over the 2-s analysis window, per
+        # trial per second -- directly comparable with the observed end-of-delay rate.
+        rate[k] = h.sum() / (expo * 2.0) if expo > 0 else np.nan
         if (h > 0).sum() >= 4 and expo > 0:
             slope[k], slope_se[k] = poisson_slope_se(h, expo, DELAY_TB)
         else:
             slope[k], slope_se[k] = np.nan, np.nan
     return dict(prem=prem, early=early, noresp=noresp, acc=acc, rt_mean=rt_mean,
                 rt_se=rt_se, rt_n=rt_n, slope=slope, slope_se=slope_se,
-                met_mean=met_mean, met_se=met_se)
+                rate=rate, met_mean=met_mean, met_se=met_se)
 
 
 def admissible(res):

@@ -317,6 +317,69 @@ DISC1 = 27.68, DISC2 = 22.32, ERR1 = 8.40, ERR2 = 2.25, ERRFAC = 3.73 (figures.p
 -- see `fig_oos_slope`'s docstring for exactly what ERR1/ERR2 measure). Not yet propagated
 into `w.docx`/`L.docx` themselves.
 
+### `build_targets_b.py`, `calib_fitB.py` -- the all-data fit (fit B), 2026-08-31
+Fit A (`build_targets_q.py` / `calib_behav_q.py`) is unchanged and remains the
+manuscript's primary fit: behaviour only, delay-period log-rate slope held out. Fit B is
+ADDITIONAL and sits at a different level -- one parameter vector against behaviour and
+the electromyographic measures together. It changes no prediction: the predictions are
+analytic (Appendices A-E) and are tested against the data, never against a fit.
+
+Ten families per cell (42 categories, against fit A's 13), each a multinomial scored by
+the same `g2_term`: response type {premature, correct, incorrect}; PMET and MET quantiles
+given correct; the delay-window activation count {0,1,2,>=3}; the delay-window onset
+shape over 5 bins of 0.4 s; and P(>=1 activation) in the stimulus, RS and response
+windows. Two further families, PMET and MET given *incorrect*, are POOLED ACROSS CELLS
+and enter once for the whole objective. Every family but the first is a conditional
+distribution, so the accuracy and premature information is scored exactly once.
+
+**Three design choices that are not obvious, each forced by a measurement.**
+
+*Counts, not a Poisson deviance.* Partial-activation counts are overdispersed between
+participants by a factor of about 100 (variance/mean ~= 100 in the delay window against 1
+for a Poisson), so a Poisson term would hand the EMG block roughly a hundred times its
+real information. Categorising the count absorbs the overdispersion with no distributional
+assumption.
+
+*Four count categories for the delay only.* Measured per-trial counts: delay P(0)=65.6%,
+P(1)=11.1%, P(2)=5.4%, P(>=3)=17.9%; stimulus 83.1/8.4/3.0/5.4; RS 80.0/14.3/5.0/0.8;
+response 97.5/2.4/0.0/0.0. At a pseudo sample size of 22 a 5% category carries 1.1
+pseudo-observations, so only the delay supports four categories and the rest collapse to
+P(>=1). The response window is 97.5% zeros and will constrain essentially nothing; it is
+included for completeness.
+
+*Five shape bins, not twenty.* At pseudo-N = 22 and 1.42 activations per trial the
+original 0.1-s bins give 1.56 expected per bin, too sparse for a stable G^2; 0.4-s bins
+give 6.2 and still resolve the ramp (observed shape pooled: 0.094 0.126 0.182 0.254 0.344
+against 0.200 flat).
+
+**The incorrect-chronometry pooling is not cosmetic.** Per-cell incorrect PMET/MET
+families were tried first and contributed G^2 = 302 and 262 at fit A's parameters. Almost
+none of that was misfit: at the two 50%-coherence cells the model produces 0.1-1.2% errors
+against 5% observed, so simulated quantile bins empty out, hit the `FLOOR`, and charge
+about 30 apiece -- penalising the error RATE a second time when the response-type family
+already scores it. Pooling across cells drops those terms to 3.7 and 2.0 and removes a
+discontinuity that would have destabilised the simplex.
+
+**Scales.** Fit B's G^2 is NOT comparable with fit A's -- ten families per cell instead of
+one puts them on different scales. Only Model 1 against Model 2 within one fit means
+anything, and even that carries every caveat attached to fit A: the objective is a
+composite likelihood at a pseudo sample size, so no p-value, confidence interval, AIC or
+BIC follows from it.
+
+`alpha` is dropped from Model 1's parameter vector: it is provably inert there (the G^2 is
+identical when it is multiplied by 50), so searching it wastes a simplex dimension.
+
+Run with `./supervise_fitB.sh m1` and `./supervise_fitB.sh m2`, ~25 min each; output
+`results/fitB_{m1,m2}.json`, checkpoints `results/ckptb_{m1,m2}.json`.
+
+### `g2_uncertainty.py`
+Re-evaluates both fitted models at their own parameters over independent seed sets, and
+decomposes the Model 1 / Model 2 gap by family and by cell. The gap is 5.9 +/- 0.5 over 16
+replicates -- 12 Monte-Carlo SDs, so real -- and comes 54% from the error RT quantiles,
+38% from the correct ones and under 10% from the premature proportion, spread evenly over
+all six cells. It also measures the optimizer's optimism against the common random
+numbers: the fitted values sit 0.95 (M1) and 0.40 (M2) below their fresh-seed means.
+
 ### `sweep.py`
 Multiplies each free parameter by 0.5 and by 2 in turn, adds three leak rates, and records
 whether each directional effect keeps the observed sign. Uses 150 trials per cell by

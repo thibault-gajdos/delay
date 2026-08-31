@@ -395,6 +395,31 @@ distance to move in opposite directions and Model 1 has only the one knob. Model
 ramp to lift the signal during the delay and can afford the wider gate. Both models
 under-predict the RS window; Model 2 less badly.
 
+### `figures_fit.py` -- fit-quality figures, 2026-08-31
+Quantile-probability plots in the Ratcliff idiom (the format used by Dendauw et al. 2024):
+per condition, the .1/.3/.5/.7/.9 quantiles of correct responses at x = p(correct) and of
+errors at x = 1 - p(correct), so accuracy and both distribution shapes appear together.
+Series are sorted by response proportion before being joined -- the cells are not ordered
+by accuracy, and the error side reverses that order again, so joining them in cell order
+produces zigzags that look like misfit and are not.
+
+  fig_qp_rt.pdf        fit A, response time
+  fig_qp_fitB.pdf      fit B, PMET and MET (errors pooled over cells, drawn once)
+  fig_pma_delay.pdf    fit B, delay-window onset shape and per-trial count
+  fig_pma_windows.pdf  fit B, P(>=1 activation) per window
+
+What they show, beyond the G^2 numbers. In `fig_pma_delay` Model 1's onset shape is flat
+at exactly 0.20 -- the uniform value -- in all six cells, while Model 2 tracks the observed
+ramp closely: the clearest single picture of the discrimination. The count row shows both
+models over-producing activations (observed P(0) up to 0.71 against 0.30-0.45 predicted),
+which is the `delay_count` term where Model 1 is the better of the two. `fig_qp_rt` shows
+the two models nearly superimposed, which is the behavioural-mimicry claim made visible,
+and both missing the long error-RT tail (observed .9 quantile of errors reaches 1.21 s at
+the lowest error proportion against about 0.78 for either model). `fig_pma_windows` shows
+the one-knob bind: Model 1 far ABOVE observed in the stimulus window and far BELOW at the
+RS, Model 2 close on the first and closer on the second, with both under-predicting the
+response window by four to six times.
+
 ### `g2_uncertainty.py`
 Re-evaluates both fitted models at their own parameters over independent seed sets, and
 decomposes the Model 1 / Model 2 gap by family and by cell. The gap is 5.9 +/- 0.5 over 16

@@ -6,6 +6,19 @@ different level -- it asks whether one parameter vector reproduces behaviour and
 electromyographic measures together.  It changes no prediction: the predictions are
 derived analytically (Appendices A-E) and tested against the data, not against a fit.
 
+ERROR CHRONOMETRY IS PER CELL (2026-08-31), matching fit A, which scores its incorrect-RT
+quantiles per cell at the same error rates.  A version pooling errors across cells was
+tried first and is now reverted: it was adopted on the strength of a smoke test at
+n = 3000, where the rarest cell yields 3 simulated errors, and that does not describe the
+real fit at n = 16000.  Measured there, four of the six cells give 2900 to 8000 simulated
+errors and no empty bins; only the two 50%-coherence cells break, with one empty bin each
+at about 35 G^2 apiece.  That cost is real but it is not a chronometric failure: at
+2.0/c50 the model produces 26 errors in 16000 trials, 0.16% against 5.4% observed, so what
+the empty bin registers is the error RATE, which the response-type family already scores.
+The double-counting is accepted here because fit A has exactly the same structure -- its
+incorrect family is 20.8 of Model 2's 22.7 total -- and consistency between the two fits
+matters more than avoiding it.
+
 STRUCTURE.  Ten families per cell (42 categories, against fit A's 13).  Every family is a
 multinomial scored by the same deviance g2_term(), imported from calib_behav_q so there is
 one implementation:
@@ -13,9 +26,9 @@ one implementation:
   response type   {premature, correct, incorrect}          3    <- carries accuracy and
                                                                    the premature rate
   PMET | correct        6 quantile bins                    6
+  PMET | incorrect      6                                  6
   MET  | correct        6                                  6
-  PMET | incorrect      6   POOLED ACROSS CELLS, once      (6)
-  MET  | incorrect      6   POOLED ACROSS CELLS, once      (6)
+  MET  | incorrect      6                                  6
   delay count     {0, 1, 2, >=3} activations per trial      4
   delay shape     onset over 5 bins of 0.4 s, given >=1     5
   stimulus / RS / response  P(>=1 activation)           2 + 2 + 2
@@ -137,8 +150,10 @@ def cell_g2(cell, st):
 
     # 2-5. PMET and MET quantile families, each a conditional distribution
     for name, arr, edges in [
-            ('pmet_correct', st['pmet_c'], cell['pmet_quantiles_correct']),
-            ('met_correct',  st['met_c'],  cell['met_quantiles_correct'])]:
+            ('pmet_correct',   st['pmet_c'], cell['pmet_quantiles_correct']),
+            ('pmet_incorrect', st['pmet_i'], cell['pmet_quantiles_incorrect']),
+            ('met_correct',    st['met_c'],  cell['met_quantiles_correct']),
+            ('met_incorrect',  st['met_i'],  cell['met_quantiles_incorrect'])]:
         if not np.all(np.isfinite(edges)):
             continue
         fam[name] = (BIN6 * N_SUBJ, bin_fracs(arr, np.asarray(edges)) * N_SUBJ)
@@ -166,23 +181,11 @@ BIN6 = np.array([0.1, 0.2, 0.2, 0.2, 0.2, 0.1])
 
 def objective(p, model, n=10000, detail=False):
     total, parts = 0.0, {}
-    pmet_i, met_i = [], []
     for k, cell in enumerate(TGT['cells']):
         st = sim_stats(p, cell['coh'], cell['dur'], n, model, seed=5000 + 100 * k)
         g2, pr = cell_g2(cell, st)
         parts[cell['label']] = pr
         total += g2
-        pmet_i.append(st['pmet_i']); met_i.append(st['met_i'])
-    # two GLOBAL families for the incorrect-response chronometry, pooled across cells --
-    # see build_targets_b.py on why these cannot be per-cell
-    glob = {}
-    for name, arr, edges in [
-            ('pmet_incorrect', np.concatenate(pmet_i), TGT['pmet_quantiles_incorrect_pooled']),
-            ('met_incorrect',  np.concatenate(met_i),  TGT['met_quantiles_incorrect_pooled'])]:
-        glob[name] = g2_term(BIN6 * N_SUBJ,
-                             bin_fracs(arr, np.asarray(edges)) * N_SUBJ)
-    parts['_pooled'] = glob
-    total += sum(glob.values())
     return (total, parts) if detail else total
 
 

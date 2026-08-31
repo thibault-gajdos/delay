@@ -352,13 +352,18 @@ original 0.1-s bins give 1.56 expected per bin, too sparse for a stable G^2; 0.4
 give 6.2 and still resolve the ramp (observed shape pooled: 0.094 0.126 0.182 0.254 0.344
 against 0.200 flat).
 
-**The incorrect-chronometry pooling is not cosmetic.** Per-cell incorrect PMET/MET
-families were tried first and contributed G^2 = 302 and 262 at fit A's parameters. Almost
-none of that was misfit: at the two 50%-coherence cells the model produces 0.1-1.2% errors
-against 5% observed, so simulated quantile bins empty out, hit the `FLOOR`, and charge
-about 30 apiece -- penalising the error RATE a second time when the response-type family
-already scores it. Pooling across cells drops those terms to 3.7 and 2.0 and removes a
-discontinuity that would have destabilised the simplex.
+**Error chronometry is per cell (reverted 2026-08-31).** A version pooling errors across
+cells was adopted first, on the strength of a smoke test at n = 3000 where the rarest cell
+yields 3 simulated error trials. That does not describe the real fit. Measured at the
+fit's own n = 16000: four of the six cells give 2900 to 8000 simulated errors and no empty
+bins (G^2 2.9 to 9.6); only the two 50%-coherence cells break, one empty bin each at about
+35 apiece. The cost is real but it is not chronometric -- at 2.0/c50 the model makes 26
+errors in 16000 trials, 0.16% against 5.4% observed, so the empty bin is registering the
+error RATE, which the response-type family already scores. That double-counting is
+accepted because fit A has the identical structure: its incorrect-RT family is 20.8 of
+Model 2's 22.7 total, i.e. 92% of fit A's objective is the error family. Consistency
+between the two fits matters more than avoiding the overlap, and per-cell is what fit A
+does.
 
 **Scales.** Fit B's G^2 is NOT comparable with fit A's -- ten families per cell instead of
 one puts them on different scales. Only Model 1 against Model 2 within one fit means

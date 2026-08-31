@@ -48,7 +48,44 @@ calibq_{m1,m2}.json or from targets_q.json.
                                                 WIDE is the conservative direction.
                                                 1/kappa here spans 5s -- slower than the
                                                 whole 3s delay -- down to 33ms.)
-  SDe      in [0.003, 0.060]  log-uniform     (upper end RAISED 2026-08-31, and beta
+  a        in [0.5, 3.0]      log-uniform     (REPLACES SDe as a sampled dimension,
+                                               2026-08-31.  a = (g - theta)/SDe is the
+                                               distance from the maintained level to the
+                                               gate in fluctuation SDs, and the stationary
+                                               crossing rate is (omega/2pi)exp(-a^2/2), so
+                                               a -- not SDe -- is what governs whether the
+                                               model produces partial activations at all.
+                                               Sampling g, theta/g and SDe independently
+                                               does sample a, but only as a by-product:
+                                               each of the three ranges is reasonable
+                                               alone, and their combination put a at 3.96
+                                               at the box centre (exp(-7.8) of the ceiling,
+                                               i.e. nothing) with HALF of all draws above
+                                               3.  Half the sampled space was therefore
+                                               dead for the very phenomenon the experiment
+                                               measures.  The bracket is structural: above
+                                               a ~ 3 there are no crossings left to
+                                               measure; below a ~ 0.5 the signal sits at or
+                                               above the gate continuously, which is no
+                                               longer a PARTIAL activation and shows up as
+                                               premature responses, which the screen
+                                               rejects.  Coverage check: the two fitted
+                                               points sit at a = 1.46 and 1.89.  SDe is now
+                                               derived as (g - theta)/a.
+                                               This is the same move the design already
+                                               makes twice -- theta from theta/g, and the
+                                               stationary SD rather than sigma_epsilon --
+                                               applied once more.)
+  Lmotor   FIXED at 0.093 s                    (Dendauw et al. 2024's inherited value, per
+                                               the author's instruction 2026-08-31; it was
+                                               previously sampled over [0.008, 0.080],
+                                               whose docstring wrongly claimed to bracket
+                                               0.093 -- 0.093 is above 0.080.  r stays
+                                               free: Lmotor is a peripheral
+                                               electromechanical delay with good reason to
+                                               transfer between tasks, r is a response
+                                               criterion with less.)
+  (former SDe entry)                          (upper end RAISED 2026-08-31, and beta
   beta     in [0.0015, 0.100] log-uniform      likewise, on a COVERAGE criterion that is
                                                not the discarded circular one. Choosing a
                                                range BECAUSE the fit sits in it would be
@@ -160,16 +197,16 @@ SEED0 = 20260824
 DELAY_TB = np.arange(20) * 0.1 + 0.05
 DELAY_TB = DELAY_TB - DELAY_TB.mean()
 
-FIXED = dict(sigx=0.100, Lmotion=0.200, LRS=0.200, delay=3.0)
+FIXED = dict(sigx=0.100, Lmotion=0.200, LRS=0.200, delay=3.0, Lmotor=0.093)
 
-DIMS = ['g', 'theta_ratio', 'log_kappa', 'log_SDe', 'muRS', 'log_r', 'log_Lmotor',
+DIMS = ['g', 'theta_ratio', 'log_kappa', 'log_a', 'muRS', 'log_r',
         'log_k', 'log_lam', 'log_sigq', 'log_beta']
-LO = dict(g=0.050, theta_ratio=0.25, log_kappa=np.log(0.20), log_SDe=np.log(0.003),
-          muRS=0.30, log_r=np.log(0.010), log_Lmotor=np.log(0.008),
+LO = dict(g=0.050, theta_ratio=0.25, log_kappa=np.log(0.20), log_a=np.log(0.5),
+          muRS=0.30, log_r=np.log(0.010),
           log_k=np.log(0.5), log_lam=np.log(10.0), log_sigq=np.log(0.03),
           log_beta=np.log(0.0015))
-HI = dict(g=0.200, theta_ratio=0.90, log_kappa=np.log(30.0), log_SDe=np.log(0.060),
-          muRS=1.50, log_r=np.log(0.200), log_Lmotor=np.log(0.080),
+HI = dict(g=0.200, theta_ratio=0.90, log_kappa=np.log(30.0), log_a=np.log(3.0),
+          muRS=1.50, log_r=np.log(0.200),
           log_k=np.log(2.0), log_lam=np.log(50.0), log_sigq=np.log(0.30),
           log_beta=np.log(0.100))
 
@@ -191,17 +228,22 @@ def to_param(row):
     g = LO['g'] + v['g'] * (HI['g'] - LO['g'])
     theta_ratio = LO['theta_ratio'] + v['theta_ratio'] * (HI['theta_ratio'] - LO['theta_ratio'])
     kappa = np.exp(LO['log_kappa'] + v['log_kappa'] * (HI['log_kappa'] - LO['log_kappa']))
-    SDe = np.exp(LO['log_SDe'] + v['log_SDe'] * (HI['log_SDe'] - LO['log_SDe']))
+    # `a` is the standardised distance from the maintained level to the gate, in
+    # fluctuation SDs; SDe is DERIVED from it.  See the docstring: sampling g, theta/g and
+    # SDe independently does sample `a`, but only as a by-product, and the induced
+    # distribution was degenerate -- median 3.96 at the box centre, where exp(-a^2/2)
+    # leaves nothing to cross the gate, and half of all draws above 3.
+    a_std = np.exp(LO['log_a'] + v['log_a'] * (HI['log_a'] - LO['log_a']))
     muRS = LO['muRS'] + v['muRS'] * (HI['muRS'] - LO['muRS'])
     r = np.exp(LO['log_r'] + v['log_r'] * (HI['log_r'] - LO['log_r']))
-    Lmotor = np.exp(LO['log_Lmotor'] + v['log_Lmotor'] * (HI['log_Lmotor'] - LO['log_Lmotor']))
     k = np.exp(LO['log_k'] + v['log_k'] * (HI['log_k'] - LO['log_k']))
     lam = np.exp(LO['log_lam'] + v['log_lam'] * (HI['log_lam'] - LO['log_lam']))
     sigq = np.exp(LO['log_sigq'] + v['log_sigq'] * (HI['log_sigq'] - LO['log_sigq']))
     beta_frac = v['log_beta']  # in [0,1]; mapped to alpha below per-model
     theta = g * theta_ratio
+    SDe = (g - theta) / a_std
     p = dict(FIXED)
-    p.update(g=g, theta=theta, kappa=kappa, SDe=SDe, muRS=muRS, r=r, Lmotor=Lmotor,
+    p.update(g=g, theta=theta, kappa=kappa, SDe=SDe, muRS=muRS, r=r,
              k=k, lam=lam, sigq=sigq)
     return p, beta_frac
 

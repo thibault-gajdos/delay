@@ -57,6 +57,14 @@ points at the same unpacked archive as `DELAY_DATA` but is read independently by
 
 ## R (renv)
 
+`run_stats.R` reads the archive through `ARCHIVE`, which defaults to `../data` relative to
+wherever `Rscript` is invoked from -- i.e. to `scripts/data`, which does not exist. **Set it
+before running**, or the first `read.csv` fails with "impossible d'ouvrir la connexion":
+
+```
+export ARCHIVE="$HOME/thib/projects/delay/data/86cbw-osfstorage-archive"
+```
+
 ```
 cd scripts/R
 Rscript -e 'renv::init()'            # once: creates renv/, renv.lock, .Rprofile
@@ -349,21 +357,32 @@ analytic calculation knows nothing about admissibility, and without a cap Model 
 frontier grows without bound simply by making the ramp larger.
 
 Result (`results/frontier.json`), against an observed slope of +0.892 /s at a rate of
-0.709 /s:
+0.709 /s, with the slope estimated as the data's slope is estimated (an offset-Poisson
+regression over the same twenty bins, not a secant -- see below):
 
 | rate at least | Model 1 max slope | Model 2 max slope |
 | --- | --- | --- |
-| 0.085 /s | +1.17 | +16.3 |
-| 0.200 | +0.55 | +13.5 |
-| 0.400 | +0.08 | +10.8 |
-| **0.709** | **+0.001** | **+8.4** |
-| 1.000 | +0.000 | +5.4 |
+| 0.085 /s | +0.81 | +5.16 |
+| 0.200 | +0.40 | +4.73 |
+| 0.400 | +0.05 | +4.35 |
+| **0.709** | **+0.000** | **+4.05** |
+| 1.000 | +0.000 | +3.83 |
 
-and the largest rate at which the observed slope is attainable at all: **0.125 /s for
-Model 1, 6.47 /s for Model 2**. The two architectures are not near-misses of one another --
-one exceeds what has to be explained by an order of magnitude, the other falls short by
-three. Model 1's optimum sits at the smallest kappa and the largest lambda the ranges allow
-throughout, so this is the most favourable frontier those ranges permit.
+and the largest rate at which the observed slope is attainable at all: **0.069 /s for
+Model 1, 6.44 /s for Model 2**. Model 1's figure is the sharper statement, because 0.069 /s
+is BELOW the lowest rate recorded in any participant x condition cell (0.085): there is no
+admissible (kappa, lambda, a) at which Model 1 produces both the observed ramp and partial
+activations as often as the least active participant in the least active condition. Model 2
+at the observed rate exceeds the observed slope more than fourfold.
+
+**The slope statistic matters, and using the wrong one was generous to Model 1.** Until
+2026-09-01 the frontier reported the secant between the ends of the window while the data
+were analysed with an offset-Poisson regression over twenty 0.1 s bins. For Model 1's
+strongly concave log-rate the regression weights the late, event-rich bins -- where the
+variance transient has already flattened -- and returns 45-75% of the secant. Correcting it
+tightened every entry above (at 0.085, +1.17 -> +0.81) and moved the largest rate at the
+observed slope from 0.140 to 0.069 /s, i.e. from "a fifth of the observed mean" to "outside
+the observed range altogether".
 
 The two frontiers have different STATUS, and the difference should be stated wherever they
 are quoted together. For Model 1 the frontier is a bound: with alpha = 0 the rate depends

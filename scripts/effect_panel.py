@@ -102,6 +102,65 @@ NAMES = dict(
     delay_int='C.3  coherence effect on the delay rate,\nlong minus short (/s)',
     slope='C.2  delay-period log-rate slope (/s)')
 
+NTR = 4000.0
+
+
+def effects_se(m):
+    """Monte-Carlo standard error of each effect, propagated from the per-cell errors the
+    sweep records.
+
+    Without this the sign of an effect is not interpretable. A draw whose true effect is a
+    thousandth of a second returns a sign that is a coin toss, and counting it as agreeing or
+    disagreeing with the data says nothing about the architecture -- it reports the seed. The
+    three-way split below (significantly with the observed sign, significantly against it,
+    indistinguishable from zero at two standard errors) is what the raw sign fraction should
+    have been from the start: on the delay-period slope it turns Model 1's "31% with the
+    observed sign" into "3% significantly positive, 39% significantly negative, 58% not
+    distinguishable from zero", which is a different and more honest statement.
+
+    Accuracy and the premature rate get binomial errors; response time, the two execution
+    times and the log-rate slope use the per-cell standard errors already in the dump; the
+    two rates use the Poisson error of the event count behind them, recovered as
+    rate x exposure x window.
+    """
+    g = lambda k: np.asarray(m['raw'][k], float)
+    acc, rt, n = g('acc'), g('rt_mean'), g('rt_n')
+    # every count-based error is floored at ONE event. A cell in which the simulation
+    # produced no premature response at all has an empirical binomial variance of exactly
+    # zero, and taking that at face value would declare a difference of a single trial
+    # infinitely significant -- which is how a draw with no premature responses anywhere
+    # came to be counted as contradicting the data. The floor is the standard
+    # small-count device: the uncertainty on an observed zero is the uncertainty on one.
+    def bse(p, ntr):
+        p = np.maximum(p, 1.0 / ntr)
+        return np.sqrt(np.clip(p * (1 - p), 0, None) / ntr)
+
+    def pse(rate, expo):
+        # Poisson error of the event count behind a rate, recovered as rate x exposure
+        return np.sqrt(np.maximum(rate * expo, 1.0)) / np.maximum(expo, 1)
+
+    accse = bse(acc, np.maximum(n, 1))
+    premse = bse(g('prem'), NTR)
+    srse = pse(g('srate'), n * 2.0)
+    rse2 = pse(g('rate'), n * 2.0)
+
+    def lin(se, w, scale=1.0):
+        w = np.asarray(w, float)
+        return float(np.sqrt((w ** 2) @ (se ** 2))) * scale
+
+    return dict(
+        acc_int=lin(accse, [.5, -1, .5, -.5, 1, -.5]),
+        rt_dur=lin(g('rt_se'), np.array([1, 1, 1, -1, -1, -1]) / 3.0, 1000.0),
+        rt_int=lin(g('rt_se'), [1, 0, -1, -1, 0, 1], 1000.0),
+        prem_dur=lin(premse, np.array([-1, -1, -1, 1, 1, 1]) / 3.0),
+        stim_coh=lin(srse, [-.5, 0, .5, -.5, 0, .5]),
+        stim_dur=lin(srse, np.array([1, 1, 1, -1, -1, -1]) / 3.0),
+        pmet_dur=lin(g('pmet_se'), np.array([1, 1, 1, -1, -1, -1]) / 3.0, 1000.0),
+        met_dur=lin(g('met_se'), np.array([1, 1, 1, -1, -1, -1]) / 3.0, 1000.0),
+        delay_int=lin(rse2, [1, 0, -1, -1, 0, 1]),
+        slope=lin(g('slope_se'), np.ones(6) / 6.0))
+
+
 recs = [json.loads(l) for l in open(DUMP)]
 E = build()
 nsub = E['rt'].shape[0]
@@ -121,10 +180,19 @@ for tag in ['model1', 'model2']:
     rows = [effects(*[np.asarray(m['raw'][k], float) for k in
                       ('acc', 'rt_mean', 'srate', 'rate', 'pmet_mean', 'met_mean', 'prem',
                        'slope')]) for m in adm]
+    ses = [effects_se(m) for m in adm]
     out['models'][tag] = dict(n=len(rows))
     for k in NAMES:
         v = np.array([r[k] for r in rows], float)
-        v = v[np.isfinite(v)]
+        e = np.array([x[k] for x in ses], float)
+        ok = np.isfinite(v) & np.isfinite(e)
+        v, e = v[ok], e[ok]
+        # <= and not <, so that a draw whose effect is exactly zero with exactly zero
+        # error -- no events in either condition -- counts as uninformative rather than as
+        # a disagreement
+        zero = np.abs(v) <= 2 * e
+        right = (~zero) & (np.sign(v) == np.sign(obs[k]))
+        wrong = (~zero) & (np.sign(v) != np.sign(obs[k]))
         out['models'][tag][k] = dict(
             median=float(np.median(v)), p5=float(np.percentile(v, 5)),
             p95=float(np.percentile(v, 95)), min=float(v.min()), max=float(v.max()),
@@ -138,21 +206,22 @@ for tag in ['model1', 'model2']:
             # computed over the sets whose effect is non-zero: a draw with exactly zero
             # premature responses in both conditions carries no directional information,
             # and counting it as disagreeing would understate the agreement
-            frac_correct_sign=(float(np.mean(np.sign(v[v != 0]) == np.sign(obs[k])))
-                               if np.any(v != 0) else float('nan')),
-            n_nonzero=int(np.sum(v != 0)),
+            frac_right=float(right.mean()), frac_wrong=float(wrong.mean()),
+            frac_null=float(zero.mean()), n_tested=int(v.size),
             frac_reaching=float(np.mean(v >= obs[k]) if obs[k] > 0 else np.mean(v <= obs[k])))
 
 json.dump(out, open(OUT, 'w'), indent=1)
 lab = {k: v.replace('\n', ' ') for k, v in NAMES.items()}
 w = max(len(v) for v in lab.values())
-print(f"{'effect':{w}} {'observed':>16} {'Model 1  5-95%':>24} {'Model 2  5-95%':>24}")
+print(f"{'effect':{w}} {'observed':>16} {'M1 right/wrong/0':>16} {'M2 right/wrong/0':>16}")
 for k in NAMES:
     f = '%+.0f' if k in ('rt_dur', 'rt_int', 'pmet_dur', 'met_dur') else '%+.4f'
     cells = []
     for tag in ['model1', 'model2']:
         r = out['models'][tag][k]
-        cells.append(f"{f % r['p5']} to {f % r['p95']}{'' if r['covers_observed'] else '*'}")
+        cells.append(f"{100*r['frac_right']:3.0f}/{100*r['frac_wrong']:3.0f}/{100*r['frac_null']:3.0f}")
     print(f"{lab[k]:{w}} {f % obs[k]} +/-{(f % obs_se[k]).lstrip('+')} "
-          f"{cells[0]:>24} {cells[1]:>24}")
-print("\n* = the model's 5th-95th percentile does not cover the observed value")
+          f"{cells[0]:>16} {cells[1]:>16}")
+print("\ncolumns are the percentage of admissible parameter sets whose effect is, at two "
+      "Monte-Carlo\nstandard errors, significantly of the OBSERVED sign / significantly "
+      "AGAINST it / not\ndistinguishable from zero")

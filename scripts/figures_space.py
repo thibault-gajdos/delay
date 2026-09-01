@@ -167,24 +167,37 @@ def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
         a.set_ylim(-0.6, 1.6)
         a.set_title(P['names'][k], fontsize=7.0, pad=4)
         a.tick_params(axis='x', labelsize=6.5)
-        # the fraction of admissible sets with the observed SIGN, printed per model: for
-        # the effects where the two architectures are predicted to disagree it is the sign
-        # that discriminates, and an interval alone would hide that
+        # the DIRECTION, printed per model as two percentages: the share of admissible
+        # sets whose effect is, at two Monte-Carlo standard errors, significantly of the
+        # observed sign and the share significantly against it. The remainder is not
+        # distinguishable from zero and carries no directional information -- separating
+        # it out matters, because on the premature-response effect more than half of the
+        # sets produce too few premature responses to test the prediction at all, and on
+        # Model 1's delay slope most of the sets that are not positive are simply flat.
         for y, tag in enumerate(['model2', 'model1']):
-            fs = P['models'][tag][k]['frac_correct_sign']
-            a.text(1.03, y, '--' if not np.isfinite(fs) else f"{fs*100:.0f}%",
-                   transform=a.get_yaxis_transform(), va='center', fontsize=6.5,
-                   color=(C_M2 if tag == 'model2' else C_M1))
+            r = P['models'][tag][k]
+            col = C_M2 if tag == 'model2' else C_M1
+            a.text(1.03, y, f"{r['frac_right']*100:.0f}", transform=a.get_yaxis_transform(),
+                   va='center', fontsize=6.5, color=col)
+            a.text(1.16, y, '/', transform=a.get_yaxis_transform(), va='center',
+                   fontsize=6.5, color='0.6')
+            a.text(1.22, y, f"{r['frac_wrong']*100:.0f}", transform=a.get_yaxis_transform(),
+                   va='center', fontsize=6.5, color=col,
+                   fontweight=('bold' if r['frac_wrong'] > 0.25 else 'normal'))
     for a in axes[len(keys):]:
         a.set_visible(False)
     for r in range(nrow):
         axes[r * ncol].set_yticklabels(['Model 2', 'Model 1'], fontsize=7.5)
     axes[0].plot([], [], color=C_OBS, lw=1.1, label='observed (95% CI shaded)')
-    axes[0].legend(loc='lower left', bbox_to_anchor=(0, -0.70), frameon=False, fontsize=7)
-    axes[0].text(0, -1.05, 'the figure at the right of each bar is the percentage of '
-                 'admissible parameter sets whose effect carries the observed sign',
-                 transform=axes[0].transAxes, fontsize=6.6, va='top', color='0.35')
-    fig.subplots_adjust(wspace=0.55, hspace=1.15)
+    fig.subplots_adjust(wspace=0.62, hspace=0.95, bottom=0.16)
+    fig.legend(*axes[0].get_legend_handles_labels(), loc='lower left',
+               bbox_to_anchor=(0.06, 0.045), frameon=False, fontsize=7)
+    fig.text(0.06, 0.005, 'the two figures at the right of each bar are the percentages of '
+             'admissible parameter sets whose effect is, at two Monte-Carlo standard errors, '
+             'significantly of the observed sign / significantly against it;\nthe remainder '
+             'is not distinguishable from zero. A cross marks a model whose 5th-95th '
+             'percentile interval does not reach the observed value.',
+             fontsize=6.6, va='bottom', color='0.35')
     fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
     print('wrote', fname)
 

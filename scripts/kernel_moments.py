@@ -38,10 +38,18 @@ def moments(t, kap, lam):
     return V, Vd, K**2/2
 
 
-def rate(t, kap, d, lam):
-    """non-stationary crossing rate at distance d, with alpha = 0"""
+def rate(t, kap, d, lam, alpha=0.0):
+    """Upcrossing rate of the barrier at distance d, at elapsed maintenance time t.
+
+    `alpha` is the rate at which temporal preparation moves the signal towards the gate,
+    in the same units as d per second (Model 2; alpha = 0 is Model 1). A moving barrier
+    enters the Kac-Rice formula through the relative derivative Vdot - ddot = Vdot + alpha,
+    so it shifts the conditional mean of that derivative by +alpha and nothing else; the
+    density at the barrier is unchanged. `d` must already be the distance AT TIME t, i.e.
+    d0 - alpha*t, not the initial one.
+    """
     V, Vd, C = moments(t, kap, lam)
     sV = np.sqrt(V)
-    m = C/V*d
+    m = C/V*d + alpha
     s = np.sqrt(max(Vd - C**2/V, 1e-30))
     return norm.pdf(d/sV)/sV*(m*norm.cdf(m/s) + s*norm.pdf(m/s))

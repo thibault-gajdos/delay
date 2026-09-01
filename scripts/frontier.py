@@ -1,5 +1,5 @@
 """
-frontier.py -- Model 1's ramp-rate frontier, computed exactly from the kernel.
+frontier.py -- the ramp-rate frontier of BOTH models, computed exactly from the kernel.
 
 Corollary C.5 of the manuscript: with alpha = 0 the delay-period log-rate slope is
   d(ln nu)/dtau = 0.5*(u'/u - s'/s) + (a^2/2)*(s'/s),   s = Var V, u = Var Vdot,
@@ -13,7 +13,24 @@ Computing it as an envelope rather than as a constrained optimisation at each ra
 faster and more useful: the whole curve comes from one scatter over (kappa, lambda, a),
 and the same scatter gives the (kappa, lambda, a) that attains each point.
 
-Writes results/frontier.json: the envelope, plus the two numbers the manuscript quotes
+Model 2 is computed the same way with the barrier moving: temporal preparation carries the
+gate-facing signal towards the gate at rate alpha, which enters the Kac-Rice formula only
+through the relative derivative Vdot + alpha, so `rate(..., alpha=)` handles it. The extra
+dimension is the ramp height over the analysis window, in units of sigma_V; it is capped at
+3.0, which is NOT an arbitrary choice -- it is the 75th percentile of beta/sigma_V over the
+Model 2 draws the admissibility screen actually accepts (median 1.0, maximum 31.2). The cap
+matters because the analytic calculation knows nothing about admissibility: without it,
+Model 2's frontier would grow without bound simply by making the ramp larger, whereas in
+the model a ramp large enough carries the signal past the response criterion during the
+delay and shows up as premature responses, which the screen rejects.
+
+The asymmetry between the two frontiers is the point, and it is worth stating plainly. For
+Model 1 the frontier is a genuine bound: alpha = 0 leaves only kappa, lambda and a, all
+three are swept, and nothing outside the calculation can push it up. For Model 2 it is an
+upper envelope under a cap read off the screened sample, so it says what the architecture
+can reach, not what it typically does.
+
+Writes results/frontier.json: both envelopes, plus the numbers the manuscript quotes
 (the largest slope at the observed rate, and the largest rate at the observed slope).
 """
 import numpy as np, json, sys, os
@@ -33,19 +50,29 @@ KAPPAS = np.r_[np.geomspace(0.20, 3.0, 110), np.geomspace(3.0, 30.0, 30)]
 LAMS = np.geomspace(10.0, 50.0, 9)
 
 
-def scatter():
+RAMP_CAP = 3.0        # ramp height over the window, in sigma_V; see the docstring
+
+
+def scatter(model=1):
+    """Achievable (rate at T1, log-rate slope) pairs over the sampled ranges."""
     R, S, P = [], [], []
+    ramps = np.array([0.0]) if model == 1 else np.linspace(0.0, RAMP_CAP, 40)
+    a_grid = np.linspace(0.02, 4.5, 260) if model == 1 else np.linspace(0.02, 3.5, 60)
     for lam in LAMS:
         for kap in KAPPAS:
             if abs(kap - lam) < 0.3:
                 continue
             sV = np.sqrt(moments(T1, kap, lam)[0])
-            for a in np.linspace(0.02, 4.5, 260):
-                d = a * sV
-                n1 = rate(T1, kap, d, lam); n0 = rate(T0, kap, d, lam)
-                if n0 <= 0 or n1 <= 0:
-                    continue
-                R.append(n1); S.append(np.log(n1 / n0) / (T1 - T0)); P.append((kap, lam, a))
+            for a1 in a_grid:
+                d1 = a1 * sV                       # distance at the END of the window
+                for b in ramps:
+                    al = b * sV / (T1 - T0)
+                    n1 = rate(T1, kap, d1, lam, al)
+                    n0 = rate(T0, kap, d1 + al * (T1 - T0), lam, al)
+                    if n0 <= 0 or n1 <= 0:
+                        continue
+                    R.append(n1); S.append(np.log(n1 / n0) / (T1 - T0))
+                    P.append((kap, lam, a1, b))
     return np.array(R), np.array(S), P
 
 
@@ -59,8 +86,8 @@ def envelope(R, S, P, nbin=90):
         if m.size == 0:
             continue
         j = m[int(np.argmax(S[m]))]
-        out.append(dict(rate=float(R[j]), slope=float(S[j]),
-                        kappa=float(P[j][0]), lam=float(P[j][1]), a=float(P[j][2])))
+        out.append(dict(rate=float(R[j]), slope=float(S[j]), kappa=float(P[j][0]),
+                        lam=float(P[j][1]), a=float(P[j][2]), ramp=float(P[j][3])))
     out.sort(key=lambda r: r['rate'])
     # make it a true frontier: the largest slope achievable at a rate of AT LEAST x is
     # non-increasing in x, so take the running maximum from the high-rate end
@@ -71,43 +98,42 @@ def envelope(R, S, P, nbin=90):
 
 
 if __name__ == '__main__':
-    R, S, P = scatter()
-    env = envelope(R, S, P)
-    # queries answered from the raw scatter, not from the binned envelope: binning can
-    # only lose the maximum, and this frontier is used to EXCLUDE a model, so it must not
-    # be under-reported.
-    def max_slope_at_least(f):
-        m = R >= f
-        if not m.any():
-            return None
-        j = int(np.argmax(np.where(m, S, -np.inf)))
-        return dict(rate=float(R[j]), slope=float(S[j]), kappa=float(P[j][0]),
-                    lam=float(P[j][1]), a=float(P[j][2]))
-
-    def max_rate_at_slope(g):
-        m = S >= g
-        if not m.any():
-            return None
-        j = int(np.argmax(np.where(m, R, -np.inf)))
-        return dict(rate=float(R[j]), slope=float(S[j]), kappa=float(P[j][0]),
-                    lam=float(P[j][1]), a=float(P[j][2]))
-
-    at_rate = max_slope_at_least(OBS_RATE)
-    at_slope = max_rate_at_slope(OBS_SLOPE)
-    table = {f'{f}': max_slope_at_least(f) for f in [0.085, 0.2, 0.3, 0.4, 0.5, 0.709, 1.0]}
     res = dict(window=[T0, T1], obs_rate=OBS_RATE, obs_slope=OBS_SLOPE,
-               n_points=int(R.size), envelope=env,
-               max_slope_at_observed_rate=at_rate,
-               max_rate_at_observed_slope=at_slope,
-               max_slope_by_rate_floor=table)
-    json.dump(res, open('results/frontier.json', 'w'), indent=1)
-    print(f"{R.size} (kappa,lambda,a) points; envelope has {len(env)} bins")
-    print("largest slope at a rate of at least %.3f/s : %+.4f  (kappa=%.2f, lam=%.0f, a=%.2f)"
-          % (OBS_RATE, at_rate['slope'], at_rate['kappa'], at_rate['lam'], at_rate['a']))
-    if at_slope:
-        print("largest rate at a slope of at least %+.3f  : %.4f/s (kappa=%.2f, lam=%.0f, a=%.2f)"
-              % (OBS_SLOPE, at_slope['rate'], at_slope['kappa'], at_slope['lam'], at_slope['a']))
-    for f, v in table.items():
+               ramp_cap_sigmaV=RAMP_CAP, models={})
+    for model in (1, 2):
+        R, S, P = scatter(model)
+        env = envelope(R, S, P)
+
+        def at_rate(f):
+            m = R >= f
+            if not m.any():
+                return None
+            j = int(np.argmax(np.where(m, S, -np.inf)))
+            return dict(rate=float(R[j]), slope=float(S[j]), kappa=float(P[j][0]),
+                        lam=float(P[j][1]), a=float(P[j][2]), ramp=float(P[j][3]))
+
+        def at_slope(g):
+            m = S >= g
+            if not m.any():
+                return None
+            j = int(np.argmax(np.where(m, R, -np.inf)))
+            return dict(rate=float(R[j]), slope=float(S[j]), kappa=float(P[j][0]),
+                        lam=float(P[j][1]), a=float(P[j][2]), ramp=float(P[j][3]))
+
+        floors = [0.085, 0.2, 0.3, 0.4, 0.5, 0.709, 1.0]
+        res['models'][f'model{model}'] = dict(
+            n_points=int(R.size), envelope=env,
+            max_slope_at_observed_rate=at_rate(OBS_RATE),
+            max_rate_at_observed_slope=at_slope(OBS_SLOPE),
+            max_slope_by_rate_floor={str(f): at_rate(f) for f in floors})
+        print(f"--- Model {model}: {R.size} points")
+        for f in floors:
+            v = at_rate(f)
+            if v:
+                print("  rate >= %5.3f : max slope %+8.3f  (kappa=%.2f, lam=%.0f, a=%.2f, ramp=%.2f)"
+                      % (f, v['slope'], v['kappa'], v['lam'], v['a'], v['ramp']))
+        v = at_slope(OBS_SLOPE)
         if v:
-            print("  rate >= %5.3f : max slope %+.3f  (kappa=%.2f, lam=%.0f, a=%.2f)"
-                  % (float(f), v['slope'], v['kappa'], v['lam'], v['a']))
+            print("  largest rate at the observed slope %+.3f : %.3f/s" % (OBS_SLOPE, v['rate']))
+    json.dump(res, open('results/frontier.json', 'w'), indent=1)
+    print('\nwrote results/frontier.json')

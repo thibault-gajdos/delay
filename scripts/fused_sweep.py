@@ -290,6 +290,11 @@ def run_model(p, alpha, model, seed0, gamma=0.0):
     # simulated delay-period rate curve against the observed one without re-simulating
     prof = np.zeros((6, 20)); prof_expo = np.zeros(6)
     met_mean = np.zeros(6); met_se = np.zeros(6)
+    pmet_mean = np.zeros(6); pmet_se = np.zeros(6)
+    # stimulus-period partial-activation rate, 0-2 s from motion onset, the window
+    # empirical.py uses; carries Proposition B.2, the only prediction outside the delay
+    # on which the two models disagree
+    srate = np.zeros(6)
     for k, (c, D) in enumerate(CELLS):
         s = simulate(q, c, D, NTR, model=model, seed=seed0 + k, gamma=gamma)
         m = measures(s)
@@ -308,6 +313,11 @@ def run_model(p, alpha, model, seed0, gamma=0.0):
         mv = m['met'][v]
         met_mean[k] = np.nanmean(mv) if v.sum() else np.nan
         met_se[k] = np.nanstd(mv) / np.sqrt(max(np.sum(~np.isnan(mv)), 1))
+        pv = m['pmet'][v]
+        pmet_mean[k] = np.nanmean(pv) if v.sum() else np.nan
+        pmet_se[k] = np.nanstd(pv) / np.sqrt(max(np.sum(~np.isnan(pv)), 1))
+        hs, es = counts_profile(m, 0.0, 2.0, 20)
+        srate[k] = hs.sum() / (es * 2.0) if es > 0 else np.nan
         h, expo = counts_profile(m, D + 1, D + 3, 20)
         prof[k] = h; prof_expo[k] = expo
         # mean delay-period partial-activation rate over the 2-s analysis window, per
@@ -319,7 +329,8 @@ def run_model(p, alpha, model, seed0, gamma=0.0):
             slope[k], slope_se[k] = np.nan, np.nan
     return dict(prem=prem, early=early, noresp=noresp, acc=acc, rt_mean=rt_mean,
                 rt_se=rt_se, rt_n=rt_n, slope=slope, slope_se=slope_se,
-                rate=rate, met_mean=met_mean, met_se=met_se,
+                rate=rate, srate=srate, met_mean=met_mean, met_se=met_se,
+                pmet_mean=pmet_mean, pmet_se=pmet_se,
                 prof=prof.astype(np.int64), prof_expo=prof_expo.astype(np.int64))
 
 

@@ -57,7 +57,7 @@ def observed_profile():
 # ------------------------------------------------------------------ 1. the frontier
 def fig_frontier(fname='plots/fig_frontier.pdf'):
     fig, ax = plt.subplots(figsize=(5.6, 4.0))
-    env = sorted(FR['envelope'], key=lambda r: r['rate'])
+    env = sorted(FR['models']['model1']['envelope'], key=lambda r: r['rate'])
     x = np.array([e['rate'] for e in env]); y = np.array([e['slope_at_least'] for e in env])
     # shade what Model 1 CANNOT reach, not what it can: the eye reads a shaded region as
     # excluded, and the excluded region is the one above the frontier
@@ -65,19 +65,16 @@ def fig_frontier(fname='plots/fig_frontier.pdf'):
     ax.plot(x, y, color=C_M1, lw=1.6, zorder=3,
             label='Model 1: largest attainable slope (exact)')
     ax.text(0.011, 2.15, 'beyond Model 1', color=C_M1, fontsize=7.5, style='italic')
+    if 'model2' in FR['models']:
+        e2 = sorted(FR['models']['model2']['envelope'], key=lambda r: r['rate'])
+        ax.plot([e['rate'] for e in e2], [e['slope_at_least'] for e in e2],
+                color=C_M2, lw=1.6, ls='--', zorder=3,
+                label='Model 2: largest attainable slope (exact, ramp capped)')
     for tag, col, lab in [('model1', C_M1, 'Model 1, admissible draws'),
                           ('model2', C_M2, 'Model 2, admissible draws')]:
         r, s, _, _ = per_model(tag)
         ax.scatter(r, s, s=9, facecolor='none', edgecolor=col, lw=.6, alpha=.75,
                    zorder=2, label=lab)
-    rc = [json.loads(l) for l in open('results/ramp_check.jsonl')]
-    by = {}
-    for d in rc:
-        by.setdefault(d['draw'], []).append(d)
-    R = np.array([np.mean([x['rate'] for x in v]) for v in by.values()])
-    S = np.array([np.mean([x['slope'] for x in v]) for v in by.values()])
-    ax.scatter(R, S, s=26, marker='D', color=C_M1, zorder=4,
-               label='Model 1, re-simulated at 40 000 trials')
     ax.axhspan(OBS_SLO, OBS_SHI, color='0.86', zorder=1)
     ax.errorbar([OBS_RATE], [OBS_SLOPE],
                 xerr=[[OBS_RATE - OBS_RMIN], [OBS_RMAX - OBS_RATE]], fmt='none',

@@ -1,71 +1,100 @@
 {
  "source": "results/sweep_screened.jsonl",
  "names": {
-  "acc50": "accuracy at 50% coherence",
-  "coh_rt": "coherence effect on RT (ms)",
-  "dur_rt": "duration effect on RT (ms)",
-  "met_range": "MET range across cells (ms)",
-  "rate": "delay-period PMA rate (/s)",
+  "acc_int": "duration benefit on accuracy,\nconfined to 12% coherence",
+  "rt_dur": "duration effect on RT (ms)",
+  "rt_coh": "coherence effect on RT (ms)",
+  "stim_dur": "duration effect on the\nstimulus-period PMA rate (/s)",
+  "pmet_dur": "duration effect on PMET (ms)",
+  "met_dur": "duration effect on MET (ms)",
+  "delay_int": "coherence x duration on the\ndelay-period PMA rate (/s)",
   "slope": "delay-period log-rate slope (/s)"
  },
  "observed": {
-  "acc50": 0.9468664070103234,
-  "coh_rt": 32.51702330175355,
-  "dur_rt": 48.52891615950733,
-  "met_range": 2.4884273034878057,
-  "rate": 0.709493932850127,
-  "slope": 0.8923268886491952
+  "acc_int": 0.07474011622012763,
+  "rt_dur": 48.52891615950739,
+  "rt_coh": 32.51702330175345,
+  "stim_dur": 0.057137206534332456,
+  "pmet_dur": 49.01787813664991,
+  "met_dur": -0.49209686899107863,
+  "delay_int": 0.10664136772954519,
+  "slope": 0.892326888649195
  },
  "observed_se": {
-  "acc50": 0.013123534871020857,
-  "coh_rt": 6.223134119132044,
-  "dur_rt": 6.011651970865533,
-  "met_range": 1.1501036335307189,
-  "rate": 0.10118967063610111,
+  "acc_int": 0.013545710514378998,
+  "rt_dur": 6.011651970865533,
+  "rt_coh": 6.223134119132044,
+  "stim_dur": 0.014864595866428902,
+  "pmet_dur": 6.0658516185741185,
+  "met_dur": 0.7517465900011875,
+  "delay_int": 0.05094914350361529,
   "slope": 0.09177684908474797
  },
  "models": {
   "model1": {
    "n": 117,
-   "acc50": {
-    "median": 0.9957489372343086,
-    "p5": 0.9494868410982574,
-    "p95": 1.0,
-    "min": 0.8828352909402368,
-    "max": 1.0,
-    "covers_observed": false
+   "acc_int": {
+    "median": 0.11826985665633058,
+    "p5": 0.01964935403091565,
+    "p95": 0.20512982586184333,
+    "min": 0.0009477488372286735,
+    "max": 0.22837500000000005,
+    "covers_observed": true,
+    "sign_agrees": true
    },
-   "coh_rt": {
-    "median": 17.360953844901328,
-    "p5": 1.5185432837603097,
-    "p95": 86.85994540317566,
-    "min": -0.9399414062499778,
-    "max": 182.11328124999991,
-    "covers_observed": true
-   },
-   "dur_rt": {
+   "rt_dur": {
     "median": 23.113688151041643,
     "p5": 2.440932219430225,
     "p95": 88.35511218743787,
     "min": -0.3426182728206717,
     "max": 200.59375000000003,
-    "covers_observed": true
+    "covers_observed": true,
+    "sign_agrees": true
    },
-   "met_range": {
-    "median": 14.555219854561209,
-    "p5": 0.8497859513234229,
-    "p95": 255.3356674890556,
-    "min": 0.329494499374805,
-    "max": 523.6587605833072,
-    "covers_observed": true
+   "rt_coh": {
+    "median": 17.360953844901328,
+    "p5": 1.5185432837603097,
+    "p95": 86.85994540317566,
+    "min": -0.9399414062499778,
+    "max": 182.11328124999991,
+    "covers_observed": true,
+    "sign_agrees": true
    },
-   "rate": {
-    "median": 0.18177083333333333,
-    "p5": 0.04545359816498604,
-    "p95": 0.8813374510154414,
-    "min": 0.04014583333333333,
-    "max": 2.9219175878079287,
-    "covers_observed": true
+   "stim_dur": {
+    "median": -0.03583333333333333,
+    "p5": -0.24096174073506602,
+    "p95": -0.003841666666666668,
+    "min": -0.5015,
+    "max": 0.001163906726172892,
+    "covers_observed": false,
+    "sign_agrees": false
+   },
+   "pmet_dur": {
+    "median": 40.67537434895832,
+    "p5": 4.0481445312499975,
+    "p95": 241.55751953124997,
+    "min": -1.0509440104166656,
+    "max": 367.0265106534377,
+    "covers_observed": true,
+    "sign_agrees": true
+   },
+   "met_dur": {
+    "median": -8.511114074773756,
+    "p5": -183.3852563163243,
+    "p95": -0.22032745263513404,
+    "min": -344.2904214608478,
+    "max": 2.048665364583424,
+    "covers_observed": true,
+    "sign_agrees": true
+   },
+   "delay_int": {
+    "median": -0.06630247077962273,
+    "p5": -0.5088790358859481,
+    "p95": 0.05515523292221738,
+    "min": -1.1646684483620908,
+    "max": 0.734875,
+    "covers_observed": false,
+    "sign_agrees": false
    },
    "slope": {
     "median": -0.052642396967356696,
@@ -73,50 +102,74 @@
     "p95": 0.09212232575154121,
     "min": -0.4087924512812258,
     "max": 0.29118496733363747,
-    "covers_observed": false
+    "covers_observed": false,
+    "sign_agrees": false
    }
   },
   "model2": {
    "n": 169,
-   "acc50": {
-    "median": 0.995871903927946,
-    "p5": 0.9473174316357135,
-    "p95": 1.0,
-    "min": 0.8853827361563518,
-    "max": 1.0,
-    "covers_observed": false
+   "acc_int": {
+    "median": 0.11817046653130112,
+    "p5": 0.018083184481906617,
+    "p95": 0.20241460067332095,
+    "min": -0.004689234808702147,
+    "max": 0.21574999999999994,
+    "covers_observed": true,
+    "sign_agrees": true
    },
-   "coh_rt": {
-    "median": 17.508755176555148,
-    "p5": 1.7910855980959761,
-    "p95": 78.5546417096011,
-    "min": -2.6958007812499796,
-    "max": 166.20080566406247,
-    "covers_observed": true
-   },
-   "dur_rt": {
+   "rt_dur": {
     "median": 23.159021849373907,
     "p5": 2.1895112279637807,
     "p95": 90.06432203577361,
     "min": -0.371582031249984,
     "max": 206.21695963541654,
-    "covers_observed": true
+    "covers_observed": true,
+    "sign_agrees": true
    },
-   "met_range": {
-    "median": 38.75463867187501,
-    "p5": 2.2634296759667554,
-    "p95": 1123.2897949218752,
-    "min": 0.39188903358471083,
-    "max": 1966.1379394531248,
-    "covers_observed": true
+   "rt_coh": {
+    "median": 17.508755176555148,
+    "p5": 1.7910855980959761,
+    "p95": 78.5546417096011,
+    "min": -2.6958007812499796,
+    "max": 166.20080566406247,
+    "covers_observed": true,
+    "sign_agrees": true
    },
-   "rate": {
-    "median": 0.19499999999999998,
-    "p5": 0.051395833333333335,
-    "p95": 1.2436830625768291,
-    "min": 0.04179153762556929,
-    "max": 2.1513958333333334,
-    "covers_observed": true
+   "stim_dur": {
+    "median": 0.0012934587813620106,
+    "p5": -0.12489113043576491,
+    "p95": 0.14298371713050823,
+    "min": -0.48850000000000005,
+    "max": 0.6653333333333334,
+    "covers_observed": true,
+    "sign_agrees": true
+   },
+   "pmet_dur": {
+    "median": 66.79907226562503,
+    "p5": 5.310877470462173,
+    "p95": 767.6894368489583,
+    "min": -0.40844726562500044,
+    "max": 1384.499918619792,
+    "covers_observed": true,
+    "sign_agrees": true
+   },
+   "met_dur": {
+    "median": -24.943684895833318,
+    "p5": -730.1268931008558,
+    "p95": -0.9047200520833194,
+    "min": -1282.143473307291,
+    "max": 0.5818684895833037,
+    "covers_observed": false,
+    "sign_agrees": true
+   },
+   "delay_int": {
+    "median": -0.06537500000000002,
+    "p5": -0.46715950862715677,
+    "p95": 0.08077499999999996,
+    "min": -1.30825,
+    "max": 0.8004999999999998,
+    "covers_observed": false,
+    "sign_agrees": false
    },
    "slope": {
     "median": 0.15956453132986734,
@@ -124,7 +177,8 @@
     "p95": 2.0749134036566717,
     "min": -3.655165839844004,
     "max": 4.205409572605695,
-    "covers_observed": true
+    "covers_observed": true,
+    "sign_agrees": true
    }
   }
  }

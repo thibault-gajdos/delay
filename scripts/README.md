@@ -307,7 +307,7 @@ Model 1, so it is exactly the region a bound must not approximate away.
 Was `model1_bound.py`, which also carried a ceiling argument and two constants taken from
 the discarded fit; the ceiling is superseded by the frontier below.
 
-### `frontier.py` -- Model 1's ramp-rate frontier
+### `frontier.py` -- the ramp-rate frontier of both models
 The analytic core of the delay-period argument, and the strongest thing in the project,
 because it involves no sampling at all.
 
@@ -328,13 +328,35 @@ and it returns the (kappa, lambda, a) attaining each point. Queries are answered
 raw scatter rather than from the binned envelope: binning can only lose the maximum, and a
 frontier used to exclude a model must not be under-reported.
 
-Result (`results/frontier.json`): at a rate of at least 0.085 s^-1 -- the lowest observed
-in any participant x condition cell -- the largest slope available to Model 1 is +1.17;
-at 0.2, +0.55; at 0.3, +0.26; at 0.4, +0.08; at 0.5, +0.02; and at the observed mean rate
-of 0.709 s^-1, **+0.001**, against an observed +0.817. Conversely the largest rate at which
-Model 1 attains the observed slope anywhere is 0.140 s^-1, a fifth of the observed mean.
-The optimum sits at the smallest kappa and the largest lambda the ranges allow throughout,
-so this is the most favourable frontier those ranges permit.
+Model 2 is computed the same way with the barrier moving: temporal preparation enters the
+Kac-Rice formula only through the relative derivative Vdot + alpha, so `rate(..., alpha=)`
+handles it. Its ramp height is capped at 3.0 sigma_V -- the 75th percentile of beta/sigma_V
+over the Model 2 draws the screen actually accepts (median 1.0, max 31.2) -- because the
+analytic calculation knows nothing about admissibility, and without a cap Model 2's
+frontier grows without bound simply by making the ramp larger.
+
+Result (`results/frontier.json`), against an observed slope of +0.892 /s at a rate of
+0.709 /s:
+
+| rate at least | Model 1 max slope | Model 2 max slope |
+| --- | --- | --- |
+| 0.085 /s | +1.17 | +16.3 |
+| 0.200 | +0.55 | +13.5 |
+| 0.400 | +0.08 | +10.8 |
+| **0.709** | **+0.001** | **+8.4** |
+| 1.000 | +0.000 | +5.4 |
+
+and the largest rate at which the observed slope is attainable at all: **0.125 /s for
+Model 1, 6.47 /s for Model 2**. The two architectures are not near-misses of one another --
+one exceeds what has to be explained by an order of magnitude, the other falls short by
+three. Model 1's optimum sits at the smallest kappa and the largest lambda the ranges allow
+throughout, so this is the most favourable frontier those ranges permit.
+
+The two frontiers have different STATUS, and the difference should be stated wherever they
+are quoted together. For Model 1 the frontier is a bound: with alpha = 0 the rate depends
+on nothing but kappa, lambda and the distance to the gate, all three swept, and nothing
+outside the calculation can raise it. For Model 2 it is an upper envelope under a cap read
+off the screened sample -- what the architecture can reach, not what it typically does.
 
 ### `ramp_check.py` -- the existence question, at high precision
 An existence question is badly served by raising the trial count uniformly across a sweep:
@@ -367,24 +389,37 @@ draws (0.2%). Model 1's slope is not merely centred near zero but pinned there -
 span of its admissible space moves it about a tenth as much as Model 2's space moves
 Model 2's.
 
-### `effect_panel.py` -- what each architecture can produce, on every effect
-This is what the parameter-space evaluation is FOR, and the paper's Figure S6. For each
-effect the Results test, it reports the distribution of that effect over a model's
-admissible draws -- median and 5th-95th percentile -- next to the observed value and its
-between-participant standard error. Six effects: accuracy at 50% coherence, the coherence
-and duration effects on response time (in ms), the range of mean motor execution time
-across the six cells, the delay-period rate, and the slope of its logarithm.
+### `effect_panel.py` -- what each architecture can produce, on the effects that discriminate
+This is what the parameter-space evaluation is FOR, and the paper's Figure S6. The effects
+are chosen to be the contrasts that carry an argument -- the interactions, the one
+prediction outside the delay on which the models disagree, and the PMET/MET dissociation --
+rather than main effects both architectures produce with the same sign everywhere. An
+earlier version reported accuracy at 50% coherence; it is gone, because the admissibility
+screen requires accuracy above 0.80 in those cells and so pins both models near ceiling
+there, which tests nothing.
 
-Result: on five of the six, both models' ranges cover the observation and are barely
-distinguishable from one another -- the quantitative form of Remark A.0, since beta cannot
-move any of those quantities. On the sixth, the delay-period log-rate slope (observed
-0.892 +/- 0.092 /s), Model 1 runs -0.268 to +0.092 and Model 2 -1.234 to +2.075: only
-Model 2 reaches it. Two honest qualifications the panel makes visible. Both models sit
-slightly above the observed accuracy, because the screen requires accuracy above 0.80 in
-those cells and so selects against the low end. And the MET-invariance prediction, though
-confirmed in the data (observed range 2 +/- 1 ms), is a weak test: both architectures can
-also produce MET ranges of hundreds of milliseconds, so finding a small one does not
-discriminate.
+Result, observed value +/- between-participant SE against each model's 5th-95th percentile:
+
+| effect | observed | Model 1 | Model 2 |
+| --- | --- | --- | --- |
+| A.2 duration benefit on accuracy, at 12% vs the extremes | +0.075 +/- 0.014 | +0.020 to +0.205 | +0.018 to +0.202 |
+| duration effect on RT | +49 +/- 6 ms | +2 to +88 | +2 to +90 |
+| coherence effect on RT | +33 +/- 6 ms | +2 to +87 | +2 to +79 |
+| **B.2 duration effect on the stimulus-period rate** | **+0.057 +/- 0.015 /s** | **-0.241 to -0.004** | -0.125 to +0.143 |
+| duration effect on PMET | +49 +/- 6 ms | +4 to +242 | +5 to +768 |
+| duration effect on MET | -0.4 +/- 1.4 ms | -183 to -0 | -730 to -1 |
+| **C.3 coherence x duration on the delay rate** | **+0.107 +/- 0.051 /s** | **-0.509 to +0.055** | **-0.467 to +0.081** |
+| **C.2 delay-period log-rate slope** | **+0.892 +/- 0.092 /s** | **-0.268 to +0.092** | -1.234 to +2.075 |
+
+Three readings worth keeping. **The stimulus-period duration effect excludes Model 1 on its
+own**, by sign: its whole admissible range is negative where the observation is positive.
+This is Proposition B.2 as a measurement, and it is independent of everything in the delay
+period. **The coherence x duration interaction on the delay rate is missed by both models**,
+across their whole admissible spaces -- the paper's acknowledged disagreement, now
+established as a property of the architectures rather than of a parameter choice. And the
+**PMET/MET dissociation is confirmed in the data but is a weak test**: both architectures
+can also produce motor-component effects one to two orders of magnitude larger than
+anything observed, so finding a small one does not discriminate.
 
 A note on which observed slope to compare against. The mean of the per-cell,
 per-participant slopes is 0.892 /s; the slope of the profile pooled across participants is

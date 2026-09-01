@@ -66,10 +66,14 @@ def fig_frontier(fname='plots/fig_frontier.pdf'):
             label='Model 1: largest attainable slope (exact)')
     ax.text(0.011, 2.15, 'beyond Model 1', color=C_M1, fontsize=7.5, style='italic')
     if 'model2' in FR['models']:
-        e2 = sorted(FR['models']['model2']['envelope'], key=lambda r: r['rate'])
-        ax.plot([e['rate'] for e in e2], [e['slope_at_least'] for e in e2],
-                color=C_M2, lw=1.6, ls='--', zorder=3,
-                label='Model 2: largest attainable slope (exact, ramp capped)')
+        # Model 2's frontier is far off the top of any scale that shows the draws (+8.4 /s
+        # at the observed rate against the observed +0.89), so it is annotated rather than
+        # drawn: putting it on the axis would compress everything else into a line.
+        v2 = FR['models']['model2']['max_slope_at_observed_rate']
+        ax.annotate(f"Model 2's frontier: {v2['slope']:+.1f} s$^{{-1}}$ here",
+                    xy=(OBS_RATE, 2.52), xytext=(OBS_RATE, 1.75), ha='center',
+                    fontsize=7.5, color=C_M2,
+                    arrowprops=dict(arrowstyle='->', color=C_M2, lw=1.2))
     for tag, col, lab in [('model1', C_M1, 'Model 1, admissible draws'),
                           ('model2', C_M2, 'Model 2, admissible draws')]:
         r, s, _, _ = per_model(tag)
@@ -134,34 +138,39 @@ def fig_delay_profile(fname='plots/fig_delay_profile.pdf', lo=0.4, hi=1.2):
 
 # ---------------------------------------------------- 3. the effect-size panel
 def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
-    """What each architecture can produce, on every effect the paper tests, against the
-    observation. This is the parameter-space evaluation's main result: on five of the six
-    effects both models' ranges cover the observed value -- which is the point, since the
-    predictions are shared -- and on the sixth, the delay-period log-rate slope, only
-    Model 2's does."""
+    """What each architecture can produce, on the effects that carry an argument, against
+    the observation. Bars span the 5th-95th percentile over admissible draws, the tick is
+    the median; the vertical line is the observed value with its 95% CI shaded. A bar that
+    does not reach the line is a quantitative failure of that architecture on that effect."""
     P = json.load(open('results/effect_panel.json'))
     keys = list(P['names'])
-    fig, ax = plt.subplots(1, len(keys), figsize=(9.6, 1.75))
-    for a, k in zip(ax, keys):
+    ncol = 4
+    nrow = int(np.ceil(len(keys) / ncol))
+    fig, axes = plt.subplots(nrow, ncol, figsize=(9.6, 1.85 * nrow))
+    axes = np.atleast_2d(axes).ravel()
+    for a, k in zip(axes, keys):
         for y, (tag, col) in enumerate([('model2', C_M2), ('model1', C_M1)]):
             r = P['models'][tag][k]
-            a.plot([r['p5'], r['p95']], [y, y], color=col, lw=3, solid_capstyle='butt',
-                   alpha=.85)
-            a.plot([r['median']], [y], marker='|', ms=9, color='white', mew=1.4)
+            a.plot([r['p5'], r['p95']], [y, y], color=col, lw=4, solid_capstyle='butt',
+                   alpha=.85, zorder=2)
+            a.plot([r['median']], [y], marker='|', ms=10, color='white', mew=1.4, zorder=3)
+            if not r['covers_observed']:
+                a.plot([r['p95'] if r['p95'] < P['observed'][k] else r['p5']], [y],
+                       marker='x', ms=5, color=col, mew=1.4, zorder=4)
         o, se = P['observed'][k], P['observed_se'][k]
-        a.axvspan(o - 1.96 * se, o + 1.96 * se, color='0.85', zorder=0)
-        a.axvline(o, color=C_OBS, lw=1.1, zorder=3)
+        a.axvspan(o - 1.96 * se, o + 1.96 * se, color='0.86', zorder=0)
+        a.axvline(o, color=C_OBS, lw=1.1, zorder=1)
         a.set_yticks([0, 1]); a.set_yticklabels([])
-        a.set_ylim(-0.55, 1.55)
-        ttl = P['names'][k].replace(' (', '\n(')
-        a.set_title(ttl, fontsize=7.0, pad=4)
+        a.set_ylim(-0.6, 1.6)
+        a.set_title(P['names'][k], fontsize=7.0, pad=4)
         a.tick_params(axis='x', labelsize=6.5)
-        if k in ('met_range',):
-            a.set_xscale('log')
-    ax[0].set_yticklabels(['Model 2', 'Model 1'], fontsize=7.5)
-    ax[0].plot([], [], color=C_OBS, lw=1.1, label='observed (95% CI shaded)')
-    ax[0].legend(loc='lower left', bbox_to_anchor=(0, -0.75), frameon=False, fontsize=7)
-    fig.subplots_adjust(wspace=0.42)
+    for a in axes[len(keys):]:
+        a.set_visible(False)
+    for r in range(nrow):
+        axes[r * ncol].set_yticklabels(['Model 2', 'Model 1'], fontsize=7.5)
+    axes[0].plot([], [], color=C_OBS, lw=1.1, label='observed (95% CI shaded)')
+    axes[0].legend(loc='lower left', bbox_to_anchor=(0, -0.62), frameon=False, fontsize=7)
+    fig.subplots_adjust(wspace=0.42, hspace=1.05)
     fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
     print('wrote', fname)
 

@@ -40,7 +40,9 @@
     "min": 0.0009477488372286735,
     "max": 0.22837500000000005,
     "covers_observed": true,
-    "sign_agrees": true
+    "sign_agrees": true,
+    "frac_correct_sign": 1.0,
+    "frac_reaching": 0.7521367521367521
    },
    "rt_dur": {
     "median": 23.113688151041643,
@@ -49,7 +51,9 @@
     "min": -0.3426182728206717,
     "max": 200.59375000000003,
     "covers_observed": true,
-    "sign_agrees": true
+    "sign_agrees": true,
+    "frac_correct_sign": 0.9914529914529915,
+    "frac_reaching": 0.27350427350427353
    },
    "rt_coh": {
     "median": 17.360953844901328,
@@ -58,7 +62,9 @@
     "min": -0.9399414062499778,
     "max": 182.11328124999991,
     "covers_observed": true,
-    "sign_agrees": true
+    "sign_agrees": true,
+    "frac_correct_sign": 0.9829059829059829,
+    "frac_reaching": 0.26495726495726496
    },
    "stim_dur": {
     "median": -0.03583333333333333,
@@ -67,7 +73,9 @@
     "min": -0.5015,
     "max": 0.001163906726172892,
     "covers_observed": false,
-    "sign_agrees": false
+    "sign_agrees": false,
+    "frac_correct_sign": 0.008547008547008548,
+    "frac_reaching": 0.0
    },
    "pmet_dur": {
     "median": 40.67537434895832,
@@ -76,7 +84,9 @@
     "min": -1.0509440104166656,
     "max": 367.0265106534377,
     "covers_observed": true,
-    "sign_agrees": true
+    "sign_agrees": true,
+    "frac_correct_sign": 0.9914529914529915,
+    "frac_reaching": 0.42735042735042733
    },
    "met_dur": {
     "median": -8.511114074773756,
@@ -85,7 +95,9 @@
     "min": -344.2904214608478,
     "max": 2.048665364583424,
     "covers_observed": true,
-    "sign_agrees": true
+    "sign_agrees": true,
+    "frac_correct_sign": 0.9658119658119658,
+    "frac_reaching": 0.9145299145299145
    },
    "delay_int": {
     "median": -0.06630247077962273,
@@ -94,7 +106,9 @@
     "min": -1.1646684483620908,
     "max": 0.734875,
     "covers_observed": false,
-    "sign_agrees": false
+    "sign_agrees": false,
+    "frac_correct_sign": 0.10256410256410256,
+    "frac_reaching": 0.017094017094017096
    },
    "slope": {
     "median": -0.052642396967356696,
@@ -103,7 +117,9 @@
     "min": -0.4087924512812258,
     "max": 0.29118496733363747,
     "covers_observed": false,
-    "sign_agrees": false
+    "sign_agrees": false,
+    "frac_correct_sign": 0.19658119658119658,
+    "frac_reaching": 0.0
    }
   },
   "model2": {
@@ -115,7 +131,9 @@
     "min": -0.004689234808702147,
     "max": 0.21574999999999994,
     "covers_observed": true,
-    "sign_agrees": true
+    "sign_agrees": true,
+    "frac_correct_sign": 0.9881656804733728,
+    "frac_reaching": 0.7455621301775148
    },
    "rt_dur": {
     "median": 23.159021849373907,
@@ -124,7 +142,9 @@
     "min": -0.371582031249984,
     "max": 206.21695963541654,
     "covers_observed": true,
-    "sign_agrees": true
+    "sign_agrees": true,
+    "frac_correct_sign": 0.9881656804733728,
+    "frac_reaching": 0.23668639053254437
    },
    "rt_coh": {
     "median": 17.508755176555148,
@@ -133,7 +153,9 @@
     "min": -2.6958007812499796,
     "max": 166.20080566406247,
     "covers_observed": true,
-    "sign_agrees": true
+    "sign_agrees": true,
+    "frac_correct_sign": 0.9881656804733728,
+    "frac_reaching": 0.28994082840236685
    },
    "stim_dur": {
     "median": 0.0012934587813620106,
@@ -142,7 +164,9 @@
     "min": -0.48850000000000005,
     "max": 0.6653333333333334,
     "covers_observed": true,
-    "sign_agrees": true
+    "sign_agrees": true,
+    "frac_correct_sign": 0.5562130177514792,
+    "frac_reaching": 0.13609467455621302
    },
    "pmet_dur": {
     "median": 66.79907226562503,
@@ -151,7 +175,9 @@
     "min": -0.40844726562500044,
     "max": 1384.499918619792,
     "covers_observed": true,
-    "sign_agrees": true
+    "sign_agrees": true,
+    "frac_correct_sign": 0.9881656804733728,
+    "frac_reaching": 0.591715976331361
    },
    "met_dur": {
     "median": -24.943684895833318,
@@ -160,7 +186,9 @@
     "min": -1282.143473307291,
     "max": 0.5818684895833037,
     "covers_observed": false,
-    "sign_agrees": true
+    "sign_agrees": true,
+    "frac_correct_sign": 0.9881656804733728,
+    "frac_reaching": 0.9585798816568047
    },
    "delay_int": {
     "median": -0.06537500000000002,
@@ -169,7 +197,9 @@
     "min": -1.30825,
     "max": 0.8004999999999998,
     "covers_observed": false,
-    "sign_agrees": false
+    "sign_agrees": false,
+    "frac_correct_sign": 0.1301775147928994,
+    "frac_reaching": 0.03550295857988166
    },
    "slope": {
     "median": 0.15956453132986734,
@@ -178,7 +208,9 @@
     "min": -3.655165839844004,
     "max": 4.205409572605695,
     "covers_observed": true,
-    "sign_agrees": true
+    "sign_agrees": true,
+    "frac_correct_sign": 0.6923076923076923,
+    "frac_reaching": 0.15976331360946747
    }
   }
  }

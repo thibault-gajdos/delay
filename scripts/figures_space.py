@@ -167,6 +167,13 @@ def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
         a.set_ylim(-0.6, 1.6)
         a.set_title(P['names'][k], fontsize=7.0, pad=4)
         a.tick_params(axis='x', labelsize=6.5)
+        # the fraction of admissible sets with the observed SIGN, printed per model: for
+        # the effects where the two architectures are predicted to disagree it is the sign
+        # that discriminates, and an interval alone would hide that
+        for y, tag in enumerate(['model2', 'model1']):
+            a.text(1.02, y, f"{P['models'][tag][k]['frac_correct_sign']*100:.0f}%",
+                   transform=a.get_yaxis_transform(), va='center', fontsize=6,
+                   color=(C_M2 if tag == 'model2' else C_M1))
     for a in axes[len(keys):]:
         a.set_visible(False)
     for r in range(nrow):

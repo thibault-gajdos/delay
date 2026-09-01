@@ -105,7 +105,14 @@ for tag in ['model1', 'model2']:
             median=float(np.median(v)), p5=float(np.percentile(v, 5)),
             p95=float(np.percentile(v, 95)), min=float(v.min()), max=float(v.max()),
             covers_observed=bool(np.percentile(v, 5) <= obs[k] <= np.percentile(v, 95)),
-            sign_agrees=bool(np.sign(np.median(v)) == np.sign(obs[k])))
+            sign_agrees=bool(np.sign(np.median(v)) == np.sign(obs[k])),
+            # the fraction of admissible draws whose effect has the observed SIGN, and the
+            # fraction reaching the observed magnitude. For B.2 the sign is what
+            # discriminates -- Proposition B.2 says the two models predict opposite signs --
+            # so a range that fails to cover the observed value can still be the decisive
+            # comparison, and reporting only the interval would hide that.
+            frac_correct_sign=float(np.mean(np.sign(v) == np.sign(obs[k]))),
+            frac_reaching=float(np.mean(v >= obs[k]) if obs[k] > 0 else np.mean(v <= obs[k])))
 
 json.dump(out, open(OUT, 'w'), indent=1)
 lab = {k: v.replace('\n', ' ') for k, v in NAMES.items()}

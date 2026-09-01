@@ -16,13 +16,29 @@ The behavioural analyses of variance of Tables 1 and S1 -- accuracy, response ti
 and motor execution time -- were until 2026-09-01 the one set of analyses in the paper that
 no script here reproduced: they came from the original JASP runs and lived nowhere else.
 They are now computed by `run_stats.R` from the archive's own per-participant x cell
-exports in `analysis_behavioral_emg/`, which are the files JASP was given. Accuracy and
-response time reproduce the published table to the last digit (22.68 / 222.22 / 12.17 and
-65.79 / 14.19 / 4.61). Premotor and motor execution time do not quite -- 69.60 against
-69.75 and 1.09 against 1.03 -- and since the first two match exactly from the same files by
-the same procedure, the difference is in the data rather than in the method: the published
-PMET and MET analyses presumably ran on an earlier version of those exports. No verdict
-changes. The two sides meet at CSV files
+exports in `analysis_behavioral_emg/`, which are the files JASP was given. Accuracy and response time reproduce the published table to the last digit (22.676 /
+222.223 / 12.171 and 65.790 / 14.190 / 4.607, with partial eta squared 0.519 / 0.914 /
+0.367 and 0.758 / 0.403 / 0.180). Premotor and motor execution time do not quite -- 69.600
+against 69.75 and 1.095 against 1.03 -- and since the first two match exactly from the same
+files by the same procedure, the difference is in the data rather than in the method: the
+published PMET and MET analyses presumably ran on an earlier version of those exports. No
+verdict changes. **The manuscript's Table S1 and the corresponding sentences of the Results
+have been aligned on this output**, which also fills in the partial eta squared the table
+left blank for MET (0.050, 0.029, 0.104) and replaces the uncorrected interaction degrees
+of freedom (2, 42) with the Greenhouse-Geisser ones afex reports.
+
+Two bugs found on the way, both worth knowing about:
+
+* afex's default effect size is GENERALISED eta squared, and this file was collecting it
+  into a column named `eta2p`. That is a mislabelling, not a rounding difference: for the
+  accuracy duration effect the two are 0.027 and 0.519, and it is the second that the
+  manuscript reports. Fixed with `es_aov = "pes"`; every row of `stats_results.csv` was
+  affected, not only the new ones.
+* `analyse_period` crashed on a period with NO events in any bin: `which(!empty)[1]` returns
+  NA, the filter kept no rows, and aov_ez failed with an opaque reshape error. The case is
+  not pathological -- the SIMULATED response period contains no partial activations by
+  construction, since `measures()` scores the burst preceding the response as the response.
+  It had never fired because `--with-sim` had never run to completion. The two sides meet at CSV files
 written by `export_for_R.py`, which carry counts and exposures for the data and for each
 model simulated at the representative parameter vector, so that the identical statistical
 analysis runs on both sides.

@@ -14,6 +14,11 @@ activation rate (the honest conditional question), and the best overall regardle
 rate (in case a ramp hides at an implausibly low rate) -- and reports both.
 
 Appends one record per (draw, seed) to results/ramp_check.jsonl; resumable.
+
+Each record carries `dump`, the sweep it was selected from, and records from any other dump
+are ignored on load. Without that the file silently accumulated records from two different
+Latin-hypercube cubes, in which the same `draw` index means two different parameter
+vectors -- which happened once, on 2026-09-01, and is not detectable by eye.
 Usage: python3 ramp_check.py [N_SEEDS] [NTR] [DUMP.jsonl]
 """
 import numpy as np, json, os, sys, time
@@ -61,7 +66,10 @@ for c, tag in [(c, 'rate>=25%') for c in withrate] + [(c, 'any rate') for c in o
 done = set()
 if os.path.exists(OUT):
     for l in open(OUT):
-        d = json.loads(l); done.add((d['draw'], d['seed']))
+        d = json.loads(l)
+        if d.get('dump') != DUMP:
+            continue
+        done.add((d['draw'], d['seed']))
 
 with open(OUT, 'a') as fh:
     for c in sel:
@@ -71,7 +79,7 @@ with open(OUT, 'a') as fh:
             t0 = time.time()
             res = F.run_model(c['params'], 0.0, 1, 777000 + 9000 * s + 13 * c['draw'])
             sl = np.asarray(res['slope'], float); rt = np.asarray(res['rate'], float)
-            rec = dict(draw=c['draw'], seed=s, ntr=NTR, why=c['why'],
+            rec = dict(draw=c['draw'], seed=s, ntr=NTR, why=c['why'], dump=DUMP,
                        stage1_slope=c['slope'], stage1_rate=c['rate'],
                        slope=float(np.nanmean(sl)), rate=float(np.nanmean(rt)),
                        slope_cells=sl.tolist(), rate_cells=rt.tolist())

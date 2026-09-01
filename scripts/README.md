@@ -8,8 +8,21 @@ archive, and the figures. Nothing is fitted -- the models' predictions are deriv
 analytically and their effect-size ranges come from sampling the parameter space, not from
 estimating a parameter vector.
 
-**R** owns the statistics: every analysis of variance, every trend decomposition, and the
-Poisson analyses of the partial-activation counts. The two sides meet at CSV files
+**R** owns the statistics that this project computes: the analyses of variance on the
+electromyographic and electroencephalographic measures, the trend decompositions, and the
+Poisson analyses of the partial-activation counts.
+
+**Not computed here, and it should be said plainly:** the BEHAVIOURAL analyses of variance
+reported in the manuscript's Table 1 and Table S1 -- accuracy, response time, premotor and
+motor execution time -- are not produced by `run_stats.R`, which contains no behavioural
+section at all. Those numbers come from the original JASP analyses. Recomputing the
+duration effects from `empirical.py`'s own extraction gives F = 23.00 against Table S1's
+22.68 for accuracy and 65.16 against 65.79 for response time, but 65.30 against 69.75 for
+premotor execution time and 0.43 against 1.03 for motor execution time. Every sign and
+every significance verdict agrees; the F values do not, and the discrepancy is not
+systematic, so it presumably reflects different trial-exclusion or aggregation rules. If
+these tables are to be reproducible from this repository, the behavioural ANOVAs have to be
+written here. The two sides meet at CSV files
 written by `export_for_R.py`, which carry counts and exposures for the data and for each
 model simulated at the representative parameter vector, so that the identical statistical
 analysis runs on both sides.

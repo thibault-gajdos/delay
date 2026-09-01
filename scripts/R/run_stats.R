@@ -12,7 +12,8 @@
 ##   Rscript run_stats.R --with-sim      # also the simulated counts, if present
 ##
 ## INPUTS
-##   the JASP export files of the OSF archive, path in ARCHIVE
+##   the JASP export files of the OSF archive, path in ARCHIVE, including the
+##   behavioural exports in analysis_behavioral_emg/
 ##   pma_counts.csv and sim_counts_m{1,2}.csv, written by export_for_R.py (optional)
 ##
 ## OUTPUTS
@@ -436,6 +437,58 @@ if (file.exists(pf)) {
                                 at = list(durn = c(-.5, .5),
                                           cohn = c(0, .12, .5) - mean(c(0, .12, .5))))),
                  file = OUT, append = TRUE)
+}
+
+## ---------------------------------------------------------------------------
+## BEHAVIOUR: accuracy, response time, premotor and motor execution time.
+##
+## These four are the manuscript's Table 1 and Table S1, and until 2026-09-01 they
+## were the one set of analyses in the paper that no script here reproduced -- they
+## came from the original JASP runs and lived nowhere else. They are computed here
+## from the archive's own per-participant x cell exports, the same files JASP was
+## given, so the numbers are reproducible rather than inherited.
+##
+## The design is duration (2) x coherence (3), fully within-subject; aov_ez applies
+## Greenhouse-Geisser to the three-level coherence factor and to the interaction,
+## which is why their degrees of freedom are fractional.
+
+BEHAV <- tribble(
+  ~measure,    ~file,             ~label,
+  "Accuracy",  "accuracy.csv",    "response accuracy",
+  "Mean RT",   "mean_RT.csv",     "mean response time",
+  "Mean PMET", "mean_PMET.csv",   "mean premotor execution time",
+  "Mean MET",  "mean_MET.csv",    "mean motor execution time")
+
+read_behav <- function(path) {
+  d <- read.csv(path, check.names = FALSE)
+  stopifnot(ncol(d) == 6)
+  ## the archive's column order is coh0/12/50 at 300 ms, then coh0/12/50 at 2000 ms
+  names(d) <- c("d1c0", "d1c12", "d1c50", "d2c0", "d2c12", "d2c50")
+  d$subj <- factor(seq_len(nrow(d)))
+  d %>%
+    pivot_longer(-subj, names_to = "cell", values_to = "y") %>%
+    mutate(dur = factor(sub("^d([12]).*", "\\1", cell), levels = c("1", "2"),
+                        labels = c("0.3 s", "2 s")),
+           coh = factor(sub("^d[12]c", "", cell), levels = c("0", "12", "50"),
+                        labels = c("0%", "12%", "50%"))) %>%
+    select(subj, dur, coh, y)
+}
+
+say("\n", strrep("=", 78))
+say("BEHAVIOUR (archive exports, analysis_behavioral_emg/)")
+say(strrep("=", 78))
+for (i in seq_len(nrow(BEHAV))) {
+  f <- file.path(ARCHIVE, "analysis_behavioral_emg", BEHAV$file[i])
+  if (!file.exists(f)) { say("MISSING: ", f); next }
+  d <- read_behav(f)
+  a <- aov_ez("subj", "y", d, within = c("dur", "coh"))
+  say("\n", BEHAV$measure[i], " -- ", BEHAV$label[i], "  (n = ", nlevels(d$subj), ")")
+  capture.output(print(a$anova_table), file = OUT, append = TRUE)
+  at <- a$anova_table
+  for (j in seq_len(nrow(at))) {
+    add_row(BEHAV$measure[i], "behaviour", rownames(at)[j],
+            at[j, "num Df"], at[j, "den Df"], at[j, "F"], at[j, "Pr(>F)"], at[j, "ges"])
+  }
 }
 
 ## ---------------------------------------------------------------------------

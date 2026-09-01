@@ -12,17 +12,17 @@ estimating a parameter vector.
 electromyographic and electroencephalographic measures, the trend decompositions, and the
 Poisson analyses of the partial-activation counts.
 
-**Not computed here, and it should be said plainly:** the BEHAVIOURAL analyses of variance
-reported in the manuscript's Table 1 and Table S1 -- accuracy, response time, premotor and
-motor execution time -- are not produced by `run_stats.R`, which contains no behavioural
-section at all. Those numbers come from the original JASP analyses. Recomputing the
-duration effects from `empirical.py`'s own extraction gives F = 23.00 against Table S1's
-22.68 for accuracy and 65.16 against 65.79 for response time, but 65.30 against 69.75 for
-premotor execution time and 0.43 against 1.03 for motor execution time. Every sign and
-every significance verdict agrees; the F values do not, and the discrepancy is not
-systematic, so it presumably reflects different trial-exclusion or aggregation rules. If
-these tables are to be reproducible from this repository, the behavioural ANOVAs have to be
-written here. The two sides meet at CSV files
+The behavioural analyses of variance of Tables 1 and S1 -- accuracy, response time, premotor
+and motor execution time -- were until 2026-09-01 the one set of analyses in the paper that
+no script here reproduced: they came from the original JASP runs and lived nowhere else.
+They are now computed by `run_stats.R` from the archive's own per-participant x cell
+exports in `analysis_behavioral_emg/`, which are the files JASP was given. Accuracy and
+response time reproduce the published table to the last digit (22.68 / 222.22 / 12.17 and
+65.79 / 14.19 / 4.61). Premotor and motor execution time do not quite -- 69.60 against
+69.75 and 1.09 against 1.03 -- and since the first two match exactly from the same files by
+the same procedure, the difference is in the data rather than in the method: the published
+PMET and MET analyses presumably ran on an earlier version of those exports. No verdict
+changes. The two sides meet at CSV files
 written by `export_for_R.py`, which carry counts and exposures for the data and for each
 model simulated at the representative parameter vector, so that the identical statistical
 analysis runs on both sides.
@@ -98,6 +98,10 @@ All paths below are relative to `scripts/` (run `cd scripts` first); `results/` 
 the managed virtualenv. The pipeline runs top to bottom: everything downstream of the sweep
 reads its dump.
 
+Everything downstream of the sweep and the frontier is wrapped in `./rerun.sh`, which runs
+the steps below in order and takes about two minutes. The sweep and the frontier are not in
+it: both are long and both are run sharded across cores by hand.
+
 ```
 python delaymodel/empirical.py    -> (printout)              extraction, checked against the archive
 python delaymodel/targets.py      -> (printout)              empirical summaries per cell
@@ -147,6 +151,9 @@ python export_for_R.py            -> pma_counts.csv                counts and ex
                                                                    "..", expects them there)
 Rscript R/run_stats.R --with-sim  -> R/stats_tables.txt            all tables, data and simulation
                                      R/stats_results.csv           one row per effect
+                                                                   (includes the behavioural
+                                                                   ANOVAs of Tables 1 and S1
+                                                                   since 2026-09-01)
 Rscript R/emit_tex.R              -> _tables.tex                   the same, for the note
 ```
 

@@ -192,6 +192,9 @@ DELAY_TB = np.arange(20) * 0.1 + 0.05
 DELAY_TB = DELAY_TB - DELAY_TB.mean()
 
 RATE_LO, RATE_HI = 0.04, 3.0   # delay-window PMA rate screen, /s (see admissible())
+# Chronometric screen, added 2026-09-01. See admissible().
+PMET_LO, PMET_HI = 0.181, 0.677     # s
+MET_LO, MET_HI = 0.046, 0.288       # s
 
 FIXED = dict(sigx=0.100, Lmotion=0.200, LRS=0.200, delay=3.0, Lmotor=0.093)
 
@@ -354,6 +357,27 @@ def admissible(res):
     # either model exceeded 3.0); the criterion is a floor.
     rm = np.nanmean(res['rate'])
     if not (RATE_LO <= rm <= RATE_HI): return False
+    # Chronometric criterion (added 2026-09-01), same form and same justification as the
+    # rate window above: a draw stands for a hypothetical participant, and a participant
+    # whose response-time decomposition is physically impossible is not one. Without it the
+    # admissible set contained draws with a mean premotor execution time of -945 ms -- a
+    # response burst beginning almost a second BEFORE the reaction signal -- and mean motor
+    # execution times of 1.4 s.
+    #
+    # The window is the range of the observed per-participant means, widened by a factor of
+    # two about their mean: observed PMET means run 270-518 ms and MET means 103-224 ms,
+    # giving 181-677 ms and 46-288 ms here.
+    #
+    # This screens on the LEVELS of the two components, and it is important that it does not
+    # screen on their EFFECTS. The paper's RS-locked predictions are that coherence and
+    # duration move the premotor component and leave the motor component alone; those are
+    # statements about differences between conditions, and they remain free to be right or
+    # wrong at every admissible draw. Screening on the level of PMET therefore removes no
+    # tested prediction, where screening on the invariance of MET would have converted a
+    # result into an assumption -- which is why that was considered and rejected.
+    pm = np.nanmean(res['pmet_mean']); mt = np.nanmean(res['met_mean'])
+    if not (np.isfinite(pm) and PMET_LO <= pm <= PMET_HI): return False
+    if not (np.isfinite(mt) and MET_LO <= mt <= MET_HI): return False
     return True
 
 

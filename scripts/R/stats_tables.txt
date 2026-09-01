@@ -397,3 +397,27 @@ MBL, stimulus period, resolved into two halves (descriptive; Appendix B4)
       0.3 s/0% -0.0045  0.3 s/12% -0.0159  0.3 s/50% -0.0290  2 s/0% +0.0003  2 s/12% -0.0068  2 s/50% +0.0043
   full window                trend t = -3.43 (p = 0.0025) | x coh F =  0.52 (p = 0.5958) | x dur F =  4.50 (p = 0.0460)
       0.3 s/0% -0.0200  0.3 s/12% -0.0241  0.3 s/50% -0.0210  2 s/0% -0.0078  2 s/12% -0.0118  2 s/50% -0.0067
+
+==============================================================================
+Poisson analyses of the delay-period counts (Appendix B12)
+==============================================================================
+
+-- two-stage: per participant and cell, then repeated-measures ANOVA
+Anova Table (Type 3 tests)
+
+Response: slope
+        num Df den Df     MSE      F       ges  Pr(>F)  
+dur     1.0000 21.000 0.18010 4.7810 0.0237106 0.04024 *
+coh     1.3828 29.040 0.15076 4.1951 0.0240743 0.03789 *
+dur:coh 1.8679 39.226 0.10386 0.3938 0.0021501 0.66314  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+Anova Table (Type 3 tests)
+
+Response: curv
+        num Df den Df     MSE      F       ges Pr(>F)
+dur     1.0000  21.00 1.07037 0.1666 0.0020431 0.6872
+coh     1.8371  38.58 0.69504 0.8561 0.0123904 0.4243
+dur:coh 1.8224  38.27 0.56224 2.3862 0.0272951 0.1099
+   slope vs zero: +0.9286, t(21) = 10.15, p = 1.502e-09
+   curvature vs zero: -0.2530, t(21) = -3.30, p = 0.003434

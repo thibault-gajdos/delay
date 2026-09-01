@@ -87,10 +87,17 @@ SHARD_N=6 SHARD_I=$i \
 cat results/sweep_screened_sh*.jsonl > results/sweep_screened.jsonl
 
 # 2. what it says, and how much of it is noise
-python effect_sizes.py results/sweep_screened.jsonl 4 4000 40
-                                  -> results/effect_sizes.json     distributions, criterion
-                                                                   counts, MC/between-draw
-                                                                   variance decomposition
+python effect_sizes.py results/sweep_screened.jsonl 4 4000 0
+                                  -> results/effect_sizes_stage1.json  distributions and
+                                                                   criterion counts (stage 1
+                                                                   only; the trailing 0 skips
+                                                                   the re-simulation)
+ES_SHARD_N=6 ES_SHARD_I=$i \
+  python effect_sizes.py results/sweep_screened.jsonl 4 4000 40 > results/logs/es_sh$i.log
+python pool_noise.py              -> results/noise_pooled.json     the variance decomposition,
+                                                                   pooled over all 40 draws
+                                                                   (never average the shards'
+                                                                   own -- see pool_noise.py)
 python ramp_check.py 3 40000 results/sweep_screened.jsonl
                                   -> results/ramp_check.jsonl      the best candidates
                                                                    re-simulated at high NTR
@@ -304,8 +311,9 @@ one second into maintenance is of order exp(-2 kappa), below 1e-9 only above kap
 whereas Table A1 samples down to 0.2. Small kappa is also the region most favourable to
 Model 1, so it is exactly the region a bound must not approximate away.
 
-Was `model1_bound.py`, which also carried a ceiling argument and two constants taken from
-the discarded fit; the ceiling is superseded by the frontier below.
+(Renamed from model1_bound.py on 2026-08-31 -- that file also carried a ceiling argument
+and two constants taken from the discarded fit; the ceiling is superseded by the frontier
+below. The old name survives only in the git history.)
 
 ### `frontier.py` -- the ramp-rate frontier of both models
 The analytic core of the delay-period argument, and the strongest thing in the project,
@@ -379,9 +387,10 @@ Stage 1 distils the sweep dump into the counts and distributions quoted in the m
 Stage 2 measures how much of the reported spread is simulation noise rather than parameter
 sensitivity, by re-simulating a subset of admissible draws on several seeds and decomposing
 the variance of the per-draw slope into between-draw and within-draw (Monte-Carlo) parts.
-Shardable through `ES_SHARD_N`/`ES_SHARD_I`; pool the per-draw values from the shard logs
-rather than averaging the shards' own decompositions, which are computed on too few draws
-each (`results/noise_pooled.json`).
+Shardable through `ES_SHARD_N`/`ES_SHARD_I`. Pool the per-draw values from the shard logs
+with `pool_noise.py` rather than averaging the shards' own decompositions: a between-draw
+variance estimated from seven draws is worthless, and one shard duly reported a
+Monte-Carlo share above 100%.
 
 Result: Model 1 total SD 0.099 s^-1, of which 0.055 Monte-Carlo and 0.083 between draws
 (31% of the variance); Model 2 total 1.18, of which 0.057 Monte-Carlo and 1.17 between

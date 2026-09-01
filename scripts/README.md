@@ -357,12 +357,21 @@ whole comparison, and `effect_panel.py` now reports it:
 
 | effect | Model 1 | Model 2 |
 | --- | --- | --- |
-| the five effects both architectures share | 99% | 99% |
-| **B.2, duration effect on the stimulus-period rate** | **1%** | **44%** |
+| the seven effects both architectures share (A.2, A.3, A.4, A.5, B.1, D.2 x2) | 96-99% | 96-99% |
+| **B.2, duration effect on the stimulus-period rate** | **1%** | **45%** |
 | **C.2, delay-period log-rate slope** | **31%** | **90%** |
 | C.3, coherence x duration on the delay rate | 5% | 9% |
 
-Two effects separate the architectures, one is missed by both, five are indistinguishable.
+Two effects separate the architectures, one is missed by both, seven are indistinguishable.
+
+**Proposition B.2 was half wrong and has been corrected.** It claimed that Model 2 predicts a
+higher stimulus-locked rate after the SHORT stimulus and Model 1 the opposite. Model 1's half
+holds at 99% of its admissible settings. Model 2's does not: temporal preparation opposes the
+level effect but overturns it at only 45%, because the ramp's size and the distance to the
+gate are independent parameters. The test is therefore ONE-SIDED -- it refutes Model 1 and
+does not confirm Model 2 -- and the proposition, the Results paragraph and Remark B.3 now say
+so. This was caught by reading the effect panel, which showed both models' medians on the
+same side of zero where the text said they should be on opposite sides.
 
 A fresh run with a different seed will not reproduce the exact admissibility counts; the
 criteria and their signs are robust, the counts are not guaranteed identical run to run.

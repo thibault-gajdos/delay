@@ -148,9 +148,9 @@ def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
     does not reach the line is a quantitative failure of that architecture on that effect."""
     P = json.load(open('results/effect_panel.json'))
     keys = list(P['names'])
-    ncol = 4
+    ncol = 5
     nrow = int(np.ceil(len(keys) / ncol))
-    fig, axes = plt.subplots(nrow, ncol, figsize=(9.6, 1.85 * nrow))
+    fig, axes = plt.subplots(nrow, ncol, figsize=(11.0, 2.1 * nrow))
     axes = np.atleast_2d(axes).ravel()
     for a, k in zip(axes, keys):
         for y, (tag, col) in enumerate([('model2', C_M2), ('model1', C_M1)]):
@@ -171,16 +171,20 @@ def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
         # the effects where the two architectures are predicted to disagree it is the sign
         # that discriminates, and an interval alone would hide that
         for y, tag in enumerate(['model2', 'model1']):
-            a.text(1.02, y, f"{P['models'][tag][k]['frac_correct_sign']*100:.0f}%",
-                   transform=a.get_yaxis_transform(), va='center', fontsize=6,
+            fs = P['models'][tag][k]['frac_correct_sign']
+            a.text(1.03, y, '--' if not np.isfinite(fs) else f"{fs*100:.0f}%",
+                   transform=a.get_yaxis_transform(), va='center', fontsize=6.5,
                    color=(C_M2 if tag == 'model2' else C_M1))
     for a in axes[len(keys):]:
         a.set_visible(False)
     for r in range(nrow):
         axes[r * ncol].set_yticklabels(['Model 2', 'Model 1'], fontsize=7.5)
     axes[0].plot([], [], color=C_OBS, lw=1.1, label='observed (95% CI shaded)')
-    axes[0].legend(loc='lower left', bbox_to_anchor=(0, -0.62), frameon=False, fontsize=7)
-    fig.subplots_adjust(wspace=0.42, hspace=1.05)
+    axes[0].legend(loc='lower left', bbox_to_anchor=(0, -0.70), frameon=False, fontsize=7)
+    axes[0].text(0, -1.05, 'the figure at the right of each bar is the percentage of '
+                 'admissible parameter sets whose effect carries the observed sign',
+                 transform=axes[0].transAxes, fontsize=6.6, va='top', color='0.35')
+    fig.subplots_adjust(wspace=0.55, hspace=1.15)
     fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
     print('wrote', fname)
 

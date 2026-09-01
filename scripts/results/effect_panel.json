@@ -1,19 +1,23 @@
 {
  "source": "results/sweep_screened.jsonl",
  "names": {
-  "acc_int": "duration benefit on accuracy,\nconfined to 12% coherence",
-  "rt_dur": "duration effect on RT (ms)",
-  "rt_coh": "coherence effect on RT (ms)",
-  "stim_dur": "duration effect on the\nstimulus-period PMA rate (/s)",
-  "pmet_dur": "duration effect on PMET (ms)",
-  "met_dur": "duration effect on MET (ms)",
-  "delay_int": "coherence x duration on the\ndelay-period PMA rate (/s)",
-  "slope": "delay-period log-rate slope (/s)"
+  "acc_int": "A.2  duration benefit on accuracy,\nat 12% minus at 0% and 50%",
+  "rt_dur": "A.3  RT, short minus long (ms)",
+  "rt_int": "A.4  coherence effect on RT,\nshort minus long (ms)",
+  "prem_dur": "A.5  premature responses,\nlong minus short",
+  "stim_coh": "B.1  stimulus-period rate,\n50% minus 0% coherence (/s)",
+  "stim_dur": "B.2  stimulus-period rate,\nshort minus long (/s)",
+  "pmet_dur": "D.2  PMET, short minus long (ms)",
+  "met_dur": "D.2  MET, short minus long (ms)",
+  "delay_int": "C.3  coherence effect on the delay rate,\nlong minus short (/s)",
+  "slope": "C.2  delay-period log-rate slope (/s)"
  },
  "observed": {
   "acc_int": 0.07474011622012763,
   "rt_dur": 48.52891615950739,
-  "rt_coh": 32.51702330175345,
+  "rt_int": 14.50918760716238,
+  "prem_dur": 0.012594696969696968,
+  "stim_coh": 0.053656114634099736,
   "stim_dur": 0.057137206534332456,
   "pmet_dur": 49.01787813664991,
   "met_dur": -0.49209686899107863,
@@ -23,7 +27,9 @@
  "observed_se": {
   "acc_int": 0.013545710514378998,
   "rt_dur": 6.011651970865533,
-  "rt_coh": 6.223134119132044,
+  "rt_int": 7.98104568977118,
+  "prem_dur": 0.00224179665006764,
+  "stim_coh": 0.019889343924729835,
   "stim_dur": 0.014864595866428902,
   "pmet_dur": 6.0658516185741185,
   "met_dur": 0.7517465900011875,
@@ -42,6 +48,7 @@
     "covers_observed": true,
     "sign_agrees": true,
     "frac_correct_sign": 0.9878048780487805,
+    "n_nonzero": 164,
     "frac_reaching": 0.7012195121951219
    },
    "rt_dur": {
@@ -53,18 +60,44 @@
     "covers_observed": true,
     "sign_agrees": true,
     "frac_correct_sign": 0.9939024390243902,
+    "n_nonzero": 164,
     "frac_reaching": 0.16463414634146342
    },
-   "rt_coh": {
-    "median": 15.658593817155452,
-    "p5": 1.1571709991723107,
-    "p95": 75.40412596369819,
-    "min": -1.0180664062500178,
-    "max": 196.26878324910413,
+   "rt_int": {
+    "median": 24.55062747372383,
+    "p5": 1.4980590820312445,
+    "p95": 82.06977920017108,
+    "min": -37.69946289062498,
+    "max": 143.42846679687494,
     "covers_observed": true,
     "sign_agrees": true,
-    "frac_correct_sign": 0.9878048780487805,
-    "frac_reaching": 0.22560975609756098
+    "frac_correct_sign": 0.975609756097561,
+    "n_nonzero": 164,
+    "frac_reaching": 0.6524390243902439
+   },
+   "prem_dur": {
+    "median": 8.333333333333333e-05,
+    "p5": 0.0,
+    "p95": 0.04256666666666665,
+    "min": -8.333333333333333e-05,
+    "max": 0.06125,
+    "covers_observed": true,
+    "sign_agrees": true,
+    "frac_correct_sign": 0.9655172413793104,
+    "n_nonzero": 87,
+    "frac_reaching": 0.23780487804878048
+   },
+   "stim_coh": {
+    "median": 0.06341754080997311,
+    "p5": 0.009248457808448216,
+    "p95": 0.6507992951500287,
+    "min": -0.004312499999999997,
+    "max": 0.9894375000000001,
+    "covers_observed": true,
+    "sign_agrees": true,
+    "frac_correct_sign": 0.9817073170731707,
+    "n_nonzero": 164,
+    "frac_reaching": 0.5548780487804879
    },
    "stim_dur": {
     "median": -0.034795570348536475,
@@ -75,6 +108,7 @@
     "covers_observed": false,
     "sign_agrees": false,
     "frac_correct_sign": 0.006097560975609756,
+    "n_nonzero": 164,
     "frac_reaching": 0.0
    },
    "pmet_dur": {
@@ -86,6 +120,7 @@
     "covers_observed": true,
     "sign_agrees": true,
     "frac_correct_sign": 0.9939024390243902,
+    "n_nonzero": 164,
     "frac_reaching": 0.29878048780487804
    },
    "met_dur": {
@@ -97,6 +132,7 @@
     "covers_observed": true,
     "sign_agrees": true,
     "frac_correct_sign": 0.9878048780487805,
+    "n_nonzero": 164,
     "frac_reaching": 0.9207317073170732
    },
    "delay_int": {
@@ -108,6 +144,7 @@
     "covers_observed": false,
     "sign_agrees": false,
     "frac_correct_sign": 0.054878048780487805,
+    "n_nonzero": 164,
     "frac_reaching": 0.012195121951219513
    },
    "slope": {
@@ -119,6 +156,7 @@
     "covers_observed": false,
     "sign_agrees": false,
     "frac_correct_sign": 0.31097560975609756,
+    "n_nonzero": 164,
     "frac_reaching": 0.0
    }
   },
@@ -133,6 +171,7 @@
     "covers_observed": true,
     "sign_agrees": true,
     "frac_correct_sign": 0.9932432432432432,
+    "n_nonzero": 148,
     "frac_reaching": 0.75
    },
    "rt_dur": {
@@ -144,18 +183,44 @@
     "covers_observed": true,
     "sign_agrees": true,
     "frac_correct_sign": 0.9932432432432432,
+    "n_nonzero": 148,
     "frac_reaching": 0.20270270270270271
    },
-   "rt_coh": {
-    "median": 18.910531308818868,
-    "p5": 1.2488403320312342,
-    "p95": 81.88090927660836,
-    "min": -2.4758349771717425,
-    "max": 204.81577438837505,
+   "rt_int": {
+    "median": 24.40022994044996,
+    "p5": 1.0339002980640974,
+    "p95": 76.49228225739593,
+    "min": -38.51904296874997,
+    "max": 186.480774833438,
     "covers_observed": true,
     "sign_agrees": true,
-    "frac_correct_sign": 0.9932432432432432,
-    "frac_reaching": 0.30405405405405406
+    "frac_correct_sign": 0.9594594594594594,
+    "n_nonzero": 148,
+    "frac_reaching": 0.6756756756756757
+   },
+   "prem_dur": {
+    "median": 4.1666666666666415e-05,
+    "p5": 0.0,
+    "p95": 0.04457916666666668,
+    "min": -0.00025,
+    "max": 0.06075,
+    "covers_observed": true,
+    "sign_agrees": true,
+    "frac_correct_sign": 0.9135802469135802,
+    "n_nonzero": 81,
+    "frac_reaching": 0.21621621621621623
+   },
+   "stim_coh": {
+    "median": 0.030037363315805348,
+    "p5": 0.000856572942225819,
+    "p95": 0.38802590996294095,
+    "min": 0.0,
+    "max": 0.9645625,
+    "covers_observed": true,
+    "sign_agrees": true,
+    "frac_correct_sign": 1.0,
+    "n_nonzero": 145,
+    "frac_reaching": 0.3783783783783784
    },
    "stim_dur": {
     "median": -0.0015737491505780493,
@@ -165,7 +230,8 @@
     "max": 0.12920833333333334,
     "covers_observed": false,
     "sign_agrees": false,
-    "frac_correct_sign": 0.4391891891891892,
+    "frac_correct_sign": 0.4482758620689655,
+    "n_nonzero": 145,
     "frac_reaching": 0.02702702702702703
    },
    "pmet_dur": {
@@ -177,6 +243,7 @@
     "covers_observed": true,
     "sign_agrees": true,
     "frac_correct_sign": 0.9932432432432432,
+    "n_nonzero": 148,
     "frac_reaching": 0.3918918918918919
    },
    "met_dur": {
@@ -188,6 +255,7 @@
     "covers_observed": false,
     "sign_agrees": true,
     "frac_correct_sign": 0.9932432432432432,
+    "n_nonzero": 148,
     "frac_reaching": 0.9527027027027027
    },
    "delay_int": {
@@ -199,6 +267,7 @@
     "covers_observed": false,
     "sign_agrees": false,
     "frac_correct_sign": 0.08783783783783784,
+    "n_nonzero": 148,
     "frac_reaching": 0.02702702702702703
    },
    "slope": {
@@ -210,6 +279,7 @@
     "covers_observed": true,
     "sign_agrees": true,
     "frac_correct_sign": 0.8986486486486487,
+    "n_nonzero": 148,
     "frac_reaching": 0.20270270270270271
    }
   }

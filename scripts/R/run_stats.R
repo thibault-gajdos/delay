@@ -245,6 +245,19 @@ analyse_period <- function(d, measure, period, pub = NULL) {
   ## the corresponding main effect a second time. Such periods are analysed on
   ## the informative bin alone, with three effects, not seven.
   empty <- d %>% group_by(bin) %>% summarise(z = all(y == 0)) %>% pull(z)
+  ## A period with NO informative bin at all cannot be analysed, and this is not a
+  ## pathology: the simulated response period contains no partial activations by
+  ## construction, because measures() scores the burst preceding the response as the
+  ## response rather than as a partial activation, and in the model essentially every
+  ## trial's final approach is that burst. Before 2026-09-01 this reached which(!empty)[1]
+  ## as NA and failed inside aov_ez with an opaque reshape error, which is what it did
+  ## the first time the simulated data were carried through this function.
+  if (all(empty)) {
+    say("\n", strrep("=", 78))
+    say(label, "   (no events in any bin: not analysed)")
+    say(strrep("=", 78))
+    return(invisible(NULL))
+  }
   if (nb == 2 && any(empty)) {
     k <- which(!empty)[1]
     s1 <- d %>% filter(bin == k) %>% select(subj, dur, coh, y)

@@ -29,7 +29,12 @@ C_M1, C_M2, C_OBS = '#c1272d', '#3182bd', '#222222'
 # OBS_RATE is the MEAN rate over the 1-3 s window -- the quantity the simulation reports,
 # and NOT the end-of-delay peak (1.446 s^-1), which is a different number.
 OBS_RATE, OBS_RMIN, OBS_RMAX = 0.709, 0.085, 2.785
-OBS_SLOPE, OBS_SLO, OBS_SHI = 0.817, 0.659, 1.029
+# OBS_SLOPE is the MEAN OF THE PER-CELL, PER-PARTICIPANT slopes, which is the quantity
+# frontier.py builds its envelope against and the quantity the effect panel reports. It is
+# NOT the slope of the profile pooled across participants (0.817): pooling mixes processes
+# with different rates and flattens the log-rate, so the two differ. OBS_SLO and OBS_SHI
+# span the six cell means -- a spread across conditions, not a confidence interval.
+OBS_SLOPE, OBS_SLO, OBS_SHI = 0.892, 0.659, 1.029
 
 recs = [json.loads(l) for l in open('results/sweep_screened.jsonl')]
 FR = json.load(open('results/frontier.json'))
@@ -66,13 +71,15 @@ def fig_frontier(fname='plots/fig_frontier.pdf'):
             label='Model 1: largest attainable slope (exact)')
     ax.text(0.011, 2.15, 'beyond Model 1', color=C_M1, fontsize=7.5, style='italic')
     if 'model2' in FR['models']:
-        # Model 2's frontier is far off the top of any scale that shows the draws (+8.4 /s
-        # at the observed rate against the observed +0.89), so it is annotated rather than
-        # drawn: putting it on the axis would compress everything else into a line.
+        # Model 2's frontier is far off the top of any scale that shows the draws, so it
+        # is annotated rather than drawn: putting it on the axis would compress everything
+        # else into a line. The annotation is anchored at the observed rate, and says so --
+        # "here" alone left the reader to guess what the number referred to.
         v2 = FR['models']['model2']['max_slope_at_observed_rate']
-        ax.annotate(f"Model 2's frontier: {v2['slope']:+.1f} s$^{{-1}}$ here",
-                    xy=(OBS_RATE, 2.52), xytext=(OBS_RATE, 1.75), ha='center',
-                    fontsize=7.5, color=C_M2,
+        ax.annotate(f"at the observed rate Model 2 reaches {v2['slope']:+.1f} s$^{{-1}}$\n"
+                    f"(its frontier, off the top of the panel)",
+                    xy=(OBS_RATE * 2.6, 2.50), xytext=(OBS_RATE, 1.60), ha='center',
+                    fontsize=7.5, color=C_M2, linespacing=1.35,
                     arrowprops=dict(arrowstyle='->', color=C_M2, lw=1.2))
     for tag, col, lab in [('model1', C_M1, 'Model 1, admissible draws'),
                           ('model2', C_M2, 'Model 2, admissible draws')]:

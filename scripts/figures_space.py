@@ -1,159 +1,138 @@
-"""figures_space.py -- the sampled parameter space, with no fitted parameter anywhere.
-
-  fig_ramp_vs_rate.pdf   the central question in one panel: across the admissible space,
-                         can Model 1 produce a delay-period ramp AND activity at the
-                         observed rate?  Every admissible draw is a point; the best
-                         Model 1 candidates re-simulated at NTR=40000 are overlaid with
-                         their Monte-Carlo error bars.
-  fig_traj_median.pdf    the manuscript's Figure 1 recomputed at the MEDIAN of the
-                         sampled ranges rather than at fitted parameters, with two
-                         distinct bands: across trials at that point, and across the
-                         admissible parameter space.
 """
-import numpy as np, json, os, sys
-import matplotlib; matplotlib.use('Agg')
+figures_space.py -- the two figures that come from the parameter-space evaluation rather
+than from a single simulated trial.
+
+  fig_frontier.pdf       Model 1's ramp-rate frontier, with the sampled draws on it. This
+                         is the figure that carries the delay-period argument: the two
+                         quantities that have to be reproduced together are on the two
+                         axes, the analytic frontier is the boundary of what Model 1 can
+                         do, and the observation sits far outside it.
+  fig_delay_profile.pdf  The delay-period rate curve itself, observed against what each
+                         architecture produces over its admissible space.
+
+Inputs: results/sweep_screened.jsonl, results/frontier.json, results/ramp_check.jsonl,
+pma_counts.csv.  Usage: python3 figures_space.py
+"""
+import json, csv, os, sys
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from delaymodel.sim import simulate, measures, DT
-from delaymodel.targets import CELLS
-import fused_sweep as F
 
 plt.rcParams.update({'font.size': 8, 'axes.labelsize': 8.5, 'legend.fontsize': 7,
                      'xtick.labelsize': 7.5, 'ytick.labelsize': 7.5})
-C_M1, C_M2 = '#c1272d', '#3182bd'
-# Observed delay-period partial-activation statistics, all from the 132 subject x
-# condition cells (22 participants x 6 cells, none empty; see README "The EMG criterion").
-# OBS_RATE is the MEAN rate over the 1-3 s analysis window -- the quantity the simulation
-# reports.  It is NOT 1.446 /s: that figure, used here until 2026-08-31, is the
-# END-OF-DELAY PEAK (last 0.1 s bin), a different quantity, and comparing the simulated
-# window mean against it overstated both models' shortfall by roughly a factor of two.
-# OBS_LO/OBS_HI are the observed per-condition log-rate SLOPES, unaffected by that error.
-OBS_RATE, OBS_RATE_MIN, OBS_RATE_MAX = 0.709, 0.085, 2.785
-OBS_LO, OBS_HI = 0.659, 1.029
-recs = [json.loads(l) for l in open('results/sweep_a.jsonl')]
+C_M1, C_M2, C_OBS = '#c1272d', '#3182bd', '#222222'
 
-# ---------------------------------------------------------------- 1. ramp vs rate
-fig, ax = plt.subplots(figsize=(6.0, 4.4))
-ax.axhspan(OBS_LO, OBS_HI, color='0.85', zorder=0)
-ax.axvline(OBS_RATE, color='0.6', lw=.8, ls=':', zorder=1)
-for tag, key, col, mk in [('Model 2', 'model2', C_M2, '^'), ('Model 1', 'model1', C_M1, 's')]:
-    xs, ys = [], []
-    for r in recs:
-        m = r[key]
-        if not m['admissible']:
+# Observed delay-period statistics, from the 132 participant x condition cells.
+# OBS_RATE is the MEAN rate over the 1-3 s window -- the quantity the simulation reports,
+# and NOT the end-of-delay peak (1.446 s^-1), which is a different number.
+OBS_RATE, OBS_RMIN, OBS_RMAX = 0.709, 0.085, 2.785
+OBS_SLOPE, OBS_SLO, OBS_SHI = 0.817, 0.659, 1.029
+
+recs = [json.loads(l) for l in open('results/sweep_screened.jsonl')]
+FR = json.load(open('results/frontier.json'))
+
+
+def per_model(tag):
+    adm = [r[tag] for r in recs if r[tag]['admissible']]
+    rate = np.array([np.nanmean(np.asarray(m['raw']['rate'], float)) for m in adm])
+    slope = np.array([np.nanmean(np.asarray(m['raw']['slope'], float)) for m in adm])
+    ok = np.isfinite(rate) & np.isfinite(slope) & (rate > 0)
+    prof = np.array([np.asarray(m['raw']['prof'], float).sum(axis=0) for m in adm])
+    expo = np.array([np.asarray(m['raw']['prof_expo'], float).sum() for m in adm])
+    return rate[ok], slope[ok], prof[ok], expo[ok]
+
+
+def observed_profile():
+    cnt = np.zeros(20); expo = np.zeros(20)
+    for r in csv.DictReader(open('pma_counts.csv')):
+        if r['period'] != 'delay':
             continue
-        sl = np.asarray(m['raw']['slope'], float); rt = np.asarray(m['raw']['rate'], float)
-        if np.isfinite(sl).any() and np.isfinite(rt).any():
-            xs.append(np.nanmean(rt)); ys.append(np.nanmean(sl))
-    ax.plot(xs, ys, mk, color=col, ms=3.2, alpha=.45, lw=0, label=f'{tag}, admissible draws')
-
-RC = [json.loads(l) for l in open('results/ramp_check.jsonl')]
-by = {}
-for r in RC:
-    by.setdefault(r['draw'], []).append(r)
-for d, v in by.items():
-    sl = np.array([x['slope'] for x in v]); rt = np.mean([x['rate'] for x in v])
-    se = sl.std(ddof=1)/np.sqrt(sl.size) if sl.size > 1 else 0.0
-    ax.errorbar(rt, sl.mean(), yerr=1.96*se, fmt='o', color='k', ms=5, capsize=2.5,
-                zorder=5, mfc='w', mew=1.2,
-                label='Model 1 best candidates,\nNTR=40000, 95% MC interval'
-                      if d == list(by)[0] else None)
-ax.set_xscale('symlog', linthresh=1e-3)
-ax.set_xlabel('delay-period partial-activation rate (per trial per s)')
-ax.set_ylabel('delay-period log-rate slope (s$^{-1}$)')
-ax.set_title('Can Model 1 produce a ramp AND activity at the observed rate?', fontsize=9)
-ax.text(1.55, OBS_HI, ' observed', fontsize=7, color='0.4', va='bottom')
-ax.legend(frameon=False, loc='upper left', fontsize=6.8)
-fig.savefig('plots/fig_ramp_vs_rate.pdf', bbox_inches='tight'); plt.close(fig)
-
-# ---------------------------------------------------------------- 2. median-point Fig 1
-row = np.full(len(F.DIMS), 0.5)
-Pmed, bfrac = F.to_param(row)
-Delta = (F.FIXED['delay'] + F.FIXED['LRS']) - F.FIXED['Lmotion']
-beta_med = np.exp(F.LO['log_beta'] + bfrac*(F.HI['log_beta'] - F.LO['log_beta']))
-COLS = {0.0: '#9e9e9e', 0.12: '#5b9bd5', 0.50: '#12456b'}
-STY = {0.3: '--', 2.0: '-'}
-XLO, XHI = -0.3, 3.25
+        b = int(r['bin']); cnt[b] += float(r['count']); expo[b] += float(r['ntrial'])
+    return cnt, expo
 
 
-def traj(P, model, alpha, cells, n=500, seed=41):
-    """mean gated signal per cell, on a stimulus-offset-locked axis"""
-    out = []
-    for k, (c, D) in enumerate(cells):
-        q = dict(P); q['alpha'] = alpha
-        s = simulate(q, c, D, n, model=model, seed=seed + 7*k, post=2.0)
-        m = measures(s); ri = s['resp_i']; v = np.flatnonzero(m['valid'])
-        if v.size == 0:
-            out.append(None); continue
-        Y = s['Z'] + P['g']
-        t = np.arange(Y.shape[1])*DT - D
-        M = np.array([np.where(np.arange(Y.shape[1]) <= ri[j], Y[j], np.nan) for j in v])
-        out.append((t, np.nanmean(M, 0), np.nanstd(M, 0), c, D))
-    return out
+# ------------------------------------------------------------------ 1. the frontier
+def fig_frontier(fname='plots/fig_frontier.pdf'):
+    fig, ax = plt.subplots(figsize=(5.6, 4.0))
+    env = sorted(FR['envelope'], key=lambda r: r['rate'])
+    x = np.array([e['rate'] for e in env]); y = np.array([e['slope_at_least'] for e in env])
+    # shade what Model 1 CANNOT reach, not what it can: the eye reads a shaded region as
+    # excluded, and the excluded region is the one above the frontier
+    ax.fill_between(x, y, 4.0, color=C_M1, alpha=.06, lw=0, zorder=0)
+    ax.plot(x, y, color=C_M1, lw=1.6, zorder=3,
+            label='Model 1: largest attainable slope (exact)')
+    ax.text(0.011, 2.15, 'beyond Model 1', color=C_M1, fontsize=7.5, style='italic')
+    for tag, col, lab in [('model1', C_M1, 'Model 1, admissible draws'),
+                          ('model2', C_M2, 'Model 2, admissible draws')]:
+        r, s, _, _ = per_model(tag)
+        ax.scatter(r, s, s=9, facecolor='none', edgecolor=col, lw=.6, alpha=.75,
+                   zorder=2, label=lab)
+    rc = [json.loads(l) for l in open('results/ramp_check.jsonl')]
+    by = {}
+    for d in rc:
+        by.setdefault(d['draw'], []).append(d)
+    R = np.array([np.mean([x['rate'] for x in v]) for v in by.values()])
+    S = np.array([np.mean([x['slope'] for x in v]) for v in by.values()])
+    ax.scatter(R, S, s=26, marker='D', color=C_M1, zorder=4,
+               label='Model 1, re-simulated at 40 000 trials')
+    ax.axhspan(OBS_SLO, OBS_SHI, color='0.86', zorder=1)
+    ax.errorbar([OBS_RATE], [OBS_SLOPE],
+                xerr=[[OBS_RATE - OBS_RMIN], [OBS_RMAX - OBS_RATE]], fmt='none',
+                ecolor='0.55', elinewidth=.8, capsize=2, zorder=5)
+    ax.plot([OBS_RATE], [OBS_SLOPE], marker='*', ms=13, color=C_OBS, zorder=6,
+            label='observed')
+    ax.set_xscale('log')
+    ax.set_xlim(8e-3, 4.0); ax.set_ylim(-1.7, 2.6)
+    ax.set_xlabel('delay-period partial-activation rate (s$^{-1}$)')
+    ax.set_ylabel('delay-period log-rate slope (s$^{-1}$)')
+    ax.axhline(0, color='0.75', lw=.7, ls=':')
+    ax.legend(loc='lower left', frameon=False, handletextpad=.5)
+    fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
+    print('wrote', fname)
 
 
-fig, axs = plt.subplots(2, 2, figsize=(9.4, 6.0), sharex=True,
-                        gridspec_kw=dict(width_ratios=[1.35, 1.0]))
-REP = [(0.50, 2.0)]                      # representative cell for the spaghetti panel
-for r, (model, alpha, name, col) in enumerate(
-        [(2, beta_med/Delta, 'Model 2  (maintenance + temporal preparation)', C_M2),
-         (1, 0.0, 'Model 1  (maintenance only)', C_M1)]):
+# ------------------------------------------------------------ 2. the delay profile
+def fig_delay_profile(fname='plots/fig_delay_profile.pdf', lo=0.4, hi=1.2):
+    """The delay profile, at draws that produce activations at about the observed rate.
 
-    # -- left: the median point, all six cells, exactly the Figure 1 content
-    ax = axs[r, 0]
-    for tr in traj(Pmed, model, alpha, CELLS):
-        if tr is None:
-            continue
-        t, mu, sd, c, D = tr
-        w = (t >= XLO) & (t <= XHI)
-        ax.plot(t[w], mu[w], STY[D], color=COLS[c], lw=1.3)
-    ax.axhline(Pmed['theta'], color='0.55', ls=':', lw=.8)
-    ax.axhline(Pmed['g'], color='0.25', ls=':', lw=.9)
-    ax.text(XHI, Pmed['theta'], r'  $\theta$', fontsize=7.5, va='center', color='0.45')
-    ax.text(XHI, Pmed['g'], '  g', fontsize=7.5, va='center', color='0.25')
-    ax.set_ylabel('gated motor-preparatory signal')
-    ax.set_title(name, fontsize=9, loc='left', color=col)
-    if r == 1:
-        h = ([plt.Line2D([], [], color=COLS[c], lw=1.3, label=f'coherence {int(c*100)}%')
-              for c in (0.0, 0.12, 0.50)] +
-             [plt.Line2D([], [], color='0.4', lw=1.3, ls=STY[D],
-                         label=f'stimulus {D} s') for D in (0.3, 2.0)])
-        ax.legend(handles=h, frameon=False, fontsize=6.8, ncol=5,
-                  loc='upper center', bbox_to_anchor=(0.5, -0.18))
+    Conditioning on the rate is what makes the picture readable and is also the honest
+    question: over the whole admissible set the levels differ by two orders of magnitude,
+    so a percentile envelope taken bin by bin mixes profiles that are not comparable and
+    shows nothing about shape. Restricting to draws whose mean rate brackets the observed
+    0.709 s-1 asks the question the delay argument actually turns on -- when the
+    architecture produces partial activations as often as the participants do, does its
+    rate curve rise as theirs does?
+    """
+    t = np.arange(20) * 0.1 + 0.05
+    cnt, expo = observed_profile()
+    obs = cnt / (expo * 0.1)
+    se = obs / np.sqrt(np.maximum(cnt, 1))
+    fig, ax = plt.subplots(1, 2, figsize=(7.2, 3.1), sharey=True,
+                           gridspec_kw=dict(wspace=0.08))
+    for a, (tag, col, name) in zip(ax, [('model1', C_M1, 'Model 1'),
+                                        ('model2', C_M2, 'Model 2')]):
+        r, _, prof, pex = per_model(tag)
+        sel = (r >= lo) & (r <= hi)
+        rate = prof[sel] / (pex[sel][:, None] * 0.1)
+        band = np.percentile(rate, [5, 95], axis=0)
+        a.fill_between(t, band[0], band[1], color=col, alpha=.15, lw=0,
+                       label=f'{name}, 5th–95th percentile ({sel.sum()} draws)')
+        a.plot(t, np.median(rate, axis=0), color=col, lw=1.6, label=f'{name}, median')
+        a.errorbar(t, obs, yerr=se, fmt='o', ms=2.6, color=C_OBS, lw=.8, label='observed')
+        a.set_xlabel('time into the delay analysis window (s)')
+        a.legend(loc='upper left', frameon=False)
+        a.set_ylim(0, 2.0)
+    ax[0].set_ylabel('partial-activation rate (s$^{-1}$)')
+    ax[0].set_title(f'draws with a mean rate in [{lo}, {hi}] s$^{{-1}}$ '
+                    f'(observed {OBS_RATE})', fontsize=8, loc='left')
+    fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
+    print('wrote', fname)
 
-    # -- right: variability ACROSS the parameter space, as real trajectories
-    ax = axs[r, 1]
-    key = 'model2' if model == 2 else 'model1'
-    drawn = [rr for rr in recs if rr[key]['admissible']][:40]
-    for rr in drawn:
-        tr = traj(rr['params'], model, rr['alpha'] if model == 2 else 0.0,
-                  REP, n=140, seed=900)[0]
-        if tr is None:
-            continue
-        t, mu, sd, c, D = tr
-        gap = rr['params']['g'] - rr['params']['theta']
-        w = (t >= XLO) & (t <= XHI)
-        # each trajectory in units of its OWN gate distance, so settings are comparable
-        ax.plot(t[w], (mu[w] - rr['params']['theta'])/gap, '-', color=col, lw=.7, alpha=.30)
-    tr = traj(Pmed, model, alpha, REP)[0]
-    gapm = Pmed['g'] - Pmed['theta']
-    w = (tr[0] >= XLO) & (tr[0] <= XHI)
-    ax.plot(tr[0][w], (tr[1][w] - Pmed['theta'])/gapm, '-', color='k', lw=1.8,
-            label='median of the ranges')
-    ax.axhline(1.0, color='0.25', ls=':', lw=.9); ax.axhline(0.0, color='0.55', ls=':', lw=.8)
-    ax.text(XHI, 1.0, '  g', fontsize=7.5, va='center', color='0.25')
-    ax.text(XHI, 0.0, r'  $\theta$', fontsize=7.5, va='center', color='0.45')
-    ax.set_ylabel('signal, in units of the\ndistance from $\\theta$ to g')
-    ax.set_ylim(-0.6, 1.35)
-    if r == 0:
-        ax.set_title(f'{len(drawn)} admissible parameter settings,\none trajectory each '
-                     '(50% coherence, 2 s)', fontsize=8, loc='left', color='0.35')
-        ax.legend(frameon=False, fontsize=6.8, loc='lower right')
-for a in axs[1, :]:
-    a.set_xlabel('time from stimulus offset (s)')
-axs[1, 0].xaxis.labelpad = 2
-fig.suptitle('Simulated dynamics at the median of the sampled ranges, and across them '
-             '— no fitted parameter', fontsize=9.5)
-fig.tight_layout(rect=[0, 0.05, 1, 0.96])
-fig.savefig('plots/fig_traj_median.pdf', bbox_inches='tight'); plt.close(fig)
-print('written: fig_ramp_vs_rate.pdf, fig_traj_median.pdf')
+
+if __name__ == '__main__':
+    os.makedirs('plots', exist_ok=True)
+    fig_frontier()
+    fig_delay_profile()

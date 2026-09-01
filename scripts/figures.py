@@ -1,4 +1,13 @@
-"""figures.py -- figures for the note.  Run after calibrate.py has produced the fits."""
+"""
+figures.py -- the figures that show simulated dynamics.
+
+Nothing is fitted, so these are drawn at the REPRESENTATIVE ADMISSIBLE DRAW selected by
+representative.py (see that file for the rule and for why the median of the ranges is not
+usable). The same parameter vector is used for both models, so the two trajectory figures
+differ only in beta -- which is the only term in which the architectures differ.
+
+Run representative.py first.  Usage: python3 figures.py
+"""
 import numpy as np, json, sys, os
 import matplotlib
 matplotlib.use('Agg')
@@ -167,116 +176,16 @@ def fig_shape(E, fname='plots/fig_shape.pdf'):
 # that compact form reads poorly on an axis.
 DUR_LAB = {0.3: '0.3 s', 2.0: '2.0 s'}
 COH_LAB = {0.0: '0%', 0.12: '12%', 0.50: '50%'}
-OOS_X = [0, 1, 2, 3.6, 4.6, 5.6]           # gap between the two duration clusters
-
-
-def _oos_predictions(p1_behav, p2_behav, n=30000):
-    """Simulate both behavior-only-calibrated models at every cell and return, per
-    cell, both the full 20-bin delay-period rate profile and its log-rate slope --
-    shared by fig_oos_slope and fig_oos_rate_profile so each model is only run once."""
-    TB = np.arange(20) * 0.1 + 0.05; TB = TB - TB.mean()
-
-    def run(p, model, seed0):
-        profiles = np.zeros((6, 20)); slopes = np.zeros(6)
-        for k, (c, D) in enumerate(CELLS):
-            s = simulate(p, c, D, n, model, seed=seed0 + k)
-            m = measures(s)
-            pr = rate_profile(m, D + 1, D + 3, 20)
-            profiles[k] = pr
-            slopes[k] = poisson_slope(pr, TB)[1] if (pr > 0).sum() >= 4 else np.nan
-        return profiles, slopes
-
-    prof1, s1 = run(p1_behav, 1, 9000)
-    prof2, s2 = run(p2_behav, 2, 9100)
-    return dict(profile1=prof1, profile2=prof2, slope1=s1, slope2=s2)
-
-
-def fig_oos_slope(oos, E, fname='plots/fig_oos_slope.pdf'):
-    """Out-of-sample validation (Results, Simulation validation / Delay-locked): each
-    model calibrated on behavior alone (results/calibq_m{1,2}.json), then simulated,
-    without recalibration, at the delay-period partial-activation log-rate slope --
-    a quantity neither calibration was allowed to see. Returns the numbers that fill
-    the manuscript's SLOPE1/SLOPE2/ERR1/ERR2/ERRFAC placeholders."""
-    s1, s2 = oos['slope1'], oos['slope2']
-    obs_persub = E['slope']                              # (nsub, 6)
-    obs_mean = np.nanmean(obs_persub, axis=0)
-    obs_n = np.sum(np.isfinite(obs_persub), axis=0)
-    obs_se = np.nanstd(obs_persub, axis=0, ddof=1) / np.sqrt(np.maximum(obs_n, 1))
-    err1 = float(np.mean(np.abs(s1 - obs_mean) / obs_se))
-    err2 = float(np.mean(np.abs(s2 - obs_mean) / obs_se))
-
-    fig, ax = plt.subplots(figsize=(5.8, 3.4))
-    ax.errorbar(OOS_X, obs_mean, yerr=obs_se, fmt='o', color='k', ms=5, capsize=3,
-                label='observed (±1 SE)', zorder=3)
-    ax.plot(OOS_X, s1, 's--', color='#c1272d', ms=5, label='Model 1 (behavior-only fit)')
-    ax.plot(OOS_X, s2, '^-', color='#3182bd', ms=5, label='Model 2 (behavior-only fit)')
-    ax.axhline(0, color='0.7', lw=.7, zorder=0)
-    ax.axvline(2.8, color='0.85', lw=.7, zorder=0)
-    ax.set_xticks(OOS_X)
-    ax.set_xticklabels([COH_LAB[c] for c, D in CELLS], fontsize=7)
-    ax.set_xlabel('motion coherence, grouped by stimulus duration', fontsize=7.5)
-    for xc, D in [(1, 0.3), (4.6, 2.0)]:
-        ax.text(xc, ax.get_ylim()[1] * 0.97, f'duration = {DUR_LAB[D]}', ha='center',
-                fontsize=7, color='0.35')
-    ax.set_ylabel('delay-period log-rate slope (s$^{-1}$)')
-    ax.set_title('Out-of-sample: neither calibration saw this quantity', fontsize=8)
-    ax.legend(fontsize=6.5, frameon=False, loc='upper left', bbox_to_anchor=(1.01, 1.0))
-    fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
-
-    return dict(obs_mean=obs_mean.tolist(), obs_se=obs_se.tolist(),
-                model1_slope=s1.tolist(), model2_slope=s2.tolist(),
-                err1=err1, err2=err2, errfac=err1 / err2)
-
-
-def fig_oos_rate_profile(oos, E, fname='plots/fig_oos_rate_profile.pdf'):
-    """The delay-period partial-activation rate itself, bin by bin (not just its
-    slope): observed vs. each behavior-only-calibrated model's out-of-sample
-    prediction, one panel per cell, arranged duration (rows) x coherence (columns)."""
-    tb = np.arange(20) * 0.1 + 1.05                      # time from stimulus offset (s)
-    obs = E['dly'].mean(0)                                # (6, 20), across participants
-    fig, ax = plt.subplots(2, 3, figsize=(8.4, 4.6), sharex=True, sharey=True)
-    for k, (c, D) in enumerate(CELLS):
-        row = 0 if D == 0.3 else 1
-        col = [0.0, 0.12, 0.50].index(c)
-        a = ax[row, col]
-        a.plot(tb, obs[k], 'o-', color='k', ms=2.5, lw=.9, label='observed')
-        a.plot(tb, oos['profile1'][k], 's--', color='#c1272d', ms=2.5, lw=.9,
-               label='Model 1 (behavior-only)')
-        a.plot(tb, oos['profile2'][k], '^-', color='#3182bd', ms=2.5, lw=.9,
-               label='Model 2 (behavior-only)')
-        a.set_title(f'duration {DUR_LAB[D]}, coherence {COH_LAB[c]}', fontsize=7.5)
-    for a in ax[1]:
-        a.set_xlabel('time from stimulus offset (s)', fontsize=7.5)
-    for a in ax[:, 0]:
-        a.set_ylabel('PMA rate per 0.1 s bin', fontsize=7.5)
-    ax[0, 2].legend(fontsize=6.5, frameon=False, loc='upper left')
-    fig.suptitle('Out-of-sample delay-period rate: neither calibration saw this curve',
-                 fontsize=8.5, y=1.02)
-    fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
-
-
 # ---------------------------------------------------------------- Model 1
 if __name__ == '__main__':
-    P1 = json.load(open('results/calibq_m1.json'))
-    P2 = json.load(open('results/calibq_m2.json'))
+    R = json.load(open('results/representative.json'))
+    P1 = dict(R['params'], alpha=0.0)
+    P2 = dict(R['params'], alpha=R['alpha'])
     E = build()
     fig_trajectories(P2, 2, fname='plots/fig_traj_m2.pdf')
     fig_trajectories(P1, 1, fname='plots/fig_traj_m1.pdf')
     fig_single(P2)
     fig_rates(P2, E)
     fig_shape(E)
-
-    oos_raw = _oos_predictions(P1, P2)
-    fig_oos_rate_profile(oos_raw, E)
-    oos = fig_oos_slope(oos_raw, E)
-    disc1 = json.load(open('results/ckptq_m1.json'))['obj']
-    disc2 = json.load(open('results/ckptq_m2.json'))['obj']
-    json.dump(dict(disc1=disc1, disc2=disc2, **oos),
-              open('results/oos_slope_check.json', 'w'), indent=1)
-    print('figures written')
-    print(f"\nDISC1 (model 1 behavior-only G2) = {disc1:.2f}")
-    print(f"DISC2 (model 2 behavior-only G2) = {disc2:.2f}")
-    print(f"SLOPE1 (model 1 predicted slopes) = {oos['model1_slope']}")
-    print(f"SLOPE2 (model 2 predicted slopes) = {oos['model2_slope']}")
-    print(f"observed slope range = {min(oos['obs_mean']):.3f} to {max(oos['obs_mean']):.3f} s^-1")
-    print(f"ERR1 = {oos['err1']:.2f}, ERR2 = {oos['err2']:.2f}, ERRFAC = {oos['errfac']:.2f}")
+    print(f"figures written at the representative draw {R['draw']} "
+          f"(beta = {R['beta']:.4f}, the Model 2 admissible median)")

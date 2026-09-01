@@ -1,0 +1,26 @@
+{
+ "source": "results/sweep_screened.jsonl",
+ "draw": 530,
+ "distance": 1.0254896111099294,
+ "params": {
+  "sigx": 0.1,
+  "Lmotion": 0.2,
+  "LRS": 0.2,
+  "delay": 3.0,
+  "Lmotor": 0.093,
+  "g": 0.1146944619269932,
+  "theta": 0.049023549542613155,
+  "kappa": 1.717828405150409,
+  "SDe": 0.042503922878590145,
+  "muRS": 0.5255679717714778,
+  "r": 0.09353424648911408,
+  "k": 0.8902963458455059,
+  "lam": 22.063651014905282,
+  "sigq": 0.0666080555262073
+ },
+ "alpha": 0.00608654256360571,
+ "beta": 0.01825962769081713,
+ "beta_of_draw": 0.0023649166250462247,
+ "n_admissible_both": 97,
+ "note": "alpha/beta are the Model 2 admissible median, not the draw's own; see the docstring. beta_of_draw is what the draw carried."
+}

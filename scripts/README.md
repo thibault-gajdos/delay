@@ -3,13 +3,16 @@
 Two languages, split by job.
 
 **Python** owns the model: the stochastic simulation, the electromyographic detector, the
-calibration, the parameter sweeps, the extraction of events from the archive, and the
-figures.
+parameter-space evaluation, the closed-form frontier, the extraction of events from the
+archive, and the figures. Nothing is fitted -- the models' predictions are derived
+analytically and their effect-size ranges come from sampling the parameter space, not from
+estimating a parameter vector.
 
 **R** owns the statistics: every analysis of variance, every trend decomposition, and the
 Poisson analyses of the partial-activation counts. The two sides meet at CSV files
 written by `export_for_R.py`, which carry counts and exposures for the data and for each
-fitted model, so that the identical statistical analysis runs on both sides.
+model simulated at the representative parameter vector, so that the identical statistical
+analysis runs on both sides.
 
 Everything is reproducible from two inputs: the OSF archive (`86cbw`) and the manuscript.
 No network access is needed once the two package managers below have fetched their
@@ -19,11 +22,10 @@ dependencies once.
 
 ```
 scripts/
-  delaymodel/          the model package: sim.py, empirical.py, targets.py, behav_sim.py
-  *.py                 flat, top-level entry-point / driver scripts (calibrate.py, ...)
-  *.sh                 resumable shell drivers for long-running calibrations
-  results/             calibration outputs (JSON, tracked) and logs/ (regenerable, gitignored)
-  plots/               figures written by figures.py
+  delaymodel/          the model package: sim.py, empirical.py, targets.py
+  *.py                 flat, top-level entry-point scripts
+  results/             the citable outputs (JSON/JSONL, tracked) and logs/ (regenerable)
+  plots/               figures written by figures.py and figures_space.py
   pyproject.toml, .python-version, uv.lock, .venv/   Python, managed by uv
   R/                   every statistical test (afex/emmeans), managed by renv
 ```
@@ -72,66 +74,51 @@ versions instead of re-resolving them.
 
 All paths below are relative to `scripts/` (run `cd scripts` first); `results/` and
 `plots/` already exist in the repository. Prefix any of these with `uv run python` to use
-the managed virtualenv.
+the managed virtualenv. The pipeline runs top to bottom: everything downstream of the sweep
+reads its dump.
 
 ```
-python delaymodel/empirical.py       -> (printout only)     extraction, checked against the archive
-python delaymodel/targets.py         -> (printout only)     calibration targets, printed summary
-python export_for_R.py               -> pma_counts.csv      counts and exposures, empirical
-                                         sim_counts_mM.csv   the same from each fitted model
-                                                              (written at scripts/ root: R's
-                                                              SIMDIR default, "..", expects
-                                                              them there, not in results/)
-Rscript R/run_stats.R --with-sim     -> R/stats_tables.txt  all tables, data and simulation
-                                         R/stats_results.csv one row per effect
-Rscript R/emit_tex.R                 -> _tables.tex         the same, for the note
-python sweep.py N                    -> results/sweep_modelM.json      local one-at-a-time
-                                                          robustness and leak variants around
-                                                          the calibrated point (superseded for
-                                                          the manuscript's own parameter-
-                                                          space evaluation by fused_sweep.py
-                                                          below; still the source of the
-                                                          R7/R8/R16-19 sign-check numbers
-                                                          quoted in the response letter,
-                                                          C2.1, not in the manuscript itself)
-python fused_sweep.py N NTR OUT [GAMMA]
-                                   -> OUT (.jsonl, default  the manuscript's first-stage
-                                      results/fused_sweep_  broad-parameter Monte-Carlo sweep
-                                      results.jsonl)         (Table A1 hybrid ranges: kappa
-                                                          widened to [0.20, 30.0] s^-1,
-                                                          r and Lmotor freed): task-
-                                                          admissibility, the two RT-effect
-                                                          criteria, and (since 2026-08-24)
-                                                          the delay-slope and MET-invariance
-                                                          out-of-sample criteria, at every
-                                                          admissible draw. GAMMA (default 0)
-                                                          adds a common leak and reruns the
-                                                          identical sweep for the leak-
-                                                          robustness check (Methods, Behavior
-                                                          > Simulation validation) --
-                                                          production calls used GAMMA in
-                                                          {0.25, 0.50, 1.00}, one output file
-                                                          per rate (results/fused_sweep_leak_g<rate>.jsonl).
-python figures.py                 -> plots/fig_*.pdf      the four figures of the note
-python theory_checks.py                                  verification of Appendix C
-python model1_bound.py                                   the Model 1 ceiling, Section 3
+python delaymodel/empirical.py    -> (printout)              extraction, checked against the archive
+python delaymodel/targets.py      -> (printout)              empirical summaries per cell
 
-python build_targets_q.py         -> results/targets_q.json   RT-quantile calibration targets
-                                                          (correct/incorrect, two-stage
-                                                          Vincentized/pooled; supersedes
-                                                          the original mean/SD/proportion
-                                                          targets -- see "Removed" below)
-python calib_behav_q.py {m1,m2}   -> results/calibq_{tag}.json  behavior-only quantile/G²
-                                      results/ckptq_{tag}.json  calibration (three-stage
-                                                          Nelder-Mead restart, checkpointed);
-                                                          ./supervise_calib.sh {tag} loops it
-                                                          to completion across interruptions.
-                                                          Supersedes calib_behav.py.
+# 1. the parameter-space evaluation  (~12 min over six shards; see fused_sweep.py below)
+SHARD_N=6 SHARD_I=$i \
+  python fused_sweep.py 600 4000 results/sweep_screened_sh$i.jsonl
+cat results/sweep_screened_sh*.jsonl > results/sweep_screened.jsonl
+
+# 2. what it says, and how much of it is noise
+python effect_sizes.py results/sweep_screened.jsonl 4 4000 40
+                                  -> results/effect_sizes.json     distributions, criterion
+                                                                   counts, MC/between-draw
+                                                                   variance decomposition
+python ramp_check.py 3 40000 results/sweep_screened.jsonl
+                                  -> results/ramp_check.jsonl      the best candidates
+                                                                   re-simulated at high NTR
+
+# 3. the analytic frontier, which needs no sampling at all
+python frontier.py                -> results/frontier.json         Model 1's ramp-rate frontier
+python theory_checks.py           -> (printout)                    verification of Appendix C
+
+# 4. figures
+python representative.py          -> results/representative.json   the point the illustrative
+                                                                   figures are drawn at
+python figures.py                 -> plots/fig_traj_m{1,2}.pdf     simulated dynamics
+                                     plots/fig_single.pdf
+                                     plots/fig_rates.pdf
+                                     plots/fig_shape.pdf
+python figures_space.py           -> plots/fig_frontier.pdf        the frontier with the draws
+                                     plots/fig_delay_profile.pdf   the delay rate curve
+
+# 5. the statistics, in R
+python export_for_R.py            -> pma_counts.csv                counts and exposures, empirical
+                                     sim_counts_mM.csv             the same from each model at the
+                                                                   representative vector (written at
+                                                                   scripts/ root: R's SIMDIR default,
+                                                                   "..", expects them there)
+Rscript R/run_stats.R --with-sim  -> R/stats_tables.txt            all tables, data and simulation
+                                     R/stats_results.csv           one row per effect
+Rscript R/emit_tex.R              -> _tables.tex                   the same, for the note
 ```
-
-`calib_behav_q.py` is the one that is chunked and resumable: each call runs a bounded
-number of evaluations, writes the checkpoint, and picks up next time --
-`supervise_calib.sh {tag}` re-launches it in a loop until done.
 
 ---
 
@@ -155,15 +142,15 @@ pairs are separated by less than 25 ms; it does not change the number of interva
 Merging again removes about a quarter of the counts and is double counting.
 
 ### `targets.py`
-Builds the target families for calibration, per participant and cell: accuracy, mean
-response time and its interquartile range, mean and interquartile range of premotor and
-motor execution time, delay and stimulus partial-activation rates, delay log-rate slope,
-premature-response rate.
+Defines `CELLS` (the six coherence x duration conditions) and the empirical summaries per
+participant and cell -- accuracy, response time, premotor and motor execution time, delay
+and stimulus partial-activation rates, delay log-rate slope, premature-response rate. These
+are descriptive targets used by the figures and by the screen's observed-rate window; they
+are not fitted to.
 
 Dispersion uses the interquartile range, not the standard deviation. The empirical
-premotor execution time has a long right tail -- 2.7% of trials over one second -- that
-the model has no mechanism for, and scoring against the untrimmed standard deviation
-forces the remaining parameters to manufacture variability elsewhere.
+premotor execution time has a long right tail -- 2.7% of trials over one second -- that the
+model has no mechanism for, and the untrimmed standard deviation is dominated by it.
 
 ### `sim.py`
 The model of Section 2 of the note, and the detector.
@@ -189,414 +176,220 @@ The integrated-profile refinement is not simulated: it moves boundaries but not 
 number, and only the number is counted. For the same reason simulated burst durations are
 not comparable with the reported ones and are not used.
 
-### `calibrate.py`
-Shared simulation/statistics utility only, as of 2026-08-30 -- see its own docstring.
-`model_stats(p, n, model, seed0, gamma)` runs the six cells and returns, per cell,
-accuracy, premotor/motor execution time and their spread, delay/stimulus rate, the
-premature rate, the delay log-rate slope and the full 20-bin rate profile. It computes;
-it does not fit anything. `sweep.py` and `figures.py`'s out-of-sample check both import it.
+### `fused_sweep.py` -- the parameter-space evaluation
+The manuscript's evaluation of what each architecture can produce over its whole
+admissible parameter space (Methods, "Evaluation over the parameter space"; Results,
+Delay-locked). Nothing in the project is fitted, so this is where every effect-size
+statement comes from.
 
-Thirteen model parameters in total (`delaymodel.sim.PARAM_NAMES`). `sigx` is fixed at
-0.100 in `sim.py`'s `DEFAULTS` and fixes the model's overall amplitude unit -- without
-that anchor, `theta`/`g`/`r`/`SDe`/`sigq` (all in the same units as the accumulators `x`/
-`y`/`qq`) would trade off against a free amplitude scale and the fit would be
-unidentified. `sigq` (stage-2, post-response-signal noise) is a separate, physically
-distinct noise source and remains free; there is no mathematical necessity to fix it
-equal to `sigx`, though it is only weakly constrained by behaviour alone in practice (see
-the response-letter discussion of `calibq_m1.json`/`calibq_m2.json`'s `sigq` values).
+Latin-hypercube sample over the ranges of Table A1; production runs use 600 draws at 4000
+trials per cell per model per draw (~6.5 s/draw, ~12 min over six shards). At every draw:
+the admissibility screen, the two RT-effect criteria (coherence, duration), the
+delay-period log-rate slope criterion (all six cells significantly positive) and the
+motor-execution-time invariance criterion. The same sampled vector is evaluated in both
+models, with beta set to zero in Model 1, so the two are compared at identical parameters.
 
-### Removed 2026-08-30: the joint EMG+behaviour fit
-`calibrate.py` used to run a Nelder-Mead search over all thirteen parameters against nine
-per-cell blocks -- accuracy, premotor/motor execution time and their spread, delay-period
-rate, delay-period **log-rate slope**, stimulus-period rate, premature-response rate --
-each standardized by its between-participant SE (`make_objective`, `ALL_BLOCKS`,
-`START`/`LO`/`HI`/`clip`/`pack`/`unpack`, and the chunked, resumable `__main__`), writing
-`results/fit_model1.json`/`fit_model2.json` (`run_emg_recal.sh` drove it to convergence in
-chunks). Because the delay-period log-rate **slope** -- the model's key electromyographic
-prediction -- was itself one of the nine blocks being fit, that fit's match to the EMG
-delay-rate curve was necessarily **in-sample**; it could not double as a validation of the
-model's EMG predictions, only as a joint fit of everything at once. `BLOCKS=behav`
-restricted the same machinery to accuracy/RT/RT-IQR/anticipation-rate only, as a
-diagnostic of what behaviour alone constrains (`results/fitb_modelM.json`, itself
-superseded by `calib_behav_q.py` below and already removed once nothing read it).
+Resumable by line count of `OUT`. Shardable: `SHARD_N`/`SHARD_I` in the environment make
+shard j take the draws i with i % n == j, each writing its own file. The LHS cube is
+regenerated identically from the fixed seed in every process, so `cat`-ing the shard files
+reproduces the unsharded run exactly -- verified by re-running the sweep sharded and
+recovering identical per-draw statistics.
 
-Removed at the user's request in favor of one fit that is behaviour-only from the start
-(`calib_behav_q.py` below, with *no* EMG term anywhere in its objective) plus a genuinely
-out-of-sample EMG check: simulate that behaviour-only fit and compare its *predicted*
-delay-rate slope and full rate profile against the real EMG, never having seen it
-(`figures.py`'s `_oos_predictions`/`fig_oos_slope`/`fig_oos_rate_profile`,
-`results/oos_slope_check.json`). Recover the removed fitting code from git history
-(`git log --all -p -- calibrate.py`, around the 2026-08-30 commits) if fitting the model to
-actual EMG turns out to be needed after all -- see "Deferred" below.
-
-### Removed 2026-08-30: `build_targets.py`, `calib_behav.py`
-The project's first behavior-only calibration (six per-cell quantities -- accuracy, mean
-RT, RT IQR, and the pre-signal/fast/no-response proportions -- matched by mean-squared
-standardized error). Superseded by the quantile/G² pipeline below at the user's request,
-once it became clear the model cannot produce non-negligible no-response-by-deadline
-trials at any parameter setting compatible with the observed RT distribution (a parametric
-consequence of the post-signal ramp's drift-to-noise ratio, not an architectural
-impossibility). `build_targets.py` (and its `targets_behav.json` output) is recoverable from
-git history (`git log --all --oneline -- '**/build_targets.py'`; it was added in the
-2026-08-30 reorganization commit and removed in the cleanup commit right after). `calib_behav.py`
-is **not** recoverable the same way -- it was deleted before ever being committed to this
-repository, so no commit holds its source; only its last numeric outputs survive, at
-`results/calibb_m1.json`/`calibb_m2.json` (see below). If the old MSE-based approach is
-ever needed again, it has to be rewritten from this description, not restored from git.
-
-**`results/calibb_m1.json`/`calibb_m2.json`, however, are `calib_behav.py`'s own last
-outputs and are *not* orphaned -- keep them.** `calib_behav_q.py` still reads them as its
-from-scratch starting point (see below), and since the script that produced them is gone,
-nothing in this repository can regenerate them if they are deleted; a from-scratch run of
-the G² calibration (no `results/ckptq_{tag}.json` checkpoint) would have no starting point
-without them.
-
-### Deferred: fitting the model to actual EMG
-Once the out-of-sample check above exists, the next question is whether the model should
-also be *fit* to the real EMG rather than only checked against it. If we do, the same
-methodology as the behaviour-only fit should be used (an explicit G² criterion, not the
-old SE-standardized sum-of-squares), which first requires deciding what belongs in that
-G² for EMG data (which per-cell/per-bin quantities, over what window, at what
-granularity). Parked until the out-of-sample check shows it is actually needed.
-
-### `build_targets_q.py`, `behav_sim.py`, `calib_behav_q.py`
-The manuscript's actual behavior-only calibration (Materials and Methods, "Calibration of
-the models to the aggregate data"; Results, Behavior > Simulation validation and
-Delay-locked > Simulation validation). Response-time quantile method after Dendauw et al.
-(2024) / Ratcliff and Tuerlinckx (2002), not a mean/SD/proportion match:
-
-- `build_targets_q.py` reads the raw behavioural files and writes `targets_q.json`: per
-  cell, `p_correct` (two-stage: per-participant accuracy on valid trials, averaged), the
-  `.1/.3/.5/.7/.9` quantiles of correct-response RT (two-stage, Vincentized across
-  participants) and of incorrect-response RT (pooled across participants -- several
-  participants have too few error trials at the higher coherence levels for a
-  per-participant quantile to mean anything; see the file's own docstring), and (added
-  2026-08-30) `p_premature` (one-stage/pooled, for the same sparsity reason as incorrect
-  quantiles -- premature is rarer still). Premature identification is `rm == 0` in the raw
-  arrays, verified against all 22 subjects: it matches the literature's reported premature
-  rate almost exactly (1.39% here vs 1.46% in AGPS 2025) and still carries an interpretable
-  accuracy value, confirming it means "responded before RS" and not something else. Checked
-  in passing: no-response-by-deadline does not occur as a distinct category in this archive
-  at all (0/21120 trials) -- `p_correct`/`p_incorrect` keep their original meaning (accuracy
-  conditional on a valid response, summing to 1 by themselves); sub-0.2-s and
-  no-response-by-4s trials are still dropped entirely from every denominator.
-- `behav_sim.py`'s `simulate_behav` is `sim.simulate` without the stored EMG-like trace,
-  run to the 4.25 s deadline; `behav_rt_split` returns correct/incorrect RT arrays (filtered
-  the same way as the data side) plus the premature count.
-- `calib_behav_q.py` computes G² per cell over **three** response-type families --
-  premature, correct, incorrect (added 2026-08-30; previously two) -- because theta, g, r
-  and kappa, the parameters hardest to bound independently (see "Deferred" above), are
-  exactly the ones that set the premature rate, and until this change nothing in the
-  objective was sensitive to it at all, only a loose 10% ceiling three steps downstream in
-  the parameter sweep's admissibility screen. Correct and incorrect are still split into
-  the *data's own* quantile-defined bin edges (10/20/20/20/20% by construction); premature
-  is a single proportion with no RT substructure. `p_correct`/`p_incorrect` from the target
-  file are rescaled by `(1-p_premature)` at the point of use to get the three absolute
-  proportions the G² needs. Every family goes through the same `g2_term()`, which is what
-  makes the sum a valid additive deviance (individual family subtotals can and do come out
-  negative -- only the per-cell/grand total is guaranteed >= 0, by Gibbs' inequality over
-  the complete 13-category distribution, not any arbitrary subset of it). Each cell's G²
-  uses a fixed pseudo-sample size of `N_SUBJ = 22` (participants, not pooled trials),
-  keeping the two-stage weighting; G² is a scalar discrepancy for calibration here, not a
-  chi-square test with an interpretable p-value (`FLOOR` prevents log(0)/division-by-zero
-  from an empty simulated bin or response type). `run(model, ...)` is a three-stage
-  Nelder-Mead restart (`STAGES`, increasing `n` and shrinking the simplex), checkpointed to
-  `ckptq_{tag}.json` after every stage so a run can be interrupted and resumed;
-  `supervise_calib.sh {tag}` loops it until `results/calibq_{tag}.json` exists.
-
-**Recalibrated 2026-08-30/31** under the new three-family objective (both fresh runs from
-`calibb_{tag}.json`, all three stages, ~17 minutes each): M1 converged to G2 = 27.678
-(cold-start 30.832), M2 to G2 = 22.320 (cold-start 25.014) -- both higher than the old
-2-category numbers (29.49, 21.34) would suggest by themselves, but that is comparing
-different objectives, not a regression: the new G2 is scored against three families
-instead of two, and the old points were never asked to fit the premature family at all.
-The old checkpoints/fits remain at `results/{ckptq,calibq}_{m1,m2}_pre-premature.json` for
-the record. `sweep.py`, `export_for_R.py` and `figures.py` have all been rerun against the
-new `results/calibq_{m1,m2}.json`; the manuscript's out-of-sample placeholders now read
-DISC1 = 27.68, DISC2 = 22.32, ERR1 = 8.40, ERR2 = 2.25, ERRFAC = 3.73 (figures.py's stdout
--- see `fig_oos_slope`'s docstring for exactly what ERR1/ERR2 measure). Not yet propagated
-into `w.docx`/`L.docx` themselves.
-
-### `build_targets_b.py`, `calib_fitB.py` -- the all-data fit (fit B), 2026-08-31
-Fit A (`build_targets_q.py` / `calib_behav_q.py`) is unchanged and remains the
-manuscript's primary fit: behaviour only, delay-period log-rate slope held out. Fit B is
-ADDITIONAL and sits at a different level -- one parameter vector against behaviour and
-the electromyographic measures together. It changes no prediction: the predictions are
-analytic (Appendices A-E) and are tested against the data, never against a fit.
-
-Ten families per cell (42 categories, against fit A's 13), each a multinomial scored by
-the same `g2_term`: response type {premature, correct, incorrect}; PMET and MET quantiles
-given correct; the delay-window activation count {0,1,2,>=3}; the delay-window onset
-shape over 5 bins of 0.4 s; and P(>=1 activation) in the stimulus, RS and response
-windows. Two further families, PMET and MET given *incorrect*, are POOLED ACROSS CELLS
-and enter once for the whole objective. Every family but the first is a conditional
-distribution, so the accuracy and premature information is scored exactly once.
-
-**Three design choices that are not obvious, each forced by a measurement.**
-
-*Counts, not a Poisson deviance.* Partial-activation counts are overdispersed between
-participants by a factor of about 100 (variance/mean ~= 100 in the delay window against 1
-for a Poisson), so a Poisson term would hand the EMG block roughly a hundred times its
-real information. Categorising the count absorbs the overdispersion with no distributional
-assumption.
-
-*Four count categories for the delay only.* Measured per-trial counts: delay P(0)=65.6%,
-P(1)=11.1%, P(2)=5.4%, P(>=3)=17.9%; stimulus 83.1/8.4/3.0/5.4; RS 80.0/14.3/5.0/0.8;
-response 97.5/2.4/0.0/0.0. At a pseudo sample size of 22 a 5% category carries 1.1
-pseudo-observations, so only the delay supports four categories and the rest collapse to
-P(>=1). The response window is 97.5% zeros and will constrain essentially nothing; it is
-included for completeness.
-
-*Five shape bins, not twenty.* At pseudo-N = 22 and 1.42 activations per trial the
-original 0.1-s bins give 1.56 expected per bin, too sparse for a stable G^2; 0.4-s bins
-give 6.2 and still resolve the ramp (observed shape pooled: 0.094 0.126 0.182 0.254 0.344
-against 0.200 flat).
-
-**Error chronometry is per cell (reverted 2026-08-31).** A version pooling errors across
-cells was adopted first, on the strength of a smoke test at n = 3000 where the rarest cell
-yields 3 simulated error trials. That does not describe the real fit. Measured at the
-fit's own n = 16000: four of the six cells give 2900 to 8000 simulated errors and no empty
-bins (G^2 2.9 to 9.6); only the two 50%-coherence cells break, one empty bin each at about
-35 apiece. The cost is real but it is not chronometric -- at 2.0/c50 the model makes 26
-errors in 16000 trials, 0.16% against 5.4% observed, so the empty bin is registering the
-error RATE, which the response-type family already scores. That double-counting is
-accepted because fit A has the identical structure: its incorrect-RT family is 20.8 of
-Model 2's 22.7 total, i.e. 92% of fit A's objective is the error family. Consistency
-between the two fits matters more than avoiding the overlap, and per-cell is what fit A
-does.
-
-**Scales.** Fit B's G^2 is NOT comparable with fit A's -- ten families per cell instead of
-one puts them on different scales. Only Model 1 against Model 2 within one fit means
-anything, and even that carries every caveat attached to fit A: the objective is a
-composite likelihood at a pseudo sample size, so no p-value, confidence interval, AIC or
-BIC follows from it.
-
-`alpha` is dropped from Model 1's parameter vector: it is provably inert there (the G^2 is
-identical when it is multiplied by 50), so searching it wastes a simplex dimension.
-
-Run with `./supervise_fitB.sh m1` and `./supervise_fitB.sh m2`, ~25 min each; output
-`results/fitB_{m1,m2}.json`, checkpoints `results/ckptb_{m1,m2}.json`.
-
-**Fit B results, 2026-08-31.** M1 G2 = 238.7, M2 G2 = 155.2 (three stages, ~20 min each).
-The gap is 84.2 against fit A's 5.9 -- but the two are on different scales and must not be
-compared; within fit B it removes 35% of Model 1's total discrepancy, against 21% within
-fit A. Where the gap lives is the informative part:
-
-    any_stim      M1 40.0   M2  1.8    +38.2   45% of the gap
-    any_rs        M1 46.7   M2 10.9    +35.9   43%
-    delay_shape   M1 29.2   M2  0.7    +28.5   34%
-    delay_count   M1 59.6   M2 68.8     -9.1  -11%   (Model 1 better)
-    met_correct   M1 17.9   M2 30.4    -12.5  -15%   (Model 1 better)
-
-Model 2 essentially solves the delay ramp (0.7 across six cells) and both activation-
-probability windows, and pays for it on the activation count and the MET distribution.
-The mechanism behind the two biggest terms is visible in the parameters and is worth
-stating: Model 1 settles at a gate distance g - theta of 0.069 against Model 2's 0.095.
-Sitting closer to the gate is how Model 1 tries to generate delay-period activity without a
-ramp, and it over-produces in the stimulus window as a result -- P(>=1 activation) 0.20 to
-0.49 against 0.11 to 0.17 observed, up to four times too many -- while still under-producing
-at the RS, 0.02 to 0.05 against 0.16 to 0.24 observed. The two windows require the gate
-distance to move in opposite directions and Model 1 has only the one knob. Model 2 uses the
-ramp to lift the signal during the delay and can afford the wider gate. Both models
-under-predict the RS window; Model 2 less badly.
-
-### `figures_fit.py` -- fit-quality figures, 2026-08-31
-Quantile-probability plots in the Ratcliff idiom (the format used by Dendauw et al. 2024):
-per condition, the .1/.3/.5/.7/.9 quantiles of correct responses at x = p(correct) and of
-errors at x = 1 - p(correct), so accuracy and both distribution shapes appear together.
-Series are sorted by response proportion before being joined -- the cells are not ordered
-by accuracy, and the error side reverses that order again, so joining them in cell order
-produces zigzags that look like misfit and are not.
-
-  fig_qp_rt.pdf        fit A, response time
-  fig_qp_fitB.pdf      fit B, PMET and MET (errors pooled over cells, drawn once)
-  fig_pma_delay.pdf    fit B, delay-window onset shape and per-trial count
-  fig_pma_windows.pdf  fit B, P(>=1 activation) per window
-
-What they show, beyond the G^2 numbers. In `fig_pma_delay` Model 1's onset shape is flat
-at exactly 0.20 -- the uniform value -- in all six cells, while Model 2 tracks the observed
-ramp closely: the clearest single picture of the discrimination. The count row shows both
-models over-producing activations (observed P(0) up to 0.71 against 0.30-0.45 predicted),
-which is the `delay_count` term where Model 1 is the better of the two. `fig_qp_rt` shows
-the two models nearly superimposed, which is the behavioural-mimicry claim made visible,
-and both missing the long error-RT tail (observed .9 quantile of errors reaches 1.21 s at
-the lowest error proportion against about 0.78 for either model). `fig_pma_windows` shows
-the one-knob bind: Model 1 far ABOVE observed in the stimulus window and far BELOW at the
-RS, Model 2 close on the first and closer on the second, with both under-predicting the
-response window by four to six times.
-
-### `g2_uncertainty.py`
-Re-evaluates both fitted models at their own parameters over independent seed sets, and
-decomposes the Model 1 / Model 2 gap by family and by cell. The gap is 5.9 +/- 0.5 over 16
-replicates -- 12 Monte-Carlo SDs, so real -- and comes 54% from the error RT quantiles,
-38% from the correct ones and under 10% from the premature proportion, spread evenly over
-all six cells. It also measures the optimizer's optimism against the common random
-numbers: the fitted values sit 0.95 (M1) and 0.40 (M2) below their fresh-seed means.
-
-### `sweep.py`
-Multiplies each free parameter by 0.5 and by 2 in turn, adds three leak rates, and records
-whether each directional effect keeps the observed sign. Uses 150 trials per cell by
-default, enough for level effects but not for slope differences -- the R16 column is
-underpowered in the sweep and should be checked at the calibrated point with more trials.
-Local, one-at-a-time perturbation around the single calibrated point -- not a
-Latin-hypercube sweep of the space -- and its Table B3 output is quoted only in the
-response letter (C2.1) since the Appendix that originally reported it was removed from the
-manuscript itself (2026-08-23 restructuring).
-
-### `fused_sweep.py` -- letter only, not the manuscript, since 2026-08-27
-Was the manuscript's broad-parameter Monte-Carlo sweep (Results, Behavior > Simulation
-validation; Methods, "First-stage parameter-space evaluation"). Both the manuscript
-subsection and that Methods heading were removed in the 2026-08-27 restructuring: the
-qualitative predictions are now proved to hold at *every* admissible parameter setting
-(Appendices A-E) rather than checked at a sample of them, which the sweep below made
-redundant rather than wrong. Its output is quoted only in the response letter (C2.1,
-C2.3), not the manuscript.
-
-**Correction, 2026-08-31: the kappa floor imposed on 2026-08-30 was wrong and is
-reverted.** It was justified by the stationary crossing-rate approximation losing validity
-below kappa ~ 2. That is not a reason to exclude small kappa from the model's admissible
-space: Results (Delay-locked) and Appendix C both compute from the exact kernel there,
-precisely BECAUSE stationarity fails, so nothing in the paper depends on the approximation
-holding at small kappa. And small kappa is Model 1's only route to a delay rate still
-rising at the end of the delay, so a floor at 2.0 deletes the region most favourable to
-the model the sweep exists to exclude -- manufacturing a cleaner result by construction.
-For a range whose purpose is exclusion, erring WIDE is the conservative direction; the
-circularity risk runs the opposite way from what the 2026-08-30 pass assumed. kappa is
-back to [0.20, 30.0]. In the same pass lambda's upper end was cut from 100 to 50, for a
-reason documented in the module docstring and in the manuscript's Table A1 note: the
-Model 1 ceiling argument degrades as lambda grows (exact ceiling at kappa=0.2 is 0.58/s
-at lambda=21.5, 0.87/s at lambda=50, 1.22/s at lambda=100, against an observed 1.45/s),
-and 1/lambda is a motor-preparation filter time constant, so lambda=100 would mean 10 ms,
-faster than plausible neuromuscular filtering.
-
-**Ranges made non-circular, 2026-08-30/31.** Every range through 2026-08-27 bracketed the
-fitted or observed point itself (e.g. kappa's old floor, and the old r/Lmotor ranges,
-were centred on `calibq_*.json`/`targets_q.json` values) -- which cannot license an
-INDEPENDENT robustness claim about that same fit. Every bound is now either a fixed
-architectural constant (unchanged since before any behavioural fit: `sigx`, `Lmotion`,
-`LRS`, and `delay` itself, the task's own 3s constant) or derived from something that
-does not reference the fit or the data:
-  - `kappa` in [0.20, 30.0] s^-1, log-uniform: UNCHANGED from the published range, and
-    deliberately so -- see the correction note above. 1/kappa spans 5s (slower than the
-    whole delay) to 33ms; deliberately generous, and generous towards Model 1.
-  - `r` in [0.010, 0.200], `Lmotor` in [0.008, 0.080], both log-uniform: unchanged, and
-    were already task/design ranges, not fit-derived.
-  - `g` in [0.050, 0.200] (widened from [0.050, 0.160]), `theta/g` in [0.25, 0.90]:
-    unchanged reasoning -- no independent bound for theta/g's lower end survived being
-    checked at a second representative point, so it stays at the Table A1 range.
-  - `k` in [0.5, 2.0] and `lam` in [10.0, 50.0], both log-uniform, and `sigma_q` in
-    [0.03, 0.30] log-uniform: newly freed from `FIXED` (previously pinned at the
-    immediate-report architecture's inherited values, same status r and Lmotor had before
-    2026-08-24). `sigma_q`'s range has the softest justification of the three: no fixed
-    design constant pins its scale, so it is anchored to `sigx = 0.100` (the model's other,
-    architecturally-fixed diffusion-noise SD, playing the structurally analogous role for
-    the post-response-signal process) with a +-3x bracket.
-Ten free dimensions shared by both models now (was seven), plus `beta` for Model 2 only.
-See the module docstring for the exact numbers and reasoning behind each.
-
-The method itself is otherwise unchanged: Latin-hypercube sample, 250 draws by default,
-2000 trials per cell per model per draw (~3s/draw on this hardware, ~13 minutes total for
-250). At every draw: the task-admissibility screen, the two RT-effect criteria (coherence,
-duration), the delay-period log-rate slope criterion (all six cells significantly
-positive), and the motor-execution-time invariance criterion. Resumable
-(`os.path.exists(OUT)` picks up where a previous call for the same `OUT` left off).
+```
+for i in 0 1 2 3 4 5; do
+  SHARD_N=6 SHARD_I=$i uv run python3 fused_sweep.py 600 4000 \
+    results/sweep_screened_sh$i.jsonl > results/logs/sweep_sh$i.log 2>&1 &
+done
+cat results/sweep_screened_sh*.jsonl > results/sweep_screened.jsonl
+```
 
 The optional fourth argument, `GAMMA`, threads a common leak into every `simulate()` call
-(`sim.py`'s `gamma`) for the leak-robustness check (Methods, Behavior > Simulation
-validation; Results §130) -- NOT yet rerun at the non-circular ranges; the existing
-`fused_sweep_leak_g{0.25,0.50,1.00}.jsonl` outputs are from the old, circular ranges and
-are stale in the same way `fused_sweep_results.jsonl` (`GAMMA=0`, the old ranges) was --
-both renamed with a `_circular-ranges` suffix (2026-08-31) precisely so that a future bare
-`python3 fused_sweep.py` (whose default `OUT` is the unsuffixed `fused_sweep_results.jsonl`)
-starts a genuinely fresh file instead of silently resuming -- appending new,
-non-circular-range draws on top of old, circular-range ones in the same file, which the
-resumable-by-line-count design would otherwise do without complaint.
+(`sim.py`'s `gamma`) for the leak-robustness check of the response letter (C2.3). It has
+not been rerun at the current ranges.
 
-**Coverage correction, 2026-08-31.** Two fitted parameters fell OUTSIDE the sampled
-ranges: SDe (0.040 M1, 0.043 M2, against a top of 0.030) and beta (0.050 M2, against a top
-of 0.024 -- the sweep was evaluating Model 2 at a ramp at most half the height it actually
-adopts). Both upper ends were raised, to 0.060 and 0.100, and both dimensions are now
-log-uniform since both span more than an order of magnitude.
+**Why the ranges are what they are.** Every bound is either a fixed architectural constant
+(`sigx`, `Lmotion`, `LRS`, `delay`, and `Lmotor` at Dendauw et al. 2024's 0.093 s) or is
+derived from the design, from a published estimate, or from the structure of the model. No
+bound is derived from these data -- a range drawn around a value estimated from the data
+cannot test whether a prediction survives away from that value. Two bounds carry most of
+the weight and deserve to be visible:
 
-This is a different criterion from the circular one discarded on 2026-08-30, and the
-distinction matters: choosing a range BECAUSE the fit sits inside it is circular; requiring
-the range to CONTAIN the fit is a minimum condition for the effect sizes reported from it
-to describe the model as actually fitted. The bounds stay independently derived; the fit is
-used only as a check that the region evaluated is the relevant one.
+  - `kappa` in [0.20, 30.0] s^-1, log-uniform. 1/kappa spans 5 s (slower than the whole
+    delay) to 33 ms. The range is deliberately generous, and generous *towards Model 1*:
+    small kappa is Model 1's only route to a delay-period rate still rising at the end of
+    the delay, so narrowing it would delete the region most favourable to the model the
+    evaluation exists to exclude. A floor at kappa = 2.0 was briefly imposed on 2026-08-30
+    and reverted the next day; the justification offered for it -- that the stationary
+    crossing-rate approximation loses validity below it -- was not a reason to exclude the
+    region, because nothing in the paper uses that approximation there (`kernel_moments.py`
+    computes from the kernel). For a range whose purpose is exclusion, erring wide is the
+    conservative direction.
+  - `lam` in [10.0, 50.0], log-uniform. 1/lam is the time constant of the filter relating
+    decision-related input to motor preparation, so the range corresponds to 100 down to
+    20 ms; lam = 100 would mean 10 ms, faster than plausible neuromuscular filtering. This
+    bound is load-bearing in the other direction: Model 1's ramp-rate frontier
+    (`frontier.py`) is most favourable at the largest lam, so capping lam is what makes
+    the frontier a bound rather than an artefact of where the range stops. It is stated in
+    the manuscript's Table A1 note as a modelling commitment for exactly that reason.
 
-The conclusion is unchanged, which is the point of recording it. At the widened ranges
-(`results/fused_sweep_2026-08-31c.jsonl`): Model 1 216/250 admissible, none with all six
-delay slopes positive; among the 20 draws reaching a quarter of the observed rate the
-largest slope anywhere is +0.072 /s (it was +0.078 before the widening, against an analytic
-bound of 0.067). Model 2 199/250 admissible, 39 with all six slopes positive, 4 of the 30
-draws reaching a quarter of the rate also reaching the observed slope range. Model 2's
-admissible count falls from 219 to 199 because the larger beta values produce premature
-responses and are screened out -- the screen doing exactly what the range note says it does.
+#### The EMG criterion in the screen
 
-#### The EMG criterion in the screen (2026-08-31)
-
-Every criterion in `admissible()` up to this point was behavioural: premature rate, very
-fast responses, no-responses, accuracy at 50% coherence. None mentioned muscle activity.
-The consequence was easy to miss and hard to defend: **101 of the 216 behaviourally
-admissible Model 1 draws in `fused_sweep_2026-08-31c.jsonl` produce exactly zero
-delay-period partial activations**, and were carried into the effect-size summaries
-anyway. Nearly half the sampled space was dead for the phenomenon the experiment measures.
+Every criterion in `admissible()` was originally behavioural: premature rate, very fast
+responses, no-responses, accuracy at 50% coherence. None mentioned muscle activity, and
+the consequence was easy to miss and hard to defend: **nearly half of the behaviourally
+admissible Model 1 draws produced exactly zero delay-period partial activations**, and
+were carried into the effect-size summaries anyway.
 
 The near-miss fix was to reparameterise -- to sample `a = (g - theta)/SDe`, the
-standardised distance to the gate, instead of `SDe`, since the stationary crossing rate
-goes as exp(-a^2/2) and the raw ranges put half the box above a = 3. That was implemented
-(commit 48583b7) and then **rejected**, on the author's objection, and the objection is
-right. Reparameterising changes the *distribution over the parameter space*, not the
-acceptance set; doing it in terms of the quantity that governs the outcome under test
-redefines the space in a way that is chosen for its effect on the result. That is the weak
-form of the circularity the 2026-08-30 revision exists to remove. The screen, by contrast,
-acts on the acceptance set and is neutral with respect to parameterisation.
+standardised distance to the gate, instead of `SDe`, since the crossing rate goes as
+exp(-a^2/2) and the raw ranges put half the box above a = 3. That was implemented and then
+rejected, correctly. Reparameterising changes the *distribution over the parameter space*,
+not the acceptance set; doing it in terms of the quantity that governs the outcome under
+test redefines the space in a way chosen for its effect on the result, which is a weak form
+of the circularity the range revision exists to remove. The screen, by contrast, acts on
+the acceptance set and is neutral with respect to parameterisation.
 
-So: `SDe` is sampled directly again over its independently derived range, and
-`admissible()` gains one criterion, stated at the level where it is interpretable. A draw
-of parameters stands for a hypothetical participant, so the criterion asks whether that
-participant's mean delay-window partial-activation rate falls inside the range real
-participants span. Observed (132 subject x condition cells, none empty): 0.085-2.785 /s,
-mean 0.709, median 0.603; per-participant means 0.180-1.863 /s. The screen window
-`RATE_LO..RATE_HI = 0.04..3.0` is deliberately wider than either, because the conclusion
-the sweep supports is an *exclusion* of Model 1 and erring wide is the conservative
-direction. In practice the ceiling never binds -- no admissible draw of either model
-exceeded 3.0 /s -- so the criterion is a floor.
+So `SDe` is sampled directly, and `admissible()` carries one further criterion, stated at
+the level where it is interpretable. A draw of parameters stands for a hypothetical
+participant, so the criterion asks whether that participant's mean delay-window
+partial-activation rate falls inside the range real participants span. Observed (132
+participant x condition cells, none empty): 0.085-2.785 s^-1, mean 0.709, median 0.603;
+per-participant means 0.180-1.863. The window `RATE_LO..RATE_HI = 0.04..3.0` is
+deliberately wider than either, because the conclusion is an *exclusion* and erring wide is
+conservative. In practice the ceiling never binds -- no admissible draw of either model
+exceeds 3.0 s^-1 -- so the criterion is a floor.
 
-Two things worth recording about the floor. **It is not a near-threshold decision.** At
-NTR = 4000 a draw sitting exactly at 0.04 /s yields 0.04 x 2 s x 4000 = 320 events per
-cell, 1920 over six, whose Poisson SE is 5.6% per cell and 2.3% pooled; the draws the floor
-removes sit at 0 exactly, or (Model 1's ramp candidates) at 0.001-0.005 /s, one to two
-orders of magnitude below it. Misclassification is confined to a thin slice within ~10% of
-the boundary. **And it does not induce a winner's curse**, because it selects on the *rate*
-while the reported statistic is the *slope*: unlike a max-over-noisy-draws rule, it removes
-the draws whose slope is estimated from a handful of events, which lowers rather than
-inflates the noise in the reported extremes. Any statistic that is itself a maximum over
-cells or draws still needs the two-stage re-simulation `ramp_check.py` performs.
+Two things about the floor. **It is not a near-threshold decision.** At NTR = 4000 a draw
+exactly at 0.04 s^-1 yields 320 events per cell and 1920 over six, a Poisson SE of 5.6% per
+cell and 2.3% pooled; what the floor removes sits at 0 exactly, or (Model 1's ramp
+candidates) at 0.001-0.005 s^-1, one to two orders of magnitude below it. **And it induces
+no winner's curse**, because it selects on the *rate* while the reported statistic is the
+*slope*: unlike a max-over-noisy-draws rule it removes the draws whose slope rests on a
+handful of events, which lowers rather than inflates the noise in the reported extremes.
+Any statistic that is itself a maximum over cells or draws still needs the two-stage
+re-simulation `ramp_check.py` performs.
 
-Cost, measured on `fused_sweep_2026-08-31c.jsonl`: of 250 draws, 59 (Model 1) and 84
-(Model 2) survive behaviour + screen, against 93 and 94 under the rejected
-reparameterisation -- about 40% fewer usable draws, bought back by raising `N_DRAWS` to
-600 (and `NTR` to 4000). Output: `results/sweep_screened.jsonl`.
+Cost: about 40% fewer usable draws per 250 than the rejected reparameterisation, bought
+back by raising `N_DRAWS` to 600.
 
-**Result at the final, corrected ranges (`results/fused_sweep_2026-08-31.jsonl`, 250
-draws, `summarize_fused_sweep.py` -> `results/fused_sweep_summary_2026-08-31.json`)** --
-these are the citable numbers, and the ones now quoted in the manuscript (Results,
-Delay-locked): Model 1 admissible 229/250, all six delay slopes significantly positive in
-**0** of them; Model 2 admissible 219/250, all six slopes positive in 37, of which 32 also
-reproduce both RT effects. Model 1's failure is now established WITH kappa sampled down to
-0.20 -- its own most favourable region -- which is what makes it a statement about the
-architecture rather than about the sampled box. Superseded runs: the 2026-08-30 dump
-(kappa floored at 2.0, lambda to 100: 221/250 and 0/221; 214/250 and 52/214) and the
-2026-08-24 circular-range dump (226/250 and 0/226; 219/250 and 57/219). All three agree
-that Model 1 never discriminates, which is worth knowing -- the conclusion is not an
-artefact of any of these range choices -- but only the 2026-08-31 numbers are both
-non-circular and generous to Model 1. `fused_sweep_results_circular-ranges.jsonl` and its `fused_sweep_leak_g*`
-siblings (the old ranges, renamed 2026-08-31 -- see above) are superseded, not deleted --
-kept for the record alongside the new dump. A
-fresh run with a different seed will not reproduce the exact admissibility counts (the
-criteria and their signs are robust; the percentages are not guaranteed identical run to
-run), so keep the summary JSON alongside the script rather than regenerating it casually.
+**Result** (`results/sweep_screened.jsonl`, 600 draws, NTR 4000; summarised by
+`effect_sizes.py` into `results/effect_sizes_stage1.json`). Model 1: 117 admissible; slope
+median -0.053, 5th-95th percentile -0.268 to +0.092; **0** draws with all six cell slopes
+significantly positive and **0** anywhere in the observed slope band [0.659, 1.029].
+Model 2: 169 admissible; slope median +0.160, -1.234 to +2.075; 68 with all six positive,
+18 in the observed band, 14 of those with a delay rate inside the observed range. Both RT
+effects are supported in the large majority of admissible draws of both models (109/117 and
+112/117 for Model 1; 156/169 and 161/169 for Model 2), which is the point: the two models
+are separated by the delay period and by nothing else.
+
+One qualification worth keeping in view. Model 2's in-band draws sit mostly at low rates
+(0.042 to 0.295 s^-1); only two are at 0.4 s^-1 or above. Model 2 *can* reproduce the ramp
+and the rate together -- Model 1 cannot, anywhere -- but it does so in a thin part of its
+sampled space, and `fig_delay_profile.pdf` shows the consequence: restricted to draws whose
+rate brackets the observed 0.709 s^-1, neither model's median profile rises as the data do.
+That is a real residual for Model 2 and the manuscript says so.
+
+A fresh run with a different seed will not reproduce the exact admissibility counts; the
+criteria and their signs are robust, the counts are not guaranteed identical run to run.
+Keep the summary JSON alongside the script rather than regenerating it casually.
+
+### `kernel_moments.py`
+The exact non-stationary second moments of the maintained fluctuation V, and the Kac-Rice
+upcrossing rate that follows from them, keeping the V/Vdot covariance that non-stationarity
+induces. Computed from the kernel rather than from the stationary limits because the
+process is not stationary over most of the sampled range of kappa: the relative departure
+one second into maintenance is of order exp(-2 kappa), below 1e-9 only above kappa ~ 11,
+whereas Table A1 samples down to 0.2. Small kappa is also the region most favourable to
+Model 1, so it is exactly the region a bound must not approximate away.
+
+Was `model1_bound.py`, which also carried a ceiling argument and two constants taken from
+the discarded fit; the ceiling is superseded by the frontier below.
+
+### `frontier.py` -- Model 1's ramp-rate frontier
+The analytic core of the delay-period argument, and the strongest thing in the project,
+because it involves no sampling at all.
+
+With alpha = 0 the delay-period log-rate slope is
+
+    d(ln nu)/dtau = 0.5*(u'/u - s'/s) + (a^2/2)*(s'/s),    s = Var V, u = Var Vdot,
+
+whose first term is NEGATIVE throughout the analysis window -- u is governed by the fast
+filter and has saturated, s carries the slow mode and has not -- so the ramp lives entirely
+in the second term, which needs a large a, while the rate carries exp(-a^2/2), which needs
+a small one. **Ramp and rate are governed by the same quantity in opposite directions**,
+and the ceiling omega/2pi is attained at a = 0, where the slope is strictly negative: the
+configuration maximising Model 1's rate is one in which that rate declines.
+
+The script computes the frontier as the upper envelope of achievable (rate, slope) pairs
+over a grid in (kappa, lambda, a) -- faster than a constrained optimisation at each rate,
+and it returns the (kappa, lambda, a) attaining each point. Queries are answered from the
+raw scatter rather than from the binned envelope: binning can only lose the maximum, and a
+frontier used to exclude a model must not be under-reported.
+
+Result (`results/frontier.json`): at a rate of at least 0.085 s^-1 -- the lowest observed
+in any participant x condition cell -- the largest slope available to Model 1 is +1.17;
+at 0.2, +0.55; at 0.3, +0.26; at 0.4, +0.08; at 0.5, +0.02; and at the observed mean rate
+of 0.709 s^-1, **+0.001**, against an observed +0.817. Conversely the largest rate at which
+Model 1 attains the observed slope anywhere is 0.140 s^-1, a fifth of the observed mean.
+The optimum sits at the smallest kappa and the largest lambda the ranges allow throughout,
+so this is the most favourable frontier those ranges permit.
+
+### `ramp_check.py` -- the existence question, at high precision
+An existence question is badly served by raising the trial count uniformly across a sweep:
+the statistic that answers it is a MAXIMUM over draws, and a maximum over noisy estimates
+is biased upward, so precision belongs on the candidates rather than spread evenly. Stage 1
+is `fused_sweep.py` at moderate NTR, to find candidates; this is stage 2, re-simulating the
+best of them at NTR 40000 on several independent seeds, selected two ways -- the best among
+those producing a realistic rate (the honest conditional question) and the best overall
+regardless of rate.
+
+Result (`results/ramp_check.jsonl`): Model 1's draws at realistic rates (0.19-1.10 s^-1)
+give slopes between -0.007 and 0.000 with MC standard errors of 0.004 or less -- not a
+small ramp, no ramp. Its draws that do ramp (+0.10, +0.13, +0.24) do so at 0.040-0.051
+s^-1. Two draws whose first-pass slopes looked positive (+0.18, +0.22) fell to +0.01 and
+-0.03 on re-simulation, which is what the upward bias of a maximum looks like when it is
+checked. The sampled space and the analytic frontier agree by independent routes.
+
+### `effect_sizes.py` -- the citable summary, with its noise measured
+Stage 1 distils the sweep dump into the counts and distributions quoted in the manuscript.
+Stage 2 measures how much of the reported spread is simulation noise rather than parameter
+sensitivity, by re-simulating a subset of admissible draws on several seeds and decomposing
+the variance of the per-draw slope into between-draw and within-draw (Monte-Carlo) parts.
+Shardable through `ES_SHARD_N`/`ES_SHARD_I`; pool the per-draw values from the shard logs
+rather than averaging the shards' own decompositions, which are computed on too few draws
+each (`results/noise_pooled.json`).
+
+Result: Model 1 total SD 0.099 s^-1, of which 0.055 Monte-Carlo and 0.083 between draws
+(31% of the variance); Model 2 total 1.18, of which 0.057 Monte-Carlo and 1.17 between
+draws (0.2%). Model 1's slope is not merely centred near zero but pinned there -- the whole
+span of its admissible space moves it about a tenth as much as Model 2's space moves
+Model 2's.
+
+### `representative.py` -- the point the illustrative figures are drawn at
+Nothing is fitted, so the figures that show simulated dynamics need a rule for choosing one
+parameter vector. It is the admissible draw closest to the coordinate-wise median of the
+sampled parameters of the draws admissible in BOTH models, each coordinate standardised by
+its interquartile range and taken in logarithm where it was sampled in logarithm. The rule
+touches only the parameters -- never the rate, the slope, or anything the figures are used
+to discuss.
+
+Two traps, both hit and both recorded in the module docstring. The coordinate-wise median
+of the *ranges* is not usable: it sits at a standardised distance to the gate near 4, where
+the model produces no muscle activity at all. And beta must be set separately, to the median
+of the values admissible under Model 2, because requiring admissibility in both models
+biases beta downward (0.0075 against 0.0183) -- a large ramp is what produces premature
+responses, and the screen removes those -- so taking beta from the draw would illustrate
+Model 2 at a ramp smaller than is typical of Model 2, for a reason that has nothing to do
+with Model 2.
+
+### `figures_space.py`
+`fig_frontier.pdf` puts the two quantities that must be reproduced together on the two
+axes, draws the analytic frontier as the boundary of what Model 1 can do, and shows where
+the sampled draws and the observation fall. `fig_delay_profile.pdf` shows the delay-period
+rate curve itself, observed against each architecture, restricted to draws whose mean rate
+brackets the observed one -- without that restriction the levels differ by two orders of
+magnitude and a bin-by-bin percentile envelope mixes profiles that are not comparable.
+
 
 ### `export_for_R.py`
 Writes the bridge files. `pma_counts.csv` has one row per participant, cell, period and
@@ -615,9 +408,11 @@ so simulated F values are not comparable in magnitude with the empirical ones; o
 and orderings are.
 
 ### `figures.py`
-The four figures of the note: the manuscript's Figure 1 simulated for both models, a
-single trial with the detected intervals, the rate profiles against data, and the two
-shape predictions.
+The figures that show simulated dynamics, all drawn at the representative admissible draw
+(`representative.py`): the manuscript's Figure 1 simulated for each model -- the same
+parameter vector in both, differing only in beta -- a single trial with the detected
+intervals, the rate profiles against data, and the data-only rate/slope relation of
+Figure S3. Run `representative.py` first.
 
 ### `theory_checks.py`
 Verification of Appendix C (the Kac-Rice rate derivation; renumbered from Appendix A in
@@ -632,26 +427,6 @@ The Euler bias on crossing counts is upward, about 2% at a 1 ms step and shrinki
 the step; unchecked since the 1024 Hz change, but the step only got finer, so if anything
 the bias is now slightly smaller. It affects the simulated rate, not the direction of any
 effect.
-
-### `model1_bound.py`
-The two numbers behind the exclusion of Model 1 in Section 3 of the note.
-
-`relaxation(kappa)` gives the fraction of the stationary variance reached one second after
-commitment, which is what licenses the stationary form of the crossing rate everywhere in
-the analysis window: a deficit of 1.3% at kappa = 2.3, one per cent at 2.4, and 5e-11 at
-the fitted 12.8.
-
-`best_slope(frac)` bounds the log-rate slope Model 1 can produce while reaching a given
-fraction of the observed rate, **without any stationary approximation**. With alpha = 0
-the rate depends on kappa and on the distance to the gate and on nothing else -- SD_eps
-cancels -- so two observed quantities give two equations in two unknowns. At a quarter of
-the observed rate the largest available slope is 0.004/s, against 0.700 observed.
-
-This replaces an earlier argument from the ceiling `nu <= omega / 2pi`, which is the
-alpha = 0 special case of the crossing rate and cannot be used to constrain kappa from
-data generated with a ramp.
-
----
 
 # R
 
@@ -728,25 +503,26 @@ reconciled with the value `run_stats.R` now uses -- a possible follow-up, not do
 | note | script |
 | --- | --- |
 | Section 2, the model | `sim.py` |
-| Section 3, predictions | derived by hand; checked by `theory_checks.py`, `model1_bound.py` |
+| Section 3, predictions | derived by hand; checked by `theory_checks.py` |
+| Section 3, exclusion of Model 1 | `frontier.py` (analytic), `fused_sweep.py` + `ramp_check.py` (sampled) |
 | Section 4, from the process to the observable | `sim.py` (`_bursts`), `theory_checks.py` |
 | Section 5, the data | `empirical.py` |
-| Section 6, statistical re-analysis | `R/run_stats.R`, `R/emit_tex.R` |
-| Section 7, corrected data | `R/run_stats.R` |
-| Section 8, behaviour does not discriminate | `build_targets_q.py`, `calib_behav_q.py` (the manuscript's actual, behavior-only calibration) |
-| Section 9, simulations and calibration | `calib_behav_q.py`; `calibrate.py` (shared `model_stats` utility only); `sweep.py`/`fused_sweep.py` (letter only, not the manuscript, since 2026-08-27) |
-| Figures | `figures.py` |
+| Sections 6-7, statistical re-analysis | `R/run_stats.R`, `R/emit_tex.R` |
+| Section 8, behaviour does not discriminate | derived: Remark A.0 -- beta contributes identically in all six cells, so no behavioural measure can separate the models |
+| Section 9, evaluation over the parameter space | `fused_sweep.py`, `effect_sizes.py`, `ramp_check.py` |
+| Figures | `figures.py`, `figures_space.py` |
 | Appendices A, B, D, E (predictions, no closed form) | derived by hand, not separately checked numerically |
-| Appendix C, the rate | `theory_checks.py` |
-| Section 3, exclusion of Model 1 | `model1_bound.py` |
+| Appendix C, the rate and the frontier | `theory_checks.py`, `kernel_moments.py`, `frontier.py` |
 
 ---
 
 # Things that will bite
 
-**Results are tracked, not scratch.** `results/*.json` (fits, checkpoints, calibration
-targets) are meaningful provenance and are committed to git; `results/logs/` and the large
-`results/*.jsonl` sweep dumps are regenerable and gitignored (see `.gitignore`). This
+**Results are tracked, not scratch.** `results/*.json` (the frontier, the effect-size
+summary, the noise decomposition, the representative vector) are the citable numbers and
+are committed to git; `results/logs/` and the large `results/*.jsonl` dumps are regenerable
+and gitignored (see `.gitignore`), except `ramp_check.jsonl`, which is small and is the
+record of the high-precision re-simulation. This
 replaced an earlier cloud-container-only workflow where nothing persisted between
 sessions and everything had to be re-uploaded by hand -- the project now lives and runs
 entirely on the local machine (`uv`/`renv`, see the top of this file).
@@ -775,10 +551,9 @@ kept for the record at `analysis_PMA/data/_superseded_aug5/*.stale-aug5`, and a 
 copy of the correction at `data/corrected_exports_2026-08-19/` (the two root-level files
 that caused the mismatch are still there too -- harmless now that the archive copy is
 fixed, but safe to delete). Nothing else in the pipeline reads these two files: the
-simulation, calibration, and sweep scripts (`sim.py`, `calibrate.py`, `targets.py`,
-`sweep.py`, `fused_sweep.py`) extract everything directly from the raw segmented-event and
+simulation and sweep scripts (`sim.py`, `targets.py`, `fused_sweep.py`) extract everything directly from the raw segmented-event and
 behavioural files via `empirical.py`/`targets.py` and never touch the JASP exports, so this
-bug could not have reached the model-calibration or Monte-Carlo-sweep numbers -- only a
+bug could not have reached the Monte-Carlo-sweep numbers -- only a
 fresh, un-cached run of the R trend-contrast reanalysis (Appendix B, Table 2/S2-S4) was at
 risk, and those were not rerun against the stale path this session either (only read from
 already-generated tables). Regenerate `stats_tables.txt`/`stats_results.csv`/`_tables.tex`
@@ -794,18 +569,38 @@ run at 1000 Hz, so `min_samples = 3` meant 2.9 ms in the data and 3 ms in `sim.p
 hardcoded, so both constants are exact sample counts at the recording's own rate.
 `theory_checks.py` keeps its own separate `DT` (not imported from `sim.py`) and was
 updated by hand to match -- if you add a third place that hardcodes a timestep, it will not
-follow `sim.py` automatically. Everything downstream of `sim.py`'s `DT` (`calibrate.py`,
-`behav_sim.py`, `calib_behav_q.py`, `sweep.py`, `fused_sweep.py` after its 2026-08-30 fix,
-`export_for_R.py`, `figures.py`) was re-run or re-checked under the new rate.
-`results/calibq_m1.json`/`calibq_m2.json` (the behavior-only fit, since re-run under the
-1024 Hz rate) are the only calibration point in the repository now that the joint
-EMG+behaviour fit and its `results/fit_model1.json`/`fit_model2.json` have been removed
-(see "Removed 2026-08-30: the joint EMG+behaviour fit" above).
+follow `sim.py` automatically. Everything downstream of `sim.py`'s `DT`
+(`fused_sweep.py`, `export_for_R.py`, `figures.py`) was re-run under the new rate.
 
 **The lateralised readiness potential during the stimulus** reproduces only to about 3%,
 in the same direction on all three values. Every effect there is null before and after.
 
-**The calibration is not certified global.** The search was restarted with progressively
-larger simplices until the gain became marginal, but thirteen parameters with a stochastic
-objective deserve more restarts than were run. The numbers in Section 9 should be
-regenerated if the search is pushed further; the checkpoint makes that cheap.
+**Nothing here is fitted, and the removal was deliberate.** Two fitting pipelines existed
+until 2026-08-31 -- a behaviour-only RT-quantile G2 fit and an all-data extension of it --
+and both were removed along with their targets, checkpoints, fit-quality figures and the
+G2 machinery. They were only ever diagnostic ("can this architecture reach effects of about
+the observed size somewhere in its parameter space"), and the parameter-space evaluation
+answers that question over the whole space instead of at one point, without an objective
+whose scale is set by a weighting convention and whose model comparison is guaranteed in
+advance by nesting. What replaced the behavioural comparison is stronger than it was:
+Remark A.0 of the manuscript proves that beta contributes identically in all six cells, so
+no behavioural measure in this design can separate the two models -- a theorem where the G2
+gap was an observation. If a fit is ever wanted again, it is in the git history, not in the
+working tree.
+
+**A statistic that separated the models in theory did not survive contact with the sweep,
+and is gone.** The curvature of the delay-period profile was added and removed the same
+day. The theory is sound -- Model 1's log-rate slope decays geometrically at 2*kappa,
+Model 2's linearly, and the ratio of the first-quarter to the last-quarter slope separates
+them 10-18x against 1.2-3x -- but a fitted quadratic coefficient measures something else:
+it equals -k^2/2 with k = alpha/sigma_V, so it confounds the SHAPE of the ramp with its
+SIZE, and a model reproducing a large slope necessarily produces a large curvature. Worse,
+there was no matched comparison available, because Model 1 never reaches the observed slope
+at any rate. Two further traps are worth recording because they are easy to fall into
+again: pooling across participants FLATTENS curvature (log-sum-exp of concave functions is
+not concave -- measured, -0.095 per participant against -0.034 pooled, a factor of three in
+the direction one might assume impossible); and the last quarter of the window is depressed
+in the model by an effect that is not curvature at all, since `measures()` and
+`empirical.py` both score the burst preceding the response as the response rather than as a
+partial activation, so a trial whose final approach begins before the reaction signal loses
+an event from the end.

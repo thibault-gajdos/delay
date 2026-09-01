@@ -275,80 +275,6 @@ def poisson_slope_se(counts, exposure, x, iters=100):
     return b[1], np.sqrt(cov[1, 1])
 
 
-def poisson_poly(counts, exposure, x, deg, iters=100):
-    """Offset Poisson GLM of `counts` on a polynomial of degree `deg` in x, returning
-    (coefficients, SEs) with coefficients in increasing order.  Same offset argument as
-    poisson_slope_se, of which this is the deg=1 generalisation."""
-    off = np.log(max(exposure, 1))
-    X = np.column_stack([x ** j for j in range(deg + 1)])
-    y = counts
-    b = np.zeros(deg + 1)
-    b[0] = np.log(max(y.mean(), 1e-4)) - off
-    A = None
-    for _ in range(iters):
-        mu = np.exp(np.clip(off + X @ b, -30, 30))
-        z = X @ b + (y - mu) / np.maximum(mu, 1e-12)
-        A = X.T @ (mu[:, None] * X) + 1e-9 * np.eye(deg + 1)
-        bn = np.linalg.solve(A, X.T @ (mu * z))
-        if np.max(np.abs(bn - b)) < 1e-11:
-            b = bn
-            break
-        b = bn
-    return b, np.sqrt(np.diag(np.linalg.inv(A)))
-
-
-def curvature(counts, exposure, x):
-    """Shape of the delay-period profile, the third criterion (added 2026-08-31).
-
-    The mean log-rate slope does not distinguish the two architectures nearly as sharply
-    as the profile's SHAPE does, and the shape is free -- it needs no new data.
-
-    Model 1's delay ramp is a variance transient: at delay onset y sits exactly at the
-    maintained level with eps = 0, so Var[V] starts at ZERO and relaxes to its stationary
-    value with rate 2*kappa.  The rate therefore rises and SATURATES, and the log-rate is
-    strongly concave.  Worse for the model, the Rice prefactor sqrt(Vdot/V) *falls* with
-    time (the fast lambda mode fills Vdot before the slow kappa mode fills V), so the rise
-    comes entirely from exp(-a^2/2V(t)) and needs a large a -- which is what makes the
-    rate small.  Model 2's ramp is a moving barrier: d log nu/dt = a(t)*alpha/sigma_V with
-    a(t) falling LINEARLY, so its log-slope declines gently and linearly instead.
-
-    Exact calculation over the sampled box (see README): across the 0.8-2.8 s window the
-    ratio of the local log-slope in the first quarter to the last is 10-18x for Model 1
-    and 1.2-3.0x for Model 2.  Observed (pma_counts.csv, 20 bins pooled over the 132
-    subject x condition cells): local slopes +0.616 +0.827 +0.809 +0.735 /s, ratio 0.84x,
-    quadratic term -0.033 with delta chi^2 = 2.6 on 1 df -- i.e. log-linear, no
-    deceleration at all.  Pooling cannot manufacture that: a mixture of decelerating
-    profiles still decelerates, so the comparison is conservative against Model 1.
-
-    Returns the quadratic coefficient with its SE, and the first/last quarter slope ratio.
-    """
-    n = len(counts)
-    b, se = poisson_poly(counts, exposure, x, 2)
-    qs = []
-    for j in range(4):
-        sl = counts[j * n // 4:(j + 1) * n // 4]
-        xs = x[j * n // 4:(j + 1) * n // 4]
-        if sl.sum() < 1:
-            qs.append(float('nan'))
-        else:
-            qs.append(float(poisson_poly(sl, exposure, xs, 1)[0][1]))
-    ratio = qs[0] / qs[3] if np.isfinite(qs[0]) and np.isfinite(qs[3]) and abs(qs[3]) > 1e-9 \
-        else float('nan')
-    # `quad_early` repeats the fit on the first three quarters only.  The last quarter is
-    # depressed in BOTH models by an effect that is not curvature: measures() removes the
-    # burst immediately preceding the response, because that burst IS the response, and
-    # empirical.py applies exactly the same rule (pma = onsets before t_burst).  The
-    # comparison is therefore like for like, but whenever a trial's final approach to the
-    # bound begins before the reaction signal -- i.e. whenever PMET is negative -- an
-    # event is removed from the end of the window, which pushes the fitted quadratic
-    # negative for reasons unrelated to the architectures being compared.  Reading both
-    # coefficients separates the two.
-    n34 = 3 * n // 4
-    b3, se3 = poisson_poly(counts[:n34], exposure, x[:n34], 2)
-    return dict(quad=float(b[2]), quad_se=float(se[2]),
-                quad_early=float(b3[2]), quad_early_se=float(se3[2]),
-                quarter_slopes=[float(v) for v in qs], first_last_ratio=float(ratio))
-
 
 def run_model(p, alpha, model, seed0, gamma=0.0):
     """Simulate all six cells for one (parameter, model) pair.  Returns per-cell arrays
@@ -360,8 +286,8 @@ def run_model(p, alpha, model, seed0, gamma=0.0):
     prem = np.zeros(6); early = np.zeros(6); noresp = np.zeros(6)
     acc = np.zeros(6); rt_mean = np.zeros(6); rt_se = np.zeros(6); rt_n = np.zeros(6)
     slope = np.zeros(6); slope_se = np.zeros(6); rate = np.zeros(6)
-    # the raw 20-bin delay profile per cell, kept so that any question about the SHAPE of
-    # the ramp is answerable from the dump instead of needing the sweep re-run
+    # the raw 20-bin delay profile per cell, so that figures_space.py can draw the
+    # simulated delay-period rate curve against the observed one without re-simulating
     prof = np.zeros((6, 20)); prof_expo = np.zeros(6)
     met_mean = np.zeros(6); met_se = np.zeros(6)
     for k, (c, D) in enumerate(CELLS):
@@ -453,16 +379,6 @@ def slope_criterion(res):
                 max_slope=float(np.nanmax(res['slope'])))
 
 
-def shape_criterion(res):
-    """Curvature of the delay-period profile, pooled over the six cells as the observed
-    profile is (see curvature()).  Model 1 predicts strong concavity, Model 2 mild."""
-    h = res['prof'].sum(axis=0)
-    expo = float(res['prof_expo'].sum())
-    if h.sum() < 20 or expo <= 0:
-        return None
-    return curvature(h, expo, DELAY_TB)
-
-
 def met_invariance(res):
     """Range of per-cell mean MET, and whether it stays within the note4.tex R7-R10
     predicted residual scale (~2.3 ms) plus a safety margin for six-cell spread."""
@@ -506,13 +422,11 @@ def main():
                                    rt=rt_effects(res1) if adm1 else None,
                                    slope=slope_criterion(res1) if adm1 else None,
                                    met=met_invariance(res1) if adm1 else None,
-                                   shape=shape_criterion(res1) if adm1 else None,
                                    raw={k: v.tolist() for k, v in res1.items()}),
                        model2=dict(admissible=adm2,
                                    rt=rt_effects(res2) if adm2 else None,
                                    slope=slope_criterion(res2) if adm2 else None,
                                    met=met_invariance(res2) if adm2 else None,
-                                   shape=shape_criterion(res2) if adm2 else None,
                                    raw={k: v.tolist() for k, v in res2.items()}))
             f.write(json.dumps(rec) + "\n"); f.flush()
             print(f"draw {i}: adm1={adm1} adm2={adm2} ({time.time()-t0:.1f}s)", flush=True)

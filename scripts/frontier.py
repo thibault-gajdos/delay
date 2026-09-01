@@ -18,7 +18,7 @@ Writes results/frontier.json: the envelope, plus the two numbers the manuscript 
 """
 import numpy as np, json, sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from model1_bound import moments, rate
+from kernel_moments import moments, rate
 
 T0, T1 = 0.8, 2.8          # ends of the delay analysis window, in elapsed maintenance time
 OBS_RATE, OBS_SLOPE = 0.709, 0.817

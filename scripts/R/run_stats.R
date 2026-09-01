@@ -126,7 +126,12 @@ suppressPackageStartupMessages({
   library(afex); library(emmeans); library(dplyr); library(tidyr)
   library(lme4); library(lmerTest)
 })
-afex_options(emmeans_model = "multivariate", check_contrasts = TRUE)
+## The manuscript's tables report PARTIAL eta squared. afex's default effect size is
+## GENERALISED eta squared, and until 2026-09-01 this file collected that into a column
+## named eta2p -- a mislabelling, not a rounding difference: for the accuracy duration
+## effect the two are 0.027 and 0.519. Set the default to partial eta squared so that the
+## column and the manuscript agree.
+afex_options(emmeans_model = "multivariate", check_contrasts = TRUE, es_aov = "pes")
 emm_options(lmer.df = "satterthwaite")
 
 ARCHIVE  <- Sys.getenv("ARCHIVE", "../data")
@@ -267,9 +272,9 @@ analyse_period <- function(d, measure, period, pub = NULL) {
     say(strrep("=", 78))
     capture.output(print(a$anova_table), file = OUT, append = TRUE)
     AT <- a$anova_table
-    add_row(measure, period, "duration", 1, AT["dur", "den Df"], AT["dur", "F"], AT["dur", "Pr(>F)"], AT["dur", "ges"])
-    add_row(measure, period, "coherence", AT["coh", "num Df"], AT["coh", "den Df"], AT["coh", "F"], AT["coh", "Pr(>F)"], AT["coh", "ges"])
-    add_row(measure, period, "duration x coherence", AT["dur:coh", "num Df"], AT["dur:coh", "den Df"], AT["dur:coh", "F"], AT["dur:coh", "Pr(>F)"], AT["dur:coh", "ges"])
+    add_row(measure, period, "duration", 1, AT["dur", "den Df"], AT["dur", "F"], AT["dur", "Pr(>F)"], AT["dur", "pes"])
+    add_row(measure, period, "coherence", AT["coh", "num Df"], AT["coh", "den Df"], AT["coh", "F"], AT["coh", "Pr(>F)"], AT["coh", "pes"])
+    add_row(measure, period, "duration x coherence", AT["dur:coh", "num Df"], AT["dur:coh", "den Df"], AT["dur:coh", "F"], AT["dur:coh", "Pr(>F)"], AT["dur:coh", "pes"])
     if (!is.null(pub) && !any(is.na(pub))) {
       got <- c(AT["dur", "F"], AT["coh", "F"], AT["dur:coh", "F"])
       ok <- all(abs(got - pub) <= pmax(0.004, 0.01 * abs(pub)))
@@ -296,13 +301,13 @@ analyse_period <- function(d, measure, period, pub = NULL) {
               mean(m0$v), t0$df1, t0$df2, t0$F, t0$p))
 
   AL <- a_level$anova_table; AT <- a_trend$anova_table
-  add_row(measure, period, "duration", 1, AL["dur","den Df"], AL["dur","F"], AL["dur","Pr(>F)"], AL["dur","ges"])
-  add_row(measure, period, "coherence", AL["coh","num Df"], AL["coh","den Df"], AL["coh","F"], AL["coh","Pr(>F)"], AL["coh","ges"])
-  add_row(measure, period, "duration x coherence", AL["dur:coh","num Df"], AL["dur:coh","den Df"], AL["dur:coh","F"], AL["dur:coh","Pr(>F)"], AL["dur:coh","ges"])
+  add_row(measure, period, "duration", 1, AL["dur","den Df"], AL["dur","F"], AL["dur","Pr(>F)"], AL["dur","pes"])
+  add_row(measure, period, "coherence", AL["coh","num Df"], AL["coh","den Df"], AL["coh","F"], AL["coh","Pr(>F)"], AL["coh","pes"])
+  add_row(measure, period, "duration x coherence", AL["dur:coh","num Df"], AL["dur:coh","den Df"], AL["dur:coh","F"], AL["dur:coh","Pr(>F)"], AL["dur:coh","pes"])
   add_row(measure, period, "time (linear)", t0$df1, t0$df2, t0$F, t0$p, t0$eta2p)
-  add_row(measure, period, "duration x time (linear)", 1, AT["dur","den Df"], AT["dur","F"], AT["dur","Pr(>F)"], AT["dur","ges"])
-  add_row(measure, period, "coherence x time (linear)", AT["coh","num Df"], AT["coh","den Df"], AT["coh","F"], AT["coh","Pr(>F)"], AT["coh","ges"])
-  add_row(measure, period, "duration x coherence x time (linear)", AT["dur:coh","num Df"], AT["dur:coh","den Df"], AT["dur:coh","F"], AT["dur:coh","Pr(>F)"], AT["dur:coh","ges"])
+  add_row(measure, period, "duration x time (linear)", 1, AT["dur","den Df"], AT["dur","F"], AT["dur","Pr(>F)"], AT["dur","pes"])
+  add_row(measure, period, "coherence x time (linear)", AT["coh","num Df"], AT["coh","den Df"], AT["coh","F"], AT["coh","Pr(>F)"], AT["coh","pes"])
+  add_row(measure, period, "duration x coherence x time (linear)", AT["dur:coh","num Df"], AT["dur:coh","den Df"], AT["dur:coh","F"], AT["dur:coh","Pr(>F)"], AT["dur:coh","pes"])
 
   if (nb > 2) {
     a_quad <- aov_ez("subj", "quad", s, within = c("dur", "coh"))
@@ -314,9 +319,9 @@ analyse_period <- function(d, measure, period, pub = NULL) {
                 mean(q0$v), tq$df1, tq$df2, tq$F, tq$p))
     AC <- a_quad$anova_table
     add_row(measure, period, "time (quadratic)", tq$df1, tq$df2, tq$F, tq$p, tq$eta2p)
-    add_row(measure, period, "duration x time (quadratic)", 1, AC["dur","den Df"], AC["dur","F"], AC["dur","Pr(>F)"], AC["dur","ges"])
-    add_row(measure, period, "coherence x time (quadratic)", AC["coh","num Df"], AC["coh","den Df"], AC["coh","F"], AC["coh","Pr(>F)"], AC["coh","ges"])
-    add_row(measure, period, "duration x coherence x time (quadratic)", AC["dur:coh","num Df"], AC["dur:coh","den Df"], AC["dur:coh","F"], AC["dur:coh","Pr(>F)"], AC["dur:coh","ges"])
+    add_row(measure, period, "duration x time (quadratic)", 1, AC["dur","den Df"], AC["dur","F"], AC["dur","Pr(>F)"], AC["dur","pes"])
+    add_row(measure, period, "coherence x time (quadratic)", AC["coh","num Df"], AC["coh","den Df"], AC["coh","F"], AC["coh","Pr(>F)"], AC["coh","pes"])
+    add_row(measure, period, "duration x coherence x time (quadratic)", AC["dur:coh","num Df"], AC["dur:coh","den Df"], AC["dur:coh","F"], AC["dur:coh","Pr(>F)"], AC["dur:coh","pes"])
   }
 
   if (!is.null(pub) && !any(is.na(pub))) {
@@ -500,7 +505,7 @@ for (i in seq_len(nrow(BEHAV))) {
   at <- a$anova_table
   for (j in seq_len(nrow(at))) {
     add_row(BEHAV$measure[i], "behaviour", rownames(at)[j],
-            at[j, "num Df"], at[j, "den Df"], at[j, "F"], at[j, "Pr(>F)"], at[j, "ges"])
+            at[j, "num Df"], at[j, "den Df"], at[j, "F"], at[j, "Pr(>F)"], at[j, "pes"])
   }
 }
 

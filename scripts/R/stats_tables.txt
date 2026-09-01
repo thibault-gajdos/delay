@@ -599,3 +599,117 @@ coh     1.9414 40.769 0.022020 0.3248 0.0050276 0.7182
 dur:coh 1.9158 40.231 0.020438 1.3045 0.0182498 0.2817
 
    trend vs zero: -0.06251 units/s, F(1,21) = 21.91, p = 0.0001278
+
+==============================================================================
+Model 1, response period   (no events in any bin: not analysed)
+==============================================================================
+
+==============================================================================
+SIMULATION, Model 2
+==============================================================================
+
+==============================================================================
+Model 2, stimulus period   (20 bins)
+==============================================================================
+
+-- LEVEL: duration, coherence, duration x coherence  (identical to the manuscript's own duration/coherence/interaction effects)
+Anova Table (Type 3 tests)
+
+Response: level
+        num Df den Df        MSE       F      ges    Pr(>F)    
+dur     1.0000 21.000 1.7009e-05  0.4713 0.004087  0.499908    
+coh     1.9992 41.983 1.7922e-05 18.0045 0.248263 2.264e-06 ***
+dur:coh 1.8102 38.014 1.3608e-05  6.2292 0.072830  0.005767 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+-- TREND (linear contrast): time, and its interactions with duration/coherence
+Anova Table (Type 3 tests)
+
+Response: trend
+        num Df den Df        MSE      F      ges  Pr(>F)  
+dur     1.0000 21.000 2.9559e-05 1.5867 0.009894 0.22162  
+coh     1.8286 38.400 3.8792e-05 2.7036 0.039257 0.08413 .
+dur:coh 1.7679 37.125 5.2626e-05 3.8092 0.070206 0.03602 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+   trend vs zero: +0.01672 units/s, F(1,21) = 1231.52, p = 3.941e-20
+
+-- QUAD (quadratic contrast): curvature, and its interactions with duration/coherence
+Anova Table (Type 3 tests)
+
+Response: quad
+        num Df den Df        MSE      F      ges  Pr(>F)  
+dur     1.0000 21.000 0.00023345 0.0184 0.000129 0.89351  
+coh     1.5195 31.909 0.00031968 5.2096 0.070764 0.01728 *
+dur:coh 1.9493 40.936 0.00034495 0.6420 0.012825 0.52759  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+   curvature vs zero: -0.01003, F(1,21) = 69.65, p = 4.152e-08
+
+==============================================================================
+Model 2, delay period   (20 bins)
+==============================================================================
+
+-- LEVEL: duration, coherence, duration x coherence  (identical to the manuscript's own duration/coherence/interaction effects)
+Anova Table (Type 3 tests)
+
+Response: level
+        num Df den Df        MSE       F      ges    Pr(>F)    
+dur     1.0000 21.000 3.6460e-05 58.2039 0.297437 1.748e-07 ***
+coh     1.8280 38.387 5.4571e-05  5.2985 0.095385   0.01103 *  
+dur:coh 1.8848 39.581 3.3837e-05 20.7056 0.208508 1.068e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+-- TREND (linear contrast): time, and its interactions with duration/coherence
+Anova Table (Type 3 tests)
+
+Response: trend
+        num Df den Df        MSE      F      ges Pr(>F)
+dur     1.0000 21.000 5.5564e-05 0.4889 0.002772 0.4921
+coh     1.8025 37.852 9.4615e-05 1.2579 0.021479 0.2931
+dur:coh 1.9754 41.483 6.8672e-05 1.0093 0.013816 0.3724
+
+   trend vs zero: +0.00162 units/s, F(1,21) = 3.35, p = 0.08164
+
+-- QUAD (quadratic contrast): curvature, and its interactions with duration/coherence
+Anova Table (Type 3 tests)
+
+Response: quad
+        num Df den Df        MSE      F       ges Pr(>F)
+dur     1.0000 21.000 0.00035134 1.1514 0.0065768 0.2954
+coh     1.7027 35.756 0.00065955 1.4153 0.0253527 0.2548
+dur:coh 1.8029 37.861 0.00060427 0.1175 0.0020902 0.8700
+   curvature vs zero: -0.01027, F(1,21) = 40.27, p = 2.723e-06
+
+==============================================================================
+Model 2, RS period   (2 bins)
+==============================================================================
+
+-- LEVEL: duration, coherence, duration x coherence  (identical to the manuscript's own duration/coherence/interaction effects)
+Anova Table (Type 3 tests)
+
+Response: level
+        num Df den Df        MSE      F      ges  Pr(>F)  
+dur     1.0000 21.000 1.0302e-04 1.4109 0.010316 0.24817  
+coh     1.9926 41.844 1.5704e-04 0.7955 0.017538 0.45764  
+dur:coh 1.7754 37.283 6.3571e-05 2.6035 0.020637 0.09322 .
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+-- TREND (linear contrast): time, and its interactions with duration/coherence
+Anova Table (Type 3 tests)
+
+Response: trend
+        num Df den Df      MSE      F       ges Pr(>F)
+dur     1.0000 21.000 0.023260 0.3509 0.0016217 0.5600
+coh     1.9628 41.218 0.050012 1.2333 0.0235282 0.3013
+dur:coh 1.7715 37.202 0.040672 1.0624 0.0150065 0.3487
+
+   trend vs zero: -0.10956 units/s, F(1,21) = 34.61, p = 7.71e-06
+
+==============================================================================
+Model 2, response period   (no events in any bin: not analysed)
+==============================================================================

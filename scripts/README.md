@@ -309,22 +309,44 @@ re-simulation `ramp_check.py` performs.
 Cost: about 40% fewer usable draws per 250 than the rejected reparameterisation, bought
 back by raising `N_DRAWS` to 600.
 
-**Result** (`results/sweep_screened.jsonl`, 600 draws, NTR 4000; summarised by
-`effect_sizes.py` into `results/effect_sizes_stage1.json`). Model 1: 117 admissible; slope
-median -0.053, 5th-95th percentile -0.268 to +0.092; **0** draws with all six cell slopes
-significantly positive and **0** anywhere in the observed slope band [0.659, 1.029].
-Model 2: 169 admissible; slope median +0.160, -1.234 to +2.075; 68 with all six positive,
-18 in the observed band, 14 of those with a delay rate inside the observed range. Both RT
-effects are supported in the large majority of admissible draws of both models (109/117 and
-112/117 for Model 1; 156/169 and 161/169 for Model 2), which is the point: the two models
-are separated by the delay period and by nothing else.
+#### The chronometric criterion (2026-09-01)
 
-One qualification worth keeping in view. Model 2's in-band draws sit mostly at low rates
-(0.042 to 0.295 s^-1); only two are at 0.4 s^-1 or above. Model 2 *can* reproduce the ramp
-and the rate together -- Model 1 cannot, anywhere -- but it does so in a thin part of its
-sampled space, and `fig_delay_profile.pdf` shows the consequence: restricted to draws whose
-rate brackets the observed 0.709 s^-1, neither model's median profile rises as the data do.
-That is a real residual for Model 2 and the manuscript says so.
+The screen gained a second participant-level criterion, on the LEVELS of the two components
+of response time: mean premotor execution time in 181-677 ms and mean motor execution time
+in 46-288 ms, the observed per-participant ranges widened by a factor of two about their
+centre. Without it the admissible set contained draws whose mean PMET was **-945 ms** -- a
+response burst beginning almost a second before the reaction signal -- and whose mean MET
+reached 1.4 s. Those are not participants.
+
+It constrains levels and never effects, which is what makes it admissible here: the
+RS-locked predictions are that coherence and duration move PMET and leave MET alone, and
+those remain free to fail at every admissible draw. Screening on MET INVARIANCE was
+considered and rejected for exactly that reason -- it would have converted a result into an
+assumption. Screening on the levels removes no tested prediction, because the paper makes no
+claim about them.
+
+It has a cost, and it should be stated. The criterion removes most of the Model 2 draws that
+reached the observed MAGNITUDE of the stimulus-period duration effect: 23 of 169 before, 2
+of 148 after. The B.2 comparison therefore has to be made on the SIGN, which is what
+Proposition B.2 predicts anyway -- and there the separation is undamaged, 44% against 1%.
+
+**Result** (`results/sweep_screened.jsonl`, 1200 draws, NTR 4000). Model 1: 164 admissible;
+delay slope median -0.02, 5th-95th percentile -0.20 to +0.09; the observed sign in 31% of
+settings; **0** draws with all six cell slopes significantly positive and **0** anywhere in
+the observed slope band [0.659, 1.029]. Model 2: 148 admissible; slope median +0.27, -0.06
+to +1.98; the observed sign in 90%; 76 with all six positive and 16 in the observed band.
+
+The fraction of admissible settings carrying the OBSERVED SIGN is the compact summary of the
+whole comparison, and `effect_panel.py` now reports it:
+
+| effect | Model 1 | Model 2 |
+| --- | --- | --- |
+| the five effects both architectures share | 99% | 99% |
+| **B.2, duration effect on the stimulus-period rate** | **1%** | **44%** |
+| **C.2, delay-period log-rate slope** | **31%** | **90%** |
+| C.3, coherence x duration on the delay rate | 5% | 9% |
+
+Two effects separate the architectures, one is missed by both, five are indistinguishable.
 
 A fresh run with a different seed will not reproduce the exact admissibility counts; the
 criteria and their signs are robust, the counts are not guaranteed identical run to run.

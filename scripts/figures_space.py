@@ -96,44 +96,48 @@ def fig_frontier(fname='plots/fig_frontier.pdf'):
 
 
 # ------------------------------------------------------------ 2. the delay profile
-def fig_delay_profile(fname='plots/fig_delay_profile.pdf', lo=0.4, hi=1.2):
-    """The delay profile, at draws that produce activations at about the observed rate.
+def fig_delay_profiles(fname='plots/fig_delay_profiles.pdf'):
+    """The shape of the delay-period rate curve, one line per admissible parameter set.
 
-    Conditioning on the rate is what makes the picture readable and is also the honest
-    question: over the whole admissible set the levels differ by two orders of magnitude,
-    so a percentile envelope taken bin by bin mixes profiles that are not comparable and
-    shows nothing about shape. Restricting to draws whose mean rate brackets the observed
-    0.709 s-1 asks the question the delay argument actually turns on -- when the
-    architecture produces partial activations as often as the participants do, does its
-    rate curve rise as theirs does?
+    Each thin line is the delay-period profile of one admissible draw, divided by its own
+    mean over the window so that draws whose rates differ by two orders of magnitude can be
+    compared on shape; the observed profile is normalised the same way. Showing the family
+    rather than a median or a percentile band is the point: the question is whether the
+    architecture CAN produce the observed rise, not what it does at a typical setting, and a
+    band taken bin by bin mixes profiles that are not comparable.
     """
     t = np.arange(20) * 0.1 + 0.05
     cnt, expo = observed_profile()
     obs = cnt / (expo * 0.1)
-    se = obs / np.sqrt(np.maximum(cnt, 1))
-    fig, ax = plt.subplots(1, 2, figsize=(7.2, 3.1), sharey=True,
+    obs_n = obs / obs.mean()
+    fig, ax = plt.subplots(1, 2, figsize=(7.4, 3.1), sharey=True,
                            gridspec_kw=dict(wspace=0.08))
     for a, (tag, col, name) in zip(ax, [('model1', C_M1, 'Model 1'),
                                         ('model2', C_M2, 'Model 2')]):
-        r, _, prof, pex = per_model(tag)
-        sel = (r >= lo) & (r <= hi)
-        rate = prof[sel] / (pex[sel][:, None] * 0.1)
-        band = np.percentile(rate, [5, 95], axis=0)
-        a.fill_between(t, band[0], band[1], color=col, alpha=.15, lw=0,
-                       label=f'{name}, 5th–95th percentile ({sel.sum()} draws)')
-        a.plot(t, np.median(rate, axis=0), color=col, lw=1.6, label=f'{name}, median')
-        a.errorbar(t, obs, yerr=se, fmt='o', ms=2.6, color=C_OBS, lw=.8, label='observed')
+        _, _, prof, pex = per_model(tag)
+        rate = prof / (pex[:, None] * 0.1)
+        m = rate.mean(axis=1)
+        # a draw enters only if its profile rests on at least 200 events over the window:
+        # below that the normalised curve is Poisson noise rather than shape. This is a
+        # precision criterion on the estimate, not a selection on what the estimate says.
+        keep = (m > 0) & (prof.sum(axis=1) >= 200)
+        norm = rate[keep] / m[keep][:, None]
+        for y in norm:
+            a.plot(t, y, color=col, lw=.4, alpha=.30, zorder=1)
+        a.plot(t, np.median(norm, axis=0), color=col, lw=2.0, zorder=3)
+        a.plot(t, obs_n, 'o-', ms=3, color=C_OBS, lw=1.2, zorder=4)
         a.set_xlabel('time into the delay analysis window (s)')
-        a.legend(loc='upper left', frameon=False)
-        a.set_ylim(0, 2.0)
-    ax[0].set_ylabel('partial-activation rate (s$^{-1}$)')
-    ax[0].set_title(f'draws with a mean rate in [{lo}, {hi}] s$^{{-1}}$ '
-                    f'(observed {OBS_RATE})', fontsize=8, loc='left')
+        a.set_title(f'{name}, {keep.sum()} admissible parameter sets', fontsize=8)
+        a.set_ylim(0, 3.2)
+        a.axhline(1.0, color='0.75', lw=.7, ls=':')
+    ax[0].set_ylabel('partial-activation rate,\nrelative to its own window mean')
+    ax[1].legend([plt.Line2D([], [], color=C_M2, lw=.4),
+                  plt.Line2D([], [], color=C_M2, lw=2.0),
+                  plt.Line2D([], [], color=C_OBS, lw=1.2, marker='o', ms=3)],
+                 ['one admissible parameter set', 'median over parameter sets', 'observed'],
+                 fontsize=6.5, frameon=False, loc='upper left')
     fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
     print('wrote', fname)
-
-
-
 
 
 # ---------------------------------------------------- 3. the effect-size panel
@@ -153,7 +157,6 @@ def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
             r = P['models'][tag][k]
             a.plot([r['p5'], r['p95']], [y, y], color=col, lw=4, solid_capstyle='butt',
                    alpha=.85, zorder=2)
-            a.plot([r['median']], [y], marker='|', ms=10, color='white', mew=1.4, zorder=3)
             if not r['covers_observed']:
                 a.plot([r['p95'] if r['p95'] < P['observed'][k] else r['p5']], [y],
                        marker='x', ms=5, color=col, mew=1.4, zorder=4)
@@ -179,4 +182,4 @@ if __name__ == '__main__':
     os.makedirs('plots', exist_ok=True)
     fig_effect_sizes()
     fig_frontier()
-    fig_delay_profile()
+    fig_delay_profiles()

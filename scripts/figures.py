@@ -18,6 +18,11 @@ from delaymodel.sim import simulate, measures, rate_profile, DT, _bursts
 from delaymodel.targets import CELLS, LAB, build, poisson_slope
 
 COL = {0: '#9ecae1', 12: '#3182bd', 50: '#08306b'}
+C_M1, C_M2 = '#c1272d', '#3182bd'
+# common time grids for Figure 1, so every draw's mean can be interpolated onto the same axis
+TG0 = np.linspace(0.0, 2.2, 300)
+TG1 = np.linspace(-0.1, 3.2, 400)
+TG2 = np.linspace(0.0, 0.45, 120)
 CC = [0, 12, 50]
 STY = {0.3: '-', 2.0: '--'}
 plt.rcParams.update({'font.size': 8, 'axes.spines.top': False, 'axes.spines.right': False,
@@ -33,77 +38,81 @@ def cell_sty(k):
 
 
 # ---------------------------------------------------------------- trajectories
-def fig_trajectories(P, model=2, n=800, ntraj=18, fname='plots/fig_traj.pdf'):
-    """Simulated counterpart of the manuscript's Figure 1: the gated motor-preparatory
-    signal, time-locked to the four trial events.
+def fig_trajectories(model=2, ndraw=30, n=300, fname='plots/fig_traj.pdf',
+                     dump='results/sweep_screened.jsonl'):
+    """Manuscript Figure 1: the gated motor-preparatory signal, time-locked to the four
+    trial events, with ONE MEAN TRAJECTORY PER PARAMETER SET.
 
-    Individual trajectories rather than a standard-deviation band. A band is a cross-section
-    -- it says how far apart trials are at each instant, which is not what one wants to know
-    about a process whose whole content is what a trial DOES over time. Twenty single trials
-    drawn in grey behind the six condition means show the same variability in the form that
-    carries the mechanism: the excursions towards the gate, their duration, and the fact
-    that a trial which crosses does so as an event rather than as a displacement of a mean.
+    Each thin line is the mean over trials of one admissible draw of the sweep; the thick
+    line is the mean over draws. The variability shown is therefore variability across the
+    parameter space, not across trials within one setting -- which is the variability the
+    paper's claims are about, since every claim is of the form "at every admissible
+    parameter setting". A single simulated point, or a band around it, cannot show that.
+
+    The vertical axis is in units of each draw's own distance to the gate: 0 is the
+    maintained level and 1 is the gate g, so that draws with different amplitudes are
+    superimposable. Without this the figure would be dominated by the arbitrary amplitude
+    scale, which the model fixes only by convention (sigma_x = 0.1).
+
+    Draws are those admissible in BOTH models, and the same draws are used in both panels,
+    so the two figures differ in beta and in nothing else.
     """
+    recs = [json.loads(l) for l in open(dump)]
+    both = [r for r in recs if r['model1']['admissible'] and r['model2']['admissible']]
+    step = max(1, len(both) // ndraw)
+    sel = both[::step][:ndraw]
     fig, ax = plt.subplots(1, 4, figsize=(9.2, 2.7),
                            gridspec_kw=dict(width_ratios=[2.2, 3, 0.9, 0.9], wspace=0.12))
-    # --- individual trials, pooled over conditions, drawn first and behind everything
-    st = simulate(P, 0.12, 2.0, ntraj * 3, model, seed=17)
-    ms = measures(st)
-    Yt = st['Z'] + P['g']; rit = st['resp_i']
-    tt = np.arange(Yt.shape[1]) * DT
-    picked = [j for j in np.flatnonzero(ms['valid'])][:ntraj]
-    for j in picked:
-        y = np.where(np.arange(Yt.shape[1]) <= rit[j], Yt[j], np.nan)
-        ax[0].plot(tt[tt <= 2.2], y[tt <= 2.2], color='0.55', lw=.35, alpha=.55, zorder=0)
-        t2 = tt - 2.0; w2 = (t2 >= -0.1) & (t2 <= 3 + P['LRS'])
-        ax[1].plot(t2[w2], y[w2], color='0.55', lw=.35, alpha=.55, zorder=0)
-        t3 = tt - 5.0; w3 = (t3 >= 0) & (t3 <= 0.45)
-        ax[2].plot(t3[w3], y[w3], color='0.55', lw=.35, alpha=.55, zorder=0)
-        L = int(0.25 / DT)
-        if rit[j] >= L:
-            ax[3].plot(np.arange(-L, 0) * DT, Yt[j, rit[j] - L:rit[j]],
-                       color='0.55', lw=.35, alpha=.55, zorder=0)
-    # --- condition means
-    for k, (c, D) in enumerate(CELLS):
-        s_ = simulate(P, c, D, n, model, seed=41 + k)
-        m = measures(s_)
-        Y = s_['Z'] + P['g']
-        v = m['valid']; ri = s_['resp_i']
-        col, sty = cell_col(k), cell_sty(k)
-        t = np.arange(Y.shape[1]) * DT
-        M = np.array([np.where(np.arange(Y.shape[1]) <= (ri[j] if ri[j] >= 0 else 10**9),
-                               Y[j], np.nan) for j in np.flatnonzero(v)])
-        mu = np.nanmean(M, 0)
-        w = t <= 2.2
-        ax[0].plot(t[w], mu[w], sty, color=col, lw=1.4, zorder=3)
-        t2 = t - D
-        w2 = (t2 >= -0.1) & (t2 <= 3 + P['LRS'])
-        ax[1].plot(t2[w2], mu[w2], sty, color=col, lw=1.4, zorder=3)
-        t3 = t - (D + 3)
-        w3 = (t3 >= 0) & (t3 <= 0.45)
-        ax[2].plot(t3[w3], mu[w3], sty, color=col, lw=1.4, zorder=3)
-        L = int(0.25 / DT)
-        R = np.full((v.sum(), L), np.nan)
-        for i, j in enumerate(np.flatnonzero(v)):
-            if ri[j] >= L:
-                R[i] = Y[j, ri[j] - L:ri[j]]
-        ax[3].plot(np.arange(-L, 0) * DT, np.nanmean(R, 0), sty, color=col, lw=1.4, zorder=3)
+    L = int(0.25 / DT)
+    acc = {0: [], 1: [], 2: [], 3: []}
+    for q, rec in enumerate(sel):
+        P = dict(rec['params'], alpha=(rec['alpha'] if model == 2 else 0.0))
+        curves = {0: [], 1: [], 2: [], 3: []}
+        for k, (c, D) in enumerate(CELLS):
+            s_ = simulate(P, c, D, n, model, seed=8000 + 97 * q + k)
+            m = measures(s_)
+            v = np.flatnonzero(m['valid'])
+            if v.size == 0:
+                continue
+            Y = s_['Z'] + P['g']; ri = s_['resp_i']
+            mbar = np.nanmean(np.abs(s_['m'][v]))
+            scale = max(P['g'] - mbar, 1e-6)
+            M = np.array([np.where(np.arange(Y.shape[1]) <= ri[j], Y[j], np.nan) for j in v])
+            mu = (np.nanmean(M, 0) - mbar) / scale
+            t = np.arange(Y.shape[1]) * DT
+            curves[0].append(np.interp(TG0, t, mu, left=np.nan, right=np.nan))
+            curves[1].append(np.interp(TG1, t - D, mu, left=np.nan, right=np.nan))
+            curves[2].append(np.interp(TG2, t - (D + 3), mu, left=np.nan, right=np.nan))
+            R = np.full((v.size, L), np.nan)
+            for a_, j in enumerate(v):
+                if ri[j] >= L:
+                    R[a_] = (Y[j, ri[j] - L:ri[j]] - mbar) / scale
+            curves[3].append(np.nanmean(R, 0))
+        col = C_M1 if model == 1 else C_M2
+        for w, g in enumerate([TG0, TG1, TG2, np.arange(-L, 0) * DT]):
+            if not curves[w]:
+                continue
+            y = np.nanmean(np.array(curves[w]), 0)
+            acc[w].append(y)
+            ax[w].plot(g, y, color=col, lw=.5, alpha=.45, zorder=1)
+    for w, g in enumerate([TG0, TG1, TG2, np.arange(-L, 0) * DT]):
+        if acc[w]:
+            ax[w].plot(g, np.nanmean(np.array(acc[w]), 0),
+                       color=(C_M1 if model == 1 else C_M2), lw=2.0, zorder=3)
     for a, ttl in zip(ax, ['from stimulus onset', 'from stimulus offset',
                            'from response signal', 'from response']):
-        a.axhline(P['g'], color='0.3', ls=':', lw=.8)
-        a.axhline(P['theta'], color='0.6', ls=':', lw=.8)
+        a.axhline(1.0, color='0.3', ls=':', lw=.8)
+        a.axhline(0.0, color='0.6', ls=':', lw=.8)
         a.set_title(ttl, fontsize=8)
-        a.set_ylim(-0.01, P['g'] + P['r'] * 1.6)
-    ax[0].set_ylabel('gated motor-preparatory signal')
-    ax[0].text(0.02, P['g'] + 0.004, '$g$', fontsize=8, color='0.3')
-    ax[0].text(0.02, P['theta'] + 0.004, r'$\theta$', fontsize=8, color='0.6')
+        a.set_ylim(-0.6, 1.9)
+    ax[0].set_ylabel('signal, in units of the distance\nfrom the maintained level to the gate')
+    ax[0].text(0.03, 1.04, '$g$', fontsize=8, color='0.3')
+    ax[0].text(0.03, 0.04, 'maintained level', fontsize=7, color='0.55')
     for a in ax[1:]:
         a.set_yticklabels([])
-    h = [plt.Line2D([], [], color=COL[c], ls='-') for c in CC] + \
-        [plt.Line2D([], [], color='0.4', ls=s) for s in ['-', '--']]
-    ax[1].legend(h, ['0%', '12%', '50%', '0.3 s', '2 s'], ncol=5, fontsize=6.5,
-                 frameon=False, loc='upper left')
-    ax[0].legend([plt.Line2D([], [], color='0.55', lw=.5)], ['single trials'],
+    ax[1].legend([plt.Line2D([], [], color=(C_M1 if model == 1 else C_M2), lw=.5),
+                  plt.Line2D([], [], color=(C_M1 if model == 1 else C_M2), lw=2.0)],
+                 [f'one admissible parameter set ({len(sel)} shown)', 'mean over parameter sets'],
                  fontsize=6.5, frameon=False, loc='upper left')
     ax[0].set_xlabel('from onset (s)'); ax[1].set_xlabel('from offset (s)')
     ax[2].set_xlabel('(s)'); ax[3].set_xlabel('(s)')
@@ -209,8 +218,8 @@ if __name__ == '__main__':
     P1 = dict(R['params'], alpha=0.0)
     P2 = dict(R['params'], alpha=R['alpha'])
     E = build()
-    fig_trajectories(P2, 2, fname='plots/fig_traj_m2.pdf')
-    fig_trajectories(P1, 1, fname='plots/fig_traj_m1.pdf')
+    fig_trajectories(2, fname='plots/fig_traj_m2.pdf')
+    fig_trajectories(1, fname='plots/fig_traj_m1.pdf')
     fig_single(P2)
     fig_rates(P2, E)
     fig_shape(E)

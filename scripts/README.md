@@ -316,6 +316,11 @@ and two constants taken from the discarded fit; the ceiling is superseded by the
 below. The old name survives only in the git history.)
 
 ### `frontier.py` -- the ramp-rate frontier of both models
+Sharded over the lambda grid: `FR_MODEL`, `FR_SHARD_N`, `FR_SHARD_I` write
+`results/frontier_m{model}_sh{i}.npz`, and `python3 frontier.py merge` combines them into
+`results/frontier.json`. Sharding by lambda is exact -- the scatter is a product grid, no
+shard needs another's points, and the envelope of a union is the envelope of the
+concatenation.
 The analytic core of the delay-period argument, and the strongest thing in the project,
 because it involves no sampling at all.
 

@@ -21,7 +21,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from kernel_moments import moments, rate
 
 T0, T1 = 0.8, 2.8          # ends of the delay analysis window, in elapsed maintenance time
-OBS_RATE, OBS_SLOPE = 0.709, 0.817
+# The observed slope to compare a single homogeneous simulated process against is the MEAN
+# OF THE PER-CELL, PER-PARTICIPANT slopes (0.892 /s; the six cell means span 0.659-1.029),
+# not the slope of the profile pooled across participants (0.817). Pooling mixes processes
+# with different distances to the gate, and the log of a mixture of exponentials is flatter
+# than the mixture of the logs, so the pooled figure understates the slope of any one
+# participant's process -- using it would make the frontier comparison look kinder to
+# Model 1 than it should.
+OBS_RATE, OBS_SLOPE = 0.709, 0.892
 KAPPAS = np.r_[np.geomspace(0.20, 3.0, 110), np.geomspace(3.0, 30.0, 30)]
 LAMS = np.geomspace(10.0, 50.0, 9)
 

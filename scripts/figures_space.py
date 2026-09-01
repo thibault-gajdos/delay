@@ -132,7 +132,45 @@ def fig_delay_profile(fname='plots/fig_delay_profile.pdf', lo=0.4, hi=1.2):
     print('wrote', fname)
 
 
+
+
+
+# ---------------------------------------------------- 3. the effect-size panel
+def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
+    """What each architecture can produce, on every effect the paper tests, against the
+    observation. This is the parameter-space evaluation's main result: on five of the six
+    effects both models' ranges cover the observed value -- which is the point, since the
+    predictions are shared -- and on the sixth, the delay-period log-rate slope, only
+    Model 2's does."""
+    P = json.load(open('results/effect_panel.json'))
+    keys = list(P['names'])
+    fig, ax = plt.subplots(1, len(keys), figsize=(9.6, 1.75))
+    for a, k in zip(ax, keys):
+        for y, (tag, col) in enumerate([('model2', C_M2), ('model1', C_M1)]):
+            r = P['models'][tag][k]
+            a.plot([r['p5'], r['p95']], [y, y], color=col, lw=3, solid_capstyle='butt',
+                   alpha=.85)
+            a.plot([r['median']], [y], marker='|', ms=9, color='white', mew=1.4)
+        o, se = P['observed'][k], P['observed_se'][k]
+        a.axvspan(o - 1.96 * se, o + 1.96 * se, color='0.85', zorder=0)
+        a.axvline(o, color=C_OBS, lw=1.1, zorder=3)
+        a.set_yticks([0, 1]); a.set_yticklabels([])
+        a.set_ylim(-0.55, 1.55)
+        ttl = P['names'][k].replace(' (', '\n(')
+        a.set_title(ttl, fontsize=7.0, pad=4)
+        a.tick_params(axis='x', labelsize=6.5)
+        if k in ('met_range',):
+            a.set_xscale('log')
+    ax[0].set_yticklabels(['Model 2', 'Model 1'], fontsize=7.5)
+    ax[0].plot([], [], color=C_OBS, lw=1.1, label='observed (95% CI shaded)')
+    ax[0].legend(loc='lower left', bbox_to_anchor=(0, -0.75), frameon=False, fontsize=7)
+    fig.subplots_adjust(wspace=0.42)
+    fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
+    print('wrote', fname)
+
+
 if __name__ == '__main__':
     os.makedirs('plots', exist_ok=True)
+    fig_effect_sizes()
     fig_frontier()
     fig_delay_profile()

@@ -106,7 +106,9 @@ python figures.py                 -> plots/fig_traj_m{1,2}.pdf     simulated dyn
                                      plots/fig_single.pdf
                                      plots/fig_rates.pdf
                                      plots/fig_shape.pdf
-python figures_space.py           -> plots/fig_frontier.pdf        the frontier with the draws
+python effect_panel.py            -> results/effect_panel.json     effect-size ranges vs observed
+python figures_space.py           -> plots/fig_effect_sizes.pdf    those ranges, as a panel
+                                     plots/fig_frontier.pdf        the frontier with the draws
                                      plots/fig_delay_profile.pdf   the delay rate curve
 
 # 5. the statistics, in R
@@ -365,6 +367,33 @@ draws (0.2%). Model 1's slope is not merely centred near zero but pinned there -
 span of its admissible space moves it about a tenth as much as Model 2's space moves
 Model 2's.
 
+### `effect_panel.py` -- what each architecture can produce, on every effect
+This is what the parameter-space evaluation is FOR, and the paper's Figure S6. For each
+effect the Results test, it reports the distribution of that effect over a model's
+admissible draws -- median and 5th-95th percentile -- next to the observed value and its
+between-participant standard error. Six effects: accuracy at 50% coherence, the coherence
+and duration effects on response time (in ms), the range of mean motor execution time
+across the six cells, the delay-period rate, and the slope of its logarithm.
+
+Result: on five of the six, both models' ranges cover the observation and are barely
+distinguishable from one another -- the quantitative form of Remark A.0, since beta cannot
+move any of those quantities. On the sixth, the delay-period log-rate slope (observed
+0.892 +/- 0.092 /s), Model 1 runs -0.268 to +0.092 and Model 2 -1.234 to +2.075: only
+Model 2 reaches it. Two honest qualifications the panel makes visible. Both models sit
+slightly above the observed accuracy, because the screen requires accuracy above 0.80 in
+those cells and so selects against the low end. And the MET-invariance prediction, though
+confirmed in the data (observed range 2 +/- 1 ms), is a weak test: both architectures can
+also produce MET ranges of hundreds of milliseconds, so finding a small one does not
+discriminate.
+
+A note on which observed slope to compare against. The mean of the per-cell,
+per-participant slopes is 0.892 /s; the slope of the profile pooled across participants is
+0.817. The first is the right comparison for a single simulated homogeneous process, and
+`frontier.py` uses it: pooling mixes processes at different distances from the gate, and
+the log of a mixture is flatter than the mixture of the logs, so the pooled figure
+understates any one participant's slope and would make the frontier comparison kinder to
+Model 1 than it should be.
+
 ### `representative.py` -- the point the illustrative figures are drawn at
 Nothing is fitted, so the figures that show simulated dynamics need a rule for choosing one
 parameter vector. It is the admissible draw closest to the coordinate-wise median of the
@@ -383,6 +412,7 @@ Model 2 at a ramp smaller than is typical of Model 2, for a reason that has noth
 with Model 2.
 
 ### `figures_space.py`
+`fig_effect_sizes.pdf` is the panel described under `effect_panel.py`.
 `fig_frontier.pdf` puts the two quantities that must be reproduced together on the two
 axes, draws the analytic frontier as the boundary of what Model 1 can do, and shows where
 the sampled draws and the observation fall. `fig_delay_profile.pdf` shows the delay-period

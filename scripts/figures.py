@@ -113,6 +113,9 @@ def fig_single(P, n=400, fname='plots/fig_single.pdf'):
     ax[1].set_yticks([]); ax[1].set_ylabel('detected', fontsize=7)
     ax[1].set_xlabel('time from stimulus onset (s)')
     ax[0].set_ylabel('gated signal')
+    # panel letter: this figure is panel B of the manuscript's Figure 2, whose panel A is a
+    # hand-drawn schematic; the letter used to be added by hand after export
+    fig.text(0.005, 0.94, 'B', fontsize=20, weight='bold', va='top')
     fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
 
 

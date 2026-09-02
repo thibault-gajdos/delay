@@ -32,6 +32,11 @@
 % \everypar rather than a negative \parindent, which \parskip and the surrounding
 % zero-indent setting between them cancel out.
 \newenvironment{references}
+  % \sloppy is load-bearing here. A DOI is one unbreakable word, so a reference ending
+  % in a long one has nowhere to break: without \sloppy, eleven of them overrun the
+  % margin, one by 136pt. With it, TeX stretches the spaces instead -- five lines come
+  % out loose, the worst being Rogge et al. Loose beats off the page. (xurl was tried;
+  % it changed neither count, so it is not here.)
   {\par\sloppy\setlength{\parindent}{0pt}\everypar{\hangindent=0.4in\hangafter=1}}
   {\par}
 

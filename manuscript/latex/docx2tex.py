@@ -110,6 +110,24 @@ def run_tex(r):
     elif col == OLD: s = r'\old{%s}' % s
     return lead + s + trail
 
+def math_colour(el):
+    """The colour Word gives an equation.
+
+    Equations were losing their colour entirely: this file only ever looked at w:r runs,
+    and a maths run is m:r, so all 218 blue equations came out black in a document whose
+    prose around them was blue. Every equation here is uniformly coloured -- 218 blue,
+    5 uncoloured, none mixed -- so one colour per equation is exact rather than a vote.
+    """
+    cols = set()
+    for r in el.iter('{%s}r' % M):
+        if not ''.join(t.text or '' for t in r.iter('{%s}t' % M)).strip():
+            continue
+        rPr = r.find(qn('w:rPr'))
+        c = rPr.find(qn('w:color')) if rPr is not None else None
+        cols.add((c.get(qn('w:val')) or '').upper() if c is not None else None)
+    return cols.pop() if len(cols) == 1 else None
+
+
 def para_tex(p, eqcount):
     """LaTeX for one paragraph.
 
@@ -139,7 +157,11 @@ def para_tex(p, eqcount):
             items.append((raw, tex))
         elif ch.tag == '{%s}oMath' % M:
             body, _ = to_tex(ch)
-            items.append(('\x01', '$%s$' % body.strip()))
+            tex = '$%s$' % body.strip()
+            col = math_colour(ch)
+            if col == NEW: tex = r'\new{%s}' % tex
+            elif col == OLD: tex = r'\old{%s}' % tex
+            items.append(('\x01', tex))
         elif ch.tag == '{%s}oMathPara' % M:
             for om in ch.findall('{%s}oMath' % M):
                 body, num = to_tex(om)
@@ -160,10 +182,21 @@ def para_tex(p, eqcount):
                         # under LaTeX numbering it echoes the first occurrence's number.
                         mark = ('\\tag{%s}' % num) if WORD_NUMBERS \
                                else '\\tag{\\ref{eq:%s}}' % num
-                    items.append(('', '\n\\begin{equation}\n%s\n%s\n'
-                                      '\\end{equation}\n' % (body.strip(), mark)))
+                    env = ('\n\\begin{equation}\n%s\n%s\n\\end{equation}\n'
+                           % (body.strip(), mark))
+                    # \color inside a group around the whole display, not \textcolor
+                    # around the body: this way the equation number takes the colour too,
+                    # as it does in Word.
+                    col = math_colour(om)
+                    if col == NEW: env = '\n{\\color{addcol}%s}\n' % env
+                    elif col == OLD: env = '\n{\\color{oldcol}%s}\n' % env
+                    items.append(('', env))
                 else:
-                    items.append(('', '\n\\[ %s \\]\n' % body.strip()))
+                    env = '\n\\[ %s \\]\n' % body.strip()
+                    col = math_colour(om)
+                    if col == NEW: env = '\n{\\color{addcol}%s}\n' % env
+                    elif col == OLD: env = '\n{\\color{oldcol}%s}\n' % env
+                    items.append(('', env))
         elif ch.tag == qn('w:drawing'):
             items.append(('', '%IMAGE%'))
     out = []
@@ -292,8 +325,10 @@ def convert(path, out, figdir):
             if not tex.strip():
                 continue
             if st in HEAD:
-                plain = re.sub(r'\\(new|old|del|emph|textbf)\{', '', tex).replace('}', '')
-                L.append('\n\\%s{%s}\n' % (HEAD[st], plain.strip()))
+                # The colour macros stay: they are \DeclareRobustCommand in the preamble
+                # and flattened for PDF bookmarks, so a heading keeps its revision colour
+                # instead of being stripped to black.
+                L.append('\n\\%s{%s}\n' % (HEAD[st], tex.strip()))
             elif st == 'Bibliography':
                 # trailing newline -> blank line after the join, so each reference
                 # is its own paragraph and can take a hanging indent

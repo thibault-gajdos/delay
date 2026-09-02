@@ -50,10 +50,28 @@ Consequences worth knowing:
 
 ## Change marking
 
-Colour carries the revision state: blue is new since R1_v3, red is inherited, red struck
-is proposed for deletion. Links are set `hidelinks` so a citation takes the colour of the
-sentence around it rather than hyperref's blue, which would read as new material. For a
-clean copy:
+Colour carries the revision state, exactly as the docx does it: **`#1F4E9E` blue** for
+material new since R1_v3, **`#FF0000` red** for text inherited from it, red struck through
+for proposed deletions. Those are the only two colours the text uses; a pixel audit of the
+rendered PDF finds nothing else but their antialiasing.
+
+It covers prose, **equations** (`m:r` runs, which an earlier version of the converter
+never looked at, so all 218 blue equations came out black) and **headings** (38 of the 58
+are coloured in the docx; an earlier version stripped the macros there to keep `\section`
+arguments simple, and lost the marking on all of them). A sample of 258 runs checked
+against the docx run by run now agrees on every one.
+
+Two departures worth knowing:
+
+- The **figures use their own palette** — `#3182BD` and `#08306B` for blue, `#C1272D` and
+  `#C00000` for red — because Model 1 and Model 2 are colour-coded as data, independently
+  of the revision marking. So the document really does contain two blues; only one of them
+  means "new".
+- 21 struck runs are `#B00000` in the docx, a darker red, and are drawn here in the single
+  deletion red. They are all strikethrough, so nothing is lost but the shade.
+
+Links are `hidelinks`, so a citation takes the colour of its sentence rather than
+hyperref's blue, which would read as new material. For a clean copy:
 
 ```latex
 \renewcommand{\new}[1]{#1}\renewcommand{\old}[1]{#1}\renewcommand{\del}[1]{}

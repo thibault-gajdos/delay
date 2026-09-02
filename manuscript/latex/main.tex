@@ -65,9 +65,15 @@
 
 \definecolor{addcol}{HTML}{1F4E9E}
 \definecolor{oldcol}{HTML}{FF0000}
-\newcommand{\new}[1]{\textcolor{addcol}{#1}}
-\newcommand{\old}[1]{\textcolor{oldcol}{#1}}
-\newcommand{\del}[1]{\textcolor{oldcol}{\sout{#1}}}
+% Robust, because these appear inside \section arguments: 38 of the 58 headings carry
+% revision colour in the docx, and stripping it there -- which an earlier version of the
+% converter did -- silently lost the marking on more than half the headings.
+\DeclareRobustCommand{\new}[1]{\textcolor{addcol}{#1}}
+\DeclareRobustCommand{\old}[1]{\textcolor{oldcol}{#1}}
+\DeclareRobustCommand{\del}[1]{\textcolor{oldcol}{\sout{#1}}}
+% ... and colour means nothing in a PDF bookmark, so the macros flatten there.
+\pdfstringdefDisableCommands{%
+  \renewcommand{\new}[1]{#1}\renewcommand{\old}[1]{#1}\renewcommand{\del}[1]{}}
 
 % The printed reference list now comes from biblatex, so body.tex no longer uses this
 % environment. It is kept because references_verbatim.tex -- the APA text exactly as Word

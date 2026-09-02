@@ -1,0 +1,53 @@
+% Achard, Gajdos Preuss & Servant -- working copy, converted from the Word revision.
+%
+% CHANGE MARKING. The Word copy this is converted from is colour-coded against
+% "Achard et al R1_v3.docx": text already in that version keeps its own colour, text added
+% since is blue, and struck runs are proposed deletions. The three macros below carry that
+% marking. For a clean copy, redefine them:
+%     \renewcommand{\new}[1]{#1}\renewcommand{\old}[1]{#1}\renewcommand{\del}[1]{}
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+% Latin Modern rather than the T1 Computer Modern bitmaps: microtype's font expansion
+% needs a scalable font, and a TeX Live without cm-super installed fails outright on it.
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{array}          % >{...} column prefixes, used by the wide tables
+\usepackage{xcolor}
+\usepackage[normalem]{ulem}
+\usepackage{microtype}
+\usepackage{lineno}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,allcolors=blue!50!black}
+
+\definecolor{addcol}{HTML}{1F4E9E}
+\definecolor{oldcol}{HTML}{FF0000}
+\newcommand{\new}[1]{\textcolor{addcol}{#1}}
+\newcommand{\old}[1]{\textcolor{oldcol}{#1}}
+\newcommand{\del}[1]{\textcolor{oldcol}{\sout{#1}}}
+
+% APA reference list: hanging indent, no numbering (the body cites by author and year).
+% \everypar rather than a negative \parindent, which \parskip and the surrounding
+% zero-indent setting between them cancel out.
+\newenvironment{references}
+  {\par\sloppy\setlength{\parindent}{0pt}\everypar{\hangindent=0.4in\hangafter=1}}
+  {\par}
+
+% The paper numbers its own appendix items A.1-A.10 and refers to them by those labels,
+% so LaTeX's section numbers would give the same material two competing numberings.
+% The Word original has no section numbers either.
+\setcounter{secnumdepth}{0}
+
+\setlength{\parskip}{0.5\baselineskip}
+\setlength{\parindent}{0pt}
+\renewcommand{\thesection}{\arabic{section}}
+
+\title{Graded Motor-Preparatory Dynamics Preserve Perceptual Decisions over Short Delays}
+\date{}
+
+\begin{document}
+\linenumbers
+\input{body}
+\end{document}

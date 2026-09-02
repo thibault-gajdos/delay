@@ -155,10 +155,12 @@ def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
     does not reach the line is a quantitative failure of that architecture on that effect."""
     P = json.load(open('results/effect_panel.json'))
     keys = list(P['names'])
-    ncol = 5
+    ncol = 3
     nrow = int(np.ceil(len(keys) / ncol))
-    fig, axes = plt.subplots(nrow, ncol, figsize=(11.0, 2.1 * nrow))
+    fig, axes = plt.subplots(nrow, ncol, figsize=(8.4, 2.0 * nrow))
     axes = np.atleast_2d(axes).ravel()
+    for a in axes[len(keys):]:
+        a.axis('off')
     for a, k in zip(axes, keys):
         for y, (tag, col) in enumerate([('model2', C_M2), ('model1', C_M1)]):
             r = P['models'][tag][k]

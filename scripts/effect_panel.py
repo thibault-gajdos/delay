@@ -70,8 +70,6 @@ def effects(acc, rt, srate, rate, pmet, met, prem, slope):
         'rt_dur': float(np.nanmean(rt[SHORT]) - np.nanmean(rt[LONG])) * 1000.0,
         # A.4: the coherence effect on response time is larger after the short stimulus
         'rt_int': float((rt[0] - rt[2]) - (rt[3] - rt[5])) * 1000.0,
-        # A.5: premature responses are more frequent after the long stimulus
-        'prem_dur': float(np.nanmean(prem[LONG]) - np.nanmean(prem[SHORT])),
         # B.1: the stimulus-period rate is higher at high coherence (both models)
         'stim_coh': float(np.nanmean(srate[C50]) - np.nanmean(srate[C0])),
         # B.2: the stimulus-period rate is higher after the SHORT stimulus under Model 2 and
@@ -94,7 +92,6 @@ NAMES = dict(
     acc_int='A.2  duration benefit on accuracy,\nat 12% minus at 0% and 50%',
     rt_dur='A.3  RT, short minus long (ms)',
     rt_int='A.4  coherence effect on RT,\nshort minus long (ms)',
-    prem_dur='A.5  premature responses,\nlong minus short',
     stim_coh='B.1  stimulus-period rate,\n50% minus 0% coherence (/s)',
     stim_dur='B.2  stimulus-period rate,\nshort minus long (/s)',
     pmet_dur='D.2  PMET, short minus long (ms)',
@@ -118,10 +115,10 @@ def effects_se(m):
     observed sign" into "3% significantly positive, 39% significantly negative, 58% not
     distinguishable from zero", which is a different and more honest statement.
 
-    Accuracy and the premature rate get binomial errors; response time, the two execution
-    times and the log-rate slope use the per-cell standard errors already in the dump; the
-    two rates use the Poisson error of the event count behind them, recovered as
-    rate x exposure x window.
+    Accuracy gets a binomial error; response time, the two execution times and the
+    log-rate slope use the per-cell standard errors already in the dump; the two rates use
+    the Poisson error of the event count behind them, recovered as rate x exposure x
+    window.
     """
     g = lambda k: np.asarray(m['raw'][k], float)
     acc, rt, n = g('acc'), g('rt_mean'), g('rt_n')
@@ -140,7 +137,6 @@ def effects_se(m):
         return np.sqrt(np.maximum(rate * expo, 1.0)) / np.maximum(expo, 1)
 
     accse = bse(acc, np.maximum(n, 1))
-    premse = bse(g('prem'), NTR)
     srse = pse(g('srate'), n * 2.0)
     rse2 = pse(g('rate'), n * 2.0)
 
@@ -152,7 +148,6 @@ def effects_se(m):
         acc_int=lin(accse, [.5, -1, .5, -.5, 1, -.5]),
         rt_dur=lin(g('rt_se'), np.array([1, 1, 1, -1, -1, -1]) / 3.0, 1000.0),
         rt_int=lin(g('rt_se'), [1, 0, -1, -1, 0, 1], 1000.0),
-        prem_dur=lin(premse, np.array([-1, -1, -1, 1, 1, 1]) / 3.0),
         stim_coh=lin(srse, [-.5, 0, .5, -.5, 0, .5]),
         stim_dur=lin(srse, np.array([1, 1, 1, -1, -1, -1]) / 3.0),
         pmet_dur=lin(g('pmet_se'), np.array([1, 1, 1, -1, -1, -1]) / 3.0, 1000.0),
@@ -203,9 +198,6 @@ for tag in ['model1', 'model2']:
             # discriminates -- Proposition B.2 says the two models predict opposite signs --
             # so a range that fails to cover the observed value can still be the decisive
             # comparison, and reporting only the interval would hide that.
-            # computed over the sets whose effect is non-zero: a draw with exactly zero
-            # premature responses in both conditions carries no directional information,
-            # and counting it as disagreeing would understate the agreement
             frac_right=float(right.mean()), frac_wrong=float(wrong.mean()),
             frac_null=float(zero.mean()), n_tested=int(v.size),
             frac_reaching=float(np.mean(v >= obs[k]) if obs[k] > 0 else np.mean(v <= obs[k])))

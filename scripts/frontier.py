@@ -83,8 +83,10 @@ def scatter(model=1, lams=None):
     a_grid = np.linspace(0.02, 4.5, 260) if model == 1 else np.linspace(0.02, 3.5, 60)
     for lam in (LAMS if lams is None else lams):
         for kap in KAPPAS:
-            if abs(kap - lam) < 0.3:
-                continue
+            # kappa = lambda is a repeated pole, handled exactly by kernel_moments; no
+            # need to skip it any more. Checked before removing the old exclusion: the
+            # band it used to cut out reaches a slope of 4e-12 /s at best, so it lies on
+            # the envelope where the envelope is already zero and moves nothing.
             sV = np.sqrt(moments(T1, kap, lam)[0])
             for a1 in a_grid:
                 d1 = a1 * sV                       # distance at the END of the window

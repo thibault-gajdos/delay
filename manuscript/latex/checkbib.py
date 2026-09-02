@@ -17,7 +17,7 @@ Writes zotero_missing_dois.txt: the DOIs of the references that are in neither, 
 paste into Zotero's "Add Item by Identifier" box, which fetches the records itself rather
 than trusting anything reconstructed from the APA text here.
 """
-import re, sys, os, unicodedata
+import re, sys, os, time, unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BODY = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'body.tex')
@@ -102,6 +102,13 @@ def surname_of(author):
     return parts[-1] if parts else ''
 
 
+age = (time.time() - os.path.getmtime(BIB)) / 86400.0
+if age > 1:
+    print('!! the export is %.0f days old (%s).' % (age, time.strftime(
+        '%Y-%m-%d', time.localtime(os.path.getmtime(BIB)))))
+    print('!! Anything added to Zotero since then will be reported as missing here,')
+    print('!! and re-adding it makes a duplicate. Re-export before trusting the list.\n')
+
 by_doi = {e['doi']: e for e in entries if e['doi']}
 by_surname = {}
 for e in entries:
@@ -161,6 +168,21 @@ print('\n--- struck (proposed deletions) ---')
 for r in struck:
     print('  %-14s %s' % ('in Zotero' if (r['by_doi'] or r['by_name']) else 'absent',
                           r['text'][:70]))
+
+# Duplicates. Zotero's "Add Item by Identifier" does not check whether the item is
+# already there, so a second import of a reference the library already had leaves two
+# copies; Better BibTeX marks the second with a trailing letter on the key.
+seen = {}
+for e in entries:
+    if e['doi']:
+        seen.setdefault(e['doi'], []).append(e)
+paper_dois = {r['doi'] for r in live if r['doi']}
+dups = [(d, v) for d, v in seen.items() if len(v) > 1 and d in paper_dois]
+print('\n--- duplicated in Zotero, among this paper\'s references  %d ---' % len(dups))
+for d, v in dups:
+    print('  %-42s %s' % (d, '  +  '.join(e['key'][:34] for e in v)))
+alldups = sum(1 for v in seen.values() if len(v) > 1)
+print('  (%d duplicate DOI groups in the library as a whole)' % alldups)
 
 out = os.path.join(os.path.dirname(os.path.abspath(BODY)), 'zotero_missing_dois.txt')
 dois = [r['doi'] for r in absent if r['doi']]

@@ -49,7 +49,10 @@ def esc(t):
                  ('\u00a0', '~'), ('\u2009', r'\,'), ('…', r'\ldots{}'),
                  # the rest of what the manuscript actually contains, so that the output
                  # compiles under pdflatex rather than needing a Unicode engine
-                 ('\u200b', ''), ('±', r'$\pm$'), ('¶', r'\P{}'), ('†', r'$\dagger$'),
+                 # \textparagraph, not \P: the preamble takes \P for the probability
+                 # measure, following note4.tex, and Table 2's footnotes use pilcrows
+                 ('\u200b', ''), ('±', r'$\pm$'), ('¶', r'\textparagraph{}'),
+                 ('†', r'$\dagger$'),
                  ('‡', r'$\ddagger$'), ('§', r'\S{}'), ('°', r'$^{\circ}$'),
                  ('∈', r'$\in$'), ('€', r'\texteuro{}'), ('µ', r'$\mu$'),
                  ('‐', '-'), ('ỹ', r'$\tilde{y}$'),
@@ -214,11 +217,12 @@ def table_tex(t, eqcount):
     def line(r, sp):
         return ' & '.join(c if s == 1 else r'\multicolumn{%d}{c}{%s}' % (s, c)
                           for c, s in zip(r, sp))
-    out += [r'\begin{tabular}{%s}' % spec, r'\hline']
-    out.append(line(rows[0], spans[0]) + r' \\ \hline')
+    # booktabs rules rather than \hline, matching note4.tex
+    out += [r'\begin{tabular}{%s}' % spec, r'\toprule']
+    out.append(line(rows[0], spans[0]) + r' \\ \midrule')
     for r, sp in zip(rows[1:], spans[1:]):
         out.append(line(r, sp) + r' \\')
-    out += [r'\hline', r'\end{tabular}']
+    out += [r'\bottomrule', r'\end{tabular}']
     if not wrap:
         out.append('}')
     out.append(r'\end{center}')

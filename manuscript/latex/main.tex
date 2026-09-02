@@ -5,25 +5,40 @@
 % since is blue, and struck runs are proposed deletions. The three macros below carry that
 % marking. For a clean copy, redefine them:
 %     \renewcommand{\new}[1]{#1}\renewcommand{\old}[1]{#1}\renewcommand{\del}[1]{}
-\documentclass[11pt]{article}
+\documentclass[a4paper,11pt]{article}
 \usepackage[T1]{fontenc}
 % Latin Modern rather than the T1 Computer Modern bitmaps: microtype's font expansion
 % needs a scalable font, and a TeX Live without cm-super installed fails outright on it.
 \usepackage{lmodern}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=1in]{geometry}
-\usepackage{amsmath,amssymb}
+\usepackage[english]{babel}
+\usepackage[top=2cm,bottom=2.2cm,left=3cm,right=3cm]{geometry}
+\usepackage[onehalfspacing]{setspace}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{mathtools}
+\usepackage{bbm}
 \usepackage{graphicx}
+\graphicspath{{figures/}}
 \usepackage{array}          % >{...} column prefixes, used by the wide tables
+\usepackage{booktabs}
+\usepackage{caption}
 \usepackage{xcolor}
 \usepackage[normalem]{ulem}
 \usepackage{microtype}
 \usepackage{lineno}
+\allowdisplaybreaks
+% NOT \mathtoolsset{showonlyrefs}, which note4.tex uses: it prints a number only on an
+% equation some \eqref points at. Here the numbers come from the docx through \tag and
+% the prose cites them as literal text -- "Equation (21)" -- never with \eqref, so every
+% number in the paper would disappear and every reference to one would dangle.
 \usepackage{hyperref}
 % hidelinks, not coloured links: this copy uses colour to mark revisions, and a
 % blue \cite in the middle of a red sentence reads as new material rather than as a
 % link. Links stay live, they just take the colour of the text around them.
 \hypersetup{hidelinks}
+% The OSF link is one unbreakable token, and the A4 measure is narrower than the letter
+% one was, so it now runs into the margin; xurl lets a URL break anywhere.
+\usepackage{xurl}
 
 % Bibliography: biblatex + biber with the APA style, the same setup note4.tex uses, so
 % both documents cite the same Zotero library the same way. This needs biber, not bibtex
@@ -31,6 +46,22 @@
 \usepackage[style=apa]{biblatex}
 \DeclareLanguageMapping{english}{english-apa}
 \addbibresource{bib.bib}
+
+% The macros note4.tex defines, so the two documents read alike and an equation edited
+% by hand here can be written the same way. omml2tex emits \Var, \Cov and \dd for the
+% operators Word stores as upright runs.
+\newcommand{\R}{\mathbb R}
+\newcommand{\E}{\mathbb E}
+\renewcommand{\P}{\mathbb P}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\dd}{\mathrm d}
+\newcommand{\RT}{\mathrm{RT}}
+\newcommand{\bigO}{\mathcal{O}}
+\newcommand{\1}{\mathbbm{1}}
+\newcommand{\indep}{\perp\!\!\!\perp}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand\poscite[1]{\citeauthor{#1}'s (\citeyear{#1})}
 
 \definecolor{addcol}{HTML}{1F4E9E}
 \definecolor{oldcol}{HTML}{FF0000}
@@ -47,8 +78,8 @@
   % \sloppy is load-bearing here. A DOI is one unbreakable word, so a reference ending
   % in a long one has nowhere to break: without \sloppy, eleven of them overrun the
   % margin, one by 136pt. With it, TeX stretches the spaces instead -- five lines come
-  % out loose, the worst being Rogge et al. Loose beats off the page. (xurl was tried;
-  % it changed neither count, so it is not here.)
+  % out loose, the worst being Rogge et al. Loose beats off the page. (xurl is loaded
+  % for the OSF link, but it makes no difference here -- \sloppy already absorbs these.)
   {\par\sloppy\setlength{\parindent}{0pt}\everypar{\hangindent=0.4in\hangafter=1}}
   {\par}
 
@@ -56,6 +87,12 @@
 % so LaTeX's section numbers would give the same material two competing numberings.
 % The Word original has no section numbers either.
 \setcounter{secnumdepth}{0}
+
+% A last-resort stretch, rather than letting a paragraph overrun. It is needed because
+% a word that already contains a hyphen -- "evidence-accumulation" -- can only break
+% at that hyphen, and on the narrower A4 measure that break point is sometimes past
+% the margin. TeX uses this only on lines it cannot set otherwise.
+\setlength{\emergencystretch}{1em}
 
 \setlength{\parskip}{0.5\baselineskip}
 \setlength{\parindent}{0pt}

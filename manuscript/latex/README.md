@@ -59,6 +59,26 @@ clean copy:
 \renewcommand{\new}[1]{#1}\renewcommand{\old}[1]{#1}\renewcommand{\del}[1]{}
 ```
 
+## Preamble
+
+Follows `note4.tex`: A4, `onehalfspacing`, its geometry (3 cm sides), `babel`, `mathtools`,
+`booktabs`, `\allowdisplaybreaks`, and its macro block — `\R \E \P \Var \Cov \dd \RT
+\bigO \1 \indep \sgn \poscite`. The converter emits `\Var`, `\Cov` and `\dd` for the
+operators Word stores as upright runs, so the generated maths reads like the note's.
+
+Two deliberate departures:
+
+- **No `\mathtoolsset{showonlyrefs}`.** It prints a number only on an equation some
+  `\eqref` points at. Here the numbers come from the docx through `\tag` and the prose
+  cites them as literal text — "Equation (21)" — never with `\eqref`. Every number in the
+  paper would vanish and every reference to one would dangle.
+- **`hidelinks` instead of `colorlinks` with blue citations.** This copy uses colour to
+  mark revisions; a blue `\cite` inside a red sentence reads as new material. Links stay
+  live and take the colour of the text around them.
+
+`\P` is the probability measure, as in the note, so the pilcrows in Table 2's footnotes
+are `\textparagraph` rather than `\P`.
+
 ## Notes
 
 Section numbering is off: the appendix labels its own items A.1–A.10 and the prose cites

@@ -65,6 +65,11 @@ def conv(el):
             upright = True
         if txt.strip() in FUNCS:
             return FUNCS[txt.strip()] + ' '
+        # Var and Cov go out as the preamble's macros rather than \mathrm, so the source
+        # matches note4.tex and the operator spacing is \operatorname's rather than a
+        # hand-placed thin space.
+        if txt.strip() in ('Var', 'Cov'):
+            return '\\%s ' % txt.strip()
         return esc(txt, upright)
     if tag in ('oMath', 'e', 'num', 'den', 'sub', 'sup', 'deg', 'oMathPara', 'lim', 'fName'):
         return ''.join(conv(c) for c in el if c.tag.startswith('{' + M) and
@@ -161,6 +166,11 @@ def to_tex(el):
     NUM[0] = None                    # filled in by the eqArr branch, which sees it first
     s = conv(el)
     s = re.sub(r'\s+', ' ', s).strip()
+    # \operatorname sets its own thin space after the name, so the one Word placed by hand
+    # would double it. The replacement is r'\1', a backreference; r'\\1' is a literal
+    # backslash-one and silently deleted every Var and Cov in the paper.
+    s = re.sub(r'(\\(?:Var|Cov))\s*\\,', r'\1', s)
+    s = s.replace(r'\mathrm{d}', r'\dd ')
     m = re.search(r'\\#\s*\\left\((\d+)\\right\)\s*$|\\#\s*\(?(\d+)\)?\s*$', s)
     num = NUM[0]
     if m:

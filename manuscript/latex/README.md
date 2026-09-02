@@ -79,11 +79,26 @@ Two deliberate departures:
 `\P` is the probability measure, as in the note, so the pilcrows in Table 2's footnotes
 are `\textparagraph` rather than `\P`.
 
+## Equation numbers
+
+Every equation carries `\label{eq:N}` and every reference in the prose is `\eqref` (59 of
+them, none left as literal text), so a reference prints whatever the equation actually
+got and a reference to an equation that no longer exists is a warning rather than a wrong
+number.
+
+LaTeX numbers the equations, in the order they appear: a clean 1–27. Three of them —
+Kac–Rice and its two corollaries — are displayed twice, in Results and again in the
+appendix where they are derived. They are `\label`led once, on the first appearance, and
+the repeat echoes that number through `\tag{\ref{...}}` rather than taking one of its own:
+the same equation keeps one number.
+
+That means one of the two places shows a number out of local order — the appendix now
+runs 22, 23, 24, then 11 — which is unavoidable when an equation appears twice. Setting
+`WORD_NUMBERS = True` in `docx2tex.py` puts the docx's own numbers back instead, which
+moves the out-of-order number into Results and keeps this copy and the Word copy agreeing
+on what "(21)" means. The references do not care either way; they are symbolic.
+
 ## Notes
 
 Section numbering is off: the appendix labels its own items A.1–A.10 and the prose cites
 those labels, so LaTeX section numbers would compete with them.
-
-Equation numbers come from the docx via `\tag`, not LaTeX's counter, because three
-equations are displayed both in Results and in the appendix and the prose cites the
-numbers literally.

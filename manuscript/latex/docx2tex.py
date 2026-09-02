@@ -19,6 +19,16 @@ from docx.text.paragraph import Paragraph
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from omml2tex import to_tex
 
+# Equation numbers. False lets LaTeX number the equations in the order they appear, which
+# is the default: 1 to 27, and an inserted equation renumbers the rest by itself.
+#
+# True puts the docx's own numbers back, printed with \tag, so this copy and the Word copy
+# agree on what "(21)" means. The manuscript's numbering is not in document order --
+# Kac-Rice and its two corollaries are displayed in Results and derived in the appendix --
+# so whichever setting is used, one of the two places shows a number out of local order.
+# The references do not care either way: they are \eqref.
+WORD_NUMBERS = False
+
 M = 'http://schemas.openxmlformats.org/officeDocument/2006/math'
 NEW, OLD = '1F4E9E', 'FF0000'
 
@@ -135,9 +145,23 @@ def para_tex(p, eqcount):
                 body, num = to_tex(om)
                 if num in OVERRIDE: body = OVERRIDE[num]
                 if num:
+                    # \label on the first appearance only: (22), (23) and (25) are each
+                    # displayed twice, in Results and again in the appendix where they are
+                    # derived, and they carry one number between them. A second \label
+                    # under the same key would be a duplicate.
+                    first = num not in eqcount
                     eqcount.append(num)
-                    items.append(('', '\n\\begin{equation}\n%s\n\\tag{%s}\n'
-                                      '\\end{equation}\n' % (body.strip(), num)))
+                    if first:
+                        mark = (('\\tag{%s}' % num) if WORD_NUMBERS else '') \
+                               + '\\label{eq:%s}' % num
+                    else:
+                        # The repeat must not take a number of its own: it is the same
+                        # equation, shown again. Under Word numbering it repeats the tag;
+                        # under LaTeX numbering it echoes the first occurrence's number.
+                        mark = ('\\tag{%s}' % num) if WORD_NUMBERS \
+                               else '\\tag{\\ref{eq:%s}}' % num
+                    items.append(('', '\n\\begin{equation}\n%s\n%s\n'
+                                      '\\end{equation}\n' % (body.strip(), mark)))
                 else:
                     items.append(('', '\n\\[ %s \\]\n' % body.strip()))
         elif ch.tag == qn('w:drawing'):
@@ -290,6 +314,13 @@ def convert(path, out, figdir):
         verbatim = '\\begin{references}\n%s\n\\end{references}' % m.group(1).replace('%REF%', '')
         open(os.path.join(refdir, 'references_verbatim.tex'), 'w').write(verbatim + '\n')
         text = text[:m.start()] + '\\printbibliography[heading=none]\n' + text[m.end():]
+
+    import eqrefs
+    text, refs, unknown = eqrefs.rewrite(text, set(eqcount))
+    print('equation references made symbolic: %d' % len(refs))
+    if unknown:
+        print('   parenthesised numbers that are not equations, left alone: %s'
+              % ', '.join(unknown))
 
     keyfile = os.path.join(refdir, 'citekeys.json')
     if os.path.exists(keyfile):

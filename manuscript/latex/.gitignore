@@ -1,7 +1,9 @@
-# pdflatex droppings; body.tex, figures/ and main.pdf are kept so the copy can be read
-# without running the converter
 *.aux
 *.log
 *.out
+*.bcf
+*.run.xml
+*.bbl
+*.blg
 *.synctex.gz
 __pycache__/

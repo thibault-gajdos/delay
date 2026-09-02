@@ -275,12 +275,28 @@ def convert(path, out, figdir):
         elif ch.tag == qn('w:tbl'):
             L.append(table_tex(Table(ch, d), eqcount))
     text = '\n'.join(L)
-    # The reference list is APA prose and nothing in the body uses \\cite, so it is a
-    # hanging-indent list, not thebibliography: that environment would number every entry
-    # and, with no keys to give it, emit one "Label `' multiply defined" per reference.
-    text = re.sub(r'(%REF%.*?)(?=\n\n\\section|\Z)',
-                  lambda m: '\\begin{references}\n%s\n\\end{references}'
-                  % m.group(1).replace('%REF%', ''), text, flags=re.S)
+    # The reference list Word carries is written out beside body.tex rather than into it.
+    # checkbib.py reads it (it is the only place the APA text survives) and body.tex gets
+    # \printbibliography instead, so the list is generated from the .bib by the same keys
+    # the citations use. A reference nobody cites then disappears and a citation with no
+    # reference becomes an error, which is the whole point of the exercise.
+    refdir = os.path.dirname(os.path.abspath(out))
+    m = re.search(r'(%REF%.*?)(?=\n\n\\section|\Z)', text, re.S)
+    if m:
+        verbatim = '\\begin{references}\n%s\n\\end{references}' % m.group(1).replace('%REF%', '')
+        open(os.path.join(refdir, 'references_verbatim.tex'), 'w').write(verbatim + '\n')
+        text = text[:m.start()] + '\\printbibliography[heading=none]\n' + text[m.end():]
+
+    keyfile = os.path.join(refdir, 'citekeys.json')
+    if os.path.exists(keyfile):
+        import cites
+        text, rw = cites.rewrite(text, cites.load_keys(keyfile))
+        print('citations rewritten: %d   left as text: %d' % (len(rw.done), len(rw.skipped)))
+        for s in rw.skipped:
+            print('   NOT RECOGNISED: %s' % s)
+    else:
+        print('!! no citekeys.json yet -- citations left as plain text.')
+        print('!! run checkbib.py, then run this again (see README).')
     open(out, 'w').write(text)
     print('%d paragraphs of body, %d numbered equations, %d images, %d tables'
           % (len(L), len(eqcount), len(seen), len(d.tables)))

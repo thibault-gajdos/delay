@@ -20,7 +20,17 @@
 \usepackage{microtype}
 \usepackage{lineno}
 \usepackage{hyperref}
-\hypersetup{colorlinks=true,allcolors=blue!50!black}
+% hidelinks, not coloured links: this copy uses colour to mark revisions, and a
+% blue \cite in the middle of a red sentence reads as new material rather than as a
+% link. Links stay live, they just take the colour of the text around them.
+\hypersetup{hidelinks}
+
+% Bibliography: biblatex + biber with the APA style, the same setup note4.tex uses, so
+% both documents cite the same Zotero library the same way. This needs biber, not bibtex
+% -- see README for the build order.
+\usepackage[style=apa]{biblatex}
+\DeclareLanguageMapping{english}{english-apa}
+\addbibresource{bib.bib}
 
 \definecolor{addcol}{HTML}{1F4E9E}
 \definecolor{oldcol}{HTML}{FF0000}
@@ -28,7 +38,9 @@
 \newcommand{\old}[1]{\textcolor{oldcol}{#1}}
 \newcommand{\del}[1]{\textcolor{oldcol}{\sout{#1}}}
 
-% APA reference list: hanging indent, no numbering (the body cites by author and year).
+% The printed reference list now comes from biblatex, so body.tex no longer uses this
+% environment. It is kept because references_verbatim.tex -- the APA text exactly as Word
+% carried it, which checkbib.py reads -- can be \input to set the two lists side by side.
 % \everypar rather than a negative \parindent, which \parskip and the surrounding
 % zero-indent setting between them cancel out.
 \newenvironment{references}

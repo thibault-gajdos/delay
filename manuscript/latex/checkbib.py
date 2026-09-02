@@ -17,7 +17,7 @@ Writes zotero_missing_dois.txt: the DOIs of the references that are in neither, 
 paste into Zotero's "Add Item by Identifier" box, which fetches the records itself rather
 than trusting anything reconstructed from the APA text here.
 """
-import re, sys, os, time, unicodedata
+import re, sys, os, time, json, unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BODY = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, 'body.tex')
@@ -32,6 +32,10 @@ def deaccent(s):
 
 def plain(s):
     s = re.sub(r'\\(url|emph|textbf|new|old|del)\{', '{', s)
+    # TeX accent macros are spelled with punctuation, not letters, so the macro-stripping
+    # rule below misses them and Aza\"is keeps a quotation mark in the middle -- enough to
+    # cut the surname short and file the entry under no name at all.
+    s = re.sub(r'\\([\"\'^`~=.])', '', s)
     s = re.sub(r'\\[a-zA-Z]+\s*', ' ', s)
     s = s.replace('\\&', '&').replace('\\_', '_').replace('\\%', '%')
     s = re.sub(r'[{}]', '', s)
@@ -183,6 +187,40 @@ for d, v in dups:
     print('  %-42s %s' % (d, '  +  '.join(e['key'][:34] for e in v)))
 alldups = sum(1 for v in seen.values() if len(v) > 1)
 print('  (%d duplicate DOI groups in the library as a whole)' % alldups)
+
+# citekeys.json: the map cites.py needs to turn "(Kiani et al., 2008)" into a \parencite.
+# Keyed on the first author's surname and the year, which is what an in-text citation
+# gives you; the build fails loudly if two references would collide on that.
+keymap, clash = {}, []
+for r in refs:
+    e = r['by_doi'] or r['by_name']
+    if not e:
+        continue
+    kk = '%s|%s' % (r['sur'], r['year'])
+    if kk in keymap and keymap[kk] != e['key']:
+        clash.append((kk, keymap[kk], e['key']))
+    keymap[kk] = e['key']
+if clash:
+    sys.exit('surname+year collisions, cannot build a citation map: %r' % clash)
+# A Zotero record with no year or no author used to be harmless: the reference list was
+# typed out by hand, so nobody read the record. Now the citations are generated from it,
+# and a missing year prints as "n.d." in the middle of a sentence.
+broken = []
+for kk, k in sorted(keymap.items()):
+    e = next((x for x in entries if x['key'] == k), None)
+    if e is None:
+        broken.append((k, 'not in the .bib')); continue
+    miss = [f for f in ('author', 'year', 'title') if not e[f]]
+    if miss:
+        broken.append((k, 'no ' + ', no '.join(miss)))
+if broken:
+    print('\n!! CITED RECORDS THAT WILL DAMAGE A CITATION  %d' % len(broken))
+    for k, why in broken:
+        print('     %-46s %s' % (k, why))
+
+kp = os.path.join(os.path.dirname(os.path.abspath(BODY)), 'citekeys.json')
+json.dump(dict(sorted(keymap.items())), open(kp, 'w'), indent=1)
+print('\n%d citation keys written to %s' % (len(keymap), kp))
 
 out = os.path.join(os.path.dirname(os.path.abspath(BODY)), 'zotero_missing_dois.txt')
 dois = [r['doi'] for r in absent if r['doi']]

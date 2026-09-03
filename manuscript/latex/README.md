@@ -1,35 +1,45 @@
 # LaTeX copy of the R1 v3 working manuscript
 
-Generated from the Word tracked-changes copy. `body.tex`, `references_verbatim.tex`,
-`citekeys.json` and `figures/` are **output** — they are overwritten on every run, so
-edits belong in the docx, not here.
+**As of 2026-09-03, `delay.tex` is hand-edited directly and is the source of truth.**
+It started life converted from the Word tracked-changes copy (`docx2tex.py`, below), but
+the docx is no longer kept in sync and must not be treated as authoritative — edits
+belong in `delay.tex`, not the docx. `main.tex` and `body.tex` no longer exist: they were
+merged into the single `delay.tex` on 2026-09-03 (preamble + document body in one file).
 
 ```sh
-./make.sh                                   # defaults to the docx one level up
-./make.sh ../some-other.docx ~/path/to.bib
+./make.sh
 ```
 
-Requires python-docx, ImageMagick's `convert` (Word embeds three figures as TIFF, which
-pdflatex cannot read), and a TeX installation with **biblatex and biber** — biber, not
-bibtex. MacTeX has both. The stripped TeX in the Cowork desktop VM has neither, so the
-build has to run on the Mac.
+Requires a TeX installation with **biblatex and biber** — biber, not bibtex. MacTeX
+has both. The stripped TeX in the Cowork desktop VM has neither, so the build has to run
+on the Mac.
 
 | file | role |
 |---|---|
-| `main.tex` | preamble; `\input{body}` |
-| `make.sh` | the whole build |
+| `delay.tex` | the whole document: preamble + body. Hand-edited. |
+| `make.sh` | compiles `delay.tex` (pdflatex + biber + pdflatex x2) |
+| `bib.bib` | snapshot of the Zotero export the original conversion used |
+
+The files below produced the original docx -> LaTeX conversion and are kept for
+reference, but are **not part of the build any more** and must not be run against
+`delay.tex` — there is no separate `body.tex` for them to write into, and running them
+would overwrite hand edits with a regeneration from the (now stale) docx.
+
+| file | historical role |
+|---|---|
 | `docx2tex.py` | document body: text, change marking, tables, figures |
 | `omml2tex.py` | Word OMML equations to LaTeX |
-| `checkbib.py` | references against Zotero; writes `citekeys.json` |
+| `checkbib.py` | references against Zotero; wrote `citekeys.json` |
 | `cites.py` | plain-text APA citations to `\parencite` / `\textcite` |
-| `bib.bib` | snapshot of the Zotero export the build used |
 | `references_verbatim.tex` | the APA list as Word carried it, for comparison |
 
-## Why the docx is converted three times
+## Why the docx used to be converted three times (historical)
 
-The converter can only turn "(Kiani et al., 2008)" into a `\parencite` once every
-reference has been matched to a Zotero key, and that matching reads the reference list,
-which the converter produces. So: convert, match, convert again. `make.sh` does it.
+The converter could only turn "(Kiani et al., 2008)" into a `\parencite` once every
+reference had been matched to a Zotero key, and that matching read the reference list,
+which the converter produced. So: convert, match, convert again. No longer relevant now
+that `delay.tex` is edited directly, but kept here in case the docx pipeline is ever
+revived.
 
 ## Citations
 

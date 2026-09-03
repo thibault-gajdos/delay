@@ -1,42 +1,26 @@
 #!/bin/sh
-# Build the LaTeX copy from the Word manuscript.
+# Build the PDF from delay.tex.
 #
-# Three passes over the docx, not one, and the order matters: the converter can only
-# rewrite "(Kiani et al., 2008)" into a \parencite once checkbib.py has matched every
-# reference to a Zotero key, and checkbib.py can only do that once the converter has
-# written out the reference list Word carries. So: convert, match, convert again.
+# delay.tex is now hand-edited directly (2026-09-03: the docx is no longer the source of
+# truth -- see git log). This script therefore no longer regenerates anything from the
+# docx; it only runs the LaTeX/biber passes. docx2tex.py, omml2tex.py, checkbib.py and
+# cites.py are kept for reference (they produced the original conversion) but are not
+# part of this build any more, and must not be run against delay.tex -- there is no
+# "body.tex" for them to write into, and pointing them at delay.tex would clobber every
+# hand edit made since the conversion.
 #
-#   ./make.sh [manuscript.docx] [bibliography.bib]
+#   ./make.sh
 #
-# Needs python-docx, ImageMagick's convert, and a TeX installation with biblatex and
-# biber -- biber, not bibtex. On a machine without them the first pdflatex pass stops at
-# \usepackage{biblatex}; there is no partial build to salvage.
+# Needs a TeX installation with biblatex and biber -- biber, not bibtex.
 set -e
 cd "$(dirname "$0")"
 
-DOCX=${1:-../Achard_et_al_R1_v3_tracked-changes_2026-09-02.docx}
-BIB=${2:-$HOME/mnt/tools/bib_thib_zotero.bib}
-
-# A snapshot of the library travels with the document: biber must read the same entries
-# the citation keys were matched against, and the live export moves under us.
-[ "$(readlink -f "$BIB")" = "$(readlink -f bib.bib)" ] || cp "$BIB" bib.bib
-
-echo '--- 1/3  docx -> body.tex, references_verbatim.tex, figures/'
-python3 docx2tex.py "$DOCX"
-
-echo '--- 2/3  references -> Zotero keys'
-python3 checkbib.py references_verbatim.tex bib.bib
-
-echo '--- 3/3  docx -> body.tex, citations as \parencite'
-python3 docx2tex.py "$DOCX"
-
-echo '--- latex'
-pdflatex -interaction=nonstopmode main.tex >/dev/null
-biber main
-pdflatex -interaction=nonstopmode main.tex >/dev/null
-pdflatex -interaction=nonstopmode main.tex >/dev/null
+pdflatex -interaction=nonstopmode delay.tex >/dev/null
+biber delay
+pdflatex -interaction=nonstopmode delay.tex >/dev/null
+pdflatex -interaction=nonstopmode delay.tex >/dev/null
 
 echo
-echo "errors    $(grep -c '^!' main.log)"
-echo "warnings  $(grep -c 'LaTeX Warning' main.log)"
-echo "pages     $(pdfinfo main.pdf | awk '/Pages/{print $2}')"
+echo "errors    $(grep -c '^!' delay.log)"
+echo "warnings  $(grep -c 'LaTeX Warning' delay.log)"
+echo "pages     $(pdfinfo delay.pdf | awk '/Pages/{print $2}')"

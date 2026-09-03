@@ -701,33 +701,6 @@ LRP amplitude & duration $\times$ time (quadratic) &  & p = .014 &  & -- &  & --
 \end{center}
 \new{Note. Entries indicate p-values for significant effects. For stimulus- and delay-period time-bin effects, significance is based on the linear-trend or quadratic contrast rather than on the omnibus ANOVA (Methods). RS and response periods are unaffected (RS has only two time bins, where the omnibus and trend tests coincide exactly; the response period is analyzed on a single bin, so no trend decomposition applies there). Full ANOVA results, including effect sizes, are reported in Tables S2--S3. Time refers to the time-bin factor. RS = response signal. The response period is analyzed on its single informative bin, so its time-bin main effect and time-bin interactions (marked n/a$\dagger$) are not separate tests (Methods). $\ddagger$ Significant on the omnibus test (p < .001) but not as a full-window linear trend (p = .596): the effect is confined to the first half of the stimulus period and absent in the second half (Results; Table S4). \S{} Not significant on the omnibus test (p = .136) but significant as a linear trend (p = .046); reported here for consistency with the trend criterion used throughout this table. \textparagraph{} No quadratic contrast exists for RS or Response (only two time bins).}
 
-
-\section{\new{Appendix. The rate of partial muscle activations}}
-
-\new{This appendix derives the instantaneous rate at which the maintained motor-preparatory signal crosses the gate upward --- a partial muscle activation --- and the structural properties of that rate which the Results test. It contains no numerical evaluation: every quantity computed over the sampled parameter space is reported in Results, beside the data it is compared with.}
-
-\new{\textbf{\emph{Setup and notation}}}
-
-\new{Notation follows Theory (Materials and Methods) and Table A1;} \new{$\varphi$} \new{and} \new{$\Phi$} \new{are the standard normal density and distribution function. Fix a trial that has entered maintenance at time} \new{$\tau $} \new{with selected response} \new{${s}_{\mathrm{resp}}$} \new{and maintained level} \new{$m$} \new{(Equation \eqref{eq:4}), and write} \new{$\rho :=t-\tau $} \new{for elapsed maintenance time. For} \new{$t\ge \tau $} \new{write} \new{$y\left(t\right)=m+H\left(t\right)$}\new{, so that} \new{$H$} \new{is the fluctuation of the motor-preparatory signal about its target, with} \new{$H\left(\tau \right)=0$}\new{. By Equations \eqref{eq:5} and \eqref{eq:6},} \new{$H$} \new{is the output of the first-order filter driven by the Ornstein--Uhlenbeck maintenance noise:}
-
-{\color{addcol}
-\begin{equation}
-\dd \varepsilon \left(t\right)=-\kappa \varepsilon \left(t\right)\, \dd t+{\sigma }_{\varepsilon }\, \dd {W}_{\varepsilon }\left(t\right), \dd H\left(t\right)=\lambda \left(\varepsilon \left(t\right)-H\left(t\right)\right)\, \dd t, \varepsilon \left(\tau \right)=H\left(\tau \right)=0
-\label{eq:11}
-\end{equation}
-}
-
-\new{with} \new{${\sigma }_{\varepsilon }={\mathrm{SD}}_{\varepsilon }\sqrt{2\kappa }$}\new{, so that the stationary standard deviation of} \new{$\varepsilon$} \new{is} \new{${\mathrm{SD}}_{\varepsilon }$} \new{whatever the value of} \new{$\kappa$}\new{, and the two are sampled independently in Table A1. Because} \new{$\varepsilon$} \new{is symmetric and independent of the sign of the response,} \new{${s}_{\mathrm{resp}}H$} \new{has the same law as} \new{$H$}\new{. Writing} \new{$\delta :={t}_{\mathrm{RS}}-{t}_{\mathrm{offset}}$} \new{for the length of the preparation window and} \new{$d\left(t\right)$} \new{for the distance from the maintained level to the gate,}
-
-{\color{addcol}
-\begin{equation}
-d\left(t\right)=g-\left|m\right|-\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}
-\label{eq:12}
-\end{equation}
-}
-
-\new{(the second term present only under temporal preparation, so that} \new{$\beta =0$} \new{under Model 1), a partial activation on the selected channel begins exactly when} \new{${s}_{\mathrm{resp}}H$} \new{crosses} \new{$d\left(t\right)$} \new{upward. The ramp therefore approaches the gate at the constant speed} \new{$\beta /\delta$}\new{. The non-selected channel activates when} \new{${s}_{\mathrm{resp}}H$} \new{falls below the corresponding distance on the far side, which is several fluctuation standard deviations further away over the whole admissible space; the model predicts that channel to be silent, as it is observed to be, and it is not considered further.}
-
 \new{\textbf{Table A1.}} \old{Variables and parameters of the extended evidence-accumulation model for delayed reports.}
 
 \begin{center}\small
@@ -767,24 +740,59 @@ d\left(t\right)=g-\left|m\right|-\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{off
 \end{center}
 \new{Note. The ranges are those sampled in the parameter-space evaluation, and their provenance is given there (Materials and Methods, Evaluation over the parameter space); entries without a range were held fixed. RS: response signal.}
 
+
+\section{\new{Appendix. The rate of partial muscle activations}}
+
+\new{This appendix derives the instantaneous rate at which the maintained motor-preparatory signal crosses the gate upward --- a partial muscle activation --- and the structural properties of that rate which the Results test. It contains no numerical evaluation: every quantity computed over the sampled parameter space is reported in Results, beside the data it is compared with.}
+
+\new{\textbf{\emph{Setup and notation}}}
+
+\new{Notation follows Theory (Materials and Methods) and Table A1;} \new{$\varphi$} \new{and} \new{$\Phi$} \new{are the standard normal density and distribution function. Fix a trial that has entered maintenance at time} \new{$\tau $} \new{with selected response} \new{${s}_{\mathrm{resp}}$} \new{and maintained level} \new{$m$} \new{(Equation \eqref{eq:4}), and write} \new{$\rho :=t-\tau $} \new{for elapsed maintenance time. For} \new{$t\ge \tau $} \new{write} \new{$y\left(t\right)=m+H\left(t\right)$}\new{, so that} \new{$H$} \new{is the fluctuation of the motor-preparatory signal about its target, with} \new{$H\left(\tau \right)=0$}\new{. By Equations \eqref{eq:5} and \eqref{eq:6},} \new{$H$} \new{is the output of the first-order filter driven by the Ornstein--Uhlenbeck maintenance noise:}
+
+{\color{addcol}
+\begin{eqnarray}
+    \dd \varepsilon \left(t\right) &=& -\kappa \varepsilon \left(t\right)\, \dd t+{\sigma }_{\varepsilon }\, \dd {W}_{\varepsilon }\left(t\right), \\
+    \dd H\left(t\right) &= &\lambda \left(\varepsilon \left(t\right)-H\left(t\right)\right)\, \dd t, \varepsilon \left(\tau \right)=H\left(\tau \right)=0
+\label{eq:11}
+\end{eqnarray}
+}
+
+\new{with} \new{${\sigma }_{\varepsilon }={\mathrm{SD}}_{\varepsilon }\sqrt{2\kappa }$}\new{, so that the stationary standard deviation of} \new{$\varepsilon$} \new{is} \new{${\mathrm{SD}}_{\varepsilon }$} \new{whatever the value of} \new{$\kappa$}\new{, and the two are sampled independently in Table A1. Because} \new{$\varepsilon$} \new{is symmetric and independent of the sign of the response,} \new{${s}_{\mathrm{resp}}H$} \new{has the same law as} \new{$H$}\new{. Writing} \new{$\delta :={t}_{\mathrm{RS}}-{t}_{\mathrm{offset}}$} \new{for the length of the preparation window and} \new{$d(t)$} \new{for the distance from the maintained level to the gate,}
+
+{\color{addcol}
+\begin{equation}
+d\left(t\right)=g-\left|m\right|-\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}
+\label{eq:12}
+\end{equation}
+}
+
+\new{(the second term present only under temporal preparation, so that} \new{$\beta =0$} \new{under Model 1), a partial activation on the selected channel begins exactly when} \new{${s}_{\mathrm{resp}}H$} \new{crosses} \new{$d\left(t\right)$} \new{upward. The ramp therefore approaches the gate at the constant speed} \new{$\beta /\delta$}\new{. The non-selected channel activates when} \new{${s}_{\mathrm{resp}}H$} \new{falls below the corresponding distance on the far side, which is several fluctuation standard deviations further away over the whole admissible space; the model predicts that channel to be silent, as it is observed to be, and it is not considered further.}
+
+
+
 \new{\textbf{\emph{The maintained fluctuation}}}
 
 \new{Solving the two equations of \eqref{eq:11} in sequence gives}
 
 {\color{addcol}
-\begin{equation}
-\varepsilon \left(\tau +\rho \right)={\sigma }_{\varepsilon }\int_{0}^{\rho } {e}^{-\kappa \left(\rho -p\right)}\, \dd {W}_{\varepsilon }\left(p\right), H\left(\tau +\rho \right)=\lambda \int_{0}^{\rho } {e}^{-\lambda \left(\rho -q\right)}\varepsilon \left(\tau +q\right)\, \dd q
+\begin{eqnarray}
+    \varepsilon \left(\tau +\rho \right)&=&{\sigma }_{\varepsilon }\int_{0}^{\rho } {e}^{-\kappa \left(\rho -p\right)}\,\dd {W}_{\varepsilon }\left(p\right),\\ H\left(\tau +\rho \right)&=&\lambda \int_{0}^{\rho } {e}^{-\lambda \left(\rho -q\right)}\varepsilon \left(\tau +q\right)\, \dd q
 \label{eq:13}
-\end{equation}
+\end{eqnarray}
 }
 
 \new{The Ornstein--Uhlenbeck process admits a continuous modification, and} \new{$H$} \new{is then a Riemann integral of a continuous function, so almost surely} \new{$H$} \new{is continuously differentiable --- which is what the crossing formula below requires. Substituting the first equation of \eqref{eq:13} into the second and exchanging the order of integration --- permissible because the integrand is bounded on the compact} \new{$\{0\le p\le q\le \rho \}$} \new{--- leaves the inner integral} \new{$\int_{p}^{\rho } \lambda {e}^{-\lambda \left(\rho -q\right)}{e}^{-\kappa \left(q-p\right)}\, \dd q$}\new{. Hence} \new{$H$} \new{is a Wiener integral against the impulse response of the two filters in series,}
 
 {\color{addcol}
-\begin{equation}
-H\left(\tau +\rho \right)=\int_{0}^{\rho } K\left(\rho -p\right)\, \dd {W}_{\varepsilon }\left(p\right), K\left(v\right)=\frac{\lambda {\sigma }_{\varepsilon }}{\lambda -\kappa }\left({e}^{-\kappa v}-{e}^{-\lambda v}\right)
-\label{eq:14}
-\end{equation}
+\begin{eqnarray}\label{eq:14}
+    H\left(\tau +\rho \right)=\int_{0}^{\rho } K\left(\rho -p\right)\,
+    \dd {W}_{\varepsilon }\left(p\right)\\
+    K\left(v\right)=
+    \begin{cases}
+        \frac{\lambda {\sigma }_{\varepsilon }}{\lambda -\kappa }\left({e}^{-\kappa v}-{e}^{-\lambda v}\right), \text{ if } \kappa\neq \lambda, \\
+K(v)=\lambda\sigma_{\varepsilon}\,v\,e^{-\lambda v}, \text{ if} \kappa =\lambda,
+        \end{cases}
+    \end{eqnarray}
 }
 
 \new{and is therefore a centred Gaussian process.} \new{$K\left(0\right)=0$}\new{, which is the analytic form the differentiability takes, and} \new{${K}^{'}\left(0\right)=\lambda {\sigma }_{\varepsilon }$}\new{.}
@@ -792,35 +800,32 @@ H\left(\tau +\rho \right)=\int_{0}^{\rho } K\left(\rho -p\right)\, \dd {W}_{\var
 \new{Differentiating \eqref{eq:14} under the integral, and using} \new{$K\left(0\right)=0$} \new{to kill the boundary term, gives} \new{$\dot{H}\left(\tau +\rho \right)=\int_{0}^{\rho } {K}^{'}\left(\rho -p\right)\, \dd {W}_{\varepsilon }\left(p\right)$}\new{. Write, for} \new{$t\ge \tau $}\new{,} \new{${\sigma }_{H}^{2}\left(t\right):=\Var H\left(t\right)$}\new{,} \new{${\sigma }_{\dot{H}}^{2}\left(t\right):=\Var \dot{H}\left(t\right)$} \new{and} \new{${c}_{H}\left(t\right):=\Cov \left(H\left(t\right),\dot{H}\left(t\right)\right)$}\new{, with} \new{${\sigma }_{H}\left(t\right)$} \new{and} \new{${\sigma }_{\dot{H}}\left(t\right)$} \new{the corresponding standard deviations; the same symbols without} \new{$\left(t\right)$} \new{denote their stationary limits as} \new{$t\to \infty$} \new{(Equation \eqref{eq:18}). The It\^o isometry then gives the three as integrals of the kernel,} \new{${\sigma }_{H}^{2}\left(t\right)=\int_{0}^{\rho } {K}^{2}$}\new{,} \new{${\sigma }_{\dot{H}}^{2}\left(t\right)=\int_{0}^{\rho } {\left({K}^{'}\right)}^{2}$} \new{and} \new{${c}_{H}\left(t\right)=\int_{0}^{\rho } K{K}^{'}=1/2K{\left(\rho \right)}^{2}$}\new{, the last of which is half the derivative of the first. Evaluating them,}
 
 {\color{addcol}
-\begin{equation}
-{\sigma }_{H}^{2}\left(t\right)=\frac{{\lambda }^{2}{\sigma }_{\varepsilon }^{2}}{{\left(\lambda -\kappa \right)}^{2}}\left[\frac{1-{e}^{-2\kappa \rho }}{2\kappa }-\frac{2\left(1-{e}^{-\left(\lambda +\kappa \right)\rho }\right)}{\lambda +\kappa }+\frac{1-{e}^{-2\lambda \rho }}{2\lambda }\right]
-\label{eq:15}
+  \begin{equation}\label{eq:15}
+      {\sigma }_{H}^{2}\left(t\right)=
+  \begin{cases}    
+\frac{{\lambda }^{2}{\sigma }_{\varepsilon }^{2}}{{\left(\lambda -\kappa \right)}^{2}}\left[\frac{1-{e}^{-2\kappa \rho }}{2\kappa }-\frac{2\left(1-{e}^{-\left(\lambda +\kappa \right)\rho }\right)}{\lambda +\kappa }+\frac{1-{e}^{-2\lambda \rho }}{2\lambda }\right]
+, \text{ if } \kappa\neq \lambda \\
+\frac{\sigma_{\varepsilon}^{2}}{4\lambda}
+ \left[1-e^{-2\lambda\rho}\left(1+2\lambda\rho+2\lambda^{2}\rho^{2}\right)\right],
+\text{ if } \kappa =\lambda
+\end{cases}
+\end{equation}
+}
+and
+{\color{addcol}
+  \begin{equation}\label{eq:16}
+      {\sigma }_{\dot{H}}^{2}\left(t\right)=
+      \begin{cases}
+          \frac{{\lambda }^{2}{\sigma }_{\varepsilon }^{2}}{{\left(\lambda -\kappa \right)}^{2}}\left[\frac{\kappa \left(1-{e}^{-2\kappa \rho }\right)}{2}-\frac{2\kappa \lambda \left(1-{e}^{-\left(\lambda +\kappa \right)\rho }\right)}{\lambda +\kappa }+\frac{\lambda \left(1-{e}^{-2\lambda \rho }\right)}{2}\right], \text{ if } \kappa\neq \lambda \\
+          \frac{\lambda\sigma_{\varepsilon}^{2}}{4} \left[1-e^{-2\lambda\rho}\left(1-2\lambda\rho+2\lambda^{2}\rho^{2}\right)\right], \text{ if } \kappa = \lambda
+\end{cases}
 \end{equation}
 }
 
+\new{As} \new{$\rho \to \infty$} \new{both cases tend to the stationary limits:}  
 {\color{addcol}
 \begin{equation}
-{\sigma }_{\dot{H}}^{2}\left(t\right)=\frac{{\lambda }^{2}{\sigma }_{\varepsilon }^{2}}{{\left(\lambda -\kappa \right)}^{2}}\left[\frac{\kappa \left(1-{e}^{-2\kappa \rho }\right)}{2}-\frac{2\kappa \lambda \left(1-{e}^{-\left(\lambda +\kappa \right)\rho }\right)}{\lambda +\kappa }+\frac{\lambda \left(1-{e}^{-2\lambda \rho }\right)}{2}\right]
-\label{eq:16}
-\end{equation}
-}
-
-\new{These hold when the two rates differ. When they coincide the cascade has a repeated pole: the basis} \new{$\{{e}^{-\kappa v},{e}^{-\lambda v}\}$} \new{degenerates into} \new{$\{{e}^{-\lambda v},v{e}^{-\lambda v}\}$}\new{, and \eqref{eq:14} to \eqref{eq:16} are replaced by their limits at} \new{$\kappa =\lambda$}\new{, namely} \new{$K\left(v\right)=\lambda {\sigma }_{\varepsilon }v{e}^{-\lambda v}$} \new{and, writing} \new{$E={e}^{-2\lambda \rho }$}\new{,}
-
-{\color{addcol}
-\begin{equation}
-{\sigma }_{H}^{2}\left(t\right)=\frac{{\sigma }_{\varepsilon }^{2}}{4\lambda }\left[1-E\left(1+2\lambda \rho +2{\lambda }^{2}{\rho }^{2}\right)\right], {\sigma }_{\dot{H}}^{2}\left(t\right)=\frac{\lambda {\sigma }_{\varepsilon }^{2}}{4}\left[1-E\left(1-2\lambda \rho +2{\lambda }^{2}{\rho }^{2}\right)\right]
-\label{eq:17}
-\end{equation}
-}
-
-\new{The two cases meet continuously:} \new{$\kappa =\lambda$} \new{is a coincidence of the two rates, not a singularity of the process. It is also the one point in the space at which the model has no separation of timescales, the correlation time of the maintenance noise and the time constant of the motor filter being equal; the consequences are drawn where they arise, in A.5 and A.9.}
-
-\new{As} \new{$\rho \to \infty$} \new{both cases tend to the stationary limits} \new{${\sigma }_{H}$} \new{and} \new{${\sigma }_{\dot{H}}$} \new{defined above:}
-
-{\color{addcol}
-\begin{equation}
-{\sigma }_{H}^{2}=\frac{\lambda \, {\mathrm{SD}}_{\varepsilon }^{2}}{\lambda +\kappa }, {\sigma }_{\dot{H}}^{2}=\frac{{\lambda }^{2}\kappa \, {\mathrm{SD}}_{\varepsilon }^{2}}{\lambda +\kappa }, {c}_{H}\to 0, \omega :=\frac{{\sigma }_{\dot{H}}}{{\sigma }_{H}}=\sqrt{\lambda \kappa }
+{\sigma }_{H}^{2}=\frac{\lambda \, {\mathrm{SD}}_{\varepsilon }^{2}}{\lambda +\kappa }, {\sigma }_{\dot{H}}^{2}=\frac{{\lambda }^{2}\kappa \, {\mathrm{SD}}_{\varepsilon }^{2}}{\lambda +\kappa }, {c}_{H}=0, \omega :=\frac{{\sigma }_{\dot{H}}}{{\sigma }_{H}}=\sqrt{\lambda \kappa }
 \label{eq:18}
 \end{equation}
 }

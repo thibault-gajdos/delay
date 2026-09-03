@@ -559,7 +559,9 @@ magnitude and a bin-by-bin percentile envelope mixes profiles that are not compa
 ### `export_for_R.py`
 Writes the bridge files. `pma_counts.csv` has one row per participant, cell, period and
 bin, with the raw count and the number of trials contributing to that bin;
-`sim_counts_mM.csv` the same from each fitted model.
+`sim_counts_mM.csv` the same from each model at the representative vector, as a single
+simulated participant -- a parameter vector is one hypothetical participant, so there is
+no between-participant factor and no repeated-measures analysis of these files.
 
 Exposure is not always the number of valid trials. A partial activation precedes the
 response burst by definition, so once that burst has begun a trial can no longer

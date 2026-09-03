@@ -8,13 +8,12 @@
 ## and any difference is attributable to the analysis, not to a re-extraction.
 ##
 ## USAGE
-##   Rscript run_stats.R                 # data only
-##   Rscript run_stats.R --with-sim      # also the simulated counts, if present
+##   Rscript run_stats.R
 ##
 ## INPUTS
 ##   the JASP export files of the OSF archive, path in ARCHIVE, including the
 ##   behavioural exports in analysis_behavioral_emg/
-##   pma_counts.csv and sim_counts_m{1,2}.csv, written by export_for_R.py (optional)
+##   pma_counts.csv, written by export_for_R.py
 ##
 ## OUTPUTS
 ##   stats_tables.txt    human-readable tables, one per measure and period
@@ -136,7 +135,6 @@ emm_options(lmer.df = "satterthwaite")
 
 ARCHIVE  <- Sys.getenv("ARCHIVE", "../data")
 SIMDIR   <- Sys.getenv("SIMDIR", "..")
-WITH_SIM <- "--with-sim" %in% commandArgs(trailingOnly = TRUE)
 OUT      <- file("stats_tables.txt", "w")
 say      <- function(...) cat(..., "\n", file = OUT, sep = "")
 ROWS     <- list()
@@ -510,27 +508,16 @@ for (i in seq_len(nrow(BEHAV))) {
 }
 
 ## ---------------------------------------------------------------------------
-## The same analyses on the simulated counts, if the Python side has written
-## them. The 22 simulated participants are equal groups of simulated trials, so
-## the between-group variance is pure sampling noise and the simulated F values
-## are not comparable in magnitude with the empirical ones -- only the signs
-## and orderings are.
-
-if (WITH_SIM) for (mdl in 1:2) {
-  sf <- file.path(SIMDIR, sprintf("sim_counts_m%d.csv", mdl))
-  if (!file.exists(sf)) next
-  say("\n", strrep("=", 78)); say(sprintf("SIMULATION, Model %d", mdl))
-  say(strrep("=", 78))
-  ds <- read.csv(sf) %>%
-    mutate(subj = factor(subj),
-           dur = factor(cell %/% 3, labels = c("0.3 s", "2 s")),
-           coh = factor(cell %% 3, labels = c("0%", "12%", "50%")))
-  for (per in unique(ds$period)) {
-    dd <- ds %>% filter(period == per) %>%
-      transmute(subj, dur, coh, bin = bin + 1L, y = rate)
-    analyse_period(dd, sprintf("Model %d", mdl), per)
-  }
-}
+## There is no repeated-measures analysis of the simulated counts. A parameter
+## vector is one hypothetical participant, so sim_counts_m{1,2}.csv carries one
+## participant per model and the design has no between-participant factor.
+## Until 2026-09-03 export_for_R.py split each vector's trials into 22 equal
+## groups and this script analysed them as participants; those groups were
+## identical in parameters, their between-group variance was sampling noise
+## alone, and the resulting F values -- 32 rows per model in stats_results.csv,
+## reported nowhere in the manuscript -- were not comparable with the empirical
+## ones. Both the split and the analysis are gone; what the models predict is
+## reported as effect-size ranges over the parameter space (effect_sizes.py).
 
 ## ---------------------------------------------------------------------------
 close(OUT)

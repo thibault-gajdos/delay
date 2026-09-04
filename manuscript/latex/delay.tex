@@ -477,7 +477,7 @@ Figure~\ref{fig:pmaeeg}C shows the LRP for each condition and period. Although t
 
 \new{Under Model 1 a delay-period ramp exists only by virtue of the variance still filling in, and that is what makes the two observations hard to hold together. The filling-in raises the rate only where the signal stands more than one fluctuation standard deviation from the gate, and by \eqref{eq:nu1} each further standard deviation of distance costs a factor} \new{${e}^{-{a}^{2}/2}$} \new{in the rate itself. Ramp and rate are therefore governed by the same quantity in opposite directions (Corollary~\ref{cor:tradeoff}), and the question is not whether Model 1 can produce either but whether it can produce both at once. Simulation validation, below, computes the largest ramp the architecture can produce at each rate.}
 
-\new{The closed-form rate also predicts how the delay-period ramp should level off across cells. Under Model 2 the gate approaches the signal at the constant speed} \new{$\beta /\delta$}\new{, so the standardized distance falls linearly, and taking logarithms in Equation \eqref{eq:nu_asymp} gives Equation \eqref{eq:slope}:}
+\new{The closed-form rate also predicts how the delay-period ramp should level off across cells. Under Model 2 the gate approaches the signal at the constant speed} \new{$\beta /\delta$}\new{, so the standardized distance falls linearly, and taking logarithms in Equation \eqref{eq:nu_asymp} (Appendix, Corollary~\ref{cor:logslope}) gives Equation \eqref{eq:slope}:}
 
 {\color{addcol}
 \begin{equation}
@@ -865,12 +865,6 @@ M\left(t\right)=\frac{\beta }{\delta }+\frac{{c}_{H}\left(t\right)}{{\sigma }_{H
 \begin{proposition}[saturation and the coherence $\times$ duration interaction]\label{prop:saturation}
 \new{The model predicts the effect of coherence on the delay-period rate to be smaller, not larger, after a long stimulus. Proof. The maintained TARGET is capped pathwise at} \new{$\theta$}\new{: a trial that reaches the threshold has its target pinned there for the rest of the delay, though its signal continues to fluctuate about that target. On such a trial the distance} \new{$d$} \new{entering \eqref{eq:nu2} is} \new{$g-\theta$} \new{less the ramp, the same in every condition, and the law of} \new{$H$} \new{does not depend on coherence either, so the rate is coherence-independent. Writing} \new{$F\left(D,c\right)$} \new{for the fraction of trials at duration} \new{$D$} \new{and coherence} \new{$c$} \new{whose target has reached} \new{$\theta$}\new{, the coherence levels therefore converge on a common value as} \new{$F\left(D,c\right)\to 1$}\new{, and a longer stimulus raises} \new{$F$} \new{at every coherence, moving every cell closer to it. The scope of the argument, the case in which it reverses, and a second channel working in the same direction are in Results (Delay-locked).}
 \end{proposition}
-}
-
-{\color{addcol}
-\begin{remark}\label{rem:reconcile}
-\new{Corollary~\ref{cor:logslope} and Proposition~\ref{prop:saturation} pull in opposite directions on the coherence dependence of the delay-period rate, and are consistent. Proposition~\ref{prop:saturation} concerns the rate itself, whose coherence dependence saturates; Corollary~\ref{cor:logslope} concerns the slope of its logarithm, which remains coherence-dependent --- shallower where the rate is higher --- precisely because the distance to the gate is smaller there. A residual coherence dependence of the log-rate slope is a signature of saturated maintenance, not of continued evidence accumulation.}
-\end{remark}
 }
 
 {\color{addcol}

@@ -28,9 +28,10 @@
 \usepackage{lineno}
 \allowdisplaybreaks
 % NOT \mathtoolsset{showonlyrefs}, which note4.tex uses: it prints a number only on an
-% equation some \eqref points at. Here the numbers come from the docx through \tag and
-% the prose cites them as literal text -- "Equation (21)" -- never with \eqref, so every
-% number in the paper would disappear and every reference to one would dangle.
+% equation some \eqref points at. Every displayed equation here is either referenced by
+% \eqref or deliberately unnumbered (equation*), and the Appendix reprints three of the
+% Results equations under their original numbers via a tag pointing at the original label
+% would break.
 \usepackage{hyperref}
 % hidelinks, not coloured links: this copy uses colour to mark revisions, and a
 % blue \cite in the middle of a red sentence reads as new material rather than as a
@@ -233,29 +234,29 @@ Behavioral, EMG, and EEG data were analyzed using repeated-measures ANOVAs, with
 {\color{addcol}
 \begin{equation}
 dx\left(t\right)=(skc)dt+{\sigma }_{x}d{W}_{x}\left(t\right), x\left(0\right)={x}_{0},
-\label{eq:1}
+\label{eq:x}
 \end{equation}
 }
 
-\new{where}  \new{\emph{s}}  \new{$\in$} \new{\{$-$}\new{1,+}\new{1\}} \new{codes} motion direction, \new{\emph{c}} \old{is motion coherence,} \new{\emph{k}} \new{sca}\old{les coherence into the mean rate of evidence accumulation (drift rate}\old{)}\new{,}    \new{\emph{$\sigma$}}\new{\emph{\textsubscript{x}}} \old{is the diffusion coefficient controlling the amplitude of within}\new{-}\new{trial noise,} \new{and} \new{\emph{dW}}\new{\emph{\textsubscript{x}(t)}} \new{is a}\old{n increment of a standard Wiener process.} \new{P}\old{ositive and negative values of} \new{\emph{x(t)}} \old{support rightward and leftward choices,} \old{respectively} \old{(by arbitrary convention).} \old{At the neurophysiological level, this process can be interpreted as the temporal integration of the difference in activity between opposing populations of direction-sensitive neurons in area MT} \old{\parencites{goldNeuralBasisDecision2007}{mazurekRoleNeuralIntegrators2003}}\new{.} \new{Equation \eqref{eq:1} is a} \old{diffusion process}\new{, and} \old{provides a parsimonious impleme}\old{ntation of the decision stage}\old{, which could in principle incorporate other accumulation dynamics}\new{,} \old{including leakage or mutual inhibition}  \old{\parencites[e.g.][]{servantNeurallyConstrainedModeling2019}{usherTimeCoursePerceptual2001}}\new{.}
+\new{where}  \new{\emph{s}}  \new{$\in$} \new{\{$-$}\new{1,+}\new{1\}} \new{codes} motion direction, \new{\emph{c}} \old{is motion coherence,} \new{\emph{k}} \new{sca}\old{les coherence into the mean rate of evidence accumulation (drift rate}\old{)}\new{,}    \new{\emph{$\sigma$}}\new{\emph{\textsubscript{x}}} \old{is the diffusion coefficient controlling the amplitude of within}\new{-}\new{trial noise,} \new{and} \new{\emph{dW}}\new{\emph{\textsubscript{x}(t)}} \new{is a}\old{n increment of a standard Wiener process.} \new{P}\old{ositive and negative values of} \new{\emph{x(t)}} \old{support rightward and leftward choices,} \old{respectively} \old{(by arbitrary convention).} \old{At the neurophysiological level, this process can be interpreted as the temporal integration of the difference in activity between opposing populations of direction-sensitive neurons in area MT} \old{\parencites{goldNeuralBasisDecision2007}{mazurekRoleNeuralIntegrators2003}}\new{.} \new{Equation \eqref{eq:x} is a} \old{diffusion process}\new{, and} \old{provides a parsimonious impleme}\old{ntation of the decision stage}\old{, which could in principle incorporate other accumulation dynamics}\new{,} \old{including leakage or mutual inhibition}  \old{\parencites[e.g.][]{servantNeurallyConstrainedModeling2019}{usherTimeCoursePerceptual2001}}\new{.}
 
 \old{The decision variable} \new{\emph{x(t)}} \old{is continuously transmitted to motor-preparatory processes, repr}\old{esented by a distinct variable} \new{\emph{y(t)}}\new{:}
 
 {\color{addcol}
 \begin{equation}
 dy\left(t\right)=\lambda \left[x\left(t\right)-y\left(t\right)\right]dt, y\left(0\right)={x}_{0}.
-\label{eq:2}
+\label{eq:y}
 \end{equation}
 }
 
-\old{Equation~\ref{eq:2} describes the continuous integration of decision-related input at the motor-preparation level.}  \new{Conseque}\old{ntly, the mean buildup of} \new{\emph{y(t)}}\new{, like that of} \new{\emph{x(t)}}\new{,} \old{becomes slower as sensory-evidence strength decreases.}  \old{The same equation} \new{also} \old{defines a first-order low-pass filter:}  \new{\emph{y(t)}} \old{follows the evolving decision variable while attenuating its rapid fluctuations, yielding a smoother and temporally} \old{lagged representation of} \new{\emph{x(t)}}\new{.} \new{The filter gain (} \new{$\lambda$}  \new{>}  \old{0) controls how rapidly} \new{\emph{y(t)}} \old{tracks changes in} \new{\emph{x(t)}}\old{; lower values produce greater smoothing and a longer temporal lag.}  \new{P}\old{ositive and negative values of} \new{\emph{y(t)}} \old{increase preparation for the right- and left-hand responses, respectively.}  \old{The filtering operation attenuates rapid fluctuations in the decision variable before they reach downstream motor circuitry, thereby increasing th}\old{e stability of motor control}\new{.} \old{Support for this filtering operation comes from EEG evidence that the temporal lag between decision-related and motor-preparatory accumulation signals} \new{covaries} \old{with the model-derived} \old{degree of smoothing} \old{\parencite{balsdonSecondaryMotorIntegration2023}}\new{, and} \old{from behavioral--EMG modeling showing that the filtered architecture captures muscle dynamics, particularly the occurrence and timing of partial muscle activations---small EMG bursts that do not produce suffici}\old{ent force to generate a response} \old{\parencites{dendauwGatedCascadeDiffusion2024}{dendauwSeparatingDecisionMotor2026}}\new{.}
+\old{Equation~\ref{eq:y} describes the continuous integration of decision-related input at the motor-preparation level.}  \new{Conseque}\old{ntly, the mean buildup of} \new{\emph{y(t)}}\new{, like that of} \new{\emph{x(t)}}\new{,} \old{becomes slower as sensory-evidence strength decreases.}  \old{The same equation} \new{also} \old{defines a first-order low-pass filter:}  \new{\emph{y(t)}} \old{follows the evolving decision variable while attenuating its rapid fluctuations, yielding a smoother and temporally} \old{lagged representation of} \new{\emph{x(t)}}\new{.} \new{The filter gain (} \new{$\lambda$}  \new{>}  \old{0) controls how rapidly} \new{\emph{y(t)}} \old{tracks changes in} \new{\emph{x(t)}}\old{; lower values produce greater smoothing and a longer temporal lag.}  \new{P}\old{ositive and negative values of} \new{\emph{y(t)}} \old{increase preparation for the right- and left-hand responses, respectively.}  \old{The filtering operation attenuates rapid fluctuations in the decision variable before they reach downstream motor circuitry, thereby increasing th}\old{e stability of motor control}\new{.} \old{Support for this filtering operation comes from EEG evidence that the temporal lag between decision-related and motor-preparatory accumulation signals} \new{covaries} \old{with the model-derived} \old{degree of smoothing} \old{\parencite{balsdonSecondaryMotorIntegration2023}}\new{, and} \old{from behavioral--EMG modeling showing that the filtered architecture captures muscle dynamics, particularly the occurrence and timing of partial muscle activations---small EMG bursts that do not produce suffici}\old{ent force to generate a response} \old{\parencites{dendauwGatedCascadeDiffusion2024}{dendauwSeparatingDecisionMotor2026}}\new{.}
 
 \old{Transmission from motor preparation to the muscles is also continuous but regulated by gating inhibition. The signed mo}\old{tor-preparation variable} \new{\emph{y(t)}}  \old{is transformed into separate nonnegative neural drives for the left and righ}\new{t response} \new{agonists:}
 
 {\color{addcol}
 \begin{equation}
 \left\{\begin{aligned}{ z}_{L}\left(t\right)=\max \left[-y\left(t\right)-g,0\right], \\ {z}_{R}\left(t\right)=\max \left[y\left(t\right)-g,0\right],\end{aligned}\right.
-\label{eq:3}
+\label{eq:z}
 \end{equation}
 }
 
@@ -275,7 +276,7 @@ dy\left(t\right)=\lambda \left[x\left(t\right)-y\left(t\right)\right]dt, y\left(
 {\color{addcol}
 \begin{equation}
 m = \begin{cases} s_{\mathrm{resp}}\theta, & \text{if } \theta \text{ was reached},\\ y(L_{\mathrm{motion}}+D), & \text{otherwise},\end{cases}
-\label{eq:4}
+\label{eq:m}
 \end{equation}
 }
 
@@ -286,7 +287,7 @@ m = \begin{cases} s_{\mathrm{resp}}\theta, & \text{if } \theta \text{ was reache
 {\color{addcol}
 \begin{equation}
 d\varepsilon \left(t\right)= -\kappa \varepsilon \left(t\right)dt+ {\sigma }_{\varepsilon }d{W}_{\varepsilon }\left(t\right), \varepsilon \left(\tau \right)=0,
-\label{eq:5}
+\label{eq:epsilon}
 \end{equation}
 }
 
@@ -295,7 +296,7 @@ d\varepsilon \left(t\right)= -\kappa \varepsilon \left(t\right)dt+ {\sigma }_{\v
 {\color{addcol}
 \begin{equation}
 dy\left(t\right)=\lambda \left[m+\varepsilon \left(t\right)-y(t)\right]dt.
-\label{eq:6}
+\label{eq:y_delay}
 \end{equation}
 }
 
@@ -318,19 +319,18 @@ dy\left(t\right)=\lambda \left[m+\varepsilon \left(t\right)-y(t)\right]dt.
 {\color{addcol}
 \begin{equation}
 \tilde{y}\left(t\right):= y\left(t\right)+{s}_{resp}\beta \frac{t-{t}_{offset}}{{t}_{\mathrm{RS}}-{t}_{offset}}, {t}_{offset}\le t\le {t}_{\mathrm{RS}}.
-\label{eq:7}
+\label{eq:tildey}
 \end{equation}
 }
 
-\new{W}\old{e assumed that the} \old{temporal-preparation contribution} \new{in Equation \eqref{eq:7}} \old{did not pass through the low-pass filter} \new{a}\old{nd was instead added directly to the motor-preparatory signal reaching the downstream gate.}  \old{The rationale is that the filter was inherited from the immediate-report architecture, where it describes the transmission of decision-related input} \new{\emph{x(t)}} \old{to the motor-preparatory state} \new{\emph{y(t)}}\old{. Temporal preparation}\old{, by contrast, arises from learned temporal regularities and was treated as a distinct source of motor preparation rather than part of this} \new{d}\old{ecision-to-motor transformation}\new{.} \new{Accordingly,} \new{it} \old{did not alter either the maintenance target} \new{\emph{m}} \old{or the dynamics by which} \new{\emph{y(t)}} \new{was maintained.}
+\new{W}\old{e assumed that the} \old{temporal-preparation contribution} \new{in Equation \eqref{eq:tildey}} \old{did not pass through the low-pass filter} \new{a}\old{nd was instead added directly to the motor-preparatory signal reaching the downstream gate.}  \old{The rationale is that the filter was inherited from the immediate-report architecture, where it describes the transmission of decision-related input} \new{\emph{x(t)}} \old{to the motor-preparatory state} \new{\emph{y(t)}}\old{. Temporal preparation}\old{, by contrast, arises from learned temporal regularities and was treated as a distinct source of motor preparation rather than part of this} \new{d}\old{ecision-to-motor transformation}\new{.} \new{Accordingly,} \new{it} \old{did not alter either the maintenance target} \new{\emph{m}} \old{or the dynamics by which} \new{\emph{y(t)}} \new{was maintained.}
 
 \old{\emph{RS-driven response initiation}}\new{.}  \new{At} \new{\emph{t}}\new{\textsubscript{RS}}\new{,}  \new{once RS} \new{evidence}  \old{became available to the accumulation process}\old{, the maintenance-noise process} \new{\emph{$\varepsilon$}}\new{\emph{(t)}} \old{was discontinued, and the} \new{filtered} \old{motor-preparatory state} \new{\emph{y(}}\new{\emph{t}}\new{\emph{\textsubscript{RS}}}\new{\emph{)}} \old{was retained as the baseline for subsequent RS-driven processing.}  \new{In M}\old{odel 2, the temporal-preparation} \new{contribution} \new{had} \old{simultaneously}  \old{reached its maximum} \new{magnitude} \new{\emph{s}}\new{\textsubscript{resp}}\new{\emph{$\beta$}}  \new{and} \new{remain}\new{ed fixed} \new{thereafter}\new{.}  \old{RS-driven processing was modeled by a distinct stochastic variable}  \new{\emph{q(t)}}\old{, which accumulated} \old{noisy evidence that the} \new{RS was present:}
 
 {\color{addcol}
-\begin{equation}
+\begin{equation*}
 dq\left(t\right)={\mu }_{\mathrm{RS}}dt+{\sigma }_{q}d{W}_{q}\left(t\right), q\left({t}_{\mathrm{RS}}\right)=0,
-\label{eq:8}
-\end{equation}
+\end{equation*}
 }
 
 \new{where}  \new{\emph{$\mu$}}\new{\textsubscript{RS}} \old{is the mean rate of RS-evidence accumulation,}  \new{\emph{$\sigma$}}\new{\emph{\textsubscript{q}}} \old{is the diffusion coefficient controlling within-trial noise, and} \new{\emph{dWq}}\new{\emph{(t)}} \old{is an increment of a standard Wiener process.}  \old{As explained in the Introduction, noisy temporal integration of an unambiguous signal is consistent with accumulator accounts of one-choice} \new{RT} \old{}\new{\parencites{ratcliffDiffusionModelOnechoice2011}{smithPsychophysicallyPrincipledModels1995}} \new{and with} \old{EEG signatures of evidence accumulation under near-ceiling target-detection conditions} \old{\parencite{oconnellSupramodalAccumulationtoboundSignal2012}}\new{.}
@@ -338,19 +338,17 @@ dq\left(t\right)={\mu }_{\mathrm{RS}}dt+{\sigma }_{q}d{W}_{q}\left(t\right), q\l
 \new{The variable} \new{\emph{q(t)}} \old{had no independent boundary. Its accumulated value was continuously transmitted along the selected motor direction and added to the input of the motor-preparation filter:}
 
 {\color{addcol}
-\begin{equation}
+\begin{equation*}
 dy\left(t\right)=\lambda \left[y\left({t}_{\mathrm{RS}}\right)+{s}_{resp}q(t)-y(t)\right]dt, t\ge {t}_{\mathrm{RS}}.
-\label{eq:9}
-\end{equation}
+\end{equation*}
 }
 
 \new{The term} \new{\emph{s}}\new{\textsubscript{resp}}  \new{\emph{q(t)}} \old{therefore provided an increasing response-directed drive as} \new{RS} \new{evi}\new{dence} \old{accumulated. In Model 2, the temporal-preparation contribution remained separate from this filtered input, consistent with its trea}\old{tment during the delay. F}\new{rom} \new{\emph{t}}\new{\textsubscript{RS}} \new{onward,}  \new{the gate-facing signal was instead given by:}
 
 {\color{addcol}
-\begin{equation}
+\begin{equation*}
 \tilde{y}(t) := \begin{cases} y(t), & \text{Model 1},\\ y(t)+s_{\mathrm{resp}}\beta, & \text{Model 2}.\end{cases}
-\label{eq:10}
-\end{equation}
+\end{equation*}
 }
 
 \new{O}\new{nce the} \new{corresponding} \old{gated neural drive} \new{reached} \old{the response criterion}  \new{\emph{r}}\old{, the residual motor} \new{latency} \new{\emph{L}}\new{\textsubscript{motor}}  \new{was} \old{added before the overt response, as in the immediate-report architecture}\new{.} \new{Because gating} \new{\emph{g}}  \old{remained active throughout the delayed-report trial, stochastic fluctuations in the motor-preparatory signal could produce transient crossings of} \new{\emph{g}} \old{during motion processing, maintenance, and RS-driven response initiation. Such crossings generated muscle activation but remained partial when the resulting neural drive returned to zero before reaching} \new{\emph{r}}\old{. The time-varying rate of partial muscle activations therefore provides a nonlinear peripheral readout of the position and variability of the motor-preparatory signal relative to t}\old{he gating and response criteria}\new{.}
@@ -368,7 +366,7 @@ dy\left(t\right)=\lambda \left[y\left({t}_{\mathrm{RS}}\right)+{s}_{resp}q(t)-y(
 
 \new{Each parameter vector is one hypothetical participant, simulated over 4000 trials per condition, and its six cell values give that participant's own effects. Draws differ in their parameters, so the spread of an effect across draws measures the parameter space; re-simulating admissible draws on several seeds puts the Monte-Carlo share of that spread at 19\% for Model 1 and 0.1\% for Model 2 on the delay-period log-rate slope. Figures 1 and 2 are drawn at a single representative vector, the admissible draw closest to the centre of the admissible set.}
 
-\new{Effects are formed the same way on both sides. In the data, the six coherence $\times$ duration cell values are computed for each of the 22 participants from that participant's own trials and combined into the effect --- a difference of means for a main effect, a difference of such differences for an interaction --- and the 22 resulting values are averaged, their standard deviation divided by $\sqrt{22}$ giving the standard error. In a model, the same combination is applied to the six cell values of one draw.}
+\new{Effects are formed the same way on both sides. In the data, the six coherence $\times$ duration cell values are computed for each of the 22 participants from that participant's own trials and combined into the effect --- a difference of means for a main effect, a difference of such differences for an interaction --- and the 22 resulting values are averaged, their standard deviation divided by $\sqrt{22}$ giving the standard error. In a model, the same combination is applied to the six cell values of one draw. The delay-period log-rate slope is treated the same way: the model's slope is obtained by evaluating its rate at the bins of the window and fitting the offset-Poisson regression the data are fitted with, rather than by taking a secant between the ends of the window. The distinction matters for Model 1, whose log-rate is strongly concave, so that the regression weights the late, event-rich bins where the variance transient has already flattened.}
 
 \new{For each effect, the distribution over a model's admissible draws --- its median and 5th to 95th percentile --- is what that architecture can produce, and the observed value with its between-participant confidence interval is read against it. A model whose range excludes the observed value is quantitatively inadequate on that effect. For the delay-period log-rate slope the observed quantity is the mean of the per-participant slopes, $+0.892$ s\textsuperscript{-1}, which is also what the bound of the Appendix is drawn against; the slope of the profile pooled across participants is $+0.817$ s\textsuperscript{-1}, a sum of exponentials not being an exponential.}
 
@@ -447,40 +445,40 @@ Figure 4C shows the LRP for each condition and period. Although the LRP showed a
 
 \subsubsection{\new{Theoretical predictions}}
 
-\new{During the delay, a partial activation on the responding side is an upcrossing of the internal gate} \new{$g$} \new{by the maintained fluctuation} \new{$H$} \new{--- the excursion of the preparatory signal around the level held since the first accumulation was stopped, still driven by the same noise process that generates within-trial fluctuations elsewhere in the model. The Appendix derives the resulting instantaneous rate in closed form from the Kac--Rice formula for the expected upcrossing rate of a differentiable Gaussian process, Equation \eqref{eq:21}, which assumes no stationarity. Where the fluctuation has reached stationarity that expression simplifies: writing} \new{$a\left(t\right)$} \new{for the distance from the maintained level to the gate in units of the fluctuation's standard deviation,}  \new{and} \new{$\omega =\sqrt{\lambda \kappa }$} \new{for the fluctuation's characteristic frequency, the rate is Equation \eqref{eq:22}:}
+\new{During the delay, a partial activation on the responding side is an upcrossing of the internal gate} \new{$g$} \new{by the maintained fluctuation} \new{$H$} \new{--- the excursion of the preparatory signal around the level held since the first accumulation was stopped, still driven by the same noise process that generates within-trial fluctuations elsewhere in the model. The Appendix derives the resulting instantaneous rate in closed form from the Kac--Rice formula for the expected upcrossing rate of a differentiable Gaussian process, Equation \eqref{eq:nu2}, which assumes no stationarity. Where the fluctuation has reached stationarity that expression simplifies: writing} \new{$a\left(t\right)$} \new{for the distance from the maintained level to the gate in units of the fluctuation's standard deviation,}  \new{and} \new{$\omega =\sqrt{\lambda \kappa }$} \new{for the fluctuation's characteristic frequency, the rate is Equation \eqref{eq:nu_asymp}:}
 
 {\color{addcol}
 \begin{equation}
 \nu \left(t\right)=\varphi \left(a\left(t\right)\right)\left[\frac{\beta }{\delta {\sigma }_{H}}\Phi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)+\omega \varphi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)\right]
-\label{eq:22}
+\label{eq:nu_asymp}
 \end{equation}
 }
 
-\new{Setting} \new{$\beta =0$} \new{--- Model 1 --- recovers the classical Rice formula, Equation \eqref{eq:23}, whose maximum over the standardized distance is} \new{$\omega /2\pi =\sqrt{\lambda \kappa }/2\pi$}\new{:}
+\new{Setting} \new{$\beta =0$} \new{--- Model 1 --- recovers the classical Rice formula, Equation \eqref{eq:nu1}, whose maximum over the standardized distance is} \new{$\omega /2\pi =\sqrt{\lambda \kappa }/2\pi$}\new{:}
 
 {\color{addcol}
 \begin{equation}
 \nu =\frac{\omega }{2\pi }{e}^{-{a}^{2}/2}
-\label{eq:23}
+\label{eq:nu1}
 \end{equation}
 }
 
 \new{whose maximum over the standardized distance,} \new{$\omega /2\pi =\sqrt{\lambda \kappa }/2\pi$}\new{, is attained when the gate sits exactly at the maintained level. That bound holds once the fluctuation is stationary. It does not hold before: while the variance is still filling in the ceiling is higher, because the fluctuation acquires its velocity faster than its amplitude, and it is the non-stationary form (Appendix, A.1) that must be used at the slow mean reversion Model 1 needs for a rate still rising near the end of a 3-s delay. At} \new{$\kappa \lesssim 0.2$} \new{s\textsuperscript{-1} the variance is about a third of its stationary value when the window opens and about seven-tenths when it closes, and the ceiling computed from the kernel is about twice the stationary expression. Even so it is small: 0.9 s\textsuperscript{-1} across the range of} \new{$\lambda$} \new{in Table A1, against an observed end-of-delay rate of 1.45 s\textsuperscript{-1}.}
 
-\new{That ceiling, however, is not the constraint that binds. It is attained only when the maintained level sits exactly at the gate, and at that distance the rate is not rising but falling: the variance transient that produces any ramp at all under Model 1 raises the rate only where the signal is more than one fluctuation standard deviation from the gate, and by \eqref{eq:23} each further standard deviation costs a factor} \new{${e}^{-{a}^{2}/2}$} \new{in the rate. Ramp and rate are therefore governed by the same quantity in opposite directions (Corollary A.5), and the question is not whether Model 1 can produce either but whether it can produce both at once.}
+\new{That ceiling, however, is not the constraint that binds. It is attained only when the maintained level sits exactly at the gate, and at that distance the rate is not rising but falling: the variance transient that produces any ramp at all under Model 1 raises the rate only where the signal is more than one fluctuation standard deviation from the gate, and by \eqref{eq:nu1} each further standard deviation costs a factor} \new{${e}^{-{a}^{2}/2}$} \new{in the rate. Ramp and rate are therefore governed by the same quantity in opposite directions (Corollary A.5), and the question is not whether Model 1 can produce either but whether it can produce both at once.}
 
-\new{This trade-off can be stated as a frontier rather than as a bound, by asking for the largest log-rate slope Model 1 can produce at each level of the delay-period rate,} \new{maximizing over the distance to the gate and over the ranges of $\kappa$ and $\lambda$ in Table A1, computing the moments from the kernel rather than from their stationary limits, and estimating the slope exactly as it is estimated in the data --- an offset-Poisson regression over the same twenty bins, not a secant between the ends of the window (the Appendix, A.7). Two properties of the calculation make it a bound rather than an illustration. It holds under trial-to-trial variation of the maintained level: the measured rate is a mixture over the distance to the gate, and maximizing a mixture's slope at fixed rate is a linear programme whose solution moves the frontier by less than one per cent (Appendix, A.8). And the two effects it does not model --- the merging of nearby crossings into one detected activation, and the absorption of trials that reach the response criterion --- both act to lower the measured slope, not to raise it (A.10).}  \new{At the lowest rate observed in any participant $\times$ condition cell, 0.085 s\textsuperscript{-1}, Model 1 can reach a slope of +0.81 s\textsuperscript{-1}; at 0.2 s\textsuperscript{-1} it can reach +0.40; at 0.3 s\textsuperscript{-1}, +0.19; at 0.4 s\textsuperscript{-1}, +0.05; at 0.5 s\textsuperscript{-1}, +0.01; and at the observed mean rate of 0.709 s\textsuperscript{-1} it can reach nothing distinguishable from zero.}  \new{The observed slope is +0.89 s\textsuperscript{-1} at that rate --- the mean of the per-cell, per-participant slopes, which is the quantity a simulated homogeneous process must be compared with; the slope of the profile pooled across participants is flatter (+0.82) because pooling mixes processes at different distances from the gate.} \new{Model 1 is therefore not merely quantitatively short:} \new{the largest rate at which it attains the observed slope anywhere in the sampled ranges is 0.069 s\textsuperscript{-1} --- a tenth of the observed mean, and below the 0.085 s\textsuperscript{-1} of the least active participant in the least active condition. There is therefore no admissible setting of its parameters at which Model 1 produces both the observed ramp and partial activations as often as any participant produced them.} \new{Because the optimum lies at the smallest $\kappa$ and the largest $\lambda$ the sampled ranges allow, this frontier is the most favorable one available to the model.}
+\new{This trade-off can be stated as a frontier rather than as a bound, by asking for the largest log-rate slope Model 1 can produce at each level of the delay-period rate,} \new{maximizing over the distance to the gate and over the ranges of $\kappa$ and $\lambda$ in Table A1, computing the moments from the kernel rather than from their stationary limits, and estimating the slope on the bins of the window by the same offset-Poisson regression used on the data (Materials and Methods). Two properties of the calculation make it a bound rather than an illustration. The first is that it survives the trial-to-trial variation of the maintained level. Within a participant $\kappa$, $\lambda$ and ${\sigma }_{H}$ are common to every trial, but the level held is the internal threshold $\theta$ on trials that reached it and $y\left({t}_{\mathrm{offset}}\right)$ on the others, so the measured rate is a mixture over the distance to the gate. Both the mixture's rate at the end of the window and its rate at the start are linear in the mixing weights, so maximizing the slope at a fixed end-of-window rate is a linear programme in those weights: with two equality constraints the optimum carries at most two non-zero weights, and the bound is the lower convex envelope of the curve the single-distance rates trace out. It moves the frontier by less than one per cent. The second is that the two effects the calculation does not model --- the merging of nearby crossings into one detected activation, and the absorption of trials that reach the response criterion --- both act to lower the measured slope, not to raise it (Appendix, A.10).}  \new{At the lowest rate observed in any participant $\times$ condition cell, 0.085 s\textsuperscript{-1}, Model 1 can reach a slope of +0.81 s\textsuperscript{-1}; at 0.2 s\textsuperscript{-1} it can reach +0.40; at 0.3 s\textsuperscript{-1}, +0.19; at 0.4 s\textsuperscript{-1}, +0.05; at 0.5 s\textsuperscript{-1}, +0.01; and at the observed mean rate of 0.709 s\textsuperscript{-1} it can reach nothing distinguishable from zero.}  \new{The observed slope is +0.89 s\textsuperscript{-1} at that rate --- the mean of the per-cell, per-participant slopes, which is the quantity a simulated homogeneous process must be compared with; the slope of the profile pooled across participants is flatter (+0.82) because pooling mixes processes at different distances from the gate.} \new{Model 1 is therefore not merely quantitatively short:} \new{the largest rate at which it attains the observed slope anywhere in the sampled ranges is 0.069 s\textsuperscript{-1} --- a tenth of the observed mean, and below the 0.085 s\textsuperscript{-1} of the least active participant in the least active condition. There is therefore no admissible setting of its parameters at which Model 1 produces both the observed ramp and partial activations as often as any participant produced them.} \new{Because the optimum lies at the smallest $\kappa$ and the largest $\lambda$ the sampled ranges allow, this frontier is the most favorable one available to the model.}
 
-\new{The same calculation applies to Model 2, and the contrast is the whole argument. Temporal preparation moves the gate-facing signal towards the gate, which enters the crossing-rate formula in one place only --- the derivative of the signal relative to the barrier --- so the frontier can be computed for that architecture too (Appendix, A.6). Bounding the ramp at three fluctuation standard deviations over the analyzed window --- near the 97th percentile of the ramps the admissibility screen accepts, whose median is 0.39 and whose maximum is 8.4, so that 4\% of admissible draws exceed the cap ---} \new{Model 2 reaches a delay-period log-rate slope of +4.05 s\textsuperscript{-1} at the observed rate, against an observed +0.89; and it attains the observed slope at rates up to 6.4 s\textsuperscript{-1}, nine times the observed rate. Model 1 at the same rate reaches nothing distinguishable from zero, and attains the observed slope only at 0.069 s\textsuperscript{-1}.} \new{The two architectures are therefore not near-misses of one another:} \new{one exceeds what has to be explained several times over, the other cannot reach it at any rate a participant showed.} \new{This is also why the two frontiers have a different status. For Model 1 the frontier is a bound --- with no ramp the rate depends on nothing but $\kappa$, $\lambda$ and the distance to the gate, all three of which are swept, and nothing outside the calculation can raise it. For Model 2 it is an upper envelope under a cap read off the screened sample, so it says what that architecture can reach, not what it typically does.}
+\new{The same calculation applies to Model 2, and the contrast is the whole argument. Temporal preparation moves the gate-facing signal towards the gate, which enters the crossing-rate formula in one place only --- the derivative of the signal relative to the barrier --- so the frontier can be computed for that architecture too. That calculation knows nothing of admissibility, and an unbounded ramp would give an unbounded slope, so the ramp has to be capped by hand. Capping it at three fluctuation standard deviations over the analyzed window --- near the 97th percentile of the ramps the admissibility screen accepts, whose median is 0.39 and whose maximum is 8.4, so that 4\% of admissible draws exceed the cap ---} \new{Model 2 reaches a delay-period log-rate slope of +4.05 s\textsuperscript{-1} at the observed rate, against an observed +0.89; and it attains the observed slope at rates up to 6.4 s\textsuperscript{-1}, nine times the observed rate. Model 1 at the same rate reaches nothing distinguishable from zero, and attains the observed slope only at 0.069 s\textsuperscript{-1}.} \new{The two architectures are therefore not near-misses of one another:} \new{one exceeds what has to be explained several times over, the other cannot reach it at any rate a participant showed.} \new{This is also why the two frontiers have a different status. For Model 1 the frontier is a bound --- with no ramp the rate depends on nothing but $\kappa$, $\lambda$ and the distance to the gate, all three of which are swept, and nothing outside the calculation can raise it. For Model 2 it is an upper envelope under a cap read off the screened sample, so it says what that architecture can reach, not what it typically does.}
 
-\new{A second, independent exclusion follows from the same calculation, and it constrains the SHAPE of the delay-period rate curve rather than its height. Under Model 1 the ramp is carried entirely by the filling-in of the maintenance variance, and that process decelerates: by Corollary A.9 the relative rate of variance growth is} \new{$K{\left(\rho \right)}^{2}/\int_{0}^{\rho } K{\left(v\right)}^{2}\, \dd v$}\new{, which is bounded above by} \new{$1/\left(\rho -3/\left(2\lambda \right)\right)$} \new{whatever} \new{$\kappa$}\new{, so the local log-rate slope must fall by at least a factor of 3.6 between the start and the end of the analyzed window, and in fact by a factor of at least 15 everywhere in the sampled ranges. Model 2 is under no such constraint: by \eqref{eq:25} its slope is} \new{$b\, a\left(\rho \right)$} \new{with} \new{$a$} \new{falling linearly, and the corresponding ratio starts at about 1.1. Measured on the data, the per-participant log-rate slopes in the four quarters of the delay window are +0.58, +0.94, +0.72 and +0.62 s\textsuperscript{-1}, a first-to-last ratio of 0.94 --- no deceleration at all, against the factor of 15 Model 1 requires.}
+\new{A second, independent exclusion follows from the same calculation, and it constrains the SHAPE of the delay-period rate curve rather than its height. Under Model 1 the ramp is carried entirely by the filling-in of the maintenance variance, and that process decelerates: by Corollary A.9 the relative rate of variance growth is} \new{$K{\left(\rho \right)}^{2}/\int_{0}^{\rho } K{\left(v\right)}^{2}\, \dd v$}\new{, which is bounded above by} \new{$1/\left(\rho -3/\left(2\lambda \right)\right)$} \new{whatever} \new{$\kappa$}\new{, so the local log-rate slope must fall by at least a factor of 3.6 between the start and the end of the analyzed window, and in fact by a factor of at least 15 everywhere in the sampled ranges. Model 2 is under no such constraint: by \eqref{eq:slope} its slope is} \new{$b\, a\left(\rho \right)$} \new{with} \new{$a$} \new{falling linearly, and the corresponding ratio starts at about 1.1. Measured on the data, the per-participant log-rate slopes in the four quarters of the delay window are +0.58, +0.94, +0.72 and +0.62 s\textsuperscript{-1}, a first-to-last ratio of 0.94 --- no deceleration at all, against the factor of 15 Model 1 requires.}
 
-\new{The closed-form rate also predicts how the delay-period ramp should level off across cells. Under Model 2 the gate approaches the signal at the constant speed} \new{$\beta /\delta$}\new{, so the standardized distance falls linearly, and taking logarithms in Equation \eqref{eq:22} gives Equation \eqref{eq:25}:}
+\new{The closed-form rate also predicts how the delay-period ramp should level off across cells. Under Model 2 the gate approaches the signal at the constant speed} \new{$\beta /\delta$}\new{, so the standardized distance falls linearly, and taking logarithms in Equation \eqref{eq:nu_asymp} gives Equation \eqref{eq:slope}:}
 
 {\color{addcol}
 \begin{equation}
 \frac{\dd \left(\ln \nu \right)}{\dd \rho }=\frac{\beta }{\delta {\sigma }_{H}}a\left(\rho \right), \frac{{\dd }^{2}\left(\ln \nu \right)}{\dd {\rho }^{2}}=-{\left(\frac{\beta }{\delta {\sigma }_{H}}\right)}^{2}
-\label{eq:25}
+\label{eq:slope}
 \end{equation}
 }
 
@@ -496,9 +494,9 @@ Figure 4C shows the LRP for each condition and period. Although the LRP showed a
 
 \paragraph{\new{Partial muscle activation (PMA) rate}}
 
-\new{Figure 4A shows that PMA rate continued to increase during the delay period. This increase is best attributed to temporal preparation: the time bin $\times$ motion coherence interaction, a diagnostic marker of evidence accumulation, was no longer significant in this window  (linear-trend equivalent:} \new{F(1.70, 35.61) = 0.524, p = .567}\new{, $\eta$p\textsuperscript{2} = 0.024; Table S2) and did not interact with duration  (linear-trend equivalent:} \new{F(1.74, 36.45) = 0.508, p = .580}\new{, $\eta$p\textsuperscript{2} = 0.024; Table S2), whereas the main effect of time bin remained significant  (linear-trend equivalent: F(1,21) = 35.238, p < .001, $\eta$p\textsuperscript{2} = 0.627; Table S2), indicating continued ramping. An unbinned, point-process analysis of exact activation onset times confirms this ramp directly (Table S5): the log-rate slope was significantly positive (two-stage F(1,21) = 102.95, p < .001) and shallower after a long stimulus and at high coherence,} \new{both expected under accumulation to an internal threshold. The binned and unbinned analyses are testing different quantities here, and are not in conflict: the trend contrast above asks whether the raw rate ramps at a coherence-dependent rate, and it does not, whereas the point-process estimate asks whether the log rate does, which} \new{Equation \eqref{eq:25}} \new{requires that it should --- a cell with a higher rate has by construction a smaller standardized distance to the gate and therefore a shallower log-rate slope. The residual coherence dependence of the log-rate slope accordingly runs in the direction saturation predicts, shallower at high coherence, and not in the direction continued motion-evidence accumulation would predict, so neither test implies that accumulation is still under way during the delay. Model 1,} \new{which has no temporal-preparation} \new{ramp, cannot account for this pattern alone. A significant time bin $\times$ duration interaction was also observed: PMA rate was generally higher in the 2 s than in the 0.3 s condition (F(1,21) = 33.19, p < .001, $\eta$p\textsuperscript{2} = 0.612), and this difference increased over time  (linear-trend equivalent: F(1,21) = 11.898, p = .002, $\eta$p\textsuperscript{2} = 0.362; Table S2) --- the reverse of the ordering seen during the stimulus period, consistent with the different temporal alignment of the two windows (evidence accumulation has barely started by stimulus offset in the 0.3 s condition, but has typically already reached threshold in the 2 s condition). Finally, a duration $\times$ motion coherence interaction (}\new{F(1.92, 40.42) = 3.474, p = .042}\new{, $\eta$p\textsuperscript{2} = 0.142) showed a larger coherence effect on delay-period PMA rate after the 2 s than after the 0.3 s stimulus ---} \new{the opposite of what the model predicts (Theoretical predictions, above), and the opposite direction} \new{to the coherence effect on mean PMET, where the 0.3 s condition showed the larger effect. Two candidate explanations for this reversal --- selective exclusion of the most prepared high-coherence trials via anticipatory-response removal, and a strategic reduction of temporal preparation as motor preparation approached the gate --- are both unlikely to hold: the anticipatory-response rate was too low to account for the size of the reversal (Figure S1), and the model shows that the apparent leveling-off of the rate late in the 2 s, high-coherence condition requires no strategic adjustment, since a higher rate corresponds by construction to a smaller distance to the gate and therefore} \new{a shallower log-rate slope (}\new{Equation \eqref{eq:25}}\new{, above). We therefore withdraw} \new{the strategic-reduction account and instead report the coherence $\times$ duration interaction on delay-period PMA rate as a genuine point of disagreement between the model and the data (see Discussion),} \new{not a failure of parameter choice that a different setting would resolve}\new{: because the maintained level is capped at the internal threshold $\theta$, the model predicts a coherence effect on delay-period rate that shrinks, not grows, after a long stimulus, at every parameter setting} \new{compatible with the observed level of decision accuracy (Theoretical predictions, above).}
+\new{Figure 4A shows that PMA rate continued to increase during the delay period. This increase is best attributed to temporal preparation: the time bin $\times$ motion coherence interaction, a diagnostic marker of evidence accumulation, was no longer significant in this window  (linear-trend equivalent:} \new{F(1.70, 35.61) = 0.524, p = .567}\new{, $\eta$p\textsuperscript{2} = 0.024; Table S2) and did not interact with duration  (linear-trend equivalent:} \new{F(1.74, 36.45) = 0.508, p = .580}\new{, $\eta$p\textsuperscript{2} = 0.024; Table S2), whereas the main effect of time bin remained significant  (linear-trend equivalent: F(1,21) = 35.238, p < .001, $\eta$p\textsuperscript{2} = 0.627; Table S2), indicating continued ramping. An unbinned, point-process analysis of exact activation onset times confirms this ramp directly (Table S5): the log-rate slope was significantly positive (two-stage F(1,21) = 102.95, p < .001) and shallower after a long stimulus and at high coherence,} \new{both expected under accumulation to an internal threshold. The binned and unbinned analyses are testing different quantities here, and are not in conflict: the trend contrast above asks whether the raw rate ramps at a coherence-dependent rate, and it does not, whereas the point-process estimate asks whether the log rate does, which} \new{Equation \eqref{eq:slope}} \new{requires that it should --- a cell with a higher rate has by construction a smaller standardized distance to the gate and therefore a shallower log-rate slope. The residual coherence dependence of the log-rate slope accordingly runs in the direction saturation predicts, shallower at high coherence, and not in the direction continued motion-evidence accumulation would predict, so neither test implies that accumulation is still under way during the delay. Model 1,} \new{which has no temporal-preparation} \new{ramp, cannot account for this pattern alone. A significant time bin $\times$ duration interaction was also observed: PMA rate was generally higher in the 2 s than in the 0.3 s condition (F(1,21) = 33.19, p < .001, $\eta$p\textsuperscript{2} = 0.612), and this difference increased over time  (linear-trend equivalent: F(1,21) = 11.898, p = .002, $\eta$p\textsuperscript{2} = 0.362; Table S2) --- the reverse of the ordering seen during the stimulus period, consistent with the different temporal alignment of the two windows (evidence accumulation has barely started by stimulus offset in the 0.3 s condition, but has typically already reached threshold in the 2 s condition). Finally, a duration $\times$ motion coherence interaction (}\new{F(1.92, 40.42) = 3.474, p = .042}\new{, $\eta$p\textsuperscript{2} = 0.142) showed a larger coherence effect on delay-period PMA rate after the 2 s than after the 0.3 s stimulus ---} \new{the opposite of what the model predicts (Theoretical predictions, above), and the opposite direction} \new{to the coherence effect on mean PMET, where the 0.3 s condition showed the larger effect. Two candidate explanations for this reversal --- selective exclusion of the most prepared high-coherence trials via anticipatory-response removal, and a strategic reduction of temporal preparation as motor preparation approached the gate --- are both unlikely to hold: the anticipatory-response rate was too low to account for the size of the reversal (Figure S1), and the model shows that the apparent leveling-off of the rate late in the 2 s, high-coherence condition requires no strategic adjustment, since a higher rate corresponds by construction to a smaller distance to the gate and therefore} \new{a shallower log-rate slope (}\new{Equation \eqref{eq:slope}}\new{, above). We therefore withdraw} \new{the strategic-reduction account and instead report the coherence $\times$ duration interaction on delay-period PMA rate as a genuine point of disagreement between the model and the data (see Discussion),} \new{not a failure of parameter choice that a different setting would resolve}\new{: because the maintained level is capped at the internal threshold $\theta$, the model predicts a coherence effect on delay-period rate that shrinks, not grows, after a long stimulus, at every parameter setting} \new{compatible with the observed level of decision accuracy (Theoretical predictions, above).}
 
-\new{Figure S2 shows this relation in the data alone}\new{: the six delay-period log-rate profiles (left) and, across the six stimulus-duration $\times$ coherence cells, the negative relation between a cell's rate and its log-rate slope (right), as} \new{Equation \eqref{eq:25}} \new{requires.}
+\new{Figure S2 shows this relation in the data alone}\new{: the six delay-period log-rate profiles (left) and, across the six stimulus-duration $\times$ coherence cells, the negative relation between a cell's rate and its log-rate slope (right), as} \new{Equation \eqref{eq:slope}} \new{requires.}
 
 
 \paragraph{\new{Mu--beta lateralization (MBL)}}
@@ -566,7 +564,7 @@ This coherence-independent ramping activity persisted after the RS \new{(F(1,21)
 
 \subsubsection{\new{Simulation validation}}
 
-\new{The closed-form rate of the Appendix does not apply} \new{after the response signal: the criterion now acts as an absorbing barrier, and conditioning on survival destroys the Gaussianity on which} \new{Equation \eqref{eq:22}} \new{depends, so the partial-activation-rate decline predicted above is not supplemented by a model-simulated curve for this window.}
+\new{The closed-form rate of the Appendix does not apply} \new{after the response signal: the criterion now acts as an absorbing barrier, and conditioning on survival destroys the Gaussianity on which} \new{Equation \eqref{eq:nu_asymp}} \new{depends, so the partial-activation-rate decline predicted above is not supplemented by a model-simulated curve for this window.}
 
 \new{The parameter-space evaluation does constrain this window through the dissociation between the two components of response time. The conditions are predicted to move the premotor component and to leave the motor component alone, since nothing in either architecture makes the passage from the gate to the response criterion depend on coherence or duration. In the data the duration effect on premotor execution time was +49 $\pm$ 6 ms and} \new{the duration effect on motor execution time was $-$0.5 $\pm$ 0.8 ms}\new{.} \new{Both architectures produce the premotor effect (Model 1, 3 to 108 ms; Model 2, 2 to 126 ms)} \new{and both leave the motor component nearly alone ($-$46 to 0 ms and $-$62 to $-$1 ms). The dissociation is therefore reproduced, though not exactly: the models do not leave the motor component strictly alone. Its duration effect is significantly below zero at 87\% and 86\% of admissible settings, with medians of $-$5 and $-$8 ms, where the data give an effect indistinguishable from zero. The discrepancy is small --- a few milliseconds on a component whose mean is 161 ms --- but it is systematic, and it says that the passage from the gate to the response criterion is slightly faster in the simulation after the short stimulus than after the long one, whereas in the muscle it is not.} \new{It remains a weak test of the architectures: before the admissibility screen was given a criterion on the two components' levels, the same ranges ran to $-$183 and $-$730 ms. What makes the present ranges narrow is the screen, not the architecture.}
 
@@ -708,24 +706,24 @@ LRP amplitude & duration $\times$ time (quadratic) &  & p = .014 &  & -- &  & --
 \toprule
 \old{Symbol} & \old{Description} & \old{Value or range used in simulations (if applicable)} \\ \midrule
 \old{\emph{t}} & \old{Time measured from motion-stimulus onset} & \old{---} \\
-\old{\emph{x(t)}} & \old{Accumulated} \old{motion} \old{evidence} & \old{See} \old{Eq. \eqref{eq:1}} \\
+\old{\emph{x(t)}} & \old{Accumulated} \old{motion} \old{evidence} & \old{See} \old{Eq. \eqref{eq:x}} \\
 \old{\emph{L}}\old{\textsubscript{m}\textsubscript{o}\textsubscript{t}\textsubscript{i}\textsubscript{o}\textsubscript{n}} & \old{Motion-}\old{evidence}  \old{encoding}  \old{latency} & \old{0.200 s} \\
 \old{\emph{s}} & \old{Motion direction} & \old{$-$1 or +1} \\
 \old{\emph{c}} & \old{Motion} \old{coherence} & \old{0, 0.12, or 0.50} \\
 \old{\emph{k}} & \old{Scaling of motion coherence into the mean rate of motion-evidence accumulation} & \new{0.5--2.0 (log-uniform); \textcite{dendauwGatedCascadeDiffusion2024} estimate 1.183} \\
 \old{\emph{$\sigma$}}\old{\textsubscript{x}} & \old{Diffusion coefficient of motion-}\old{evidence} \old{accumulation} & \old{0.100} \\
-\old{\emph{y(t)}} & \old{Filtered}  \old{motor-preparatory} \old{state} & \old{See}  \old{Eqs}\old{. \eqref{eq:2}, \eqref{eq:6}, and (9}\old{)} \\
+\old{\emph{y(t)}} & \old{Filtered}  \old{motor-preparatory} \old{state} & \old{See}  \old{Eqs}\old{. \eqref{eq:y}, \eqref{eq:y_delay}, and (9}\old{)} \\
 \old{\emph{$\lambda$}} & \old{Gain of the low-pass filter relating decision-related input to motor preparation} & \new{10--50 s\textsuperscript{-1} (log-uniform); \textcite{dendauwGatedCascadeDiffusion2024} estimate 21.471} \\
-\old{z}\old{\emph{\textsubscript{L}}}\old{(}\old{\emph{t}}\old{),} \old{z}\old{\emph{\textsubscript{R}}}\old{(}\old{\emph{t}}\old{)} & \old{Neural drives to the left and right response agonists} & \old{See} \old{Eq. \eqref{eq:3}} \\
+\old{z}\old{\emph{\textsubscript{L}}}\old{(}\old{\emph{t}}\old{),} \old{z}\old{\emph{\textsubscript{R}}}\old{(}\old{\emph{t}}\old{)} & \old{Neural drives to the left and right response agonists} & \old{See} \old{Eq. \eqref{eq:z}} \\
 \old{\emph{g}} & \old{Level} \old{of} \old{gating} \old{inhibition} & \new{0.050--0.200} \\
 \old{\emph{r}} & \old{Response criterion applied to the neural drive} & \new{0.010--0.200 (log-uniform)} \\
 \old{\emph{L}}\old{\textsubscript{m}\textsubscript{o}\textsubscript{t}\textsubscript{o}\textsubscript{r}} & \old{Residual motor latency between response triggering and the overt response} & \new{0.093 s (fixed; Dendauw et al. 2024)} \\
 \old{\emph{D}} & \old{Motion duration} & \old{0.300 or 2.000 s} \\
 \old{\emph{$\theta$}} & \old{Internal motor-preparation threshold triggering maintenance} & \old{\emph{$\theta$/g}}  \old{sampled}  \old{from} \old{0.25--0.90} \\
 \old{\emph{$\tau$}} & \old{Maintenance-}\old{onset} \old{time} & \old{Trial-}\old{dependent} \\
-\old{\emph{m}} & \old{Maintenance} \old{target} & \old{See} \old{Eq. \eqref{eq:4}} \\
+\old{\emph{m}} & \old{Maintenance} \old{target} & \old{See} \old{Eq. \eqref{eq:m}} \\
 \old{\emph{s}}\old{\textsubscript{r}\textsubscript{e}\textsubscript{s}\textsubscript{p}} & \old{Selected}  \old{response} \old{direction} & \old{$-$1:} \old{left}\old{; +1: right} \\
-\old{\emph{$\varepsilon$(t)}} & \old{Stochastic fluctuations around the maintenance target} & \old{See} \old{Eq. \eqref{eq:5}} \\
+\old{\emph{$\varepsilon$(t)}} & \old{Stochastic fluctuations around the maintenance target} & \old{See} \old{Eq. \eqref{eq:epsilon}} \\
 \new{\emph{$\kappa$}} & \old{Mean-reversion rate of maintenance fluctuations} & \new{0.20--30.0 s\textsuperscript{-1} (log-uniform)} \\
 \old{\emph{$\sigma$}}\old{\textsubscript{$\varepsilon$}} & \old{Diffusion coefficient of maintenance fluctuations} & \new{=} \new{${\mathrm{SD}}_{\varepsilon }\sqrt{2\kappa }$}\new{, with} \new{${\mathrm{SD}}_{\varepsilon }$} \new{0.003--0.060 (log-uniform)} \\
 \old{\emph{t}}\old{\textsubscript{offset}} & \old{Time at which stimulus offset becomes internally available as a temporal reference} & \old{\emph{D}} \old{+} \old{\emph{L}}\old{\textsubscript{motion}} \\
@@ -747,22 +745,22 @@ LRP amplitude & duration $\times$ time (quadratic) &  & p = .014 &  & -- &  & --
 
 \new{\textbf{\emph{Setup and notation}}}
 
-\new{Notation follows Theory (Materials and Methods) and Table A1;} \new{$\varphi$} \new{and} \new{$\Phi$} \new{are the standard normal density and distribution function. Fix a trial that has entered maintenance at time} \new{$\tau $} \new{with selected response} \new{${s}_{\mathrm{resp}}$} \new{and maintained level} \new{$m$} \new{(Equation \eqref{eq:4}), and write} \new{$\rho :=t-\tau $} \new{for elapsed maintenance time. For} \new{$t\ge \tau $} \new{write} \new{$y\left(t\right)=m+H\left(t\right)$}\new{, so that} \new{$H$} \new{is the fluctuation of the motor-preparatory signal about its target, with} \new{$H\left(\tau \right)=0$}\new{. By Equations \eqref{eq:5} and \eqref{eq:6},} \new{$H$} \new{is the output of the first-order filter driven by the Ornstein--Uhlenbeck maintenance noise:}
+\new{Notation follows Theory (Materials and Methods) and Table A1;} \new{$\varphi$} \new{and} \new{$\Phi$} \new{are the standard normal density and distribution function. Fix a trial that has entered maintenance at time} \new{$\tau $} \new{with selected response} \new{${s}_{\mathrm{resp}}$} \new{and maintained level} \new{$m$} \new{(Equation \eqref{eq:m}), and let} \new{$\rho :=t-\tau $} \new{for elapsed maintenance time. For} \new{$t\ge \tau $} \new{let} \new{$y\left(t\right)=m+H\left(t\right)$}\new{, so that} \new{$H$} \new{is the fluctuation of the motor-preparatory signal about its target, with} \new{$H\left(\tau \right)=0$}\new{. By Equations \eqref{eq:epsilon} and \eqref{eq:y_delay},} \new{$H$} \new{is the output of the first-order filter driven by the Ornstein--Uhlenbeck maintenance noise:}
 
 {\color{addcol}
 \begin{eqnarray}
-    \dd \varepsilon \left(t\right) &=& -\kappa \varepsilon \left(t\right)\, \dd t+{\sigma }_{\varepsilon }\, \dd {W}_{\varepsilon }\left(t\right), \\
+    \dd \varepsilon \left(t\right) &=& -\kappa \varepsilon \left(t\right)\, \dd t+{\sigma }_{\varepsilon }\, \dd {W}_{\varepsilon }\left(t\right), \nonumber \\
     \dd H\left(t\right) &= &\lambda \left(\varepsilon \left(t\right)-H\left(t\right)\right)\, \dd t, \varepsilon \left(\tau \right)=H\left(\tau \right)=0
-\label{eq:11}
+\label{eq:H}
 \end{eqnarray}
 }
 
-\new{with} \new{${\sigma }_{\varepsilon }={\mathrm{SD}}_{\varepsilon }\sqrt{2\kappa }$}\new{, so that the stationary standard deviation of} \new{$\varepsilon$} \new{is} \new{${\mathrm{SD}}_{\varepsilon }$} \new{whatever the value of} \new{$\kappa$}\new{, and the two are sampled independently in Table A1. Because} \new{$\varepsilon$} \new{is symmetric and independent of the sign of the response,} \new{${s}_{\mathrm{resp}}H$} \new{has the same law as} \new{$H$}\new{. Writing} \new{$\delta :={t}_{\mathrm{RS}}-{t}_{\mathrm{offset}}$} \new{for the length of the preparation window and} \new{$d(t)$} \new{for the distance from the maintained level to the gate,}
+\new{with} \new{${\sigma }_{\varepsilon }={\mathrm{SD}}_{\varepsilon }\sqrt{2\kappa }$}\new{, so that the stationary standard deviation of} \new{$\varepsilon$} \new{is} \new{${\mathrm{SD}}_{\varepsilon }$}.  \new{Since $\varepsilon$} \new{is symmetric and independent of the sign of the response,} \new{${s}_{\mathrm{resp}}H$} \new{has the same law as} \new{$H$}\new{. Writing} \new{$\delta :={t}_{\mathrm{RS}}-{t}_{\mathrm{offset}}$} \new{for the length of the preparation window and} \new{$d(t)$} \new{for the distance from the maintained level to the gate,}
 
 {\color{addcol}
 \begin{equation}
 d\left(t\right)=g-\left|m\right|-\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}
-\label{eq:12}
+\label{eq:d}
 \end{equation}
 }
 
@@ -772,35 +770,33 @@ d\left(t\right)=g-\left|m\right|-\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{off
 
 \new{\textbf{\emph{The maintained fluctuation}}}
 
-\new{Solving the two equations of \eqref{eq:11} in sequence gives}
+\new{Solving  equations  \eqref{eq:epsilon} and \eqref{eq:H} gives}
 
 {\color{addcol}
-\begin{eqnarray}
+\begin{eqnarray*}
     \varepsilon \left(\tau +\rho \right)&=&{\sigma }_{\varepsilon }\int_{0}^{\rho } {e}^{-\kappa \left(\rho -p\right)}\,\dd {W}_{\varepsilon }\left(p\right),\\ H\left(\tau +\rho \right)&=&\lambda \int_{0}^{\rho } {e}^{-\lambda \left(\rho -q\right)}\varepsilon \left(\tau +q\right)\, \dd q
-\label{eq:13}
-\end{eqnarray}
+\end{eqnarray*}
 }
 
-\new{The Ornstein--Uhlenbeck process admits a continuous modification, and} \new{$H$} \new{is then a Riemann integral of a continuous function, so almost surely} \new{$H$} \new{is continuously differentiable --- which is what the crossing formula below requires. Substituting the first equation of \eqref{eq:13} into the second and exchanging the order of integration --- permissible because the integrand is bounded on the compact} \new{$\{0\le p\le q\le \rho \}$} \new{--- leaves the inner integral} \new{$\int_{p}^{\rho } \lambda {e}^{-\lambda \left(\rho -q\right)}{e}^{-\kappa \left(q-p\right)}\, \dd q$}\new{. Hence} \new{$H$} \new{is a Wiener integral against the impulse response of the two filters in series,}
+\new{Since $\varepsilon$ admits a continuous modification and $H$ is then a Riemann integral of a continuous function, almost surely $H\in C^{1}$}.
+\new{ Substituting the first equation above into the second and exchanging the order of integration (permissible because the integrand is bounded on $\{0\le p\le q\le \rho \}$)} \new{lead to:}
 
 {\color{addcol}
-\begin{eqnarray}\label{eq:14}
+\begin{eqnarray*}  
     H\left(\tau +\rho \right)=\int_{0}^{\rho } K\left(\rho -p\right)\,
     \dd {W}_{\varepsilon }\left(p\right)\\
     K\left(v\right)=
     \begin{cases}
         \frac{\lambda {\sigma }_{\varepsilon }}{\lambda -\kappa }\left({e}^{-\kappa v}-{e}^{-\lambda v}\right), \text{ if } \kappa\neq \lambda, \\
-K(v)=\lambda\sigma_{\varepsilon}\,v\,e^{-\lambda v}, \text{ if} \kappa =\lambda,
+K(v)=\lambda\sigma_{\varepsilon}\,v\,e^{-\lambda v}, \text{ if} \kappa =\lambda.
         \end{cases}
-    \end{eqnarray}
+\end{eqnarray*}
 }
-
-\new{and is therefore a centred Gaussian process.} \new{$K\left(0\right)=0$}\new{, which is the analytic form the differentiability takes, and} \new{${K}^{'}\left(0\right)=\lambda {\sigma }_{\varepsilon }$}\new{.}
-
-\new{Differentiating \eqref{eq:14} under the integral, and using} \new{$K\left(0\right)=0$} \new{to kill the boundary term, gives} \new{$\dot{H}\left(\tau +\rho \right)=\int_{0}^{\rho } {K}^{'}\left(\rho -p\right)\, \dd {W}_{\varepsilon }\left(p\right)$}\new{. Write, for} \new{$t\ge \tau $}\new{,} \new{${\sigma }_{H}^{2}\left(t\right):=\Var H\left(t\right)$}\new{,} \new{${\sigma }_{\dot{H}}^{2}\left(t\right):=\Var \dot{H}\left(t\right)$} \new{and} \new{${c}_{H}\left(t\right):=\Cov \left(H\left(t\right),\dot{H}\left(t\right)\right)$}\new{, with} \new{${\sigma }_{H}\left(t\right)$} \new{and} \new{${\sigma }_{\dot{H}}\left(t\right)$} \new{the corresponding standard deviations; the same symbols without} \new{$\left(t\right)$} \new{denote their stationary limits as} \new{$t\to \infty$} \new{(Equation \eqref{eq:18}). The It\^o isometry then gives the three as integrals of the kernel,} \new{${\sigma }_{H}^{2}\left(t\right)=\int_{0}^{\rho } {K}^{2}$}\new{,} \new{${\sigma }_{\dot{H}}^{2}\left(t\right)=\int_{0}^{\rho } {\left({K}^{'}\right)}^{2}$} \new{and} \new{${c}_{H}\left(t\right)=\int_{0}^{\rho } K{K}^{'}=1/2K{\left(\rho \right)}^{2}$}\new{, the last of which is half the derivative of the first. Evaluating them,}
+\new{$H$ is therefore a centred Gaussian process.} \new{Note that $K\left(0\right)=0$}\new{, which makes $K$ differentiable, and} \new{${K}^{'}\left(0\right)=\lambda {\sigma }_{\varepsilon }$}\new{.}
+\new{Differentiating $H$ under the integral, and using} \new{$K\left(0\right)=0$} \new{to kill the boundary term, gives} \new{$\dot{H}\left(\tau +\rho \right)=\int_{0}^{\rho } {K}^{'}\left(\rho -p\right)\, \dd {W}_{\varepsilon }\left(p\right)$}\new{. Write, for} \new{$t\ge \tau $}\new{,} \new{${\sigma }_{H}^{2}\left(t\right):=\Var H\left(t\right)$}\new{,} \new{${\sigma }_{\dot{H}}^{2}\left(t\right):=\Var \dot{H}\left(t\right)$} \new{and} \new{${c}_{H}\left(t\right):=\Cov \left(H\left(t\right),\dot{H}\left(t\right)\right)$}\new{, with} \new{${\sigma }_{H}\left(t\right)$} \new{and} \new{${\sigma }_{\dot{H}}\left(t\right)$} \new{the corresponding standard deviations; the same symbols without} \new{time index} \new{denote their stationary limits as} \new{$t\to \infty$} \new{(Equation \eqref{eq:asymp_moments}). The It\^o isometry then gives the three moments as integrals of the kernel,} \new{${\sigma }_{H}^{2}\left(t\right)=\int_{0}^{\rho } {K}^{2}$}\new{,} \new{${\sigma }_{\dot{H}}^{2}\left(t\right)=\int_{0}^{\rho } {\left({K}^{'}\right)}^{2}$} \new{and} \new{${c}_{H}\left(t\right)=\int_{0}^{\rho } K{K}^{'}=1/2K{\left(\rho \right)}^{2}$}\new{, the last of which is half the derivative of the first. Evaluating them,}
 
 {\color{addcol}
-  \begin{equation}\label{eq:15}
+  \begin{equation}\label{eq:varH}
       {\sigma }_{H}^{2}\left(t\right)=
   \begin{cases}    
 \frac{{\lambda }^{2}{\sigma }_{\varepsilon }^{2}}{{\left(\lambda -\kappa \right)}^{2}}\left[\frac{1-{e}^{-2\kappa \rho }}{2\kappa }-\frac{2\left(1-{e}^{-\left(\lambda +\kappa \right)\rho }\right)}{\lambda +\kappa }+\frac{1-{e}^{-2\lambda \rho }}{2\lambda }\right]
@@ -813,7 +809,7 @@ K(v)=\lambda\sigma_{\varepsilon}\,v\,e^{-\lambda v}, \text{ if} \kappa =\lambda,
 }
 and
 {\color{addcol}
-  \begin{equation}\label{eq:16}
+  \begin{equation}\label{eq:vardotH}
       {\sigma }_{\dot{H}}^{2}\left(t\right)=
       \begin{cases}
           \frac{{\lambda }^{2}{\sigma }_{\varepsilon }^{2}}{{\left(\lambda -\kappa \right)}^{2}}\left[\frac{\kappa \left(1-{e}^{-2\kappa \rho }\right)}{2}-\frac{2\kappa \lambda \left(1-{e}^{-\left(\lambda +\kappa \right)\rho }\right)}{\lambda +\kappa }+\frac{\lambda \left(1-{e}^{-2\lambda \rho }\right)}{2}\right], \text{ if } \kappa\neq \lambda \\
@@ -824,13 +820,16 @@ and
 
 \new{As} \new{$\rho \to \infty$} \new{both cases tend to the stationary limits:}  
 {\color{addcol}
-\begin{equation}
-{\sigma }_{H}^{2}=\frac{\lambda \, {\mathrm{SD}}_{\varepsilon }^{2}}{\lambda +\kappa }, {\sigma }_{\dot{H}}^{2}=\frac{{\lambda }^{2}\kappa \, {\mathrm{SD}}_{\varepsilon }^{2}}{\lambda +\kappa }, {c}_{H}=0, \omega :=\frac{{\sigma }_{\dot{H}}}{{\sigma }_{H}}=\sqrt{\lambda \kappa }
-\label{eq:18}
+\begin{equation}\label{eq:asymp_moments}
+\begin{array}{l}
+    {\sigma }_{H}^{2} = \frac{\lambda \, {\mathrm{SD}}_{\varepsilon }^{2}}{\lambda +\kappa }, \\
+    {\sigma }_{\dot{H}}^{2}= \frac{{\lambda }^{2}\kappa \, {\mathrm{SD}}_{\varepsilon }^{2}}{\lambda +\kappa },\\
+    {c}_{H} = 0.
+\end{array}
 \end{equation}
 }
 
-\new{$\omega$} \new{is the characteristic frequency of the fluctuation. The preparation ramp is added outside the filter (Equation \eqref{eq:7}), so it shifts the mean of the gate-facing signal and leaves all three moments untouched; \eqref{eq:15} to \eqref{eq:18} hold for both models. The relative departure of} \new{${\sigma }_{H}^{2}\left(t\right)$} \new{from} \new{${\sigma }_{H}^{2}$} \new{one second into maintenance is of order} \new{${e}^{-2\kappa }$}\new{, which is negligible at the top of the range of} \new{$\kappa$} \new{in Table A1 and of order one at its bottom. The stationary forms are therefore used only where that condition is checked; wherever the value of} \new{$\kappa$} \new{bears on a conclusion the moments are taken from \eqref{eq:15} to \eqref{eq:17} directly. That is the region most favorable to Model 1, and therefore the region a bound must not approximate away.}
+\new{The preparation ramp is added outside the filter (Equation \eqref{eq:tildey}), so it shifts the mean of the gate-facing signal and leaves all three moments untouched; \eqref{eq:varH} to \eqref{eq:asymp_moments} hold for both models.}
 
 \new{\textbf{\emph{The crossing rate}}}
 
@@ -839,109 +838,107 @@ and
 {\color{addcol}
 \begin{equation}
 \nu \left(t\right)={p}_{Z\left(t\right)}\left(0\right)\, \mathrm{E}\left[\dot{Z}\left(t\right){1}_{\{\dot{Z}\left(t\right)>0\}} | Z\left(t\right)=0\right]
-\label{eq:19}
+\label{eq:nu}
 \end{equation}
 }
 
-\new{No stationarity is assumed: the formula requires only continuous differentiability and non-degenerate one-dimensional marginals, both of which hold from the moment maintenance begins. Since} \new{$H$} \new{is centred,} \new{$Z\left(t\right)\sim \mathrm{N}\left(-d\left(t\right),{\sigma }_{H}^{2}\left(t\right)\right)$} \new{and} \new{${p}_{Z\left(t\right)}\left(0\right)=\varphi \left(d\left(t\right)/{\sigma }_{H}\left(t\right)\right)/{\sigma }_{H}\left(t\right)$}\new{. Because} \new{$\left(Z,\dot{Z}\right)$} \new{is jointly Gaussian,} \new{$\dot{Z}$} \new{given} \new{$Z=0$} \new{is Gaussian with}
+\new{Since} \new{$H$} \new{is centred,} \new{$Z\left(t\right)\sim \mathrm{N}\left(-d\left(t\right),{\sigma }_{H}^{2}\left(t\right)\right)$} \new{and} \new{${p}_{Z\left(t\right)}\left(0\right)=\varphi \left(d\left(t\right)/{\sigma }_{H}\left(t\right)\right)/{\sigma }_{H}\left(t\right)$}\new{. Because} \new{$\left(Z,\dot{Z}\right)$} \new{is jointly Gaussian,} \new{$\dot{Z}$} \new{given} \new{$Z=0$} \new{is Gaussian with}
 
 {\color{addcol}
 \begin{equation}
 M\left(t\right)=\frac{\beta }{\delta }+\frac{{c}_{H}\left(t\right)}{{\sigma }_{H}^{2}\left(t\right)}d\left(t\right), S\left(t\right)={\sigma }_{\dot{H}}^{2}\left(t\right)-\frac{{c}_{H}{\left(t\right)}^{2}}{{\sigma }_{H}^{2}\left(t\right)}
-\label{eq:20}
+\label{eq:MS}
 \end{equation}
 }
 
-\new{and for} \new{$X\sim \mathrm{N}\left(M,S\right)$} \new{one has} \new{$\mathrm{E}\left[X{1}_{\{X>0\}}\right]=M\Phi \left(M/\sqrt{S}\right)+\sqrt{S}\varphi \left(M/\sqrt{S}\right)$}\new{. Substituting into \eqref{eq:19} gives the rate in general form,}
+\new{and for} \new{$X\sim \mathrm{N}\left(M,S\right)$} \new{one has} \new{$\mathrm{E}\left[X{1}_{\{X>0\}}\right]=M\Phi \left(M/\sqrt{S}\right)+\sqrt{S}\varphi \left(M/\sqrt{S}\right)$}\new{. Substituting into \eqref{eq:nu} gives the rate in general form,}
 
 {\color{addcol}
 \begin{equation}
 \nu \left(t\right)=\frac{\varphi \left(d\left(t\right)/{\sigma }_{H}\left(t\right)\right)}{{\sigma }_{H}\left(t\right)}\left[M\left(t\right)\Phi \left(\frac{M\left(t\right)}{\sqrt{S\left(t\right)}}\right)+\sqrt{S\left(t\right)}\varphi \left(\frac{M\left(t\right)}{\sqrt{S\left(t\right)}}\right)\right]
-\label{eq:21}
+\label{eq:nu2}
 \end{equation}
 }
 
-\new{Once the transient has passed the covariance vanishes, so} \new{$M=\beta /\delta$} \new{and} \new{$S={\sigma }_{\dot{H}}^{2}$}\new{. Writing} \new{$a\left(t\right):=d\left(t\right)/{\sigma }_{H}$} \new{for the standardized distance from the maintained level to the gate --- \eqref{eq:21} becomes}
+\new{Once the transient has passed the covariance vanishes, so} \new{$M=\beta /\delta$} \new{and} \new{$S={\sigma }_{\dot{H}}^{2}$}\new{. Writing} \new{$a\left(t\right):=d\left(t\right)/{\sigma }_{H}$} \new{for the standardized distance from the maintained level to the gate, \eqref{eq:nu2} becomes}
 
 {\color{addcol}
 \begin{equation}
 \nu \left(t\right)=\varphi \left(a\left(t\right)\right)\left[\frac{\beta }{\delta {\sigma }_{H}}\Phi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)+\omega \varphi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)\right]
-\tag{\ref{eq:22}}
+\tag{\ref{eq:nu_asymp}}
 \end{equation}
 }
+\new{where}
+{\color{addcol}
+\begin{equation*}
+    \omega :=\frac{{\sigma }_{\dot{H}}}{{\sigma }_{H}}=\sqrt{\lambda \kappa }.
+\end{equation*}
+}
+\new{Note that the bracket does not depend on the distance to the gate, and the ramp enters it only through} \new{$\beta /\delta$}\new{, the speed at which temporal preparation carries the signal toward the gate.}
 
-\new{the expression used in Results (Delay-locked). The bracket does not depend on the distance to the gate, and the ramp enters it only through} \new{$\beta /\delta$}\new{, the speed at which temporal preparation carries the signal toward the gate.}
-
-\new{Corollary A.1 (the ceiling on Model 1's delay-period rate, and when it applies). Setting} \new{$\beta =0$} \new{in \eqref{eq:22} --- Model 1 --- gives the classical Rice formula,}
+\new{Corollary A.1 (the ceiling on Model 1's delay-period rate, and when it applies). Setting} \new{$\beta =0$} \new{in \eqref{eq:nu_asymp}  gives the classical Rice formula,}
 
 {\color{addcol}
 \begin{equation}
 \nu =\frac{\omega }{2\pi }{e}^{-{a}^{2}/2}
-\tag{\ref{eq:23}}
+\tag{\ref{eq:nu1}}
 \end{equation}
 }
 
 \new{whose maximum over the standardized distance is $\omega /2\pi =\sqrt{\lambda \kappa }/2\pi$, attained at $a=0$, with the gate sitting exactly at the maintained level.}
 
-\new{A ceiling is a maximum over the distance to the gate, and $a=0$ is where that maximum falls. Once the fluctuation is stationary this is exact, \eqref{eq:23} being a constant times $\varphi \left(a\right)$. Before stationarity the maximum sits a little above zero: the covariance ${c}_{H}\left(\rho \right)$ is positive there, so by \eqref{eq:20} the conditional mean velocity $M$ grows with the distance and buys back part of what the density at the barrier loses. Over the window analyzed and the ranges of Table A1 that difference is at most three per cent, so the ceiling is evaluated at $d=0$, where \eqref{eq:21} gives $M=0$ and}
+\new{A ceiling is a maximum over the distance to the gate, and $a=0$ is where that maximum falls. Once the fluctuation is stationary this is exact, \eqref{eq:nu1} being a constant times $\varphi \left(a\right)$. Before stationarity the maximum sits a little above zero: the covariance ${c}_{H}\left(\rho \right)$ is positive there, so by \eqref{eq:MS} the conditional mean velocity $M$ grows with the distance and buys back part of what the density at the barrier loses. Over the window analyzed and the ranges of Table A1 that difference is at most three per cent, so the ceiling is evaluated at $d=0$, where \eqref{eq:nu2} gives $M=0$ and}
 
 {\color{addcol}
 \begin{equation}
 \frac{1}{2\pi }\sqrt{\frac{{\sigma }_{\dot{H}}^{2}\left(t\right)}{{\sigma }_{H}^{2}\left(t\right)}-\frac{{c}_{H}{\left(t\right)}^{2}}{{\left({\sigma }_{H}^{2}\left(t\right)\right)}^{2}}}
-\label{eq:24}
+\label{eq:ceiling}
 \end{equation}
 }
 
-\new{Write $\omega \left(\rho \right):={\sigma }_{\dot{H}}\left(\rho \right)/{\sigma }_{H}\left(\rho \right)$ for the fluctuation's characteristic frequency after $\rho$ of maintenance, and $r\left(\rho \right):={c}_{H}\left(\rho \right)/\left({\sigma }_{H}\left(\rho \right){\sigma }_{\dot{H}}\left(\rho \right)\right)$ for the correlation between the fluctuation and its derivative; \eqref{eq:24} is then $\omega \left(\rho \right)\sqrt{1-r{\left(\rho \right)}^{2}}/2\pi$. It exceeds the stationary $\omega /2\pi$ because $\omega \left(\rho \right)$ does. Near the start of maintenance ${\sigma }_{H}^{2}$ grows like ${\rho }^{3}$ while ${\sigma }_{\dot{H}}^{2}$ grows like $\rho$, so $\omega \left(\rho \right)\simeq \sqrt{3}/\rho$ and the ceiling diverges as $\rho \to 0$: the fluctuation acquires a velocity before it acquires an amplitude, and a gate placed at the maintained level is crossed on every excursion. The correlation offsets little of this over the window analyzed, where $r\le 0.19$ at its opening and falls thereafter, so $\sqrt{1-{r}^{2}}\ge 0.98$. Non-stationarity therefore RAISES the ceiling. The bound used in Results is \eqref{eq:24}, evaluated in the analyzed window. $\square$}
+\new{Write $\omega \left(\rho \right):={\sigma }_{\dot{H}}\left(\rho \right)/{\sigma }_{H}\left(\rho \right)$ for the fluctuation's characteristic frequency after $\rho$ of maintenance, and $r\left(\rho \right):={c}_{H}\left(\rho \right)/\left({\sigma }_{H}\left(\rho \right){\sigma }_{\dot{H}}\left(\rho \right)\right)$ for the correlation between the fluctuation and its derivative; \eqref{eq:ceiling} is then $\omega \left(\rho \right)\sqrt{1-r{\left(\rho \right)}^{2}}/2\pi$. It exceeds the stationary $\omega /2\pi$ because $\omega \left(\rho \right)$ does. Near the start of maintenance ${\sigma }_{H}^{2}$ grows like ${\rho }^{3}$ while ${\sigma }_{\dot{H}}^{2}$ grows like $\rho$, so $\omega \left(\rho \right)\simeq \sqrt{3}/\rho$ and the ceiling diverges as $\rho \to 0$: the fluctuation acquires a velocity before it acquires an amplitude, and a gate placed at the maintained level is crossed on every excursion. The correlation offsets little of this over the window analyzed, where $r\le 0.19$ at its opening and falls thereafter, so $\sqrt{1-{r}^{2}}\ge 0.98$. Non-stationarity therefore raises the ceiling. The bound used in Results is \eqref{eq:ceiling}, evaluated in the analyzed window. $\square$}
 
-\new{Corollary A.2 (the log-rate slope). Under Model 2 the barrier moves at constant speed, so by \eqref{eq:12} the standardized distance falls linearly,} \new{$a\left(\rho \right)=a\left(0\right)-\beta \rho /\left(\delta {\sigma }_{H}\right)$}\new{. Taking logarithms in \eqref{eq:22}, the bracket is constant in} \new{$\rho$} \new{and} \new{$\ln \varphi \left(a\right)=-{a}^{2}/2-\ln \sqrt{2\pi }$}\new{, so}
+\new{Corollary A.2 (the log-rate slope). Under Model 2 the barrier moves at constant speed, so by \eqref{eq:d} the standardized distance falls linearly,} \new{$a\left(\rho \right)=a\left(0\right)-\beta \rho /\left(\delta {\sigma }_{H}\right)$}\new{. Taking logarithms in \eqref{eq:nu_asymp}, the bracket is constant in} \new{$\rho$} \new{and} \new{$\ln \varphi \left(a\right)=-{a}^{2}/2-\ln \sqrt{2\pi }$}\new{, so}
 
 {\color{addcol}
 \begin{equation}
 \frac{\dd \left(\ln \nu \right)}{\dd \rho }=\frac{\beta }{\delta {\sigma }_{H}}a\left(\rho \right), \frac{{\dd }^{2}\left(\ln \nu \right)}{\dd {\rho }^{2}}=-{\left(\frac{\beta }{\delta {\sigma }_{H}}\right)}^{2}
-\tag{\ref{eq:25}}
+\tag{\ref{eq:slope}}
 \end{equation}
 }
 
 \new{The log rate rises at a rate proportional to the current standardized distance to the gate. Its curvature is negative, and constant in time --- the log rate is exactly a downward parabola --- with the same value in all six conditions, since} \new{$\beta$}\new{,} \new{$\delta$} \new{and} \new{${\sigma }_{H}$} \new{are properties of the participant and not of the condition. A cell with a higher rate has a smaller standardized distance and so a shallower predicted log-rate slope. $\square$}
 
-\new{Proposition A.3 (saturation and the coherence $\times$ duration interaction). The model predicts the effect of coherence on the delay-period rate to be smaller, not larger, after a long stimulus. Proof. The maintained TARGET is capped pathwise at} \new{$\theta$}\new{: a trial that reaches the threshold has its target pinned there for the rest of the delay, though its signal continues to fluctuate about that target. On such a trial the distance} \new{$d$} \new{entering \eqref{eq:21} is} \new{$g-\theta$} \new{less the ramp, the same in every condition, and the law of} \new{$H$} \new{does not depend on coherence either, so the rate is coherence-independent. Writing} \new{$F\left(D,c\right)$} \new{for the fraction of trials at duration} \new{$D$} \new{and coherence} \new{$c$} \new{whose target has reached} \new{$\theta$}\new{, the coherence levels therefore converge on a common value as} \new{$F\left(D,c\right)\to 1$}\new{, and a longer stimulus raises} \new{$F$} \new{at every coherence, moving every cell closer to it. The scope of the argument, the case in which it reverses, and a second channel working in the same direction are in Results (Delay-locked). $\square$}
+\new{Proposition A.3 (saturation and the coherence $\times$ duration interaction). The model predicts the effect of coherence on the delay-period rate to be smaller, not larger, after a long stimulus. Proof. The maintained TARGET is capped pathwise at} \new{$\theta$}\new{: a trial that reaches the threshold has its target pinned there for the rest of the delay, though its signal continues to fluctuate about that target. On such a trial the distance} \new{$d$} \new{entering \eqref{eq:nu2} is} \new{$g-\theta$} \new{less the ramp, the same in every condition, and the law of} \new{$H$} \new{does not depend on coherence either, so the rate is coherence-independent. Writing} \new{$F\left(D,c\right)$} \new{for the fraction of trials at duration} \new{$D$} \new{and coherence} \new{$c$} \new{whose target has reached} \new{$\theta$}\new{, the coherence levels therefore converge on a common value as} \new{$F\left(D,c\right)\to 1$}\new{, and a longer stimulus raises} \new{$F$} \new{at every coherence, moving every cell closer to it. The scope of the argument, the case in which it reverses, and a second channel working in the same direction are in Results (Delay-locked). $\square$}
 
 \new{Remark A.4. Corollary A.2 and Proposition A.3 pull in opposite directions on the coherence dependence of the delay-period rate, and are consistent. A.3 concerns the rate itself, whose coherence dependence saturates; A.2 concerns the slope of its logarithm, which remains coherence-dependent --- shallower where the rate is higher --- precisely because the distance to the gate is smaller there. A residual coherence dependence of the log-rate slope is a signature of saturated maintenance, not of continued evidence accumulation.}
 
-\new{Corollary A.5 (Model 1 cannot ramp and activate at the same rate). Under Model 1 any delay-period ramp exists only by virtue of the non-stationarity of} \new{$H$}\new{, and it is traded off against the rate itself, the trade-off being carried by the standardized distance. Proof. Maintenance begins with the filtered signal exactly at its target and the Ornstein--Uhlenbeck input at its own mean, so} \new{$H\left(\tau \right)=0$} \new{with zero variance and the moments \eqref{eq:15} and \eqref{eq:16} relax to their stationary limits from below. Set} \new{$\beta =0$} \new{in \eqref{eq:21} and drop the covariance term --- take} \new{$M=0$} \new{and} \new{$S={\sigma }_{\dot{H}}^{2}\left(\rho \right)$} \new{in \eqref{eq:20}, which is exact at stationarity. Writing} \new{$\omega \left(\rho \right)=\sqrt{{\sigma }_{\dot{H}}^{2}\left(\rho \right)/{\sigma }_{H}^{2}\left(\rho \right)}$} \new{and} \new{$a\left(\rho \right)=d/{\sigma }_{H}\left(\rho \right)$} \new{with} \new{$d$} \new{constant,} \new{$\ln \nu =\ln \left[\omega \left(\rho \right)/2\pi \right]-a{\left(\rho \right)}^{2}/2$} \new{and}
+\new{Corollary A.5 (Model 1 cannot ramp and activate at the same rate). Under Model 1 any delay-period ramp exists only by virtue of the non-stationarity of} \new{$H$}\new{, and it is traded off against the rate itself, the trade-off being carried by the standardized distance. Proof. Maintenance begins with the filtered signal exactly at its target and the Ornstein--Uhlenbeck input at its own mean, so} \new{$H\left(\tau \right)=0$} \new{with zero variance and the moments \eqref{eq:varH} and \eqref{eq:vardotH} relax to their stationary limits from below. Set} \new{$\beta =0$} \new{in \eqref{eq:nu2} and drop the covariance term --- take} \new{$M=0$} \new{and} \new{$S={\sigma }_{\dot{H}}^{2}\left(\rho \right)$} \new{in \eqref{eq:MS}, which is exact at stationarity. Writing} \new{$\omega \left(\rho \right)=\sqrt{{\sigma }_{\dot{H}}^{2}\left(\rho \right)/{\sigma }_{H}^{2}\left(\rho \right)}$} \new{and} \new{$a\left(\rho \right)=d/{\sigma }_{H}\left(\rho \right)$} \new{with} \new{$d$} \new{constant,} \new{$\ln \nu =\ln \left[\omega \left(\rho \right)/2\pi \right]-a{\left(\rho \right)}^{2}/2$} \new{and}
 
 {\color{addcol}
 \begin{equation}
 \frac{\dd \left(\ln \nu \right)}{\dd \rho }=\frac{1}{2}\left[\frac{{\left({\sigma }_{\dot{H}}^{2}\left(\rho \right)\right)}^{'}}{{\sigma }_{\dot{H}}^{2}\left(\rho \right)}-\frac{{\left({\sigma }_{H}^{2}\left(\rho \right)\right)}^{'}}{{\sigma }_{H}^{2}\left(\rho \right)}\right]+\frac{{a}^{2}}{2}\frac{{\left({\sigma }_{H}^{2}\left(\rho \right)\right)}^{'}}{{\sigma }_{H}^{2}\left(\rho \right)}
-\label{eq:26}
+\label{eq:slope2}
 \end{equation}
 }
 
-\new{The second term is positive --- the variance is still filling in --- and is what produces the ramp. The first is negative throughout the analyzed window, and by a margin that can be read off \eqref{eq:15} and \eqref{eq:16}: both variances carry both modes, but the slow mode enters} \new{${\sigma }_{\dot{H}}^{2}\left(\rho \right)$} \new{with relative weight} \new{$\kappa /\left(\lambda +\kappa \right)$} \new{and} \new{${\sigma }_{H}^{2}\left(\rho \right)$} \new{with relative weight of order one, so once the fast mode has died the first bracket is smaller than the second by about} \new{$\kappa /\lambda$}\new{. Two consequences follow. At} \new{$a=0$} \new{--- where the ceiling of A.1 is attained --- the slope is strictly negative: the configuration that maximizes Model 1's delay-period rate is one in which that rate declines, so the ceiling is not the binding constraint. And a positive slope requires} \new{$a>1$} \new{to good approximation, while by \eqref{eq:23} every further unit of standardized distance costs a factor} \new{${e}^{-{a}^{2}/2}$} \new{in the rate. Ramp and rate are governed by the same quantity in opposite directions. The covariance term dropped above is non-negative, so it raises the rate at every distance without changing which distances give a rising one, and it is retained in the numerical evaluation. Where} \new{$\kappa =\lambda$} \new{the margin argued above is absent, both terms being of the same order; but there the fluctuation is stationary long before the window opens, both terms are negligible, and the slope is flat. $\square$}
+\new{The second term is positive --- the variance is still filling in --- and is what produces the ramp. The first is negative throughout the analyzed window, and by a margin that can be read off \eqref{eq:varH} and \eqref{eq:vardotH}: both variances carry both modes, but the slow mode enters} \new{${\sigma }_{\dot{H}}^{2}\left(\rho \right)$} \new{with relative weight} \new{$\kappa /\left(\lambda +\kappa \right)$} \new{and} \new{${\sigma }_{H}^{2}\left(\rho \right)$} \new{with relative weight of order one, so once the fast mode has died the first bracket is smaller than the second by about} \new{$\kappa /\lambda$}\new{. Two consequences follow. At} \new{$a=0$} \new{--- where the ceiling of A.1 is attained --- the slope is strictly negative: the configuration that maximizes Model 1's delay-period rate is one in which that rate declines, so the ceiling is not the binding constraint. And a positive slope requires} \new{$a>1$} \new{to good approximation, while by \eqref{eq:nu1} every further unit of standardized distance costs a factor} \new{${e}^{-{a}^{2}/2}$} \new{in the rate. Ramp and rate are governed by the same quantity in opposite directions. The covariance term dropped above is non-negative, so it raises the rate at every distance without changing which distances give a rising one, and it is retained in the numerical evaluation. Where} \new{$\kappa =\lambda$} \new{the margin argued above is absent, both terms being of the same order; but there the fluctuation is stationary long before the window opens, both terms are negligible, and the slope is flat. $\square$}
 
-\new{Remark A.6 (the same trade-off for Model 2). Temporal preparation moves the barrier: with} \new{$d\left(\rho \right)$} \new{falling at the constant speed} \new{$\beta /\delta$} \new{by \eqref{eq:12}, the Kac--Rice formula \eqref{eq:19} is unchanged except that the relevant derivative is} \new{$\dot{H}-\dot{d}=\dot{H}+\beta /\delta$}\new{, which shifts the conditional mean} \new{$M$} \new{of \eqref{eq:20} and leaves the density at the barrier alone. The same computation therefore gives Model 2's attainable region, with one addition: the calculation knows nothing of admissibility, and an unbounded ramp would give an unbounded slope, whereas in the model a ramp large enough to carry the signal past the response criterion during the delay produces premature responses and is rejected. The ramp must therefore be bounded by hand; the bound used, and what it excludes, are stated in Results.}
-
-\new{Remark A.7 (the slope must be estimated as the data's slope is estimated). A comparison between a model quantity and an observed one requires the two to be the same functional of the rate curve. The observed slope is the coefficient of an offset-Poisson regression of the partial-activation counts on time over the bins of the window; the model quantity is therefore obtained by evaluating} \new{$\nu$} \new{at those same bins and fitting the same regression, not by taking the secant between the ends of the window. The distinction matters under Model 1, whose log-rate is strongly concave by \eqref{eq:26}: the regression weights the late, event-rich bins, where the variance transient has already flattened. Using the secant would credit Model 1 with a ramp its own data analysis would not have measured.}
-
-\new{Corollary A.8 (a bound at one distance bounds a mixture of distances). Within a participant} \new{$\kappa$}\new{,} \new{$\lambda$} \new{and} \new{${\sigma }_{H}$} \new{are the same on every trial, but the maintained level is not --- it is} \new{$\theta$} \new{on trials that reached the internal threshold and} \new{$y\left({t}_{\mathrm{offset}}\right)$} \new{on the rest --- so the measured rate is a mixture over the distance} \new{$d$}\new{, and a bound proved at a single distance does not automatically bound a mixture. It does here, because the maximization is a linear programme. Fix the mixture's rate at the end of the window,} \new{$\sum_{d} {p}_{d}{\nu }_{d}\left({\rho }_{1}\right)=R$}\new{. Maximizing the mixture's log-rate slope then means minimizing} \new{$\sum_{d} {p}_{d}{\nu }_{d}\left({\rho }_{0}\right)$} \new{subject to that constraint and to} \new{$\sum_{d} {p}_{d}=1$}\new{: two equality constraints, so the optimum sits at a vertex of the simplex with at most two non-zero components, and the bound follows from the lower convex envelope of the planar curve} \new{$d\mapsto \left({\nu }_{d}\left({\rho }_{1}\right),{\nu }_{d}\left({\rho }_{0}\right)\right)$}\new{. Mixing over PARAMETERS is a different operation and does violate a single-draw bound; it is not the relevant one, because the observed slope is estimated within participant and condition and then averaged, not estimated on a profile pooled across participants. $\square$}
-
-\new{Corollary A.9 (Model 1 cannot hold a ramp to the response signal). Under Model 1 the log-rate slope must decay across the analysis window. Proof. By \eqref{eq:26} the ramp is carried by the relative rate of variance growth, and since} \new{${\sigma }_{H}^{2}\left(\rho \right)=\int_{0}^{\rho } {K}^{2}$} \new{that quantity has the exact form}
+\new{Corollary A.9 (Model 1 cannot hold a ramp to the response signal). Under Model 1 the log-rate slope must decay across the analysis window. Proof. By \eqref{eq:slope2} the ramp is carried by the relative rate of variance growth, and since} \new{${\sigma }_{H}^{2}\left(\rho \right)=\int_{0}^{\rho } {K}^{2}$} \new{that quantity has the exact form}
 
 {\color{addcol}
-\begin{equation}
+\begin{equation*}
 \frac{{\left({\sigma }_{H}^{2}\right)}^{'}\left(\rho \right)}{{\sigma }_{H}^{2}\left(\rho \right)}=\frac{K{\left(\rho \right)}^{2}}{\int_{0}^{\rho } K{\left(v\right)}^{2}\, \dd v}
-\label{eq:27}
-\end{equation}
+\end{equation*}
 }
 
-\new{It is decreasing in} \new{$\kappa$}\new{, and its supremum over} \new{$\kappa$} \new{is the limit} \new{$\kappa \to 0$}\new{, in which} \new{$K\left(v\right)\to {\sigma }_{\varepsilon }\left(1-{e}^{-\lambda v}\right)$} \new{and \eqref{eq:27} becomes} \new{$1/\left(\rho -3/\left(2\lambda \right)\right)$} \new{up to terms of order} \new{${e}^{-\lambda \rho }$}\new{: the filter's lag displaces the clock and nothing else survives. Hence} \new{${\left({\sigma }_{H}^{2}\left(\rho \right)\right)}^{'}/{\sigma }_{H}^{2}\left(\rho \right)\le 1/\left(\rho -3/\left(2\lambda \right)\right)$} \new{throughout, so no choice of} \new{$\kappa$} \new{makes the log-rate slope decay more slowly than that. The realized decay is steeper for two further reasons: the first bracket of \eqref{eq:26} is negative and grows in relative importance as the transient dies, and the standardized distance itself falls as the variance fills, shrinking the factor} \new{${a}^{2}/2$} \new{that multiplies the second. Model 2 is under no such constraint: by \eqref{eq:25} its slope is proportional to a standardized distance falling linearly. The decay factors this imposes, and the observed one, are in Results. $\square$}
+\new{It is decreasing in} \new{$\kappa$}\new{, and its supremum over} \new{$\kappa$} \new{is the limit} \new{$\kappa \to 0$}\new{, in which} \new{$K\left(v\right)\to {\sigma }_{\varepsilon }\left(1-{e}^{-\lambda v}\right)$} \new{and the equation above becomes} \new{$1/\left(\rho -3/\left(2\lambda \right)\right)$} \new{up to terms of order} \new{${e}^{-\lambda \rho }$}\new{: the filter's lag displaces the clock and nothing else survives. Hence} \new{${\left({\sigma }_{H}^{2}\left(\rho \right)\right)}^{'}/{\sigma }_{H}^{2}\left(\rho \right)\le 1/\left(\rho -3/\left(2\lambda \right)\right)$} \new{throughout, so no choice of} \new{$\kappa$} \new{makes the log-rate slope decay more slowly than that. The realized decay is steeper for two further reasons: the first bracket of \eqref{eq:slope2} is negative and grows in relative importance as the transient dies, and the standardized distance itself falls as the variance fills, shrinking the factor} \new{${a}^{2}/2$} \new{that multiplies the second. Model 2 is under no such constraint: by \eqref{eq:slope} its slope is proportional to a standardized distance falling linearly. The decay factors this imposes, and the observed one, are in Results. $\square$}
 
 \new{Remark A.10 (the scope of the approximations). The quantity computed above is the expected upcrossing rate of an unabsorbed Gaussian process, and the quantity measured is neither of those things exactly. Two idealizations separate them, and each makes the computed value an upper bound on the measured one.}
 
 \new{The observable is a merged supra-threshold interval rather than an upcrossing, so crossings closer together than the merge interval are counted once. How often that happens is set by the characteristic frequency $\sqrt{{\sigma }_{\dot{H}}^{2}\left(t\right)/{\sigma }_{H}^{2}\left(t\right)}$. Wherever Model 1 has a ramp at all the characteristic period is far longer than the merge interval and successive crossings are essentially never merged; merging bites only at large $\kappa$, where the transient is over before the window opens and there is no ramp to bound.}
 
-\new{The response criterion is an absorbing boundary: a delay-period crossing that reaches it ends the trial as a premature response, and conditioning on survival destroys the Gaussianity \eqref{eq:19} rests on. Absorption removes preferentially the trials closest to the gate, and preferentially late in the window, so it depresses the late rate and lowers the measured slope below the computed one.}
+\new{The response criterion is an absorbing boundary: a delay-period crossing that reaches it ends the trial as a premature response, and conditioning on survival destroys the Gaussianity \eqref{eq:nu} rests on. Absorption removes preferentially the trials closest to the gate, and preferentially late in the window, so it depresses the late rate and lowers the measured slope below the computed one.}
 
 \new{What is derived above therefore bounds what Model 1 can be measured to do; it does not predict the measurement exactly.}
 
@@ -1176,7 +1173,7 @@ Response & duration &  & 1 & 21 & 0.006 & \emph{p} =  .937 & -- \\
 
 \textbf{Table S5.} \textbf{Delay-period partial-activation rate: an unbinned point-process analysis.}
 
-\new{To avoid the arbitrary time-bin factor altogether (Materials and Methods), the coherence-dependent ramp in delay-period partial-activation rate was additionally tested with no binning at all, using the exact onset time of each partial activation. Writing the log-intensity as a linear function of time,} \new{$\ln \nu \left(t\right)={c}_{0}+{c}_{1}t$}\new{, the log-rate slope} \new{${c}_{1}$} \new{was estimated per participant and per coherence $\times$ duration cell from an inhomogeneous-Poisson point-process likelihood and entered into the same repeated-measures ANOVA as any other score (two-stage estimator); a one-stage log-linear model fitted across all participants with cluster-robust standard errors gave the same pattern of results (below). Both estimators treat the Poisson likelihood as a quasi-likelihood rather than a literal one, since upcrossing events cluster in time; standard errors accordingly come from between-participant variation (two-stage) or a cluster-robust correction (one-stage). This is a different estimator from the binned one the bound of the Appendix is compared against (Appendix, A.7), which must match the binning of the published analysis; the two agree on the sign and the approximate size of the slope.}
+\new{To avoid the arbitrary time-bin factor altogether (Materials and Methods), the coherence-dependent ramp in delay-period partial-activation rate was additionally tested with no binning at all, using the exact onset time of each partial activation. Writing the log-intensity as a linear function of time,} \new{$\ln \nu \left(t\right)={c}_{0}+{c}_{1}t$}\new{, the log-rate slope} \new{${c}_{1}$} \new{was estimated per participant and per coherence $\times$ duration cell from an inhomogeneous-Poisson point-process likelihood and entered into the same repeated-measures ANOVA as any other score (two-stage estimator); a one-stage log-linear model fitted across all participants with cluster-robust standard errors gave the same pattern of results (below). Both estimators treat the Poisson likelihood as a quasi-likelihood rather than a literal one, since upcrossing events cluster in time; standard errors accordingly come from between-participant variation (two-stage) or a cluster-robust correction (one-stage). This is a different estimator from the binned one the bound of the Appendix is compared against (Materials and Methods), which must match the binning of the published analysis; the two agree on the sign and the approximate size of the slope.}
 
 \begin{center}\small
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{%
@@ -1191,6 +1188,6 @@ Response & duration &  & 1 & 21 & 0.006 & \emph{p} =  .937 & -- \\
 \end{tabular}
 }
 \end{center}
-\new{The log-rate slope was positive and shallower both after a long stimulus and at high coherence --- the pattern expected under accumulation to an internal threshold, since either factor raises the maintained level and thereby} \new{reduces the distance to the gate (}\new{Equation \eqref{eq:25}}\new{).} \new{The two estimators agree on sign throughout and differ in magnitude by about a tenth, consistent with the two-stage estimator weighting participants equally and the one-stage estimator weighting them by precision.}
+\new{The log-rate slope was positive and shallower both after a long stimulus and at high coherence --- the pattern expected under accumulation to an internal threshold, since either factor raises the maintained level and thereby} \new{reduces the distance to the gate (}\new{Equation \eqref{eq:slope}}\new{).} \new{The two estimators agree on sign throughout and differ in magnitude by about a tenth, consistent with the two-stage estimator weighting participants equally and the one-stage estimator weighting them by precision.}
 
 \end{document}

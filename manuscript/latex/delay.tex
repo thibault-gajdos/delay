@@ -227,7 +227,7 @@ To measure mu--beta-band spectral amplitude lateralization, we extracted  mu--be
 
 \subsubsection{Statistical Analysis}
 
-Behavioral, EMG, and EEG data were analyzed using repeated-measures ANOVAs, with the significance threshold set at $\alpha$ = .05. The sphericity assumption was evaluated using Mauchly's test, and violations were corrected with the Greenhouse-Geisser procedure.  To maximize statistical power, analyses included  both correct and incorrect trials; analyses restricted to correct trials yielded  comparable results. ANOVAs on response accuracy, mean RT, mean pre-motor execution time, and mean motor execution time  included motion coherence and motion duration as factors. \old{ANOVAs on partial motor activation rate included motion coherence, motion duration, and time bin as factors} \new{and were conducted separately across four periods of interest, allowing each period to be assessed against the corresponding model prediction (Results).} Each period was time-locked to one of the four main events within a trial: stimulus onset, stimulus offset, RS onset, and the response. The stimulus-onset-locked analysis covered the 2  s following stimulus onset (20 time bins). The stimulus-offset-locked analysis covered the interval from 1 to 3 s after stimulus offset (20 time bins), to avoid potentially redundant inclusion of motion-evidence accumulation in the 0.3 s duration condition. The RS-onset-locked analysis covered the 0.2 s following RS onset (2 time bins), ensuring equal trial counts across bins. Finally, the response-locked analysis focused on the 0.2 s preceding the button press (2 time bins).  In what follows, we refer to these four analysis windows as the \emph{stimulus}, \emph{delay}, \emph{RS}, and \emph{response}  \emph{periods}. \old{For consistency across neurophysiological measures,} \old{the lateralized readiness potential} and \old{mu--beta-band spectral amplitude lateralization} \old{were analyzed using the same 0.1-s temporal grid, with mean signal amplitude as the dependent variable in each bin.}  \old{For mu--beta-band spectral amplitude lateralization, spectral amplitude was estimated every 0.1 s using a 0.3-s sliding window, so the 0.1-s} \old{temporal grid preserved all available time points.}  \old{For the} \old{lateralized readiness potential}\old{, averaging within 0.1-s bins reduced the native temporal resolution of the signal but retained a resolution substantially finer than the task periods examined here.}
+Behavioral, EMG, and EEG data were analyzed using repeated-measures ANOVAs, with the significance threshold set at $\alpha$ = .05. The sphericity assumption was evaluated using Mauchly's test, and violations were corrected with the Greenhouse-Geisser procedure.  To maximize statistical power, analyses included  both correct and incorrect trials; analyses restricted to correct trials yielded  comparable results. ANOVAs on response accuracy, mean RT, mean pre-motor execution time, and mean motor execution time  included motion coherence and motion duration as factors\new{; full results, with effect sizes, are in Table~\ref{tab:behav}}. \old{ANOVAs on partial motor activation rate included motion coherence, motion duration, and time bin as factors} \new{and were conducted separately across four periods of interest, allowing each period to be assessed against the corresponding model prediction (Results).} Each period was time-locked to one of the four main events within a trial: stimulus onset, stimulus offset, RS onset, and the response. The stimulus-onset-locked analysis covered the 2  s following stimulus onset (20 time bins). The stimulus-offset-locked analysis covered the interval from 1 to 3 s after stimulus offset (20 time bins), to avoid potentially redundant inclusion of motion-evidence accumulation in the 0.3 s duration condition. The RS-onset-locked analysis covered the 0.2 s following RS onset (2 time bins), ensuring equal trial counts across bins. Finally, the response-locked analysis focused on the 0.2 s preceding the button press (2 time bins).  In what follows, we refer to these four analysis windows as the \emph{stimulus}, \emph{delay}, \emph{RS}, and \emph{response}  \emph{periods}. \old{For consistency across neurophysiological measures,} \old{the lateralized readiness potential} and \old{mu--beta-band spectral amplitude lateralization} \old{were analyzed using the same 0.1-s temporal grid, with mean signal amplitude as the dependent variable in each bin.}  \old{For mu--beta-band spectral amplitude lateralization, spectral amplitude was estimated every 0.1 s using a 0.3-s sliding window, so the 0.1-s} \old{temporal grid preserved all available time points.}  \old{For the} \old{lateralized readiness potential}\old{, averaging within 0.1-s bins reduced the native temporal resolution of the signal but retained a resolution substantially finer than the task periods examined here.}
 
 \new{For each participant and each of the six coherence $\times$ duration cells, the measure takes one value in each time bin of the period, and we summarized that series of values by fitting curves through it rather than by testing the bins against one another. Through the bin values we fitted a straight line by least squares and kept its \emph{slope}: how fast the measure rises or falls across the period, which is what we mean here by ramping. Where the period had at least three bins we also fitted a parabola and kept its \emph{curvature}: how far the profile bends away from that straight line, positive where it is U-shaped and negative where it rises and then levels off. These two numbers are the linear and quadratic orthogonal polynomial contrasts on the time-bin factor. Each was then treated as an ordinary dependent variable, one value per participant and cell, and tested twice: against zero, which asks whether the measure ramps (or bends) at all, and in its own duration $\times$ coherence repeated-measures ANOVA, which asks whether the ramp depends on the conditions. Greenhouse--Geisser correction was applied to the three-level coherence factor throughout. The curvature is reported alongside the slope because mu--beta lateralization during the stimulus period is non-monotone, rising over roughly the first second and then flattening, so a slope alone would misclassify it as null. Full results for every measure and period are in Tables~\ref{tab:pma}--\ref{tab:mbl}, whose duration, coherence and duration $\times$ coherence rows are the same tests applied to the mean over bins; analyses were conducted in R using the afex and emmeans packages. For delay-period partial-activation rate specifically, this analysis is further complemented by a fully unbinned, point-process analysis of exact activation onset times (Table~\ref{tab:pp}).}
 
@@ -402,7 +402,7 @@ dy\left(t\right)=\lambda \left[y\left({t}_{\mathrm{RS}}\right)+{s}_{resp}q(t)-y(
 
 \subsubsection{\new{Empirical results}}
 
-Figures~\ref{fig:behavior}A and~\ref{fig:behavior}B show response accuracy and mean RT, respectively, as a function of motion coherence and duration. Accuracy decreased as motion coherence decreased \new{(F(1.31,27.4) = 222.22, p < .001, $\eta$p\textsuperscript{2} = 0.914)} and was higher in the 2 s condition than in the 0.3 s condition \new{(F(1,21) = 22.68, p < .001, $\eta$p\textsuperscript{2} = 0.519)}, but this duration benefit was observed only at the intermediate 12\% coherence level, yielding a significant motion coherence $\times$ duration interaction  \new{(F(1.96,41.24) = 12.17, p < .001, $\eta$p\textsuperscript{2} = 0.367)}. Mean RT increased as motion coherence and duration decreased \new{(coherence: F(1.5,31.39) = 14.19, p < .001, $\eta$p\textsuperscript{2} = 0.403; duration: F(1,21) = 65.79, p < .001, $\eta$p\textsuperscript{2} = 0.758)}, with the effect of coherence more pronounced in the 0.3 s condition, also yielding a significant motion coherence $\times$ duration interaction  \new{(F(1.68,35.25) = 4.61, p = .022, $\eta$p\textsuperscript{2} = 0.180)}.
+Figures~\ref{fig:behavior}A and~\ref{fig:behavior}B show response accuracy and mean RT, respectively, as a function of motion coherence and duration\new{; the full ANOVA results for the four behavioral measures are in Table~\ref{tab:behav}}. Accuracy decreased as motion coherence decreased \new{(F(1.31,27.4) = 222.22, p < .001, $\eta$p\textsuperscript{2} = 0.914)} and was higher in the 2 s condition than in the 0.3 s condition \new{(F(1,21) = 22.68, p < .001, $\eta$p\textsuperscript{2} = 0.519)}, but this duration benefit was observed only at the intermediate 12\% coherence level, yielding a significant motion coherence $\times$ duration interaction  \new{(F(1.96,41.24) = 12.17, p < .001, $\eta$p\textsuperscript{2} = 0.367)}. Mean RT increased as motion coherence and duration decreased \new{(coherence: F(1.5,31.39) = 14.19, p < .001, $\eta$p\textsuperscript{2} = 0.403; duration: F(1,21) = 65.79, p < .001, $\eta$p\textsuperscript{2} = 0.758)}, with the effect of coherence more pronounced in the 0.3 s condition, also yielding a significant motion coherence $\times$ duration interaction  \new{(F(1.68,35.25) = 4.61, p = .022, $\eta$p\textsuperscript{2} = 0.180)}.
 
 
 \subsubsection{\new{Simulation validation}}
@@ -668,60 +668,6 @@ In conclusion, delayed decision reports are not generated by storing an abstract
 
 
 \section{Tables}
-
-\captionof{table}{\textbf{S}\textbf{ignificant effects from the ANOVAs on}  \textbf{response} \textbf{accuracy, mean} \textbf{response time (}\textbf{RT}\textbf{)}\textbf{,} \textbf{mean pre-motor execution time (PMET), and mean motor execution time (}\textbf{MET}\textbf{)}\textbf{.}}\label{tab:sigbehav}
-
-\begin{center}\small
-\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{%
-\begin{tabular}{llll}
-\toprule
-Dependent variable &  & Significant effects & \emph{p}-value \\ \midrule
-Accuracy &  & duration & \emph{p}  < .001 \\
- &  & coherence & \emph{p}  < .001 \\
- &  & duration $\times$ coherence & \emph{p}  < .001 \\
- &  &  &  \\
-Mean RT &  & duration & \emph{p}  < .001 \\
- &  & coherence & \emph{p}  < .001 \\
- &  & duration $\times$ coherence & \emph{p} =  .016 \\
- &  &  &  \\
-Mean PMET &  & duration & \emph{p}  < .001 \\
- &  & coherence & \emph{p}  < .001 \\
- &  & duration $\times$ coherence & \emph{p}  =  .035 \\
- &  &  &  \\
-Mean MET &  & -- & -- \\
-\bottomrule
-\end{tabular}
-}
-\end{center}
-\emph{Note}. Full ANOVA results, including effect sizes, are reported in Table~\ref{tab:behav}.
-
-\captionof{table}{\textbf{Significant effects from the ANOVAs on partial muscle activation (PMA)} \textbf{rate} \textbf{in the electromy}\textbf{ographic channel of} \textbf{the responding effector}\textbf{,} \textbf{mu--beta-band spectral amplitude lateralization (MBL)}\textbf{, and lateralized readiness potential (LRP) amplitude} \textbf{across}  \textbf{task} \textbf{period}\textbf{s}\textbf{.}}\label{tab:signeuro}
-
-\begin{center}\small
-\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{%
-\begin{tabular}{llllllllll}
-\toprule
-Dependent variable & Significant effects &  & \multicolumn{7}{c}{Period} \\ \midrule
- &  &  &  &  &  &  &  &  &  \\
- &  &  & Stimulus &  & Delay &  & RS &  & Response \\
-PMA rate & duration &  & \emph{p} = .001 &  & \emph{p} < .001 &  & \emph{p} < .001 &  & \new{p = .012} \\
- & coherence &  & \emph{p} = .021 &  & \new{\emph{p = .045}} &  & -- &  & -- \\
- & time (linear) &  & p < .001 &  & p < .001 &  & \emph{p} < .001 &  & \new{n/a$\dagger$} \\
- & duration $\times$ coherence &  & -- &  & \new{\emph{p = .042}} &  & -- &  & -- \\
- & duration $\times$ time (linear) &  & \new{p = .006} &  & \new{p = .002} &  & \emph{p} = .015 &  & \new{n/a$\dagger$} \\
- & coherence $\times$ time (linear) &  & \new{p = .007} &  & -- &  & -- &  & -- \\
- & time (quadratic) &  & -- &  & p < .001 &  & -- \textparagraph{} &  & -- \textparagraph{} \\
-MBL amplitude & time (linear) &  & \new{p = .003} &  & \new{p = .014} &  & -- &  & \emph{p}  = .003 \\
- & coherence $\times$ time (linear) &  & \new{-- $\ddagger$} &  & -- &  & -- &  & -- \\
- & \new{duration $\times$ time (linear)} &  & \new{p = .046 \S{}} &  & \new{--} &  & \new{--} &  & \new{--} \\
- & time (quadratic) &  & p = .007 &  & -- &  & -- \textparagraph{} &  & -- \textparagraph{} \\
-LRP amplitude & time (linear) &  & -- &  & \new{p = .001} &  & \emph{p} = .001 &  & \emph{p} < .001 \\
-LRP amplitude & duration $\times$ time (quadratic) &  & p = .014 &  & -- &  & -- \textparagraph{} &  & -- \textparagraph{} \\
-\bottomrule
-\end{tabular}
-}
-\end{center}
-\new{Note. Entries indicate p-values for significant effects. For stimulus- and delay-period time-bin effects, significance is based on the linear-trend or quadratic contrast rather than on the omnibus ANOVA (Methods). RS and response periods are unaffected (RS has only two time bins, where the omnibus and trend tests coincide exactly; the response period is analyzed on a single bin, so no trend decomposition applies there). Full ANOVA results, including effect sizes, are reported in Tables~\ref{tab:pma}--\ref{tab:mbl}. Time refers to the time-bin factor. RS = response signal. The response period is analyzed on its single informative bin, so its time-bin main effect and time-bin interactions (marked n/a$\dagger$) are not separate tests (Methods). $\ddagger$ Significant on the omnibus test (p < .001) but not as a full-window linear trend (p = .596): the effect is confined to the first half of the stimulus period and absent in the second half (Results; Table~\ref{tab:split}). \S{} Not significant on the omnibus test (p = .136) but significant as a linear trend (p = .046); reported here for consistency with the trend criterion used throughout this table. \textparagraph{} No quadratic contrast exists for RS or Response (only two time bins).}
 
 \captionof{table}{\old{Variables and parameters of the extended evidence-accumulation model for delayed reports.}}\label{tab:params}
 
@@ -1193,7 +1139,7 @@ Response & duration &  & 1 & 21 & 0.006 & \emph{p} =  .937 & -- \\
 \end{tabular}
 }
 \end{center}
-\new{Note. Greenhouse--Geisser correction was applied to every effect with more than one numerator degree of freedom, that is to every effect involving the three-level coherence factor; degrees of freedom (df) with decimals indicate a corrected test. The partial eta squared statistic ($\eta$p2) is computed from the uncorrected degrees of freedom and is therefore unchanged by that correction. Time refers to the time bin factor. The time-bin main effect and its interactions are reported as one-degree-of-freedom linear-trend and quadratic contrasts computed on per-participant scores for the Stimulus and Delay periods (Methods): a contrast crossed only with duration therefore yields F(1,21), whereas a contrast crossed with coherence carries corrected degrees of freedom. One stimulus-period effect (coherence $\times$ time, linear) is significant on the omnibus test but not as a full-window linear trend, because the effect is confined to the first half of the stimulus period (Results; Table~\ref{tab:split}). One other (duration $\times$ time, linear) is significant as a linear trend but was not significant on the omnibus test. The RS and Response periods are unaffected (two time bins each, so the omnibus and trend tests coincide exactly, and no quadratic contrast exists).}
+\new{Note. Greenhouse--Geisser correction was applied to every effect with more than one numerator degree of freedom, that is to every effect involving the three-level coherence factor; degrees of freedom (df) with decimals indicate a corrected test. The partial eta squared statistic ($\eta$p2) is computed from the uncorrected degrees of freedom and is therefore unchanged by that correction. Time refers to the time bin factor. The time-bin main effect and its interactions are reported as one-degree-of-freedom linear-trend and quadratic contrasts computed on per-participant scores for the Stimulus and Delay periods (Methods): a contrast crossed only with duration therefore yields F(1,21), whereas a contrast crossed with coherence carries corrected degrees of freedom. One stimulus-period effect (coherence $\times$ time, linear) is significant on the omnibus test (p < .001) but not as a full-window linear trend (p = .596), because the effect is confined to the first half of the stimulus period (Results; Table~\ref{tab:split}). One other (duration $\times$ time, linear) is significant as a linear trend (p = .046) but was not on the omnibus test (p = .136). The RS and Response periods are unaffected (two time bins each, so the omnibus and trend tests coincide exactly, and no quadratic contrast exists).}
 
 \captionof{table}{\textbf{Mu--beta lateralization, stimulus period: split-half trend analysis.}}\label{tab:split}
 

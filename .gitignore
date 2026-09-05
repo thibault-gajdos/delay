@@ -20,6 +20,10 @@ scripts/results/leak/*.jsonl
 scripts/plots/*.pdf
 scripts/__pycache__/
 
+# printout side-effects of empirical.py / targets.py (regenerable, not read by anything)
+scripts/empirical.npz
+scripts/targets.npz
+
 # renv (renv itself manages scripts/R/renv/.gitignore once renv::init() has run;
 # this covers the same ground before that file exists)
 scripts/R/renv/library/

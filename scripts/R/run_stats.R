@@ -509,15 +509,16 @@ for (i in seq_len(nrow(BEHAV))) {
 
 ## ---------------------------------------------------------------------------
 ## There is no repeated-measures analysis of the simulated counts. A parameter
-## vector is one hypothetical participant, so sim_counts_m{1,2}.csv carries one
-## participant per model and the design has no between-participant factor.
-## Until 2026-09-03 export_for_R.py split each vector's trials into 22 equal
-## groups and this script analysed them as participants; those groups were
-## identical in parameters, their between-group variance was sampling noise
-## alone, and the resulting F values -- 32 rows per model in stats_results.csv,
-## reported nowhere in the manuscript -- were not comparable with the empirical
-## ones. Both the split and the analysis are gone; what the models predict is
-## reported as effect-size ranges over the parameter space (effect_sizes.py).
+## vector is one hypothetical participant, so the simulated design has no
+## between-participant factor. Until 2026-09-03 export_for_R.py split each
+## vector's trials into 22 equal groups and this script analysed them as
+## participants; those groups were identical in parameters, their between-group
+## variance was sampling noise alone, and the resulting F values -- 32 rows per
+## model in stats_results.csv, reported nowhere in the manuscript -- were not
+## comparable with the empirical ones. The split and the analysis went on
+## 2026-09-03, and the sim_counts_m{1,2}.csv export itself on 2026-09-05; what
+## the models predict is reported as effect-size ranges over the parameter
+## space (effect_sizes.py).
 
 ## ---------------------------------------------------------------------------
 close(OUT)

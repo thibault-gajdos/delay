@@ -167,11 +167,9 @@ python theory_checks.py           -> (printout)                    verification 
 python representative.py          -> results/representative.json   the point the illustrative
                                                                    figures are drawn at
 python export_for_R.py            -> pma_counts.csv                counts and exposures, empirical
-                                     sim_counts_mM.csv             the same from each model at the
-                                                                   representative vector (written at
-                                                                   scripts/ root: R's SIMDIR default,
-                                                                   "..", expects them there; nothing
-                                                                   in the pipeline reads them)
+                                                                   (written at scripts/ root: R's
+                                                                   SIMDIR default, "..", expects it
+                                                                   there)
 python figures.py                 -> plots/fig_traj_m{1,2}.pdf     simulated dynamics
                                      plots/fig_traj.pdf
                                      plots/fig_single.pdf
@@ -602,11 +600,12 @@ magnitude and a bin-by-bin percentile envelope mixes profiles that are not compa
 
 
 ### `export_for_R.py`
-Writes the bridge files. `pma_counts.csv` has one row per participant, cell, period and
-bin, with the raw count and the number of trials contributing to that bin;
-`sim_counts_mM.csv` the same from each model at the representative vector, as a single
-simulated participant -- a parameter vector is one hypothetical participant, so there is
-no between-participant factor and no repeated-measures analysis of these files.
+Writes the bridge file. `pma_counts.csv` has one row per participant, cell, period and
+bin, with the raw count and the number of trials contributing to that bin. Until
+2026-09-05 it also wrote `sim_counts_m{1,2}.csv`, the same quantities from each model at
+the representative vector; nothing read them -- R analyses the empirical counts only, and
+what the models predict is reported as effect-size ranges over the parameter space -- so
+the files and the function that built them were removed.
 
 Exposure is not always the number of valid trials. A partial activation precedes the
 response burst by definition, so once that burst has begun a trial can no longer

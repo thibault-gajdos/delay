@@ -13,7 +13,7 @@ that non-stationarity induces.
 These are computed from the kernel rather than from the stationary limits BECAUSE the
 process is not stationary over most of the sampled range of kappa: the relative departure
 from the stationary values one second into maintenance is of order exp(-2 kappa), below
-1e-9 only above kappa ~ 11, whereas Table A1 samples down to kappa = 0.2. Small kappa is
+1e-9 only above kappa ~ 11, whereas Table 1 samples down to kappa = 0.2. Small kappa is
 also the region most favourable to Model 1, so it is exactly the region a bound must not
 approximate away.
 

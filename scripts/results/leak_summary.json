@@ -1,0 +1,54 @@
+{
+ "n_admissible_gamma0": {
+  "model1": 164,
+  "model2": 148
+ },
+ "rows": [
+  {
+   "gamma": 0.0,
+   "m1_admissible": 164,
+   "m2_admissible": 148,
+   "n_evaluated": 148,
+   "rt_coh_supported": 139,
+   "rt_dur_supported": 138,
+   "m2_all_six_slopes_positive": 76,
+   "m1_all_six_slopes_positive": 0
+  },
+  {
+   "gamma": 0.25,
+   "m1_admissible": 158,
+   "m2_admissible": 146,
+   "n_evaluated": 148,
+   "rt_coh_supported": 139,
+   "rt_dur_supported": 141,
+   "m2_all_six_slopes_positive": 80,
+   "m1_all_six_slopes_positive": 0
+  },
+  {
+   "gamma": 0.5,
+   "m1_admissible": 151,
+   "m2_admissible": 143,
+   "n_evaluated": 148,
+   "rt_coh_supported": 139,
+   "rt_dur_supported": 140,
+   "m2_all_six_slopes_positive": 77,
+   "m1_all_six_slopes_positive": 0
+  },
+  {
+   "gamma": 1.0,
+   "m1_admissible": 144,
+   "m2_admissible": 131,
+   "n_evaluated": 148,
+   "rt_coh_supported": 141,
+   "rt_dur_supported": 141,
+   "m2_all_six_slopes_positive": 75,
+   "m1_all_six_slopes_positive": 0
+  }
+ ],
+ "dropout_at_gamma_1": {
+  "n": 17,
+  "median_kc_over_theta_lost": 5.419776521619711,
+  "median_kc_over_theta_kept": 7.900325421932474,
+  "min_kc_over_theta_over_admissible": 1.4997346491948407
+ }
+}

@@ -7,7 +7,7 @@ whose first term is NEGATIVE throughout the analysis window (u is governed by th
 filter lambda and has saturated; s carries the slow mode kappa and has not).  The ramp
 therefore lives entirely in the second term, which needs a large a, while the rate carries
 exp(-a^2/2), which needs a small one.  The frontier is the upper envelope of the
-achievable (rate, slope) pairs over the ranges of Table A1.
+achievable (rate, slope) pairs over the ranges of Table 1.
 
 Computing it as an envelope rather than as a constrained optimisation at each rate is both
 faster and more useful: the whole curve comes from one scatter over (kappa, lambda, a),

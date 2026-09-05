@@ -11,7 +11,7 @@ quantities the figures are used to discuss.
 Two properties are wanted, and one rules out the obvious choice.
 
   * It must be an actual draw, not a coordinate-wise median of the ranges. The median of
-    the box is not admissible: with the ranges of Table A1 it sits at a standardized
+    the box is not admissible: with the ranges of Table 1 it sits at a standardized
     distance to the gate near 4, where exp(-a^2/2) leaves nothing to cross the gate and
     the model produces no muscle activity at all.
 

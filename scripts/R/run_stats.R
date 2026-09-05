@@ -350,7 +350,7 @@ for (i in seq_len(nrow(SPEC))) {
 ## trajectories that have reached the internal threshold are pinned at a
 ## common level and their slope can no longer depend on coherence. QUAD tests
 ## the same thing without choosing a cut-off and is the prespecified version
-## (Appendix B4); this split is descriptive, reported alongside it, and the
+## (Table S5); this split is descriptive, reported alongside it, and the
 ## cut-off was fixed before looking at the data (the midpoint of the window),
 ## not chosen after seeing the contrast.
 ##
@@ -360,7 +360,7 @@ for (i in seq_len(nrow(SPEC))) {
 
 d <- read_long(file.path(ARCHIVE, "analysis_MBL/data/MBL_stim_JASP.csv"), 1:20)
 say("\n", strrep("=", 78))
-say("MBL, stimulus period, resolved into two halves (descriptive; Appendix B4)")
+say("MBL, stimulus period, resolved into two halves (descriptive; Table S5)")
 say(strrep("=", 78))
 for (h in list(list(1:10, "first half, 0.05-0.95 s"),
                list(11:20, "second half, 1.05-1.95 s"),
@@ -404,7 +404,7 @@ if (file.exists(pf)) {
            durn = ifelse(cell >= 3, .5, -.5))
 
   say("\n", strrep("=", 78))
-  say("Poisson analyses of the delay-period counts (Appendix B12)")
+  say("Poisson analyses of the delay-period counts (Table S6)")
   say(strrep("=", 78))
 
   ## (1) two-stage: fit per participant and cell, then repeated-measures ANOVA

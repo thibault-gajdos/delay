@@ -1,6 +1,6 @@
 """
 fused_sweep.py -- unified broad-parameter Monte-Carlo sweep, extending the manuscript's
-existing "first-stage parameter-space evaluation" (Table A1, 250 Latin-hypercube draws,
+existing "first-stage parameter-space evaluation" (Table 1, 250 Latin-hypercube draws,
 task-admissibility screen, two RT-effect criteria) to ALSO check, at every admissible
 draw, the out-of-sample criteria that the current manuscript only checks at the single
 behaviorally-calibrated point:
@@ -32,7 +32,7 @@ calibq_{m1,m2}.json or from targets_q.json.
                                                 over. The paper does not rely on the
                                                 stationary crossing-rate form at small
                                                 kappa -- Results (Delay-locked) and
-                                                Appendix C both compute from the exact
+                                                the Appendix both compute from the exact
                                                 kernel there precisely BECAUSE
                                                 stationarity fails -- so validity of
                                                 that approximation is no reason to
@@ -128,7 +128,7 @@ calibq_{m1,m2}.json or from targets_q.json.
                                                 an observed 1.45/s -- so an unbounded lam
                                                 would quietly dissolve it. The bound is
                                                 defensible on the time-constant argument
-                                                alone; it is stated in the Table A1 note
+                                                alone; it is stated in the Table 1 note
                                                 so that it cannot look chosen to protect
                                                 the conclusion.)
   sigma_q  in [0.03, 0.30]    log-uniform     (NEW -- freed from FIXED per the user's
@@ -145,7 +145,7 @@ calibq_{m1,m2}.json or from targets_q.json.
                                                 available that still does not reference
                                                 the fit. Flagged as the softest of these
                                                 bounds -- revisit if asked.
-sigx, Lmotion, LRS, delay stay fixed at Table A1's architectural point values (delay is
+sigx, Lmotion, LRS, delay stay fixed at Table 1's architectural point values (delay is
 the task's own 3s delay duration, not a free parameter at all).
 
 Latin-hypercube over the 10 continuous dimensions shared by both models (g, theta/g,
@@ -162,14 +162,15 @@ respond within 0.2s of RS, <=5% no response by 4s deadline; accuracy > 80% in bo
 50%-coherence conditions.
 
 Trial count: 2000 trials/cell/model/draw, matching the existing first-stage procedure
-(NOT calibrate.py's NTR=200, which is for the optimization search only).
+(calibrate.py, which used NTR=200 for its optimization search, has been removed with the
+calibration itself).
 
 Leak-robustness variant (2026-08-24): an optional fourth CLI argument, GAMMA, adds a
 common leak to both accumulators (sim.py's `simulate(..., gamma=)`, the reviewer R2.3
 sensitivity request) and is threaded through every simulate() call and recorded in each
 output record. Used to repeat this identical hybrid-range sweep at gamma in
 {0.25, 0.50, 1.00} s^-1, replacing the earlier leak-robustness check (Methods, Behavior >
-Simulation validation), which had used the pre-widening Table A1 ranges and tested only
+Simulation validation), which had used the pre-widening Table 1 ranges and tested only
 the two RT-effect criteria via the older, narrower sweep.py.  Because run_model() already
 computes the slope and MET criteria for every draw regardless of gamma, this rerun gets
 slope/MET robustness under leak "for free," alongside the RT-effect numbers the original

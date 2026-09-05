@@ -38,10 +38,13 @@ Two bugs found on the way, both worth knowing about:
   NA, the filter kept no rows, and aov_ez failed with an opaque reshape error. The case is
   not pathological -- the SIMULATED response period contains no partial activations by
   construction, since `measures()` scores the burst preceding the response as the response.
-  It had never fired because `--with-sim` had never run to completion. The two sides meet at CSV files
-written by `export_for_R.py`, which carry counts and exposures for the data and for each
-model simulated at the representative parameter vector, so that the identical statistical
-analysis runs on both sides.
+  It had never fired because `--with-sim` had never run to completion. (That flag, and the
+  analysis of simulated counts it switched on, were removed on 2026-09-03; see
+  `R/run_stats.R`.)
+
+The two sides meet at CSV files written by `export_for_R.py`, which carry counts and
+exposures for the data and for each model simulated at the representative parameter
+vector, so that the identical statistical analysis runs on the empirical side.
 
 Everything is reproducible from two inputs: the OSF archive (`86cbw`) and the manuscript.
 No network access is needed once the two package managers below have fetched their
@@ -53,7 +56,8 @@ dependencies once.
 scripts/
   delaymodel/          the model package: sim.py, empirical.py, targets.py
   *.py                 flat, top-level entry-point scripts
-  results/             the citable outputs (JSON/JSONL, tracked) and logs/ (regenerable)
+  results/             the citable outputs (JSON, tracked), the sweep dumps and logs/
+                       (both regenerable, untracked), and leak/ (the C2.3 leak reruns)
   plots/               figures written by figures.py and figures_space.py
   pyproject.toml, .python-version, uv.lock, .venv/   Python, managed by uv
   R/                   every statistical test (afex/emmeans), managed by renv
@@ -100,7 +104,7 @@ Rscript -e 'renv::init()'            # once: creates renv/, renv.lock, .Rprofile
 Rscript -e 'renv::install(c("afex","emmeans","dplyr","tidyr","lme4","lmerTest"))'
 Rscript -e 'renv::snapshot()'        # records the installed versions in renv.lock
 export ARCHIVE="$HOME/thib/projects/delay/data/86cbw-osfstorage-archive"
-Rscript run_stats.R --with-sim
+Rscript run_stats.R
 ```
 
 On a machine that already has `renv.lock` (checked in after the first `renv::snapshot()`),
@@ -124,7 +128,7 @@ python delaymodel/targets.py      -> (printout)              empirical summaries
 
 # 1. the parameter-space evaluation  (~12 min over six shards; see fused_sweep.py below)
 SHARD_N=6 SHARD_I=$i \
-  python fused_sweep.py 600 4000 results/sweep_screened_sh$i.jsonl
+  python fused_sweep.py 1200 4000 results/sweep_screened_sh$i.jsonl
 cat results/sweep_screened_sh*.jsonl > results/sweep_screened.jsonl
 
 # 2. what it says, and how much of it is noise
@@ -143,32 +147,46 @@ python ramp_check.py 3 40000 results/sweep_screened.jsonl
                                   -> results/ramp_check.jsonl      the best candidates
                                                                    re-simulated at high NTR
 
+# 2b. leak robustness (reviewer C2.3): the same draws at a non-zero leak
+for G in 0.25 0.50 1.00; do tag=${G/./}
+  for i in 0 1 2 3; do
+    GAMMA=$G OUT=results/leak/leak_g${tag}_sh$i.jsonl SHARD_N=4 SHARD_I=$i \
+      python leak_sweep.py > results/logs/leak/g${tag}_sh$i.log 2>&1 &
+  done; wait
+  cat results/leak/leak_g${tag}_sh*.jsonl > results/leak/leak_g${tag}.jsonl
+done
+python leak_summary.py            -> results/leak_summary.json     the table quoted in the letter
+
 # 3. the analytic frontier, which needs no sampling at all
 python frontier.py                -> results/frontier.json         Model 1's ramp-rate frontier
-python theory_checks.py           -> (printout)                    verification of Appendix C
+python theory_checks.py           -> (printout)                    verification of the Appendix
 
-# 4. figures
+# 4. the CSV bridge, then the figures
+# order matters: export_for_R.py reads results/representative.json, and figures_space.py
+# reads pma_counts.csv
 python representative.py          -> results/representative.json   the point the illustrative
                                                                    figures are drawn at
+python export_for_R.py            -> pma_counts.csv                counts and exposures, empirical
+                                     sim_counts_mM.csv             the same from each model at the
+                                                                   representative vector (written at
+                                                                   scripts/ root: R's SIMDIR default,
+                                                                   "..", expects them there; nothing
+                                                                   in the pipeline reads them)
 python figures.py                 -> plots/fig_traj_m{1,2}.pdf     simulated dynamics
+                                     plots/fig_traj.pdf
                                      plots/fig_single.pdf
                                      plots/fig_rates.pdf
                                      plots/fig_shape.pdf
 python effect_panel.py            -> results/effect_panel.json     effect-size ranges vs observed
 python figures_space.py           -> plots/fig_effect_sizes.pdf    those ranges, as a panel
                                      plots/fig_frontier.pdf        the frontier with the draws
-                                     plots/fig_delay_profile.pdf   the delay rate curve
+                                     plots/fig_delay_profiles.pdf  the delay rate curve
 
 # 5. the statistics, in R
-python export_for_R.py            -> pma_counts.csv                counts and exposures, empirical
-                                     sim_counts_mM.csv             the same from each model at the
-                                                                   representative vector (written at
-                                                                   scripts/ root: R's SIMDIR default,
-                                                                   "..", expects them there)
-Rscript R/run_stats.R --with-sim  -> R/stats_tables.txt            all tables, data and simulation
+Rscript R/run_stats.R             -> R/stats_tables.txt            all tables (empirical)
                                      R/stats_results.csv           one row per effect
                                                                    (includes the behavioural
-                                                                   ANOVAs of Tables 1 and S1
+                                                                   ANOVAs of Table S1
                                                                    since 2026-09-01)
 Rscript R/emit_tex.R              -> _tables.tex                   the same, for the note
 ```
@@ -235,8 +253,8 @@ admissible parameter space (Methods, "Evaluation over the parameter space"; Resu
 Delay-locked). Nothing in the project is fitted, so this is where every effect-size
 statement comes from.
 
-Latin-hypercube sample over the ranges of Table A1; production runs use 600 draws at 4000
-trials per cell per model per draw (~6.5 s/draw, ~12 min over six shards). At every draw:
+Latin-hypercube sample over the ranges of Table 1; the production run uses 1200 draws at
+4000 trials per cell per model per draw (~6.5 s/draw, ~25 min over six shards). At every draw:
 the admissibility screen, the two RT-effect criteria (coherence, duration), the
 delay-period log-rate slope criterion (all six cells significantly positive) and the
 motor-execution-time invariance criterion. The same sampled vector is evaluated in both
@@ -250,7 +268,7 @@ recovering identical per-draw statistics.
 
 ```
 for i in 0 1 2 3 4 5; do
-  SHARD_N=6 SHARD_I=$i uv run python3 fused_sweep.py 600 4000 \
+  SHARD_N=6 SHARD_I=$i uv run python3 fused_sweep.py 1200 4000 \
     results/sweep_screened_sh$i.jsonl > results/logs/sweep_sh$i.log 2>&1 &
 done
 cat results/sweep_screened_sh*.jsonl > results/sweep_screened.jsonl
@@ -283,7 +301,7 @@ the weight and deserve to be visible:
     bound is load-bearing in the other direction: Model 1's ramp-rate frontier
     (`frontier.py`) is most favourable at the largest lam, so capping lam is what makes
     the frontier a bound rather than an artefact of where the range stops. It is stated in
-    the manuscript's Table A1 note as a modelling commitment for exactly that reason.
+    the manuscript's Table 1 note as a modelling commitment for exactly that reason.
 
 #### The EMG criterion in the screen
 
@@ -383,7 +401,7 @@ upcrossing rate that follows from them, keeping the V/Vdot covariance that non-s
 induces. Computed from the kernel rather than from the stationary limits because the
 process is not stationary over most of the sampled range of kappa: the relative departure
 one second into maintenance is of order exp(-2 kappa), below 1e-9 only above kappa ~ 11,
-whereas Table A1 samples down to 0.2. Small kappa is also the region most favourable to
+whereas Table 1 samples down to 0.2. Small kappa is also the region most favourable to
 Model 1, so it is exactly the region a bound must not approximate away.
 
 (Renamed from model1_bound.py on 2026-08-31 -- that file also carried a ceiling argument
@@ -473,6 +491,33 @@ s^-1. Two draws whose first-pass slopes looked positive (+0.18, +0.22) fell to +
 -0.03 on re-simulation, which is what the upward bias of a maximum looks like when it is
 checked. The sampled space and the analytic frontier agree by independent routes.
 
+### `leak_sweep.py` -- leak robustness (reviewer C2.3)
+
+Re-runs, at a non-zero leak on the decision variable, exactly the draws that were admissible
+in either model at zero leak. It imports `fused_sweep` and reuses its cube, `to_param`,
+`run_model` and `admissible`, so the parameter vectors are identical to the main evaluation
+and only `gamma` differs; `results/leak/adm_idx.json` is the list of those 222 draw indices,
+extracted from `results/sweep_screened.jsonl`. Resumable by line count of `OUT`;
+`SHARD_N`/`SHARD_I` split the draw list across cores. Records have the same shape as
+`sweep_screened.jsonl` minus the `raw` block. `leak_summary.py` reduces them to the table.
+
+Result, on the 164 draws admissible for Model 1 and the 148 for Model 2 at gamma = 0:
+
+| gamma | M1 still adm. | M2 still adm. | RT coherence | RT duration | M2 all six delay slopes > 0 | M1 all six > 0 |
+|-------|---------------|---------------|--------------|-------------|-----------------------------|----------------|
+| 0.00  | 164           | 148           | 139/148      | 138/148     | 76                          | 0              |
+| 0.25  | 158           | 146           | 139/148      | 141/148     | 80                          | 0              |
+| 0.50  | 151           | 143           | 139/148      | 140/148     | 77                          | 0              |
+| 1.00  | 144           | 131           | 141/148      | 141/148     | 75                          | 0              |
+
+Nothing directional moves, and Model 1 is excluded at every leak rate. What erodes is
+admissibility itself, and the draws that drop out are those with the smallest `k*c/theta`
+(median 5.4 against 7.9 for those that survive): a leak caps the accumulator at `k*c/gamma`,
+and once that asymptote approaches `theta` the threshold stops being reached. That ratio is
+the criterion for when a leak can matter at all; its smallest value at 50% coherence over
+the admissible draws is 1.5 s^-1, above the largest rate tested. The numbers are quoted in
+the response letter (C2.3), not in the manuscript.
+
 ### `effect_sizes.py` -- the citable summary, with its noise measured
 Stage 1 distils the sweep dump into the counts and distributions quoted in the manuscript.
 Stage 2 measures how much of the reported spread is simulation noise rather than parameter
@@ -550,7 +595,7 @@ with Model 2.
 `fig_effect_sizes.pdf` is the panel described under `effect_panel.py`.
 `fig_frontier.pdf` puts the two quantities that must be reproduced together on the two
 axes, draws the analytic frontier as the boundary of what Model 1 can do, and shows where
-the sampled draws and the observation fall. `fig_delay_profile.pdf` shows the delay-period
+the sampled draws and the observation fall. `fig_delay_profiles.pdf` shows the delay-period
 rate curve itself, observed against each architecture, restricted to draws whose mean rate
 brackets the observed one -- without that restriction the levels differ by two orders of
 magnitude and a bin-by-bin percentile envelope mixes profiles that are not comparable.
@@ -582,7 +627,7 @@ intervals, the rate profiles against data, and the data-only rate/slope relation
 Figure S3. Run `representative.py` first.
 
 ### `theory_checks.py`
-Verification of Appendix C (the Kac-Rice rate derivation; renumbered from Appendix A in
+Verification of the Appendix (the Kac-Rice rate derivation; renumbered from Appendix A in
 the 2026-08-27 appendix restructuring -- see Correspondence table) against direct
 integration at a 1024 Hz step (its own local `DT`, independent of `sim.py`'s -- keep the
 two in sync by hand): the Kac-Rice expression against a simulated count of upcrossings,
@@ -600,8 +645,10 @@ effect.
 ### `R/run_stats.R`
 Every test, on data and on simulation: the LEVEL / TREND / QUAD decomposition described
 below, written with `afex` (repeated-measures ANOVA, Greenhouse-Geisser) and `emmeans`
-(trend contrasts). Writes `stats_tables.txt` and `stats_results.csv`. `--with-sim` adds
-the simulated counts if `export_for_R.py` has run.
+(trend contrasts). Writes `stats_tables.txt` and `stats_results.csv`. It analyses the
+empirical counts only; the `--with-sim` flag and the analysis of simulated counts were
+removed on 2026-09-03, because a parameter vector is one hypothetical participant and the
+simulated design therefore has no between-participant factor.
 
 **This file replaces the two R scripts that used to live here** (`run_stats_pkg.R`, the
 afex/emmeans implementation, and the from-scratch base-R `rmanova.R` it was checked
@@ -679,7 +726,7 @@ reconciled with the value `run_stats.R` now uses -- a possible follow-up, not do
 | Section 9, evaluation over the parameter space | `fused_sweep.py`, `effect_sizes.py`, `ramp_check.py` |
 | Figures | `figures.py`, `figures_space.py` |
 | Appendices A, B, D, E (predictions, no closed form) | derived by hand, not separately checked numerically |
-| Appendix C, the rate and the frontier | `theory_checks.py`, `kernel_moments.py`, `frontier.py` |
+| The Appendix, the rate and the frontier | `theory_checks.py`, `kernel_moments.py`, `frontier.py` |
 
 ---
 
@@ -721,7 +768,7 @@ fixed, but safe to delete). Nothing else in the pipeline reads these two files: 
 simulation and sweep scripts (`sim.py`, `targets.py`, `fused_sweep.py`) extract everything directly from the raw segmented-event and
 behavioural files via `empirical.py`/`targets.py` and never touch the JASP exports, so this
 bug could not have reached the Monte-Carlo-sweep numbers -- only a
-fresh, un-cached run of the R trend-contrast reanalysis (Appendix B, Table 2/S2-S4) was at
+fresh, un-cached run of the R trend-contrast reanalysis (Tables S1-S4) was at
 risk, and those were not rerun against the stale path this session either (only read from
 already-generated tables). Regenerate `stats_tables.txt`/`stats_results.csv`/`_tables.tex`
 if you want a fresh, from-scratch confirmation now that the path is fixed.

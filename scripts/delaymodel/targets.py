@@ -1,5 +1,5 @@
 """
-targets.py -- the empirical quantities the model is calibrated to.
+targets.py -- the empirical quantities the models are screened and compared against.
 
 Everything is read from the OSF archive.  Partial-activation counts are taken exactly
 as published: myonset applies the 25 ms merge when it defines the activity windows, so

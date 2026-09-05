@@ -24,9 +24,11 @@ where a few per cent of trials have already produced their burst; it is handled
 by counting, for each bin, the trials whose burst had not yet begun.
 
 The simulated file carries one participant: a parameter vector is one hypothetical
-participant, and the model has no between-participant variability.  The file is
-therefore the model's per-cell, per-bin counts and exposures, and supports the
-descriptive comparisons the figures draw, not a repeated-measures analysis.
+participant, and the model has no between-participant variability, so it supports no
+repeated-measures analysis.  Nothing in the pipeline reads it: run_stats.R analyses the
+empirical counts only, and what the models predict is reported as effect-size ranges over
+the parameter space (effect_sizes.py).  It is written for the deposited archive, as the
+model-side counterpart of pma_counts.csv.
 """
 import numpy as np, json, sys, csv, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

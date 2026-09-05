@@ -7,7 +7,7 @@ than from a single simulated trial.
                          quantities that have to be reproduced together are on the two
                          axes, the analytic frontier is the boundary of what Model 1 can
                          do, and the observation sits far outside it.
-  fig_delay_profile.pdf  The delay-period rate curve itself, observed against what each
+  fig_delay_profiles.pdf The delay-period rate curve itself, observed against what each
                          architecture produces over its admissible space.
 
 Inputs: results/sweep_screened.jsonl, results/frontier.json, results/ramp_check.jsonl,

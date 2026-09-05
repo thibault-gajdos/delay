@@ -12,7 +12,7 @@ Appendix A, the observable: the ratio of merged clusters to raw upcrossings unde
 25 ms rule, which is the factor any comparison between the formula and a measured rate
 must carry.
 
-Appendix B is verified by frontier.py, which bounds the log-rate slope Model 1 can
+Corollary A.3 is verified by frontier.py, which bounds the log-rate slope Model 1 can
 produce as a function of the rate it reaches, without any stationary approximation.
 
 The residual condition dependence of motor execution time, from the filter transient

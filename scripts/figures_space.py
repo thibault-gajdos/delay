@@ -149,10 +149,11 @@ def fig_delay_profiles(fname='plots/fig_delay_profiles.pdf'):
 
 # ---------------------------------------------------- 3. the effect-size panel
 def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
-    """What each architecture can produce, on the effects that carry an argument, against
+    """What each model can produce, on the effects that carry an argument, against
     the observation. Bars span the 5th-95th percentile over admissible draws, the tick is
     the median; the vertical line is the observed value with its 95% CI shaded. A bar that
-    does not reach the line is a quantitative failure of that architecture on that effect."""
+    does not reach the line is a quantitative failure of that model on that effect.
+    Panels are lettered A-I in the order of effect_panel.NAMES."""
     P = json.load(open('results/effect_panel.json'))
     keys = list(P['names'])
     ncol = 3
@@ -175,6 +176,9 @@ def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
         a.set_yticks([0, 1]); a.set_yticklabels([])
         a.set_ylim(-0.6, 1.6)
         a.set_title(P['names'][k], fontsize=7.0, pad=4)
+        # panel letter, in the order of NAMES (effect_panel.py); the Results cite these
+        a.text(-0.30, 1.22, chr(65 + list(keys).index(k)), transform=a.transAxes,
+               fontsize=9.5, fontweight='bold', va='top', ha='left')
         a.tick_params(axis='x', labelsize=6.5)
         # the DIRECTION, printed per model as two percentages: the share of admissible
         # sets whose effect is, at two Monte-Carlo standard errors, significantly of the

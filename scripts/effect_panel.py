@@ -88,16 +88,19 @@ def effects(acc, rt, srate, rate, pmet, met, prem, slope):
     }
 
 
+# Panel order fixes the panel letters A-I that the figure draws and the Results cite.
+# The old "A.2 / B.1 / C.3 ..." prefixes named statements in the five-appendix scheme that
+# was collapsed into a single appendix on 2026-08-27; they were stale and are gone.
 NAMES = dict(
-    acc_int='A.2  duration benefit on accuracy,\nat 12% minus at 0% and 50%',
-    rt_dur='A.3  RT, short minus long (ms)',
-    rt_int='A.4  coherence effect on RT,\nshort minus long (ms)',
-    stim_coh='B.1  stimulus-period rate,\n50% minus 0% coherence (/s)',
-    stim_dur='B.2  stimulus-period rate,\nshort minus long (/s)',
-    pmet_dur='D.2  PMET, short minus long (ms)',
-    met_dur='D.2  MET, short minus long (ms)',
-    delay_int='C.3  coherence effect on the delay rate,\nlong minus short (/s)',
-    slope='C.2  delay-period log-rate slope (/s)')
+    acc_int='duration benefit on accuracy,\nat 12% minus at 0% and 50%',
+    rt_dur='RT, short minus long (ms)',
+    rt_int='coherence effect on RT,\nshort minus long (ms)',
+    stim_coh='stimulus-period rate,\n50% minus 0% coherence (/s)',
+    stim_dur='stimulus-period rate,\nshort minus long (/s)',
+    pmet_dur='PMET, short minus long (ms)',
+    met_dur='MET, short minus long (ms)',
+    delay_int='coherence effect on the delay rate,\nlong minus short (/s)',
+    slope='delay-period log-rate slope (/s)')
 
 NTR = 4000.0
 

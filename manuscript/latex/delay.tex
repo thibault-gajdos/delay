@@ -314,6 +314,17 @@ dy\left(t\right)=\lambda \left[m+\varepsilon \left(t\right)-y(t)\right]dt.
 
 \new{The Ornstein--}\new{Uhlenbeck} \old{process provides a parsimonious description of temporally correlated fluctuations around the maintained state, with a finite stationary variance. Because deviations are driven back toward zero, stochastic perturbations do not accumulate indefinitely over the delay, as they wo}\old{uld under a pure Wiener process}\new{.} \new{Consequently}\new{,} \new{\emph{y(t)}}  \old{remains centered on} \new{\emph{m}} \old{in expectation while} \old{exhibiting temporally structured variability within individual trials.}
 
+\new{The fluctuation of the motor-preparatory signal about the level it maintains is used throughout the Results, so we name it here. For} \new{$t\ge \tau $} \new{write}
+
+{\color{addcol}
+\begin{equation}
+y\left(t\right)=m+H\left(t\right), H\left(\tau \right)=0.
+\label{eq:Hdef}
+\end{equation}
+}
+
+\new{By Equations~\eqref{eq:epsilon} and~\eqref{eq:y_delay},} \new{$H$} \new{is the output of a first-order filter of gain} \new{$\lambda$} \new{driven by the Ornstein--Uhlenbeck process} \new{$\varepsilon$}\new{, and a partial activation on the selected channel is an upcrossing, by} \new{$H$}\new{, of the distance from the maintained level to the gate.}
+
 \old{\emph{Temporal preparation.}}  \old{The two candidate models differed in whether the motor-preparatory signal reaching the downstream gate included an additional contrib}\old{ution from temporal preparation}\old{. Model 1 included no such contribution. Model 2 assumed that motor preparation could additionally increase as the expected opportunity to act approached. This assumption was motivated by evidence that learned temporal regularities} \old{can shape anticipatory motor preparation} \old{\parencites{heidemanTemporalAlignmentAnticipatory2018}{liBetaOscillationsInternal2026}{ramayyaHumanResponseTimes2025}}\new{.} \old{In the present task, RS onset occurred 3 s after motion-stimulus offset irrespective of stimulus duration, defining a fixed temporal interval between these two events.} \old{We therefore anchored temporal}  \old{preparation to stimulus offset}\new{.} \new{We} \new{defined}  \new{\emph{t}}\new{\textsubscript{offset}}\new{,} \old{the time at which stimulus offset became} \old{internally available as a} \old{temporal reference}\new{,}  \new{as}\new{:}
 
 {\color{addcol}
@@ -350,9 +361,10 @@ dq\left(t\right)={\mu }_{\mathrm{RS}}dt+{\sigma }_{q}d{W}_{q}\left(t\right), q\l
 \new{The variable} \new{\emph{q(t)}} \old{had no independent boundary. Its accumulated value was continuously transmitted along the selected motor direction and added to the input of the motor-preparation filter:}
 
 {\color{addcol}
-\begin{equation*}
+\begin{equation}
 dy\left(t\right)=\lambda \left[y\left({t}_{\mathrm{RS}}\right)+{s}_{resp}q(t)-y(t)\right]dt, t\ge {t}_{\mathrm{RS}}.
-\end{equation*}
+\label{eq:y_RS}
+\end{equation}
 }
 
 \new{The term} \new{\emph{s}}\new{\textsubscript{resp}}  \new{\emph{q(t)}} \old{therefore provided an increasing response-directed drive as} \new{RS} \new{evi}\new{dence} \old{accumulated. In Model 2, the temporal-preparation contribution remained separate from this filtered input, consistent with its trea}\old{tment during the delay. F}\new{rom} \new{\emph{t}}\new{\textsubscript{RS}} \new{onward,}  \new{the gate-facing signal was instead given by:}
@@ -449,7 +461,7 @@ Figure~\ref{fig:pmaeeg}C shows the LRP for each condition and period. Although t
 
 \subsubsection{\new{Theoretical predictions}}
 
-\new{During the delay, a partial activation on the responding side is an upcrossing of the internal gate} \new{$g$} \new{by} \new{$H$}\new{, the fluctuation of the motor-preparatory signal about the maintained level $m$: by Equations~\eqref{eq:epsilon} and~\eqref{eq:y_delay}, $H$ is the output of the first-order filter of gain $\lambda$ driven by the Ornstein--Uhlenbeck process of mean-reversion rate $\kappa$. The Appendix derives the resulting instantaneous rate in closed form from the Kac--Rice formula for the expected upcrossing rate of a differentiable Gaussian process, Equation \eqref{eq:nu2}, which does not assume stationarity. Where the fluctuation has reached stationarity that expression simplifies: writing} \new{$a\left(t\right)$} \new{for the distance from the maintained level to the gate in units of the fluctuation's standard deviation,}  \new{and} \new{$\omega =\sqrt{\lambda \kappa }$} \new{for the fluctuation's characteristic frequency, the rate is Equation \eqref{eq:nu_asymp}:}
+\new{During the delay, a partial activation on the responding side is an upcrossing, by the fluctuation $H$ of Equation~\eqref{eq:Hdef}, of the distance from the maintained level to the gate. The Appendix derives the resulting instantaneous rate in closed form from the Kac--Rice formula for the expected upcrossing rate of a differentiable Gaussian process, Equation \eqref{eq:nu2}, which does not assume stationarity. Where the fluctuation has reached stationarity that expression simplifies: writing} \new{$a\left(t\right)$} \new{for the distance from the maintained level to the gate in units of the fluctuation's standard deviation,}  \new{and} \new{$\omega =\sqrt{\lambda \kappa }$} \new{for the fluctuation's characteristic frequency, the rate is Equation \eqref{eq:nu_asymp}:}
 
 {\color{addcol}
 \begin{equation}
@@ -670,7 +682,7 @@ In conclusion, delayed decision reports are not generated by storing an abstract
 \old{\emph{c}} & \old{Motion} \old{coherence} & \old{0, 0.12, or 0.50} \\
 \old{\emph{k}} & \old{Scaling of motion coherence into the mean rate of motion-evidence accumulation} & \new{0.5--2.0 (log-uniform); \textcite{dendauwGatedCascadeDiffusion2024} estimate 1.183} \\
 \old{\emph{$\sigma$}}\old{\textsubscript{x}} & \old{Diffusion coefficient of motion-}\old{evidence} \old{accumulation} & \old{0.100} \\
-\old{\emph{y(t)}} & \old{Filtered}  \old{motor-preparatory} \old{state} & \old{See}  \old{Eqs}\old{. \eqref{eq:y}, \eqref{eq:y_delay}, and (9}\old{)} \\
+\old{\emph{y(t)}} & \old{Filtered}  \old{motor-preparatory} \old{state} & \old{See}  \old{Eqs}\old{. \eqref{eq:y}, \eqref{eq:y_delay}, and} \new{\eqref{eq:y_RS}} \\
 \old{\emph{$\lambda$}} & \old{Gain of the low-pass filter relating decision-related input to motor preparation} & \new{10--50 s\textsuperscript{-1} (log-uniform); \textcite{dendauwGatedCascadeDiffusion2024} estimate 21.471} \\
 \old{z}\old{\emph{\textsubscript{L}}}\old{(}\old{\emph{t}}\old{),} \old{z}\old{\emph{\textsubscript{R}}}\old{(}\old{\emph{t}}\old{)} & \old{Neural drives to the left and right response agonists} & \old{See} \old{Eq. \eqref{eq:z}} \\
 \old{\emph{g}} & \old{Level} \old{of} \old{gating} \old{inhibition} & \new{0.050--0.200} \\
@@ -682,6 +694,7 @@ In conclusion, delayed decision reports are not generated by storing an abstract
 \old{\emph{m}} & \old{Maintenance} \old{target} & \old{See} \old{Eq. \eqref{eq:m}} \\
 \old{\emph{s}}\old{\textsubscript{r}\textsubscript{e}\textsubscript{s}\textsubscript{p}} & \old{Selected}  \old{response} \old{direction} & \old{$-$1:} \old{left}\old{; +1: right} \\
 \old{\emph{$\varepsilon$(t)}} & \old{Stochastic fluctuations around the maintenance target} & \old{See} \old{Eq. \eqref{eq:epsilon}} \\
+\new{\emph{H(t)}} & \new{Fluctuation of the motor-preparatory signal about the maintained level} & \new{See Eq. \eqref{eq:Hdef}} \\
 \new{\emph{$\kappa$}} & \old{Mean-reversion rate of maintenance fluctuations} & \new{0.20--30.0 s\textsuperscript{-1} (log-uniform)} \\
 \old{\emph{$\sigma$}}\old{\textsubscript{$\varepsilon$}} & \old{Diffusion coefficient of maintenance fluctuations} & \new{=} \new{${\mathrm{SD}}_{\varepsilon }\sqrt{2\kappa }$}\new{, with} \new{${\mathrm{SD}}_{\varepsilon }$} \new{0.003--0.060 (log-uniform)} \\
 \old{\emph{t}}\old{\textsubscript{offset}} & \old{Time at which stimulus offset becomes internally available as a temporal reference} & \old{\emph{D}} \old{+} \old{\emph{L}}\old{\textsubscript{motion}} \\

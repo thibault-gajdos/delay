@@ -160,31 +160,49 @@ $e^{-\xi\rho}\le e^{-\min(A,B)\rho}$.
 \end{proof}
 
 \begin{proposition}[transient bounds]\label{prop:bounds}
-Set $\mu:=\lambda+\min(\lambda,\kappa)$, so $\lambda\le\mu\le\lambda+\kappa$, and
+Set $\mu:=\lambda+\min(\lambda,\kappa)$, $E_1:=e^{-(\lambda+\kappa)\rho}$,
+$E_2:=e^{-2\lambda\rho}$, and
 \begin{equation}
-\bar\Delta(\rho):=\bigl(1+(\lambda+\kappa)\rho\bigr)e^{-\mu\rho},\qquad
-\bar\gamma(\rho):=\lambda(\lambda+\kappa)\rho\,e^{-\mu\rho}.
+\mathcal{D}(\rho):=\min\left\{\rho\,e^{-\mu\rho},\ \frac{E_1+E_2}{|\lambda-\kappa|}\right\}
+\qquad(\text{first entry only, when }\lambda=\kappa).
+\label{eq:Dcal}
+\end{equation}
+Then, for all $\lambda,\kappa,\rho>0$,
+\begin{equation}
+\bar\Delta:=(\lambda+\kappa)\mathcal{D}+E_1,\qquad
+\bar\gamma:=\lambda(\lambda+\kappa)\mathcal{D},\qquad
+\bar e:=\min\left\{\frac{\lambda}{\kappa}\bar\Delta,\
+\frac{\lambda\bigl[(\lambda+\kappa)E_2+2\kappa E_1\bigr]}{\kappa|\lambda-\kappa|}\right\}
 \label{eq:Dbar}
 \end{equation}
-Then for every $\rho>0$ and all $\lambda,\kappa>0$: $0\le-X(\rho)\le(\lambda+\kappa)\rho e^{-\mu\rho}$, and hence
+bound the three deviations:
 \begin{equation}
 \left|\frac{\sigma_H^2}{\Ain}-1\right|\le\bar\Delta,\qquad
 0\le\frac{c_H}{\Ain}\le\bar\gamma,\qquad
-\left|\frac{\sigma_{\dot H}^2}{\Bin}-1\right|\le\frac{\lambda}{\kappa}\bar\Delta .
+\left|\frac{\sigma_{\dot H}^2}{\Bin}-1\right|\le\bar e .
 \label{eq:threebounds}
 \end{equation}
-Moreover $\bar\Delta$ and $\bar\gamma$ are decreasing on $\rho\ge1$ whenever $\lambda\ge1$.
+All three are decreasing on $\rho\ge1$ when $\lambda\ge1$.
 \end{proposition}
 \begin{proof}
-Lemma~\ref{lem:mvt} with $A=2\lambda$, $B=\lambda+\kappa$ gives
-$|A-B|=|\lambda-\kappa|$ and $\min(A,B)=\mu$, so
-$|X|\le(\lambda+\kappa)\rho e^{-\mu\rho}$. The sign: if $\lambda>\kappa$ the numerator
-of \eqref{eq:Xdef} is negative and the denominator positive; if $\lambda<\kappa$ both
-change sign; so $X\le0$. The three bounds follow from \eqref{eq:moments} and
-$e^{-(\lambda+\kappa)\rho}\le e^{-\mu\rho}$. For monotonicity,
-$\frac{\dd}{\dd\rho}\bigl[(1+c\rho)e^{-\mu\rho}\bigr]=e^{-\mu\rho}(c-\mu-\mu c\rho)$
-with $c=\lambda+\kappa\ge\mu$; this is negative for $\rho>(c-\mu)/(\mu c)$, and
-$(c-\mu)/(\mu c)\le1/(2\lambda)\le1/2$ when $\lambda\ge1$. Same for $\bar\gamma$.
+Everything reduces to bounding $|E_1-E_2|/|\lambda-\kappa|$, since by
+Proposition~\ref{prop:moments} $X=(\lambda+\kappa)(E_2-E_1)/(\lambda-\kappa)$,
+$\sigma_H^2/\Ain-1=X-E_1$, $c_H/\Ain=-\lambda X$, and
+$\sigma_{\dot H}^2/\Bin-1=(\lambda/\kappa)\bigl[(\lambda+\kappa)E_2-2\kappa E_1\bigr]/(\lambda-\kappa)$,
+this last by adding and subtracting $(\lambda+\kappa)E_1$ in the numerator.
+Two bounds are available and we take the smaller. \emph{(a)} By
+Lemma~\ref{lem:mvt} with $A=2\lambda$, $B=\lambda+\kappa$ --- so $|A-B|=|\lambda-\kappa|$
+and $\min(A,B)=\mu$ --- $|E_1-E_2|/|\lambda-\kappa|\le\rho e^{-\mu\rho}$.
+\emph{(b)} Trivially $|E_1-E_2|\le E_1+E_2$. Bound (a) is the sharp one when
+$\lambda\approx\kappa$, where (b) is singular; (b) is the sharp one when the two
+rates are far apart, where (a)'s worst-case exponent $\mu$ is pessimistic. The sign
+$X\le0$ follows by inspection of \eqref{eq:Xdef}, giving $c_H\ge0$. For the third
+bound, the first entry of $\bar e$ comes from the $X$ form and the second from
+bounding the two exponentials separately. Monotonicity: for the first entry,
+$\frac{\dd}{\dd\rho}(1+c\rho)e^{-\mu\rho}=e^{-\mu\rho}(c-\mu-\mu c\rho)$ with
+$c=\lambda+\kappa\ge\mu$, negative for $\rho>(c-\mu)/(\mu c)$, and
+$(c-\mu)/(\mu c)\le1/(2\lambda)\le1/2$ when $\lambda\ge1$; the second entry is a sum
+of decaying exponentials.
 \end{proof}
 
 \begin{corollary}[relaxation is at least as fast as $\lambda$]\label{cor:rate}
@@ -220,11 +238,11 @@ i.e.\ with $\sigma_H^2=\Ain$, $\sigma_{\dot H}^2=\Bin$, $c_H=0$. This section bo
 the error committed by using $\nustat$ in place of $\nu$.
 
 \begin{theorem}[the cost of using the stationary rate]\label{thm:point}
-Fix $\rho\ge\rho_0\ge1$ and write $\bar\Delta:=\bar\Delta(\rho_0)$,
-$\bar\gamma:=\bar\gamma(\rho_0)$ of \eqref{eq:Dbar},
-$u_s:=\beta/(\delta\sqrt{\Bin})$, and
+Fix $\rho\ge\rho_0\ge1$, evaluate $\bar\Delta,\bar\gamma,\bar e$ of \eqref{eq:Dbar}
+at $\rho_0$, and write $u_s:=\beta/(\delta\sqrt{\Bin})$,
+$c_g:=\Phi(0)/g(0)=1.2533$, and
 \begin{equation}
-\eta:=\frac{\lambda}{\kappa}\bar\Delta+\frac{\bar\gamma^{2}}{\omega^{2}(1-\bar\Delta)} .
+\eta:=\bar e+\frac{\bar\gamma^{2}}{\omega^{2}(1-\bar\Delta)} .
 \label{eq:eta}
 \end{equation}
 Assume $\lambda\ge1$, $\bar\Delta<1$ and $\eta<1$. Then, for both models,
@@ -233,7 +251,7 @@ Assume $\lambda\ge1$, $\bar\Delta<1$ and $\eta<1$. Then, for both models,
 \bigl|\ln\nu(\rho)-\ln\nustat(\rho)\bigr|\ \le\ \mathcal{E}:=
 \frac{(a_\infty^{2}+1)\bar\Delta}{2(1-\bar\Delta)}
 +\frac{\eta}{2(1-\eta)}
-+\sqrt{2\pi}\left[\frac{\bar\gamma\,a_\infty}{\omega(1-\bar\Delta)\sqrt{1-\eta}}
++c_g\left[\frac{\bar\gamma\,a_\infty}{\omega(1-\bar\Delta)\sqrt{1-\eta}}
 +u_s\!\left(\frac{1}{\sqrt{1-\eta}}-1\right)\right].
 \ \ }
 \label{eq:point}
@@ -244,7 +262,7 @@ Assume $\lambda\ge1$, $\bar\Delta<1$ and $\eta<1$. Then, for both models,
 Write $\Delta:=\sigma_H^2/\Ain-1$, $\gamma:=c_H/\Ain$,
 $E:=\sigma_{\dot H}^2/\Bin-1$, so that by Proposition~\ref{prop:bounds} and its
 monotonicity clause $|\Delta|\le\bar\Delta$, $0\le\gamma\le\bar\gamma$,
-$|E|\le(\lambda/\kappa)\bar\Delta$ for all $\rho\ge\rho_0$. From the Kac--Rice
+$|E|\le\bar e$ for all $\rho\ge\rho_0$. From the Kac--Rice
 formula \eqref{eq:nu} below,
 \[
 \ln\nu-\ln\nustat=-\tfrac12\bigl(a^{2}-a_\infty^{2}\bigr)
@@ -268,11 +286,12 @@ $S\ge\Bin(1-\eta)>0$ and
 $\tfrac12\bigl|\ln(S/\Bin)\bigr|\le\eta/\bigl(2(1-\eta)\bigr)$.
 
 \emph{(3b)} $M=\beta/\delta+\gamma d/(1+\Delta)\ge\beta/\delta\ge0$, so $u=M/\sqrt S\ge0$;
-also $u_s\ge0$. On $[0,\infty)$, $g$ is increasing with $g\ge g(0)=1/\sqrt{2\pi}$ and
-$g'=\Phi\le1$, so for $u,u_s\ge0$
+also $u_s\ge0$. $(\ln g)'=\Phi/g$ and $(\ln g)''=(\varphi g-\Phi^{2})/g^{2}=-D/g^{2}<0$, where
+$D:=\Phi^{2}-\varphi g$ satisfies $D'=\varphi(\Phi+ug)>0$ and $D(-\infty)=0$, so
+$D>0$: $g$ is log-concave and $\Phi/g$ is decreasing. Hence on $[0,\infty)$,
+$\sup(\ln g)'=\Phi(0)/g(0)=c_g$, and for $u,u_s\ge0$
 \[
-\bigl|\ln g(u)-\ln g(u_s)\bigr|\le\frac{|u-u_s|}{\min_{[u\wedge u_s,\,u\vee u_s]}g}
-\le\sqrt{2\pi}\,|u-u_s| .
+\bigl|\ln g(u)-\ln g(u_s)\bigr|\le c_g\,|u-u_s| .
 \]
 Split $u-u_s=\dfrac{M-\beta/\delta}{\sqrt S}+\dfrac{\beta}{\delta}\Bigl(\dfrac{1}{\sqrt S}-\dfrac{1}{\sqrt{\Bin}}\Bigr)$.
 For the first, $M-\beta/\delta=\gamma d/(1+\Delta)\le\bar\gamma a_\infty\sqrt{\Ain}/(1-\bar\Delta)$
@@ -308,49 +327,54 @@ negligible'' is an assertion, not a theorem.
 
 \subsection{The conditions, and what justifies each}\label{sec:conds}
 
-Theorem~\ref{thm:point} needs exactly three things.
+Theorem~\ref{thm:point} needs exactly three things, and each can be argued without
+reference to the measured rate.
 
 \begin{description}
-\item[(C1) $\lambda$ bounded below.] $1/\lambda$ is the time constant of the low-pass
-filter carrying motor preparation to the gate. External evidence:
-Dendauw et al.\ estimate $\lambda\approx20\,\mathrm{s}^{-1}$ in an immediate-report
-task, and the present sweep halves it to $\lambda\ge10$. It is in principle
-identifiable from these data, since $\lambda$ sets how fast the rate follows the
-stimulus: a filter with $1/\lambda>0.7$~s would smear the stimulus-period coherence
-effect, which is observed sharply. \emph{That check has not been carried out and
-would convert (C1) from a prior into a measurement.}
-\item[(C2) $\kappa$ bounded below.] See Remark~\ref{rem:kappa}: $1/\kappa$ is the
-correlation time of the maintenance noise, and a value of minutes describes a session
-drift rather than a within-trial fluctuation. $\kappa\ge0.05\,\mathrm{s}^{-1}$ is a
-statement about what the term means. (C1) and (C2) are substitutes: raising $\lambda$
-by $2$ buys roughly the same as raising the $\kappa$ floor by a factor of $4$, so only
-one of the two needs to be argued hard.
-\item[(C3) $a_\infty$ bounded above.] This is \emph{measured}, not assumed --- see
-Section~\ref{sec:afromnu}: the observed rate determines $a$ through Model~1's own
-stationary formula, giving $a\le3.3$, and the slope and curvature give $a=3.05$
-independently.
+\item[(C1) $\lambda\ge5$--$6\,\mathrm{s}^{-1}$, i.e.\ $1/\lambda\le170$--$200$~ms.]
+$1/\lambda$ is the time constant of the low-pass filter carrying motor preparation to
+the gate. Dendauw et al.\ estimate $\lambda\approx20\,\mathrm{s}^{-1}$ ($50$~ms) in an
+immediate-report task, so this is three to four times more permissive than the
+published value. It is in principle identifiable from these data, since $\lambda$
+sets how fast the rate follows the stimulus; that check has not been carried out.
+\item[(C2) $\kappa\ge0.2\,\mathrm{s}^{-1}$, i.e.\ $1/\kappa\le5$~s.]
+$1/\kappa$ is the correlation time of the maintenance noise:
+$\Cov(\varepsilon(t),\varepsilon(t+r))\propto e^{-\kappa|r|}$ at stationarity, so it
+is the lag at which the fluctuation has decorrelated to $1/e$. Requiring it to be at
+most one trial says that what is maintained fluctuates \emph{within} a trial; a
+longer correlation time describes a drift carried across trials, for which the model
+has no term and which the randomised design averages out rather than expresses as a
+delay-period ramp. (C1) and (C2) are substitutes: $\lambda\to\lambda+1$ buys about
+what $\kappa\to2\kappa$ buys, so only one needs to be argued hard.
+\item[(C3) $a_\infty\le5$.] Not fitted. By \eqref{eq:m1flat} the expected number of
+partial activations per $2$~s delay window is $2\nustat=(\omega/\pi)e^{-a^{2}/2}$;
+at the largest $\omega$ in play this is one per $19$ trials at $a=3.3$, one per $246$
+at $a=4$, and \emph{one per $22\,000$ at $a=5$}. So $a\le5$ says only that the model
+must produce partial activations at all --- the experiment comprises of order $10^{4}$
+trials --- not that it must reproduce the observed rate.
 \end{description}
 
-\noindent With $\rho_0=1$~s, $a_\infty\le3.3$ and $\beta/\delta\le0.3$, $\mathcal{E}$ is:
+\noindent With $\rho_0=1$~s, $a_\infty\le5$ and $\beta/\delta\le0.3$:
 \begin{center}
-\begin{tabular}{rccc}
+\begin{tabular}{rrccc}
 \toprule
-& $\kappa\ge0.05$ & $\kappa\ge0.22$ & $\kappa\ge1$\\
-$\lambda$ & ($1/\kappa\le20$ s) & ($\le4.5$ s) & ($\le1$ s)\\
+$\lambda$ & $1/\lambda$ & $\kappa\ge0.2$ & $\kappa\ge0.5$ & $\kappa\ge1$\\
 \midrule
-$8$  & $9.5\times10^{-1}$ & $2.0\times10^{-1}$ & $4.0\times10^{-2}$\\
-$10$ & $1.3\times10^{-1}$ & $3.6\times10^{-2}$ & $7.4\times10^{-3}$\\
-$12$ & $2.2\times10^{-2}$ & $6.4\times10^{-3}$ & $1.3\times10^{-3}$\\
-$15$ & $1.6\times10^{-3}$ & $4.5\times10^{-4}$ & $8.7\times10^{-5}$\\
-$20$ & $1.7\times10^{-5}$ & $4.8\times10^{-6}$ & $9.0\times10^{-7}$\\
+$4$  & $250$ ms & $9.6\times10^{-1}$ & $6.4\times10^{-1}$ & $4.1\times10^{-1}$\\
+$5$  & $200$ ms & $3.5\times10^{-1}$ & $2.3\times10^{-1}$ & $1.4\times10^{-1}$\\
+$6$  & $167$ ms & $1.3\times10^{-1}$ & $8.4\times10^{-2}$ & $5.0\times10^{-2}$\\
+$8$  & $125$ ms & $1.9\times10^{-2}$ & $1.2\times10^{-2}$ & $6.7\times10^{-3}$\\
+$10$ & $100$ ms & $2.8\times10^{-3}$ & $1.6\times10^{-3}$ & $9.1\times10^{-4}$\\
 \bottomrule
 \end{tabular}
 \end{center}
-At $\lambda=10$, $\kappa\ge0.22$: $\mathcal{E}=3.6\times10^{-2}$, so by
-\eqref{eq:transfer} the stationary formula misstates the slope by at most
-$0.054\,\mathrm{s}^{-1}$ and the curvature by at most $0.105\,\mathrm{s}^{-2}$.
-\emph{From here on we work with $\nustat$, and carry $1.504\,\mathcal{E}$ as the
-error bar on every slope.}
+\noindent Values of $\mathcal{E}$. By \eqref{eq:transfer} the stationary formula then
+misstates a slope by at most $1.504\,\mathcal{E}$ and a curvature by at most
+$2.916\,\mathcal{E}$. At $\lambda\ge6$, $\kappa\ge0.2$: $\mathcal{E}=0.133$, so the
+slope error is $\pm0.20\,\mathrm{s}^{-1}$ against an observed
+$+0.867\,\mathrm{s}^{-1}$; at $\lambda\ge5$ it is $\pm0.53$, and at $\lambda\ge8$,
+$\pm0.029$. \emph{From here on we work with $\nustat$ and carry
+$1.504\,\mathcal{E}$ as the error bar on every slope.}
 
 \section{The stationary rate}\label{sec:stat}
 
@@ -424,10 +448,16 @@ bound Model~1 is legitimate ---
 a=\sqrt{2\ln\!\left(\frac{\omega}{2\pi\nu}\right)} .
 \label{eq:afromnu}
 \end{equation}
-With the observed delay-period rates $0.030$--$0.135\,\mathrm{s}^{-1}$ and
-$(\lambda,\kappa)$ anywhere in the sampled range this gives $a\le3.3$, which is (C3).
-This is the rate--ramp trade-off in its sharpest form: the rate \emph{measures} the
-standardised distance.
+(C3) uses only the weak, data-free reading of this identity --- $a\le5$, on pain of
+the model producing fewer than one partial activation in twenty thousand trials.
+Two sharper readings are available if one is willing to use the measured rate, and
+neither is needed above. First, with the observed delay-period rates
+$0.030$--$0.135\,\mathrm{s}^{-1}$ and $(\lambda,\kappa)$ anywhere in the sampled
+range, \eqref{eq:afromnu} gives $a\le3.3$, which tightens every ceiling in
+Section~\ref{sec:conds} by about a third. Second, \eqref{eq:afromnu} is the
+rate--ramp trade-off in its sharpest form: the rate \emph{measures} the standardised
+distance, so the ramp Model~1 could produce and the rate it must produce are not
+free of one another.
 
 \section{Predictions}\label{sec:pred}
 
@@ -435,12 +465,10 @@ The delay-period observations are: \textbf{(L1)} the level rises with duration;
 \textbf{(L2)} the level rises with coherence; \textbf{(L3)} the coherence effect on
 the level is larger after the long stimulus; \textbf{(S1)} the log-rate slope is
 $+0.867\,\mathrm{s}^{-1}$; \textbf{(S2)} it is shallower after the long stimulus,
-$0.896\to0.723$; \textbf{(S3)} shallower at high coherence, $0.871\to0.726$;
-\textbf{(C1)} the quadratic coefficient is $c_2=-0.0405\,\mathrm{s}^{-2}$, not
-distinguishable from zero. Throughout, $\mathcal{E}$ is the error of
-Section~\ref{sec:conds} and the error bars are those of Corollary~\ref{cor:transfer};
-at $\lambda=10,\kappa\ge0.22$ they are $0.054\,\mathrm{s}^{-1}$ on a slope and
-$0.105\,\mathrm{s}^{-2}$ on a curvature.
+$0.896\to0.723$; \textbf{(S3)} shallower at high coherence, $0.871\to0.726$.
+Throughout, the error bars are those of Corollary~\ref{cor:transfer}; at
+$\lambda\ge6$, $\kappa\ge0.2$, $a_\infty\le5$ they are $\pm0.20\,\mathrm{s}^{-1}$
+on a slope.
 
 \begin{corollary}[L1, L2: the level]\label{cor:P1}
 \emph{From Proposition~\ref{prop:level}, plus the saturation argument of the main
@@ -461,66 +489,42 @@ data. Not discriminating; a genuine disagreement.
 \end{corollary}
 
 \begin{corollary}[S1: the slope]\label{cor:P2}
-\emph{From Proposition~\ref{prop:statrate} and Corollaries~\ref{cor:transfer}.}
+\emph{From Proposition~\ref{prop:statrate} and Corollary~\ref{cor:transfer}.}
 Model~1 predicts a slope of exactly $0$, hence a measured slope of at most
-$1.504\,\mathcal{E}=0.054\,\mathrm{s}^{-1}$ at $\lambda=10$, $\kappa\ge0.22$
-($0.19$ at $\kappa\ge0.05$). Model~2 predicts $\beta a/(\delta\sigma_H)>0$, its only
-source of a ramp. \emph{Discriminating: the observed $+0.867\,\mathrm{s}^{-1}$
-exceeds Model~1's ceiling by a factor of $4.6$ to $16$.}
+$1.504\,\mathcal{E}$: $0.20\,\mathrm{s}^{-1}$ at $\lambda\ge6$, $0.029$ at
+$\lambda\ge8$ (with $\kappa\ge0.2$, $a_\infty\le5$). Model~2 predicts
+$\beta a(\rho)/(\delta\sigma_H)>0$, its only source of a ramp.
+\emph{Discriminating: the observed $+0.867\,\mathrm{s}^{-1}$ exceeds Model~1's
+ceiling by a factor of $4.3$ at $\lambda\ge6$ and $30$ at $\lambda\ge8$.}
 \end{corollary}
 
 \begin{corollary}[S2, S3: the slope across conditions]\label{cor:P3}
 \emph{From Propositions~\ref{prop:statrate} and~\ref{prop:level},
 Corollaries~\ref{cor:transfer} and~\ref{cor:P1}.}
 Model~1 predicts a slope of zero in \emph{every} condition, hence a condition
-difference of at most $2\times1.504\,\mathcal{E}=0.108\,\mathrm{s}^{-1}$ at
-$\lambda=10,\kappa\ge0.22$. Model~2 predicts a difference of definite sign: the slope
-increases in $a$ while the level decreases in $a$, so any manipulation that raises the
-level lowers the slope; by Corollary~\ref{cor:P1} duration and coherence both raise the
-level. \emph{Discriminating: the observed differences $0.173$ and $0.145$ exceed
-Model~1's ceiling, and their sign is the one Model~2 requires.}
+difference of at most $2\times1.504\,\mathcal{E}$: $0.40\,\mathrm{s}^{-1}$ at
+$\lambda\ge6$, $0.058$ at $\lambda\ge8$. Model~2 predicts a difference of definite
+sign: the slope increases in $a$ while the level decreases in $a$, so any
+manipulation that raises the level lowers the slope, and by Corollary~\ref{cor:P1}
+duration and coherence both raise the level. \emph{The observed differences $0.173$
+and $0.145$ carry the sign Model~2 requires; they exceed Model~1's ceiling at
+$\lambda\ge8$ but not at $\lambda\ge6$, so this leg is the one that pays for a low
+$\lambda$.}
 \end{corollary}
 
-\begin{corollary}[C1: the curvature]\label{cor:P4}
-\emph{From Proposition~\ref{prop:statrate} and Corollary~\ref{cor:transfer}.}
-Model~1 predicts $c_2=0$, hence $|c_2|\le2.916\,\mathcal{E}=0.105\,\mathrm{s}^{-2}$.
-Model~2 predicts
-\begin{equation}
-c_2=-\tfrac12\left(\frac{\beta}{\delta\sigma_H}\right)^{2}
-=-\tfrac12\left(\frac{\text{slope}}{a}\right)^{2}\ \ge\ -0.034
-\label{eq:c2pred}
-\end{equation}
-at the observed slope with $a\le3.3$, constant in $\rho$ and identical in all six
-conditions. The observed $c_2=-0.0405\pm0.0416$ is consistent with both.
-\emph{Not discriminating at the present precision.} Under the cold start the curvature
-\emph{did} discriminate, through the decay that Model~1's variance filling forces;
-under \eqref{eq:warm} that role passes to S2 and S3, and the curvature becomes a
-quantitative check on Model~2.
-\end{corollary}
-
-\begin{corollary}[identification]\label{cor:P5}
-\emph{From Proposition~\ref{prop:statrate}(i) and \eqref{eq:nuasymp}; cross-checked
-against Section~\ref{sec:afromnu}.}
-Under Model~2 the three delay-period observables determine three model quantities with
-no free parameter:
-\begin{equation}
-\frac{\beta}{\delta\sigma_H}=\sqrt{-2c_2},\qquad
-a=\frac{\text{slope}}{\sqrt{-2c_2}},\qquad
-\omega\ \text{from the level via }\eqref{eq:nuasymp}.
-\label{eq:ident}
-\end{equation}
-With $\text{slope}=0.867$, $c_2=-0.0405$, $\nu=0.070$: $\beta/(\delta\sigma_H)=0.285\,\mathrm{s}^{-1}$,
-$a=3.05$ and $\omega=45\,\mathrm{s}^{-1}$. The value of $a$ agrees with the independent
-estimate $a\le3.3$ from the level alone, a genuine check since the two routes use
-different observables. The value of $\omega$ is a prediction: it requires
-$\lambda\kappa\approx2.0\times10^{3}$, above what the present sweep samples
-($\omega\le38$). Caveat: $c_2$ is not significantly different from zero, so
-\eqref{eq:ident} is a point estimate whose interval on $a$, hence on $\omega$, is
-unbounded above.
-\end{corollary}
+\begin{remark}[on the curvature]\label{rem:curv}
+Under the cold start the curvature of the log rate discriminated, through the decay
+that Model~1's variance filling forces. Under \eqref{eq:warm} there is no decay to
+force: both models predict a near-zero curvature (Model~1 exactly $0$, Model~2
+$-\frac12(\beta/\delta\sigma_H)^{2}$, which is $\ge-0.034$ at the observed slope with
+$a\le3.3$), and the observed $-0.0405\pm0.0416$ is consistent with both. The
+curvature therefore carries nothing here and is dropped from the list of tested
+observations; the discriminating role passes to S2 and S3.
+\end{remark}
 
 \section{Summary}
 
+At $\lambda\ge6$, $\kappa\ge0.2$, $a_\infty\le5$ (Section~\ref{sec:conds}):
 \begin{center}
 \begin{tabular}{llll}
 \toprule
@@ -528,12 +532,13 @@ unbounded above.
 \midrule
 L1, L2 level & rises & rises & shared\\
 L3 interaction & shrinks & shrinks & shared; both fail\\
-S1 slope & $0$ ($\le0.054$) & $\beta a/\delta\sigma_H>0$ & \textbf{discriminating}\\
-S2, S3 by condition & $0$ ($\le0.108$) & sign forced & \textbf{discriminating}\\
-C1 curvature & $0$ ($\le0.105$) & $-\tfrac12(\text{slope}/a)^{2}$ & not discriminating\\
+S1 slope & $0$ ($\le0.20$) & $\beta a/\delta\sigma_H>0$ & \textbf{discriminating}, $4.3\times$\\
+S2, S3 by condition & $0$ ($\le0.40$) & sign forced & sign only at this $\lambda$\\
 \bottomrule
 \end{tabular}
 \end{center}
+At $\lambda\ge8$ the two ceilings become $0.029$ and $0.058$, and S2--S3 discriminate
+by magnitude as well ($3.0\times$ and $2.5\times$).
 
 \section{Numerical verification}\label{sec:checks}
 
@@ -548,6 +553,7 @@ Prop.~\ref{prop:bounds} & $0\le-X\le(\lambda+\kappa)\rho e^{-\mu\rho}$ (50-digit
 Prop.~\ref{prop:bounds} & $|\sigma_H^2/\Ain-1|\le\bar\Delta$ & worst ratio $1.000000$\\
 Prop.~\ref{prop:bounds} & $c_H/\Ain\le\bar\gamma$ & worst ratio $1.000000$\\
 Prop.~\ref{prop:bounds} & $|\sigma_{\dot H}^2/\Bin-1|\le(\lambda/\kappa)\bar\Delta$ & worst ratio $0.997226$\\
+Prop.~\ref{prop:bounds} & tightened $\bar\Delta,\bar\gamma,\bar e$ (50-digit) & worst ratios $1.000000$ (all three)\\
 Thm~\ref{thm:point} & $|\ln\nu-\ln\nustat|\le\mathcal{E}$, $71\,079$ points & $0$ violations, worst ratio $0.612$\\
 Cor.~\ref{cor:transfer} & the two functional norms $1.504$, $2.916$ & computed exactly\\
 \bottomrule

@@ -34,3 +34,7 @@ scripts/R/renv/lock/
 scripts/R/renv/python/
 scripts/R/renv/sandbox/
 scripts/R/renv/staging/
+manuscript/notes/*.aux
+manuscript/notes/*.log
+manuscript/notes/*.out
+manuscript/notes/log.txt

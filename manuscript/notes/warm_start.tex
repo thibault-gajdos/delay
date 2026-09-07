@@ -1,0 +1,518 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.6cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,microtype}
+\usepackage{xcolor}
+\usepackage[colorlinks,linkcolor=blue!50!black,citecolor=blue!50!black]{hyperref}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}[proposition]{Theorem}
+\newtheorem{lemma}[proposition]{Lemma}
+\newtheorem{corollary}[proposition]{Corollary}
+\theoremstyle{remark}\newtheorem{remark}[proposition]{Remark}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Ain}{A_{\infty}}
+\title{The stationary-start maintenance model\\ and its exact delay-period predictions}
+\author{Working note}
+\date{\today}
+\begin{document}\maketitle
+
+\begin{abstract}
+\noindent
+This note proposes one change to the maintenance model --- initialising the
+Ornstein--Uhlenbeck maintenance noise at its stationary law rather than at zero ---
+and derives, in closed form and with complete proofs, what the two candidate models
+then predict for the delay-period rate of partial muscle activations. Under the
+current initialisation the maintenance fluctuation relaxes at rate $\kappa$, which
+can be as slow as $0.22\,\mathrm{s}^{-1}$, so the analysis window $[1,3]$~s lies
+inside the transient and every theoretical statement is either asymptotic or
+conditional. Under the stationary start the relaxation rate is at least $\lambda$,
+uniformly in $\kappa$, and the transient is over before the window opens. Every
+prediction the paper needs then follows from three propositions and two theorems,
+with no appeal to simulation. All statements have been verified numerically; the
+checks are listed in Section~\ref{sec:checks}.
+\end{abstract}
+
+\section{The change to the model}
+
+Everything before stimulus offset is unchanged. Maintenance begins at
+$\tau=t_{\mathrm{offset}}+L_{\mathrm{motion}}$, at which time the gate-facing signal
+$y$ equals the maintained target $m$. During maintenance,
+\begin{align}
+\dd\varepsilon(t)&=-\kappa\,\varepsilon(t)\,\dd t+\sigma_\varepsilon\,\dd W_\varepsilon(t),
+\label{eq:ou}\\
+\dd y(t)&=\lambda\,[\,m+\varepsilon(t)-y(t)\,]\,\dd t ,
+\label{eq:filt}
+\end{align}
+and $H:=y-m$ is the fluctuation of the signal about the level it maintains, so that
+\begin{equation}
+\dd H(t)=\lambda\,[\,\varepsilon(t)-H(t)\,]\,\dd t .
+\label{eq:H}
+\end{equation}
+
+\paragraph{Initial conditions.} $H(\tau)=0$ is \emph{forced}: the filter output is
+continuous and $m$ is defined as the value of $y$ at $\tau$. It is not a modelling
+choice and cannot be altered. By contrast $\varepsilon(\tau)$ is free. The present
+model sets $\varepsilon(\tau)=0$. We propose instead
+\begin{equation}
+\varepsilon(\tau)\sim\mathrm{N}\!\left(0,\ \sigma_\varepsilon^2/2\kappa\right),
+\qquad\text{independent of }W_\varepsilon,
+\label{eq:warm}
+\end{equation}
+the stationary law of \eqref{eq:ou}. We call \eqref{eq:warm} the \emph{stationary
+start} and $\varepsilon(\tau)=0$ the \emph{cold start}.
+
+\paragraph{Why.} $\varepsilon$ represents fluctuations intrinsic to holding a value.
+Nothing makes such a process sit exactly at its mean at the instant maintenance
+begins, and no measurement constrains it. The cold start is therefore an
+unconstrained assumption, and, as Section~\ref{sec:relax} shows, it is the sole
+source of a slow ($1/\kappa$) transient in a system whose only other timescale is
+the fast filter $1/\lambda$. Under the stationary start the model's delay-period
+predictions become exact rather than asymptotic; under the cold start they do not.
+
+\begin{remark}
+The stationary start removes the mechanism that gives Model~1 its only delay-period
+ramp. That is not a way of disarming Model~1: Section~\ref{sec:cold} keeps the cold
+start as a separate question and bounds what it can buy Model~1, showing that even
+its most favourable initialisation falls short of the data.
+\end{remark}
+
+\section{Exact second-order moments}
+
+Write $s^2:=\sigma_\varepsilon^2/2\kappa$, and let $\rho:=t-\tau$ be elapsed
+maintenance time. Set
+\begin{equation}
+\Ain:=\frac{\lambda s^2}{\lambda+\kappa},\qquad
+B_\infty:=\frac{\lambda^2\kappa\,s^2}{\lambda+\kappa}
+=\frac{\lambda^{2}\sigma_\varepsilon^{2}}{2(\lambda+\kappa)},\qquad
+\omega:=\sqrt{B_\infty/\Ain}=\sqrt{\lambda\kappa}.
+\label{eq:stat}
+\end{equation}
+
+\begin{proposition}[exact moments]\label{prop:moments}
+Under \eqref{eq:ou}--\eqref{eq:warm} with $H(\tau)=0$, put
+\begin{equation}
+X(\rho):=\frac{(\lambda+\kappa)\bigl(e^{-2\lambda\rho}-e^{-(\lambda+\kappa)\rho}\bigr)}{\lambda-\kappa}
+\qquad\bigl(\,=-2\lambda\rho\,e^{-2\lambda\rho}\ \text{ when }\lambda=\kappa\,\bigr).
+\label{eq:Xdef}
+\end{equation}
+Then for every $\rho>0$, with $\sigma_H^2:=\Var H$, $\sigma_{\dot H}^2:=\Var\dot H$,
+$c_H:=\Cov(H,\dot H)$,
+\begin{equation}
+\boxed{\ \
+\frac{\sigma_H^2(\rho)}{\Ain}=1+X(\rho)-e^{-(\lambda+\kappa)\rho},\qquad
+\frac{c_H(\rho)}{\Ain}=-\lambda X(\rho),\qquad
+\frac{\sigma_{\dot H}^2(\rho)}{B_\infty}=1+\frac{\lambda}{\kappa}\Bigl(X(\rho)+e^{-(\lambda+\kappa)\rho}\Bigr).
+\ \ }
+\label{eq:moments}
+\end{equation}
+In particular $\sigma_H^2(0)=0$, $c_H(0)=0$, $\sigma_{\dot H}^2(0)=\lambda^2 s^2$,
+and all three converge to \eqref{eq:stat} with $c_H(\infty)=0$.
+\end{proposition}
+
+\begin{proof}
+$(\varepsilon,H)$ is a two-dimensional linear diffusion with drift matrix and
+diffusion matrix
+\[
+F=\begin{pmatrix}-\kappa&0\\ \lambda&-\lambda\end{pmatrix},\qquad
+Q=\begin{pmatrix}\sigma_\varepsilon^2&0\\ 0&0\end{pmatrix},
+\]
+so its covariance $P(\rho)$ solves $\dot P=FP+PF^{\!\top}+Q$ with
+$P(0)=\mathrm{diag}(s^2,0)$. Writing $P=\bigl(\begin{smallmatrix}P_{\varepsilon\varepsilon}&P_{\varepsilon H}\\ P_{\varepsilon H}&P_{HH}\end{smallmatrix}\bigr)$ the system is triangular:
+\begin{align}
+\dot P_{\varepsilon\varepsilon}&=-2\kappa P_{\varepsilon\varepsilon}+\sigma_\varepsilon^2,
+&&P_{\varepsilon\varepsilon}(0)=s^2, \label{eq:l1}\\
+\dot P_{\varepsilon H}&=-(\kappa+\lambda)P_{\varepsilon H}+\lambda P_{\varepsilon\varepsilon},
+&&P_{\varepsilon H}(0)=0, \label{eq:l2}\\
+\dot P_{HH}&=2\lambda\bigl(P_{\varepsilon H}-P_{HH}\bigr), &&P_{HH}(0)=0. \label{eq:l3}
+\end{align}
+By \eqref{eq:l1}, $\dot P_{\varepsilon\varepsilon}(0)=-2\kappa s^2+\sigma_\varepsilon^2=0$, so
+$P_{\varepsilon\varepsilon}\equiv s^2$: \emph{the stationary start freezes the first
+component exactly}. Then \eqref{eq:l2} gives
+\[
+P_{\varepsilon H}(\rho)=\frac{\lambda s^2}{\lambda+\kappa}\Bigl(1-e^{-(\lambda+\kappa)\rho}\Bigr)
+=\Ain\Bigl(1-e^{-(\lambda+\kappa)\rho}\Bigr),
+\]
+and \eqref{eq:l3}, integrated with $P_{HH}(0)=0$, gives
+\[
+P_{HH}(\rho)=2\lambda\!\int_0^{\rho}\! e^{-2\lambda(\rho-v)}P_{\varepsilon H}(v)\,\dd v
+=\Ain\left[1-e^{-2\lambda\rho}
+-2\lambda\,\frac{e^{-(\lambda+\kappa)\rho}-e^{-2\lambda\rho}}{\lambda-\kappa}\right].
+\]
+Rearranging the bracket, and using
+$-2\lambda=-(\lambda+\kappa)-(\lambda-\kappa)$ in its numerator,
+\[
+P_{HH}/\Ain-1
+=\frac{(\lambda+\kappa)e^{-2\lambda\rho}-2\lambda e^{-(\lambda+\kappa)\rho}}{\lambda-\kappa}
+=X(\rho)-e^{-(\lambda+\kappa)\rho},
+\]
+which is the first identity. Next, $\dot H=\lambda(\varepsilon-H)$, so
+$c_H=\lambda(P_{\varepsilon H}-P_{HH})$ and
+$\sigma_{\dot H}^2=\lambda^2(P_{\varepsilon\varepsilon}-2P_{\varepsilon H}+P_{HH})$.
+Substituting,
+\[
+\frac{c_H}{\Ain}=\lambda\Bigl[\bigl(1-e^{-(\lambda+\kappa)\rho}\bigr)-\bigl(1+X-e^{-(\lambda+\kappa)\rho}\bigr)\Bigr]=-\lambda X,
+\]
+and, since $\lambda^2(s^2-\Ain)=B_\infty$,
+\[
+\frac{\sigma_{\dot H}^2}{B_\infty}
+=\frac{\lambda^{2}\bigl[(s^2-\Ain)+\Ain\bigl(2e^{-(\lambda+\kappa)\rho}+X-e^{-(\lambda+\kappa)\rho}\bigr)\bigr]}{B_\infty}
+=1+\frac{\lambda^{2}\Ain}{B_\infty}\bigl(X+e^{-(\lambda+\kappa)\rho}\bigr),
+\]
+and $\lambda^2\Ain/B_\infty=\lambda/\kappa$. The $\lambda=\kappa$ forms follow by
+l'H\^opital in $\kappa$. The stated values at $\rho=0$ and $\rho=\infty$ are read off
+$X(0)=0$, $X(\infty)=0$.
+\end{proof}
+
+\begin{remark}
+$\sigma_H$ rises from $0$; $\sigma_{\dot H}$ \emph{falls} from
+$\lambda^2s^2=\frac{\lambda+\kappa}{\kappa}B_\infty$, because
+$\dot H(\tau)=\lambda\varepsilon(\tau)$ has the noise at full amplitude while $H$ is
+still at zero. So under the stationary start the position variance fills in while
+the velocity variance settles down.
+\end{remark}
+
+\section{How fast the transient dies}\label{sec:relax}
+
+\begin{lemma}\label{lem:mvt}
+For $A,B>0$, $A\neq B$, and $\rho>0$,
+$\;\bigl|e^{-A\rho}-e^{-B\rho}\bigr|\le |A-B|\,\rho\,e^{-\min(A,B)\rho}$.
+\end{lemma}
+\begin{proof}
+Apply the mean value theorem to $x\mapsto e^{-x\rho}$ on the interval with endpoints
+$A$ and $B$: the difference equals $|A-B|\,\rho\,e^{-\xi\rho}$ for some $\xi$ between
+$A$ and $B$, and $e^{-\xi\rho}\le e^{-\min(A,B)\rho}$.
+\end{proof}
+
+\begin{proposition}[transient bounds]\label{prop:bounds}
+Set $\mu:=\lambda+\min(\lambda,\kappa)$, so that $\lambda\le\mu\le\lambda+\kappa$, and
+\begin{equation}
+\delta(\rho):=\bigl(1+(\lambda+\kappa)\rho\bigr)e^{-\mu\rho},
+\qquad
+\bar\gamma(\rho):=\lambda(\lambda+\kappa)\,\rho\,e^{-\mu\rho}.
+\label{eq:deltadef}
+\end{equation}
+Then for every $\rho>0$ and every $\lambda,\kappa>0$,
+\begin{equation}
+0\le -X(\rho)\le(\lambda+\kappa)\rho\,e^{-\mu\rho},
+\label{eq:Xbound}
+\end{equation}
+and consequently
+\begin{equation}
+\left|\frac{\sigma_H^2}{\Ain}-1\right|\le\delta(\rho),
+\qquad
+0\le\frac{c_H}{\Ain}\le\bar\gamma(\rho),
+\qquad
+\left|\frac{\sigma_{\dot H}^2}{B_\infty}-1\right|\le\frac{\lambda}{\kappa}\,\delta(\rho).
+\label{eq:threebounds}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Take $A=2\lambda$, $B=\lambda+\kappa$ in Lemma~\ref{lem:mvt}: $|A-B|=|\lambda-\kappa|$ and
+$\min(A,B)=\mu$, so $|X|\le(\lambda+\kappa)\rho\,e^{-\mu\rho}$. The sign is fixed by
+inspection of \eqref{eq:Xdef}: if $\lambda>\kappa$ then $2\lambda>\lambda+\kappa$, the
+numerator is negative and the denominator positive; if $\lambda<\kappa$ both change
+sign; hence $X\le 0$ always, giving \eqref{eq:Xbound}. The three bounds in
+\eqref{eq:threebounds} follow from \eqref{eq:moments}, \eqref{eq:Xbound}, and
+$e^{-(\lambda+\kappa)\rho}\le e^{-\mu\rho}$.
+\end{proof}
+
+\begin{corollary}[relaxation is at least as fast as $\lambda$]\label{cor:rate}
+All three moments converge to \eqref{eq:stat} at rate $\mu\ge\lambda$, uniformly in
+$\kappa$. In particular the $e^{-2\kappa\rho}$ mode --- present in the Lyapunov
+spectrum $\{-2\kappa,-(\lambda+\kappa),-2\lambda\}$, and the slow mode of the cold
+start --- has zero coefficient here, because $P_{\varepsilon\varepsilon}$ is constant.
+\end{corollary}
+
+\begin{remark}[worst case in $\kappa$]
+$\delta$ and $\bar\gamma$ are decreasing in $\rho$ for $\rho\ge 1$ whenever
+$\lambda\ge 1$. Their worst case over $\kappa$ at fixed $\lambda$ is $\kappa\to0$,
+which gives $\delta(1)\to(1+\lambda)e^{-\lambda}$: a bound in $\lambda$ alone. The
+third bound in \eqref{eq:threebounds} carries an extra $\lambda/\kappa$ and is
+therefore \emph{not} uniform in $\kappa$; it requires a floor on $\kappa$. Since
+$1/\kappa$ is the correlation time of the maintenance noise --- $\Cov(\varepsilon(t),
+\varepsilon(t+s))\propto e^{-\kappa|s|}$ at stationarity --- a floor
+$\kappa\ge0.22\,\mathrm{s}^{-1}$, i.e.\ a correlation time of at most $4.5$~s, is the
+one the sampled range already imposes.
+\end{remark}
+
+\section{The rate of partial activations}
+
+Let $s_{\mathrm{resp}}$ be the responding side, $g$ the gate,
+$d(t):=g-|m|-(\beta/\delta)(t-t_{\mathrm{offset}})^{+}$ the distance from the
+maintained level to the gate, and $Z:=s_{\mathrm{resp}}H-d$, so that partial
+activations are upcrossings of zero by $Z$, and $\dot Z=\dot H+\beta/\delta$. The
+Kac--Rice formula for a differentiable Gaussian process --- which requires no
+stationarity --- gives
+\begin{equation}
+\nu(t)=p_{Z(t)}(0)\,\E\bigl[\dot Z(t)\mathbf{1}_{\{\dot Z(t)>0\}}\,\big|\,Z(t)=0\bigr]
+=\frac{\varphi(a(t))}{\sigma_H(t)}\,G(t),
+\label{eq:nu}
+\end{equation}
+where, writing $a:=d/\sigma_H$ and $g(u):=u\Phi(u)+\varphi(u)$,
+\begin{equation}
+M=\frac{\beta}{\delta}+\frac{c_H}{\sigma_H^2}\,d,\qquad
+S=\sigma_{\dot H}^2-\frac{c_H^2}{\sigma_H^2},\qquad
+u=\frac{M}{\sqrt S},\qquad
+G=M\Phi(u)+\sqrt S\,\varphi(u)=\sqrt S\,g(u).
+\label{eq:MSG}
+\end{equation}
+Note $g'=\Phi$ and $g''=\varphi$, so $g$ is positive, strictly increasing and
+strictly convex, with $g(0)=1/\sqrt{2\pi}$ and $g(u)\le g(0)+u$ for $u\ge0$.
+
+\begin{proposition}[the stationary rate]\label{prop:statrate}
+Once $c_H=0$, $\sigma_H^2=\Ain$ and $\sigma_{\dot H}^2=B_\infty$, \eqref{eq:nu} becomes
+\begin{equation}
+\nu=\varphi(a)\left[\frac{\beta}{\delta\sigma_H}\Phi\!\left(\frac{\beta}{\delta\sigma_{\dot H}}\right)
++\omega\,\varphi\!\left(\frac{\beta}{\delta\sigma_{\dot H}}\right)\right],\qquad \omega=\sqrt{\lambda\kappa},
+\label{eq:nuasymp}
+\end{equation}
+whose bracket does not depend on $d$. Consequently:
+\begin{enumerate}
+\item[(i)] \textbf{Model 2} ($\beta>0$): $a(\rho)=a(0)-\beta\rho/(\delta\sigma_H)$ falls
+linearly, so
+\begin{equation}
+\frac{\dd(\ln\nu)}{\dd\rho}=\frac{\beta}{\delta\sigma_H}\,a(\rho),
+\qquad
+\frac{\dd^{2}(\ln\nu)}{\dd\rho^{2}}=-\left(\frac{\beta}{\delta\sigma_H}\right)^{\!2},
+\label{eq:slope}
+\end{equation}
+both exact: the log rate is a downward parabola, the same one in all six conditions.
+\item[(ii)] \textbf{Model 1} ($\beta=0$): $M=0$, $u=0$, $G=\omega\sigma_H/\sqrt{2\pi}$,
+$a$ is constant, and
+\begin{equation}
+\nu=\frac{\omega}{2\pi}\,e^{-a^{2}/2},\qquad
+\frac{\dd(\ln\nu)}{\dd\rho}\equiv 0 .
+\label{eq:m1flat}
+\end{equation}
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+Substitute $c_H=0$ into \eqref{eq:MSG} and \eqref{eq:nu}; then
+$\ln\nu=\text{const}-a^2/2$ and \eqref{eq:slope} is immediate from
+$a$ affine in $\rho$. For (ii) set $\beta=0$: $M=0$, $g(0)=1/\sqrt{2\pi}$,
+$G=\sqrt{B_\infty}/\sqrt{2\pi}=\omega\sigma_H/\sqrt{2\pi}$, and $\varphi(a)/\sigma_H\cdot G
+=\omega e^{-a^2/2}/(2\pi)$, constant in $\rho$.
+\end{proof}
+
+\section{Ordering across conditions}
+
+Coherence and duration enter only through $m$, hence only through $d$: by
+Proposition~\ref{prop:moments} the law of $H$ depends on $(\lambda,\kappa,
+\sigma_\varepsilon)$ and on $\rho$, not on the condition, and $\rho$ is common to all
+conditions because $\tau=t_{\mathrm{offset}}+L_{\mathrm{motion}}$ is a fixed clock
+time. Comparisons across conditions are therefore comparisons in $d$ at fixed $\rho$.
+
+\begin{theorem}[level orders by distance, pointwise]\label{thm:A}
+Fix $\rho>0$ and let $a=d/\sigma_H(\rho)\ge1$. Then
+$\partial(\ln\nu)/\partial d<0$: the rate is strictly decreasing in $d$, hence
+strictly decreasing in $a$. This holds for both models, transient included, and with
+no stationarity assumption.
+\end{theorem}
+\begin{proof}
+From \eqref{eq:nu}, $\ln\nu=-a^2/2-\ln\sigma_H-\ln\sqrt{2\pi}+\ln G$, and at fixed
+$\rho$ only $a$ and $M$ depend on $d$, with $\partial a/\partial d=1/\sigma_H$ and
+$\partial M/\partial d=c_H/\sigma_H^2$. Since $\partial G/\partial M=\Phi(u)$,
+\[
+\frac{\partial(\ln\nu)}{\partial d}
+=-\frac{a}{\sigma_H}+\frac{c_H\,\Phi(u)}{\sigma_H^{2}\,G},
+\]
+which is negative if and only if $d\,G>c_H\Phi(u)$. Now $G=M\Phi(u)+\sqrt S\varphi(u)>M\Phi(u)$
+because $\sqrt S\varphi(u)>0$, and
+\[
+d\,M=\frac{\beta}{\delta}d+\frac{c_H}{\sigma_H^{2}}d^{2}=\frac{\beta}{\delta}d+c_H a^{2}\ \ge\ c_H
+\qquad\text{whenever } a\ge1,
+\]
+since $\beta,\delta,d,c_H\ge0$. Hence $dG>dM\Phi(u)\ge c_H\Phi(u)$.
+\end{proof}
+
+\begin{corollary}\label{cor:LS}
+At stationarity $c_H=0$, and Theorem~\ref{thm:A} holds with no condition on $a$:
+$\nu=\varphi(a)\times(\text{a factor independent of }d)$. Moreover, by
+\eqref{eq:slope}, the log-rate slope $\beta a/(\delta\sigma_H)$ is strictly
+\emph{increasing} in $a$. Hence, at every $\rho$ in the window, a condition with a
+higher rate has a smaller $a$ and therefore a shallower log-rate slope: level and
+slope order oppositely across conditions.
+\end{corollary}
+
+\section{What a non-stationary start could buy Model 1}\label{sec:cold}
+
+Under Model 1, $\beta=0$ and $d$ is constant, so all time dependence of $\nu$ is
+through the three moments. Write $a_\infty:=d/\sqrt{\Ain}$ and evaluate at
+$\rho_0=1$~s (the start of the analysis window), where $\delta:=\delta(\rho_0)$ and
+$\bar\gamma:=\bar\gamma(\rho_0)$ of \eqref{eq:deltadef}.
+
+\begin{theorem}[the transient ramp is bounded]\label{thm:B}
+Assume $\lambda\ge1$, $\delta<1$ and
+$\eta:=\dfrac{\lambda}{\kappa}\delta+\dfrac{\bar\gamma^{2}}{\lambda\kappa(1-\delta)}<1$.
+Then for all $1\le\rho_0\le\rho_1$, under Model 1,
+\begin{equation}
+\bigl|\ln\nu(\rho_1)-\ln\nu(\rho_0)\bigr|
+\ \le\
+\frac{a_\infty^{2}\,\delta}{(1-\delta)^{2}}
+\;+\;\frac{\delta}{1-\delta}
+\;+\;\frac{\eta}{1-\eta}
+\;+\;\frac{\sqrt{2\pi}\,\bar\gamma\,a_\infty}{\omega\,(1-\delta)\sqrt{1-\eta}} .
+\label{eq:thmB}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Write $\Delta:=\sigma_H^2/\Ain-1$, $\gamma:=c_H/\Ain$, $E:=\sigma_{\dot H}^2/B_\infty-1$,
+so $|\Delta|\le\delta$, $0\le\gamma\le\bar\gamma$, $|E|\le(\lambda/\kappa)\delta$ by
+Proposition~\ref{prop:bounds}, all monotonically decreasing on $\rho\ge\rho_0$ (the
+remark after Proposition~\ref{prop:bounds}). Decompose
+$\ln\nu=-a^{2}/2-\ln\sigma_H+\ln G-\ln\sqrt{2\pi}$ and bound the change in each term
+over $[\rho_0,\rho_1]$. Throughout we use
+$|\ln(1+x)|\le|x|/(1-|x|)$ for $|x|<1$.
+
+\emph{(1) The exponent.} $a^{2}=d^{2}/\sigma_H^{2}=a_\infty^{2}/(1+\Delta)$, so
+\[
+\tfrac12\bigl|a^{2}(\rho_1)-a^{2}(\rho_0)\bigr|
+=\frac{a_\infty^{2}}{2}\,\frac{|\Delta_0-\Delta_1|}{(1+\Delta_0)(1+\Delta_1)}
+\le\frac{a_\infty^{2}}{2}\cdot\frac{2\delta}{(1-\delta)^{2}}
+=\frac{a_\infty^{2}\delta}{(1-\delta)^{2}} .
+\]
+
+\emph{(2) The density normalisation.}
+$\bigl|\ln\sigma_H(\rho_1)-\ln\sigma_H(\rho_0)\bigr|
+=\tfrac12\bigl|\ln(1+\Delta_1)-\ln(1+\Delta_0)\bigr|
+\le\tfrac12\cdot 2\,\delta/(1-\delta)=\delta/(1-\delta)$.
+
+\emph{(3) The speed factor.} $\ln G=\tfrac12\ln S+\ln g(u)$.
+For the first part, using $c_H^{2}/\sigma_H^{2}=\gamma^{2}\Ain/(1+\Delta)$ and
+$\Ain/B_\infty=1/\omega^{2}=1/(\lambda\kappa)$,
+\[
+\left|\frac{S}{B_\infty}-1\right|
+=\left|E-\frac{\gamma^{2}}{\lambda\kappa(1+\Delta)}\right|
+\le\frac{\lambda}{\kappa}\delta+\frac{\bar\gamma^{2}}{\lambda\kappa(1-\delta)}=\eta,
+\]
+whence $\tfrac12|\ln(S_1/S_0)|\le\tfrac12\cdot2\eta/(1-\eta)=\eta/(1-\eta)$, and also
+$S\ge B_\infty(1-\eta)>0$.
+For the second part, $M=\gamma d/(1+\Delta)\ge0$, so $u=M/\sqrt S\ge0$ and
+\[
+u\ \le\ \frac{\bar\gamma\, a_\infty\sqrt{\Ain}}{(1-\delta)\sqrt{B_\infty(1-\eta)}}
+=\frac{\bar\gamma\,a_\infty}{\omega(1-\delta)\sqrt{1-\eta}}=:u_{\max}.
+\]
+Since $g$ is increasing with $g(0)=1/\sqrt{2\pi}$ and $g'=\Phi\le1$, we have
+$g(0)\le g(u)\le g(0)+u$ for $u\ge0$, so both $g(u_1)/g(u_0)$ and its reciprocal are
+at most $1+u_{\max}/g(0)=1+\sqrt{2\pi}\,u_{\max}$, giving
+$|\ln (g(u_1)/g(u_0))|\le\ln(1+\sqrt{2\pi}u_{\max})\le\sqrt{2\pi}\,u_{\max}$.
+
+Summing (1)--(3) gives \eqref{eq:thmB}.
+\end{proof}
+
+\begin{corollary}[numerical form]\label{cor:numbers}
+With $\rho_0=1$~s and the sampled floor $\kappa\ge0.22\,\mathrm{s}^{-1}$, the
+right-hand side of \eqref{eq:thmB}, maximised over $\kappa$, gives the following
+ceiling on Model 1's total log-rate change across the $2$~s window, and hence on the
+log-rate slope it can sustain there:
+\begin{center}
+\begin{tabular}{rrr}
+\toprule
+$\lambda$ (s$^{-1}$) & bound on $|\Delta\ln\nu|$ & implied slope (s$^{-1}$)\\
+\midrule
+$6$  & $1.53$              & $0.76$\\
+$8$  & $2.45\times10^{-1}$ & $1.23\times10^{-1}$\\
+$10$ & $4.48\times10^{-2}$ & $2.24\times10^{-2}$\\
+$12$ & $8.03\times10^{-3}$ & $4.02\times10^{-3}$\\
+$15$ & $5.74\times10^{-4}$ & $2.87\times10^{-4}$\\
+$20$ & $6.25\times10^{-6}$ & $3.12\times10^{-6}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+(computed at $a_\infty=3.3$; the observed log-rate slope is $+0.867$~s$^{-1}$). The
+bound falls below the observed slope for $\lambda\ge5.9$, i.e.\ a filter time
+constant $1/\lambda\le169$~ms (at $a_\infty=4.34$ the threshold is $\lambda\ge6.1$). The sampled range is $\lambda\ge10$, at which the
+bound is $39$ times below the observation.
+\end{corollary}
+
+\section{The standardised distance is measured, not assumed}
+
+Theorem~\ref{thm:B} needs an \emph{upper} bound on $a_\infty$. It is supplied by the
+data, not by a prior: inverting \eqref{eq:m1flat}, Model 1's own stationary rate
+formula, gives
+\begin{equation}
+a=\sqrt{2\ln\!\left(\frac{\omega}{2\pi\nu}\right)},\qquad \omega=\sqrt{\lambda\kappa}.
+\label{eq:afromnu}
+\end{equation}
+Using Model 1's formula to pin $a$ while bounding Model 1 is legitimate. With the
+observed delay-period rates $0.030$--$0.135\,\mathrm{s}^{-1}$ and
+$(\lambda,\kappa)$ anywhere in the sampled range, \eqref{eq:afromnu} gives
+$a\le3.3$. This is the rate--ramp trade-off in its sharpest form: the rate
+\emph{measures} the standardised distance, and the measured distance is too small to
+support the observed slope.
+
+\section{Summary of the predictions}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Observation & Model 1 & Model 2\\
+\midrule
+level rises with duration & yes (Thm~\ref{thm:A}) & yes (Thm~\ref{thm:A})\\
+level rises with coherence & yes (Thm~\ref{thm:A}) & yes (Thm~\ref{thm:A})\\
+coherence\,$\times$\,duration on level & negative & negative\\
+log-rate slope $>0$ & $\equiv 0$ (Prop.~\ref{prop:statrate}(ii)) & $\beta a/(\delta\sigma_H)>0$\\
+slope shallower where level higher & --- & yes (Cor.~\ref{cor:LS})\\
+log-rate curvature & $\equiv0$ & $-(\beta/\delta\sigma_H)^2$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The third row is not proved here: it rests on the saturation argument
+of the main text --- the maintained target is capped pathwise at $\theta$, so the
+coherence levels converge as the fraction of capped trials tends to one, and a longer
+stimulus raises that fraction --- which concerns the distribution of $m$, not the
+moments of $H$, and is therefore unaffected by \eqref{eq:warm}. It is combined with
+Theorem~\ref{thm:A}, which converts an ordering of $d$ into an ordering of $\nu$ at
+every $\rho$.
+
+\medskip\noindent Two rows discriminate, and both are exact statements with no residual
+term: Model 1 predicts a delay-period rate that is \emph{flat}, in level and in
+shape, at every parameter setting.
+
+\section{Numerical verification}\label{sec:checks}
+
+Every statement above was checked before being written.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Claim & Test & Result\\
+\midrule
+Prop.~\ref{prop:moments} & closed forms vs.\ numerical integration of $\dot P=FP+PF^{\!\top}+Q$ & max rel.\ err.\ $8.9\times10^{-12}$\\
+Prop.~\ref{prop:moments} & the three identities in terms of $X$ & agree to $1.5\times10^{-13}$\\
+Prop.~\ref{prop:bounds} & $0\le-X\le(\lambda+\kappa)\rho e^{-\mu\rho}$, exact arithmetic & worst ratio $1.000000$\\
+Prop.~\ref{prop:bounds} & $|\sigma_H^2/\Ain-1|\le\delta$ & worst ratio $1.000000$\\
+Prop.~\ref{prop:bounds} & $c_H/\Ain\le\bar\gamma$ & worst ratio $1.000000$\\
+Prop.~\ref{prop:bounds} & $|\sigma_{\dot H}^2/B_\infty-1|\le(\lambda/\kappa)\delta$ & worst ratio $0.997226$\\
+Thm~\ref{thm:B} & bound vs.\ exact $|\Delta\ln\nu|$, $7435$ points & $0$ violations, worst ratio $0.338$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Grids: $\lambda\in[0.3,60]$, $\kappa\in[0.01,60]$, $\rho\in[0.05,6]$,
+$a_\infty\in\{1,2,3,4.34,8\}$; the $X$ bounds were verified in $50$-digit arithmetic
+because the direct combination $P_{\varepsilon\varepsilon}-2P_{\varepsilon
+H}+P_{HH}$ cancels catastrophically in double precision.
+
+\section{Consequences for the paper}
+
+Adopting \eqref{eq:warm} would remove, from the appendix, the convolution kernel $K$
+and the integrals $\int K^2$, $\int K'^2$, the auxiliary $W=K'-K^3/2\sigma_H^2$, the
+log-concavity lemma, the non-stationary derivative of $\ln\nu$, and the transient
+content of the present Corollaries A.2 and A.3. What remains is
+Propositions~\ref{prop:moments}--\ref{prop:bounds}, the Kac--Rice formula
+\eqref{eq:nu}, Proposition~\ref{prop:statrate}, and
+Theorems~\ref{thm:A}--\ref{thm:B}. The cold start becomes a single question ---
+\emph{could a non-stationary start rescue Model 1?} --- answered by
+Corollary~\ref{cor:numbers}.
+
+The cost is that theory and simulation must agree, so the $1200$-draw parameter
+sweep, the admissibility screen, and every effect size would have to be recomputed
+under \eqref{eq:warm}.
+
+\end{document}

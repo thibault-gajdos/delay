@@ -8,10 +8,23 @@ Two stages, deliberately separated:
   screen and what the delay-period TREND does across them -- the linear orthogonal
   polynomial contrast of the raw rate against time, which is the statistic the data
   analysis uses (Methods: TREND).  Median, 5-95% range, maximum, and how many draws land
-  inside the observed per-condition band [OBS_LO, OBS_HI] = [0.469, 0.634] /s^2 while
-  ALSO producing a delay rate inside the range
-  real participants span.  The joint requirement is the point: a draw that ramps at
-  1/300th of the observed activation rate has not reproduced the observation.
+  inside the observed band while ALSO producing a delay rate inside the range real
+  participants span.  The joint requirement is the point: a draw that ramps at 1/300th of
+  the observed activation rate has not reproduced the observation.
+
+  The band is the between-participant 95% confidence interval on the observed trend,
+  [OBS_LO, OBS_HI] = [0.375, 0.745] /s^2, and not the spread of the six condition means
+  ([0.469, 0.634], kept as OBS_CELL_LO/HI and reported alongside).  The spread of
+  condition means is a spread across conditions, not an uncertainty on the quantity a
+  model is being asked to reproduce, and using it as an acceptance window made the count
+  three times stricter for no defensible reason.
+
+  A caveat that belongs next to the count, not in a footnote.  How MANY draws land in the
+  band is a fraction of a Latin-hypercube sample over ranges that were chosen, so it
+  reports the sampling prior as much as the architecture.  The two statements that do not
+  depend on the prior are recorded next to it: whether a model can reach the observation
+  AT ALL (its maximum), and where the observation falls in the model's own distribution
+  (`pct_of_observed`).  Those are what the Results should lead with.
 
   STAGE 2 (noise).  A single draw's trend is itself a noisy estimate, so the spread
   reported in stage 1 mixes real parameter sensitivity with simulation noise.  A subset of
@@ -56,13 +69,16 @@ OUT = (f'results/effect_sizes_stage1{_SFX}.json' if N_SUBSET <= 0 else
 # log-rate slope this statistic is LINEAR in the rate, so the mean of the per-cell,
 # per-participant contrasts and the contrast of the pooled profile coincide exactly
 # (+0.5604) -- the 0.892-vs-0.817 ambiguity of the log-rate slope does not arise.
-OBS_LO, OBS_HI = 0.4685, 0.6342
+OBS_LO, OBS_HI = 0.3753, 0.7454          # between-participant 95% CI
+OBS_CELL_LO, OBS_CELL_HI = 0.4685, 0.6342  # spread of the six condition means
 OBS_TREND = 0.5604
 OBS_RATE, OBS_RMIN, OBS_RMAX = 0.709, 0.085, 2.785   # window-mean rate, /s
 
 recs = [json.loads(l) for l in open(DUMP)]
 summary = dict(source=DUMP, n_draws=len(recs), ntr_stage1=None,
                obs=dict(trend_lo=OBS_LO, trend_hi=OBS_HI, trend_mean=OBS_TREND,
+                        trend_cell_lo=OBS_CELL_LO, trend_cell_hi=OBS_CELL_HI,
+                        band='between-participant 95% CI',
                         rate_mean=OBS_RATE, rate_min=OBS_RMIN, rate_max=OBS_RMAX))
 
 
@@ -77,6 +93,7 @@ for tag in ['model1', 'model2']:
     ok = np.isfinite(sl)
     sl_f, rt_f = sl[ok], rt[ok]
     inband = (sl_f >= OBS_LO) & (sl_f <= OBS_HI)
+    inband_cell = (sl_f >= OBS_CELL_LO) & (sl_f <= OBS_CELL_HI)
     rate_ok = (rt_f >= OBS_RMIN) & (rt_f <= OBS_RMAX)
     row = dict(
         n_admissible=len(adm),
@@ -86,6 +103,15 @@ for tag in ['model1', 'model2']:
         rate=dict(median=q(rt_f, 50), p5=q(rt_f, 5), p95=q(rt_f, 95)),
         n_trend_in_observed_band=int(inband.sum()),
         n_trend_in_band_and_rate_observed=int((inband & rate_ok).sum()),
+        # the same count against the narrower spread of condition means, kept so the
+        # sensitivity of the count to the choice of band is visible rather than implicit
+        n_trend_in_cell_spread=int(inband_cell.sum()),
+        n_trend_in_cell_spread_and_rate_observed=int((inband_cell & rate_ok).sum()),
+        # prior-free summaries: where the observation sits in the model's own
+        # distribution, and how far short the model's best draw falls
+        pct_of_observed=float((sl_f < OBS_TREND).mean() * 100.0) if len(sl_f) else float('nan'),
+        ratio_observed_to_max=float(OBS_TREND / sl_f.max()) if len(sl_f) and sl_f.max() > 0
+        else float('inf'),
         # recomputed from the raw-rate contrast rather than read from the sweep record's
         # `slope` block, which holds the Poisson log-rate criterion
         n_all_six_trends_positive=sum(

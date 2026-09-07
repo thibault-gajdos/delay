@@ -25,29 +25,32 @@ calibq_{m1,m2}.json or from targets_q.json.
                                                 that survives being checked at a second,
                                                 independent representative point; see
                                                 README)
-  kappa    in [0.20, 30.0]    log-uniform     (UNCHANGED, and deliberately so. A
-                                                stationarity-based floor of 2.0 was
-                                                briefly imposed here on 2026-08-30 and
-                                                is now reverted: it was wrong twice
-                                                over. The paper does not rely on the
-                                                stationary crossing-rate form at small
-                                                kappa -- Results (Delay-locked) and
-                                                the Appendix both compute from the exact
-                                                kernel there precisely BECAUSE
-                                                stationarity fails -- so validity of
-                                                that approximation is no reason to
-                                                exclude small kappa from the model's
-                                                admissible space. Worse, small kappa is
+  kappa    in [0.20, 30.0]    log-uniform     (UNCHANGED, but the REASON changed on
+                                                2026-09-07 with the stationary start
+                                                (delaymodel/sim.py, WARM_START).  The
+                                                old rationale was that small kappa is
                                                 Model 1's ONLY route to a delay rate
                                                 still rising at the end of the delay, so
-                                                a floor at 2.0 would delete exactly the
-                                                region most favourable to the model the
-                                                sweep is trying to exclude, manufacturing
-                                                a cleaner result by construction. For a
-                                                range whose purpose is exclusion, erring
-                                                WIDE is the conservative direction.
-                                                1/kappa here spans 5s -- slower than the
-                                                whole 3s delay -- down to 33ms.)
+                                                a floor would delete the region most
+                                                favourable to the model the sweep is
+                                                trying to exclude.  That is no longer
+                                                true: with eps started at its stationary
+                                                law the moments of H relax at rate at
+                                                least lambda, uniformly in kappa, so
+                                                Model 1's delay rate is flat at EVERY
+                                                kappa and no value of kappa is more
+                                                favourable to it than another.  The
+                                                range is kept on its own terms: 1/kappa
+                                                is the correlation time of the
+                                                maintenance noise, and [0.20, 30] spans
+                                                one trial (5 s) down to one analysis bin
+                                                (33 ms), which is the natural span for a
+                                                fluctuation that is meant to be a
+                                                WITHIN-trial one.  Keeping it also means
+                                                the sampling was not re-tuned to the new
+                                                model.  NB: the corresponding sentence in
+                                                the Methods must be rewritten -- it still
+                                                carries the old rationale.)
   SDe      in [0.003, 0.060]  log-uniform    (RESTORED as a sampled dimension 2026-08-31,
                                                after a brief detour that sampled the
                                                derived quantity a = (g - theta)/SDe
@@ -254,6 +257,28 @@ def counts_profile(mm, t0, t1, nbin):
     return h, v.size
 
 
+def trend_contrasts(counts, exposure, x):
+    """Linear and quadratic orthogonal-polynomial contrasts of the RAW rate against
+    time, with Poisson Monte-Carlo standard errors.  This is the statistic the data
+    analysis uses (Methods: TREND and QUAD on the binned rate); the offset-Poisson
+    log-rate slope below is a different quantity and is kept only as a secondary
+    record.  `counts` are per-bin event counts, `exposure` the number of trials
+    backing each bin, `x` the centred bin times in seconds.  Returns
+    (linear, se_linear, quadratic, se_quadratic) in s^-2 and s^-3."""
+    w1 = x / np.dot(x, x)                                   # OLS slope weights
+    q = x ** 2 - (x ** 2).mean()
+    q = q - x * (np.dot(q, x) / np.dot(x, x))               # orthogonalised
+    w2 = q / np.dot(q, q)
+    binw = float(np.mean(np.diff(x))) if len(x) > 1 else 1.0
+    denom = max(exposure, 1) * binw                         # counts -> rate per second
+    r = counts / denom
+    lin, quad = float(w1 @ r), float(w2 @ r)
+    # Poisson: Var(count_i) = count_i, floored at one event so an empty bin is not
+    # credited with zero uncertainty (same convention as the other count measures).
+    v = np.maximum(counts, 1.0) / denom ** 2
+    return lin, float(np.sqrt(np.dot(w1 ** 2, v))), quad, float(np.sqrt(np.dot(w2 ** 2, v)))
+
+
 def poisson_slope_se(counts, exposure, x, iters=100):
     """Offset Poisson-GLM slope (log mu = log(exposure) + b0 + b1*x) and its analytic
     SE from the final Fisher information. `exposure` (the number of trials backing
@@ -290,6 +315,8 @@ def run_model(p, alpha, model, seed0, gamma=0.0):
     prem = np.zeros(6); early = np.zeros(6); noresp = np.zeros(6)
     acc = np.zeros(6); rt_mean = np.zeros(6); rt_se = np.zeros(6); rt_n = np.zeros(6)
     slope = np.zeros(6); slope_se = np.zeros(6); rate = np.zeros(6)
+    trend = np.zeros(6); trend_se = np.zeros(6)
+    curv = np.zeros(6); curv_se = np.zeros(6)
     # the raw 20-bin delay profile per cell, so that figures_space.py can draw the
     # simulated delay-period rate curve against the observed one without re-simulating
     prof = np.zeros((6, 20)); prof_expo = np.zeros(6)
@@ -329,10 +356,13 @@ def run_model(p, alpha, model, seed0, gamma=0.0):
         rate[k] = h.sum() / (expo * 2.0) if expo > 0 else np.nan
         if (h > 0).sum() >= 4 and expo > 0:
             slope[k], slope_se[k] = poisson_slope_se(h, expo, DELAY_TB)
+            trend[k], trend_se[k], curv[k], curv_se[k] = trend_contrasts(h, expo, DELAY_TB)
         else:
             slope[k], slope_se[k] = np.nan, np.nan
+            trend[k] = trend_se[k] = curv[k] = curv_se[k] = np.nan
     return dict(prem=prem, early=early, noresp=noresp, acc=acc, rt_mean=rt_mean,
                 rt_se=rt_se, rt_n=rt_n, slope=slope, slope_se=slope_se,
+                trend=trend, trend_se=trend_se, curv=curv, curv_se=curv_se,
                 rate=rate, srate=srate, met_mean=met_mean, met_se=met_se,
                 pmet_mean=pmet_mean, pmet_se=pmet_se,
                 prof=prof.astype(np.int64), prof_expo=prof_expo.astype(np.int64))

@@ -231,11 +231,19 @@ $\delta$ and $\bar\gamma$ are decreasing in $\rho$ for $\rho\ge 1$ whenever
 $\lambda\ge 1$. Their worst case over $\kappa$ at fixed $\lambda$ is $\kappa\to0$,
 which gives $\delta(1)\to(1+\lambda)e^{-\lambda}$: a bound in $\lambda$ alone. The
 third bound in \eqref{eq:threebounds} carries an extra $\lambda/\kappa$ and is
-therefore \emph{not} uniform in $\kappa$; it requires a floor on $\kappa$. Since
-$1/\kappa$ is the correlation time of the maintenance noise --- $\Cov(\varepsilon(t),
-\varepsilon(t+s))\propto e^{-\kappa|s|}$ at stationarity --- a floor
-$\kappa\ge0.22\,\mathrm{s}^{-1}$, i.e.\ a correlation time of at most $4.5$~s, is the
-one the sampled range already imposes.
+therefore \emph{not} uniform in $\kappa$; it requires a floor on $\kappa$. What it
+requires is weak: at $\rho=1$ the deviation is $(\lambda/\kappa)e^{-2\lambda}$ to
+leading order, so a relative accuracy $\epsilon$ needs only
+$\kappa\gtrsim\lambda e^{-2\lambda}/\epsilon$, which at $\lambda=10$ and
+$\epsilon=10^{-2}$ is $\kappa\ge2\times10^{-6}$. The floor is best read through the
+correlation time: at stationarity $\Cov(\varepsilon(t),\varepsilon(t+s))\propto
+e^{-\kappa|s|}$, so $1/\kappa$ is the lag at which the maintenance noise has
+decorrelated to $1/e$. A process with $1/\kappa$ of minutes is constant across the
+$3$~s delay and across dozens of consecutive trials --- a session-level drift, which
+this model does not represent --- so a floor of, say, $\kappa\ge0.05\,\mathrm{s}^{-1}$
+($1/\kappa\le20$~s, about seven delay periods) is a statement about what the term
+means, not a range imported from the simulation. Section~\ref{sec:cold} reports how
+the conclusions depend on it.
 \end{remark}
 
 \section{The rate of partial activations}
@@ -404,32 +412,47 @@ $|\ln (g(u_1)/g(u_0))|\le\ln(1+\sqrt{2\pi}u_{\max})\le\sqrt{2\pi}\,u_{\max}$.
 Summing (1)--(3) gives \eqref{eq:thmB}.
 \end{proof}
 
+\begin{remark}[what the two conditions mean]\label{rem:conds}
+Neither $\delta<1$ nor $\eta<1$ is an assumption about the world; both are the
+conditions under which the bound is finite, and each has a direct reading.
+$\delta$ is the relative error on $\sigma_H^{2}$ at the start of the window, so
+$\delta<1$ says only that the position variance is known to better than $100\%$
+there --- at $\lambda=10,\rho_0=1$ it is $5\times10^{-4}$, and it never binds.
+$\eta$ is the relative error on $S$, the conditional variance of the crossing speed,
+made of the $\sigma_{\dot H}^{2}$ error $(\lambda/\kappa)\delta$ and the $c_H^{2}$
+correction; $\eta<1$ says $S$ is bounded away from zero, so that $\sqrt S$ and
+$\ln S$ are controlled. Since $\eta\approx(\lambda/\kappa)\delta$, the condition
+$\eta<1$ \emph{is} the $\kappa$ floor of Proposition~\ref{prop:bounds}, written
+explicitly: at $\lambda=10$ it reads $\kappa\gtrsim5\times10^{-3}$.
+\end{remark}
+
 \begin{corollary}[numerical form]\label{cor:numbers}
-With $\rho_0=1$~s and the sampled floor $\kappa\ge0.22\,\mathrm{s}^{-1}$, the
-right-hand side of \eqref{eq:thmB}, maximised over $\kappa$, gives the following
-ceiling on Model 1's total log-rate change across the $2$~s window, and hence on the
-log-rate slope it can sustain there:
+Take $\rho_0=1$~s, $a_\infty\le3.3$ (Section~\ref{sec:afromnu}), and $\lambda\ge10$.
+Then Theorem~\ref{thm:B} gives the following ceiling $B$ on Model~1's total log-rate
+change across the $2$~s window, as a function of the floor imposed on $\kappa$:
 \begin{center}
-\begin{tabular}{rrr}
+\begin{tabular}{llrrr}
 \toprule
-$\lambda$ (s$^{-1}$) & bound on $|\Delta\ln\nu|$ & implied slope (s$^{-1}$)\\
+$\kappa\ge$ & $1/\kappa\le$ & $\eta$ & $B$ & implied $|$slope$|$ (s$^{-1}$)\\
 \midrule
-$6$  & $1.53$              & $0.76$\\
-$8$  & $2.45\times10^{-1}$ & $1.23\times10^{-1}$\\
-$10$ & $4.48\times10^{-2}$ & $2.24\times10^{-2}$\\
-$12$ & $8.03\times10^{-3}$ & $4.02\times10^{-3}$\\
-$15$ & $5.74\times10^{-4}$ & $2.87\times10^{-4}$\\
-$20$ & $6.25\times10^{-6}$ & $3.12\times10^{-6}$\\
+$0.008$ & $125$ s   & $0.62$   & $1.85$                & $0.93$\\
+$0.01$  & $100$ s   & $0.50$   & $1.15$                & $0.58$\\
+$0.05$  & $20$ s    & $0.096$  & $1.65\times10^{-1}$   & $8.2\times10^{-2}$\\
+$0.22$  & $4.5$ s   & $0.019$  & $4.48\times10^{-2}$   & $2.2\times10^{-2}$\\
+$1$     & $1$ s     & $0.002$  & $9.20\times10^{-3}$   & $4.6\times10^{-3}$\\
 \bottomrule
 \end{tabular}
 \end{center}
-(computed at $a_\infty=3.3$; the observed log-rate slope is $+0.867$~s$^{-1}$). The
-bound falls below the observed slope for $\lambda\ge5.9$, i.e.\ a filter time
-constant $1/\lambda\le169$~ms (at $a_\infty=4.34$ the threshold is $\lambda\ge6.1$). The sampled range is $\lambda\ge10$, at which the
-bound is $39$ times below the observation.
+The observed log-rate slope is $+0.867\,\mathrm{s}^{-1}$. At $\kappa\ge0.05$ ---
+a maintenance fluctuation that decorrelates within about seven delay periods --- the
+ceiling is $11$ times below the observation; at $\kappa\ge0.22$, $39$ times below.
+Increasing $\lambda$ has the same effect: at $\kappa\ge0.01$ the ceiling falls to
+$6.4\times10^{-2}$ at $\lambda=12$ and $4.4\times10^{-3}$ at $\lambda=15$. The
+$\kappa$ floor and the $\lambda$ prior are therefore substitutes, and only one of the
+two needs to be argued.
 \end{corollary}
 
-\section{The standardised distance is measured, not assumed}
+\section{The standardised distance is measured, not assumed}\label{sec:afromnu}
 
 Theorem~\ref{thm:B} needs an \emph{upper} bound on $a_\infty$. It is supplied by the
 data, not by a prior: inverting \eqref{eq:m1flat}, Model 1's own stationary rate
@@ -444,6 +467,86 @@ $(\lambda,\kappa)$ anywhere in the sampled range, \eqref{eq:afromnu} gives
 $a\le3.3$. This is the rate--ramp trade-off in its sharpest form: the rate
 \emph{measures} the standardised distance, and the measured distance is too small to
 support the observed slope.
+
+\section{Predictions to be tested}\label{sec:pred}
+
+The delay-period observations the paper tests are, in the notation of the working
+recap: \textbf{(L1)} the level rises with stimulus duration; \textbf{(L2)} the level
+rises with motion coherence; \textbf{(L3)} the coherence effect on the level is
+larger after the long stimulus; \textbf{(S1)} the log-rate slope is positive,
+$+0.867\,\mathrm{s}^{-1}$; \textbf{(S2)} it is shallower after the long stimulus,
+$0.896\to0.723$; \textbf{(S3)} it is shallower at high coherence,
+$0.871\to0.726$; \textbf{(C1)} the fitted quadratic coefficient is
+$c_2=-0.0405\,\mathrm{s}^{-2}$, not distinguishable from zero. Write $B$ for the
+ceiling of Corollary~\ref{cor:numbers} and $T=2$~s for the window length. A profile
+whose total range is at most $B$ has, on the $20$ bin centres of the window,
+$|\text{slope}|\le0.752\,B$ and $|c_2|\le1.458\,B$.
+
+\begin{corollary}[L1, L2: the level]\label{cor:P1}
+Both models predict that duration and coherence raise the level. Duration and
+coherence both raise the fraction of trials whose maintained target has reached the
+cap $\theta$, hence lower $d$ in the sense of first-order stochastic dominance; by
+Theorem~\ref{thm:A} the rate is strictly decreasing in $d$ at every $\rho$, and
+averaging over trials preserves the ordering. \emph{Not discriminating.}
+\end{corollary}
+
+\begin{corollary}[S1: the slope]\label{cor:P2}
+Model~1 predicts a log-rate slope of exactly zero
+(Proposition~\ref{prop:statrate}(ii)), and Theorem~\ref{thm:B} bounds what the
+residual transient can add: $|\text{slope}|\le0.752\,B$, which is
+$1.24\times10^{-1}\,\mathrm{s}^{-1}$ at $\kappa\ge0.05$ and
+$3.4\times10^{-2}$ at $\kappa\ge0.22$. Model~2 predicts
+$\beta a(\rho)/(\delta\sigma_H)>0$, its only source of a ramp.
+\emph{Discriminating: the observed $+0.867\,\mathrm{s}^{-1}$ exceeds Model~1's
+ceiling by a factor of $7$ to $26$.}
+\end{corollary}
+
+\begin{corollary}[S2, S3: the slope across conditions]\label{cor:P3}
+Model~1 predicts the slope to be zero in \emph{every} condition, so it predicts a
+condition difference of zero, with $|\text{difference}|\le1.5\,B$. Model~2 predicts
+a difference of definite sign: by Proposition~\ref{prop:statrate}(i) the slope is
+$\beta a/(\delta\sigma_H)$, increasing in $a$, while by Theorem~\ref{thm:A} the level
+is decreasing in $a$; hence any manipulation that raises the level lowers the slope.
+By Corollary~\ref{cor:P1} duration and coherence raise the level, so both must lower
+the slope. \emph{Discriminating: the observed differences, $0.173$ and $0.145$, exceed
+Model~1's ceiling ($0.25$ at $\kappa\ge0.05$, $0.067$ at $\kappa\ge0.22$) at the
+tighter floor, and their sign is the one Model~2 requires.}
+\end{corollary}
+
+\begin{corollary}[C1: the curvature]\label{cor:P4}
+Model~1 predicts $c_2=0$ exactly, with $|c_2|\le1.458\,B$. Model~2 predicts
+\begin{equation}
+c_2=-\tfrac12\left(\frac{\beta}{\delta\sigma_H}\right)^{\!2}
+=-\frac{1}{2}\left(\frac{\text{slope}}{a}\right)^{\!2},
+\label{eq:c2pred}
+\end{equation}
+constant in $\rho$ and identical in all six conditions. With the observed slope and
+$a\le3.3$ this is $c_2\ge-0.034$; the observed $c_2=-0.0405\pm0.0416$ is consistent
+with both. \emph{Not discriminating at the present precision.} Under the cold start
+the curvature did discriminate, through the decay Model~1's variance filling forces;
+under the stationary start that role passes to S2 and S3, and the curvature becomes a
+quantitative check on Model~2 and the identification below.
+\end{corollary}
+
+\begin{corollary}[identification]\label{cor:P5}
+Under Model~2 the three delay-period observables determine three model quantities,
+with no free parameter. From \eqref{eq:slope},
+\begin{equation}
+\frac{\beta}{\delta\sigma_H}=\sqrt{-2c_2},\qquad
+a=\frac{\text{slope}}{\sqrt{-2c_2}},
+\label{eq:ident}
+\end{equation}
+and then the level fixes $\omega=\sqrt{\lambda\kappa}$ through \eqref{eq:nuasymp}.
+With $\text{slope}=0.867$, $c_2=-0.0405$ and $\nu=0.070\,\mathrm{s}^{-1}$ this gives
+$\beta/(\delta\sigma_H)=0.285\,\mathrm{s}^{-1}$, $a=3.05$ and
+$\omega=45\,\mathrm{s}^{-1}$. The value of $a$ agrees with the independent estimate
+from the level alone (Section~\ref{sec:afromnu}, $a\le3.3$), which is a genuine
+consistency check since the two routes use different observables. The value of
+$\omega$ is a prediction: it requires $\lambda\kappa\approx2.0\times10^{3}$, above
+the range the present sweep samples ($\omega\le38$). Caveat: $c_2$ is not
+significantly different from zero, so \eqref{eq:ident} is a point estimate whose
+upper interval on $a$, and hence on $\omega$, is unbounded.
+\end{corollary}
 
 \section{Summary of the predictions}
 
@@ -462,7 +565,8 @@ log-rate curvature & $\equiv0$ & $-(\beta/\delta\sigma_H)^2$\\
 \end{tabular}
 \end{center}
 
-\noindent The third row is not proved here: it rests on the saturation argument
+\noindent Section~\ref{sec:pred} states each row as a corollary with its numbers.
+The third row is not proved here: it rests on the saturation argument
 of the main text --- the maintained target is capped pathwise at $\theta$, so the
 coherence levels converge as the fraction of capped trials tends to one, and a longer
 stimulus raises that fraction --- which concerns the distribution of $m$, not the

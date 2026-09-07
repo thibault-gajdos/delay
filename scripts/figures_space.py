@@ -96,10 +96,17 @@ def fig_rate_trend(fname=None):
     ax.axhline(0, color=C_M1, lw=1.4, ls=(0, (4, 2)), zorder=3)
     ax.set_ylim(-0.26, 1.26)
     # the caption for Model 1's line goes BELOW it, in the band the draws leave empty:
-    # placed above it, it sat on top of Model 1's own cloud
+    # placed above it, it sat on top of Model 1's own cloud.
+    # The simulated points sit slightly BELOW the analytic line, and the offset is a
+    # measurement bias rather than a prediction: the response-related burst is excluded
+    # from the event count wherever it starts, and in the model it starts inside the last
+    # 200 ms of the delay window on up to 2% of trials, against 0.02% in the data. It
+    # biases both architectures' trends downward by about 0.01 s^-2, so Model 2's numbers
+    # are conservative and Model 1's departure from zero is entirely accounted for.
     ax.text(0.0095, -0.245, 'Model 1: zero trend at every admissible setting (largest '
-                            'attainable\nover the sampled ranges, $3\\times10^{-11}$ '
-                            's$^{-2}$; the scatter about the line is\nsimulation noise)',
+                            'attainable over the\nsampled ranges, $3\\times10^{-11}$ '
+                            's$^{-2}$). The small negative offset of the simulated\npoints '
+                            'is the excluded response burst, not a prediction.',
             color=C_M1, fontsize=7.0, va='bottom', linespacing=1.5)
     ax.axhspan(*OBS_TCI, color='0.86', zorder=0)
     ax.errorbar([OBS_RATE], [OBS_TREND],

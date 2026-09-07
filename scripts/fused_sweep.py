@@ -248,7 +248,20 @@ def to_param(row):
 def counts_profile(mm, t0, t1, nbin):
     """Raw event counts per bin (not divided by trial count), plus the number of
     valid trials contributing exposure -- constant across delay-window bins, since a
-    valid trial's activity is fully observed there (see sim.py measures())."""
+    valid trial's activity is fully observed there (see sim.py measures()).
+
+    One known bias, measured 2026-09-07 and deliberately left in place.  measures()
+    excludes the response-related burst from `events` wherever it begins, because that
+    burst IS the response and its onset is what PMET is measured from.  In the model that
+    burst sometimes begins BEFORE the response signal -- on up to 2% of trials at some
+    admissible settings -- so it is removed from the last two bins of the delay window and
+    depresses the window's linear trend.  Participants almost never do this: the empirical
+    premotor time is negative on 0.02% of trials.  The bias is about -0.01 s^-2 and applies
+    to both architectures, so it makes Model 2's trend conservative and accounts entirely
+    for Model 1's simulated median of -0.007 s^-2 against an analytic value of zero.  It is
+    left alone rather than patched because the alternative -- counting a burst that became
+    the response as a delay-period partial activation -- would be the larger distortion,
+    and the correction is three orders of magnitude below the observed trend of +0.56."""
     v = np.flatnonzero(mm['valid'])
     h = np.zeros(nbin)
     for j in v:

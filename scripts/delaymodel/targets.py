@@ -77,8 +77,63 @@ def build(nsub=22):
             if (dly[s, k] > 0).sum() >= 4:
                 slope[s, k] = poisson_slope(dly[s, k], T)[1]
 
+    lin, quad = delay_contrasts()
+
     return dict(acc=acc, rt=rt, rt_sd=rt_sd, pmet=pmet, met=met, pmet_sd=pmet_sd, met_sd=met_sd,
-                dly=dly, stim=stim, prem=prem, slope=slope, ntr=ntr)
+                dly=dly, stim=stim, prem=prem, slope=slope, trend=lin, quad=quad, ntr=ntr)
+
+
+# --- the delay-period TREND, from the archive's own bin export -------------------------
+# TREND (and QUAD) are read from analysis_PMA/data/PMA_rate_delay_JASP.csv rather than
+# recomputed from `dly` above, for one reason: that export is the file the published
+# analysis was run on, so contrasts taken from it reproduce the manuscript's F values
+# exactly.  The event-file reconstruction in build() is a slightly different quantity --
+# it gives a mean trend of 0.5551 against the export's 0.5604, a 1% difference coming from
+# trial inclusion at the window edges -- and using it here would put the simulation's
+# comparison target 1% away from the number the Results report.
+JASP = os.path.join(os.environ.get('DELAY_DATA', '/home/claude/data'),
+                    'analysis_PMA/data/PMA_rate_delay_JASP.csv')
+BINW = 0.1                       # the export's bin width, seconds
+
+
+def contrast_weights(x):
+    """Weights of the linear and quadratic orthogonal-polynomial contrasts on the bin
+    axis, normalised so that the contrast of a rate profile is a rate PER SECOND and per
+    second squared -- i.e. the least-squares slope and curvature, not an arbitrary
+    polynomial score.  Identical to fused_sweep.trend_contrasts, which is what the
+    simulations report."""
+    w1 = x / np.dot(x, x)
+    q = x ** 2 - (x ** 2).mean()
+    q = q - x * (np.dot(q, x) / np.dot(x, x))
+    return w1, q / np.dot(q, q)
+
+
+def delay_profiles(nsub=22):
+    """(nsub, 6, 20) delay-period counts per trial per bin, read from the export.  Cell
+    order is the LAB order: short duration at 0/12/50% coherence, then long."""
+    import csv
+    rows = list(csv.reader(open(JASP)))
+    hdr = rows[0][1:]
+    dat = np.array([[float(v) for v in r[1:]] for r in rows[1:]], float)
+    cells = ['stim0_coh0', 'stim0_coh12', 'stim0_coh50',
+             'stim1_coh0', 'stim1_coh12', 'stim1_coh50']
+    X = np.stack([np.stack([dat[:, hdr.index(f'{c}_bin{b}')] for b in range(10, 30)], -1)
+                  for c in cells], 1)
+    return X[:nsub]
+
+
+def delay_contrasts(nsub=22):
+    """Per-participant, per-cell LINEAR (s^-2) and QUADRATIC (s^-3) contrasts of the
+    delay-period rate.  Both are linear functionals of the rate, so -- unlike the
+    log-rate slope -- the mean over cells and the contrast of the pooled profile agree."""
+    try:
+        X = delay_profiles(nsub)
+    except (FileNotFoundError, OSError):
+        return np.full((nsub, 6), np.nan), np.full((nsub, 6), np.nan)
+    t = np.arange(20) * BINW + BINW / 2
+    w1, w2 = contrast_weights(t - t.mean())
+    r = X / BINW
+    return r @ w1, r @ w2
 
 
 def summary(E=None):

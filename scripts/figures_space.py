@@ -2,16 +2,27 @@
 figures_space.py -- the two figures that come from the parameter-space evaluation rather
 than from a single simulated trial.
 
-  fig_frontier.pdf       Model 1's ramp-rate frontier, with the sampled draws on it. This
-                         is the figure that carries the delay-period argument: the two
-                         quantities that have to be reproduced together are on the two
-                         axes, the analytic frontier is the boundary of what Model 1 can
-                         do, and the observation sits far outside it.
+  fig_rate_trend.pdf     The figure that carries the delay-period argument: the two
+                         quantities that have to be reproduced together -- the mean rate
+                         over the delay window and its linear trend -- on the two axes,
+                         with the admissible draws of both architectures and the
+                         observation. Under the stationary start Model 1's trend is zero
+                         analytically, so the panel needs no computed frontier: the
+                         boundary of what Model 1 can do is the horizontal axis.
+  fig_frontier.pdf       RETIRED. It drew the ramp-rate frontier of the COLD-START model,
+                         where Model 1 could buy a log-rate ramp out of the sigma_H
+                         transient and the figure's content was the trade-off between that
+                         ramp and the rate. With the stationary start there is no transient
+                         to buy from -- the largest delay-period trend attainable over the
+                         sampled ranges is 3e-11 /s^2 -- so the trade-off curve degenerates
+                         to a flat line at zero and the figure has nothing left to show.
+                         Kept behind a flag, and only for the cold-start dump.
   fig_delay_profiles.pdf The delay-period rate curve itself, observed against what each
                          architecture produces over its admissible space.
 
-Inputs: results/sweep_screened.jsonl, results/frontier.json, results/ramp_check.jsonl,
-pma_counts.csv.  Usage: python3 figures_space.py
+Inputs: results/sweep_screened_warm.jsonl, results/effect_panel_warm.json,
+pma_counts.csv (and results/frontier.json only for the retired frontier figure).
+Usage: python3 figures_space.py [DUMP.jsonl]
 """
 import json, csv, os, sys
 import numpy as np
@@ -29,25 +40,29 @@ C_M1, C_M2, C_OBS = '#c1272d', '#3182bd', '#222222'
 # OBS_RATE is the MEAN rate over the 1-3 s window -- the quantity the simulation reports,
 # and NOT the end-of-delay peak (1.446 s^-1), which is a different number.
 OBS_RATE, OBS_RMIN, OBS_RMAX = 0.709, 0.085, 2.785
-# OBS_SLOPE is the MEAN OF THE PER-CELL, PER-PARTICIPANT slopes, which is the quantity
-# frontier.py builds its envelope against and the quantity the effect panel reports. It is
-# NOT the slope of the profile pooled across participants (0.817): pooling mixes processes
-# with different rates and flattens the log-rate, so the two differ. OBS_SLO and OBS_SHI
-# span the six cell means -- a spread across conditions, not a confidence interval.
-OBS_SLOPE, OBS_SLO, OBS_SHI = 0.892, 0.659, 1.029
+# OBS_TREND is the delay-period linear contrast of the RAW rate (Methods: TREND), in s^-2,
+# read from the archive's own bin export so that it is the same number the Results report.
+# Being linear in the rate it has no pooled-versus-per-cell ambiguity: the mean of the
+# 132 participant x condition contrasts and the contrast of the pooled profile agree at
+# +0.5604. OBS_TLO/OBS_THI span the six CELL MEANS -- a spread across conditions, not an
+# uncertainty -- and OBS_TCI is the between-participant 95% confidence interval, which is
+# the interval to compare a model against.
+OBS_TREND, OBS_TLO, OBS_THI = 0.5604, 0.4685, 0.6342
+OBS_TCI = (0.3753, 0.7454)
 
-recs = [json.loads(l) for l in open('results/sweep_screened.jsonl')]
-FR = json.load(open('results/frontier.json'))
+DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened_warm.jsonl'
+SFX = '_warm' if 'warm' in os.path.basename(DUMP) else ''
+recs = [json.loads(l) for l in open(DUMP)]
 
 
-def per_model(tag):
+def per_model(tag, stat='trend'):
     adm = [r[tag] for r in recs if r[tag]['admissible']]
     rate = np.array([np.nanmean(np.asarray(m['raw']['rate'], float)) for m in adm])
-    slope = np.array([np.nanmean(np.asarray(m['raw']['slope'], float)) for m in adm])
-    ok = np.isfinite(rate) & np.isfinite(slope) & (rate > 0)
+    y = np.array([np.nanmean(np.asarray(m['raw'][stat], float)) for m in adm])
+    ok = np.isfinite(rate) & np.isfinite(y) & (rate > 0)
     prof = np.array([np.asarray(m['raw']['prof'], float).sum(axis=0) for m in adm])
     expo = np.array([np.asarray(m['raw']['prof_expo'], float).sum() for m in adm])
-    return rate[ok], slope[ok], prof[ok], expo[ok]
+    return rate[ok], y[ok], prof[ok], expo[ok]
 
 
 def observed_profile():
@@ -59,8 +74,55 @@ def observed_profile():
     return cnt, expo
 
 
-# ------------------------------------------------------------------ 1. the frontier
+# ------------------------------------------- 1. rate against trend, both architectures
+def fig_rate_trend(fname=None):
+    """The delay-period argument in one panel: the window-mean rate on the x axis, its
+    linear trend on the y axis, one point per admissible parameter set.
+
+    The two quantities have to be reproduced TOGETHER, which is the whole reason the trend
+    replaced the log-rate slope: a draw can earn a steep log-rate slope by ramping from
+    almost nothing, and the raw-rate trend cannot be earned that way because it is the
+    product of the level and the relative ramp. Model 1's trend is zero analytically under
+    the stationary start, so its cloud has to sit on the dotted line whatever its rate --
+    no envelope is computed here, and none is needed.
+    """
+    fname = fname or f'plots/fig_rate_trend{SFX}.pdf'
+    fig, ax = plt.subplots(figsize=(5.6, 4.0))
+    for tag, col, lab in [('model1', C_M1, 'Model 1, admissible draws'),
+                          ('model2', C_M2, 'Model 2, admissible draws')]:
+        r, y, _, _ = per_model(tag)
+        ax.scatter(r, y, s=11, facecolor='none', edgecolor=col, lw=.6, alpha=.75,
+                   zorder=2, label=lab)
+    ax.axhline(0, color=C_M1, lw=1.4, ls=(0, (4, 2)), zorder=3)
+    ax.set_ylim(-0.26, 1.26)
+    # the caption for Model 1's line goes BELOW it, in the band the draws leave empty:
+    # placed above it, it sat on top of Model 1's own cloud
+    ax.text(0.0095, -0.245, 'Model 1: zero trend at every admissible setting (largest '
+                            'attainable\nover the sampled ranges, $3\\times10^{-11}$ '
+                            's$^{-2}$; the scatter about the line is\nsimulation noise)',
+            color=C_M1, fontsize=7.0, va='bottom', linespacing=1.5)
+    ax.axhspan(*OBS_TCI, color='0.86', zorder=0)
+    ax.errorbar([OBS_RATE], [OBS_TREND],
+                xerr=[[OBS_RATE - OBS_RMIN], [OBS_RMAX - OBS_RATE]], fmt='none',
+                ecolor='0.55', elinewidth=.8, capsize=2, zorder=5)
+    ax.plot([OBS_RATE], [OBS_TREND], marker='*', ms=13, color=C_OBS, zorder=6,
+            label='observed (95% CI shaded)')
+    ax.set_xscale('log')
+    ax.set_xlim(8e-3, 4.0)
+    ax.set_xlabel('delay-period partial-activation rate (s$^{-1}$)')
+    ax.set_ylabel('delay-period rate trend (s$^{-2}$)')
+    ax.legend(loc='upper left', frameon=False, handletextpad=.5)
+    fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
+    print('wrote', fname)
+
+
+# --------------------------------------------------- 1b. the retired cold-start frontier
 def fig_frontier(fname='plots/fig_frontier.pdf'):
+    if SFX:
+        print('skipping fig_frontier: it is a cold-start figure (see the module docstring)')
+        return
+    FR = json.load(open('results/frontier.json'))
+    OBS_SLOPE, OBS_SLO, OBS_SHI = 0.892, 0.659, 1.029
     fig, ax = plt.subplots(figsize=(5.6, 4.0))
     env = sorted(FR['models']['model1']['envelope'], key=lambda r: r['rate'])
     x = np.array([e['rate'] for e in env]); y = np.array([e['slope_at_least'] for e in env])
@@ -83,7 +145,7 @@ def fig_frontier(fname='plots/fig_frontier.pdf'):
                     arrowprops=dict(arrowstyle='->', color=C_M2, lw=1.2))
     for tag, col, lab in [('model1', C_M1, 'Model 1, admissible draws'),
                           ('model2', C_M2, 'Model 2, admissible draws')]:
-        r, s, _, _ = per_model(tag)
+        r, s, _, _ = per_model(tag, 'slope')
         ax.scatter(r, s, s=9, facecolor='none', edgecolor=col, lw=.6, alpha=.75,
                    zorder=2, label=lab)
     ax.axhspan(OBS_SLO, OBS_SHI, color='0.86', zorder=1)
@@ -103,7 +165,7 @@ def fig_frontier(fname='plots/fig_frontier.pdf'):
 
 
 # ------------------------------------------------------------ 2. the delay profile
-def fig_delay_profiles(fname='plots/fig_delay_profiles.pdf'):
+def fig_delay_profiles(fname=None):
     """The shape of the delay-period rate curve, one line per admissible parameter set.
 
     Each thin line is the delay-period profile of one admissible draw, divided by its own
@@ -113,6 +175,7 @@ def fig_delay_profiles(fname='plots/fig_delay_profiles.pdf'):
     architecture CAN produce the observed rise, not what it does at a typical setting, and a
     band taken bin by bin mixes profiles that are not comparable.
     """
+    fname = fname or f'plots/fig_delay_profiles{SFX}.pdf'
     t = np.arange(20) * 0.1 + 0.05
     cnt, expo = observed_profile()
     obs = cnt / (expo * 0.1)
@@ -148,13 +211,14 @@ def fig_delay_profiles(fname='plots/fig_delay_profiles.pdf'):
 
 
 # ---------------------------------------------------- 3. the effect-size panel
-def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
+def fig_effect_sizes(fname=None):
     """What each model can produce, on the effects that carry an argument, against
     the observation. Bars span the 5th-95th percentile over admissible draws, the tick is
     the median; the vertical line is the observed value with its 95% CI shaded. A bar that
     does not reach the line is a quantitative failure of that model on that effect.
     Panels are lettered A-I in the order of effect_panel.NAMES."""
-    P = json.load(open('results/effect_panel.json'))
+    fname = fname or f'plots/fig_effect_sizes{SFX}.pdf'
+    P = json.load(open(f'results/effect_panel{SFX}.json'))
     keys = list(P['names'])
     ncol = 3
     nrow = int(np.ceil(len(keys) / ncol))
@@ -186,7 +250,7 @@ def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
         # distinguishable from zero and carries no directional information -- separating
         # it out matters, because on the premature-response effect more than half of the
         # sets produce too few premature responses to test the prediction at all, and on
-        # Model 1's delay slope most of the sets that are not positive are simply flat.
+        # Model 1's delay trend the sets that are not negative are simply flat.
         for y, tag in enumerate(['model2', 'model1']):
             r = P['models'][tag][k]
             col = C_M2 if tag == 'model2' else C_M1
@@ -218,5 +282,6 @@ def fig_effect_sizes(fname='plots/fig_effect_sizes.pdf'):
 if __name__ == '__main__':
     os.makedirs('plots', exist_ok=True)
     fig_effect_sizes()
+    fig_rate_trend()
     fig_frontier()
     fig_delay_profiles()

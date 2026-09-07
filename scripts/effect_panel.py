@@ -37,10 +37,16 @@ decomposition its meaning.
         Saturation of the maintained level predicts the coherence effect to SHRINK after a
         long stimulus. The data show it growing. This is the paper's acknowledged
         disagreement, and it belongs in the panel for that reason.
-  C.2   delay-period log-rate slope (/s)
-        The quantity on which the two architectures separate.
+  C.2   delay-period rate TREND (/s^2)
+        The quantity on which the two architectures separate: the linear
+        orthogonal-polynomial contrast of the raw rate against time, which is the
+        statistic the data analysis uses (Methods: TREND).  It replaced the offset-Poisson
+        log-rate slope when the maintenance noise was given its stationary start: the
+        log-rate slope is a ratio, so a draw could earn a steep one by ramping from
+        almost nothing, and the trend -- being linear in the rate -- requires the level
+        and the ramp together, which is what the observation actually shows.
 
-Writes results/effect_panel.json.  Usage: python3 effect_panel.py [DUMP.jsonl]
+Writes results/effect_panel[_warm].json.  Usage: python3 effect_panel.py [DUMP.jsonl]
 """
 import json, sys, os
 import numpy as np
@@ -48,14 +54,16 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from delaymodel.targets import build
 
-DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
-OUT = 'results/effect_panel.json'
+DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened_warm.jsonl'
+# Keep the cold-start outputs: a warm dump writes to *_warm.json so the previously
+# committed cold-start figure inputs are never overwritten.
+OUT = 'results/effect_panel%s.json' % ('_warm' if 'warm' in os.path.basename(DUMP) else '')
 # cell order (targets.LAB): 0-2 = 0.3 s at 0/12/50% coherence, 3-5 = 2.0 s at 0/12/50%
 SHORT, LONG = [0, 1, 2], [3, 4, 5]
 C0, C50 = [0, 3], [2, 5]
 
 
-def effects(acc, rt, srate, rate, pmet, met, prem, slope):
+def effects(acc, rt, srate, rate, pmet, met, prem, trend):
     """Every directional prediction the Results test, in the sign the proposition predicts.
 
     Each entry is defined so that the PREDICTED sign is positive, so a negative median is a
@@ -83,8 +91,8 @@ def effects(acc, rt, srate, rate, pmet, met, prem, slope):
         # stimulus, so the predicted sign of this interaction is negative; it is written
         # long-minus-short so that, as everywhere else here, the observed sign is positive
         'delay_int': float((rate[5] - rate[3]) - (rate[2] - rate[0])),
-        # C.2: the delay-period log-rate slope
-        'slope': float(np.nanmean(slope)),
+        # C.2: the delay-period rate trend (linear contrast of the raw rate, /s^2)
+        'trend': float(np.nanmean(trend)),
     }
 
 
@@ -100,7 +108,7 @@ NAMES = dict(
     pmet_dur='PMET, short minus long (ms)',
     met_dur='MET, short minus long (ms)',
     delay_int='coherence effect on the delay rate,\nlong minus short (/s)',
-    slope='delay-period log-rate slope (/s)')
+    trend='delay-period rate trend (/s$^2$)')
 
 NTR = 4000.0
 
@@ -114,12 +122,13 @@ def effects_se(m):
     disagreeing with the data says nothing about the architecture -- it reports the seed. The
     three-way split below (significantly with the observed sign, significantly against it,
     indistinguishable from zero at two standard errors) is what the raw sign fraction should
-    have been from the start: on the delay-period slope it turns Model 1's "31% with the
-    observed sign" into "3% significantly positive, 39% significantly negative, 58% not
-    distinguishable from zero", which is a different and more honest statement.
+    have been from the start.  It matters most on the delay-period trend, where Model 1's
+    value is zero analytically (Appendix: the stationary rate has no time dependence when
+    beta = 0), so every draw's sign is a coin toss and only the three-way split reports
+    that honestly.
 
     Accuracy gets a binomial error; response time, the two execution times and the
-    log-rate slope use the per-cell standard errors already in the dump; the two rates use
+    rate trend use the per-cell standard errors already in the dump; the two rates use
     the Poisson error of the event count behind them, recovered as rate x exposure x
     window.
     """
@@ -156,7 +165,7 @@ def effects_se(m):
         pmet_dur=lin(g('pmet_se'), np.array([1, 1, 1, -1, -1, -1]) / 3.0, 1000.0),
         met_dur=lin(g('met_se'), np.array([1, 1, 1, -1, -1, -1]) / 3.0, 1000.0),
         delay_int=lin(rse2, [1, 0, -1, -1, 0, 1]),
-        slope=lin(g('slope_se'), np.ones(6) / 6.0))
+        trend=lin(g('trend_se'), np.ones(6) / 6.0))
 
 
 recs = [json.loads(l) for l in open(DUMP)]
@@ -166,7 +175,7 @@ stim_cells = E['stim'].sum(axis=-1) / 2.0        # (nsub, 6) rate over the 0-2 s
 rate_cells = E['dly'].sum(axis=-1) / 2.0
 
 per_sub = [effects(E['acc'][s], E['rt'][s], stim_cells[s], rate_cells[s], E['pmet'][s],
-                   E['met'][s], E['prem'][s], E['slope'][s]) for s in range(nsub)]
+                   E['met'][s], E['prem'][s], E['trend'][s]) for s in range(nsub)]
 obs = {k: float(np.nanmean([p[k] for p in per_sub])) for k in NAMES}
 obs_se = {k: float(np.nanstd([p[k] for p in per_sub], ddof=1) / np.sqrt(nsub)) for k in NAMES}
 
@@ -175,9 +184,12 @@ for tag in ['model1', 'model2']:
     adm = [r[tag] for r in recs if r[tag]['admissible']]
     if adm and 'srate' not in adm[0]['raw']:
         raise SystemExit(f"{DUMP} predates the srate/pmet fields -- rerun fused_sweep.py")
+    if adm and 'trend' not in adm[0]['raw']:
+        raise SystemExit(f"{DUMP} predates the raw-rate trend contrast -- rerun "
+                         "fused_sweep.py (the cold-start dumps record only `slope`)")
     rows = [effects(*[np.asarray(m['raw'][k], float) for k in
                       ('acc', 'rt_mean', 'srate', 'rate', 'pmet_mean', 'met_mean', 'prem',
-                       'slope')]) for m in adm]
+                       'trend')]) for m in adm]
     ses = [effects_se(m) for m in adm]
     out['models'][tag] = dict(n=len(rows))
     for k in NAMES:

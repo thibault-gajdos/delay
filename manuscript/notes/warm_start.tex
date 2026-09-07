@@ -220,6 +220,7 @@ $e^{-(\lambda+\kappa)\rho}\le e^{-\mu\rho}$.
 \end{proof}
 
 \begin{corollary}[relaxation is at least as fast as $\lambda$]\label{cor:rate}
+\emph{From Proposition~\ref{prop:moments} and Proposition~\ref{prop:bounds}.}
 All three moments converge to \eqref{eq:stat} at rate $\mu\ge\lambda$, uniformly in
 $\kappa$. In particular the $e^{-2\kappa\rho}$ mode --- present in the Lyapunov
 spectrum $\{-2\kappa,-(\lambda+\kappa),-2\lambda\}$, and the slow mode of the cold
@@ -337,6 +338,7 @@ since $\beta,\delta,d,c_H\ge0$. Hence $dG>dM\Phi(u)\ge c_H\Phi(u)$.
 \end{proof}
 
 \begin{corollary}\label{cor:LS}
+\emph{From Theorem~\ref{thm:A} and Proposition~\ref{prop:statrate}(i).}
 At stationarity $c_H=0$, and Theorem~\ref{thm:A} holds with no condition on $a$:
 $\nu=\varphi(a)\times(\text{a factor independent of }d)$. Moreover, by
 \eqref{eq:slope}, the log-rate slope $\beta a/(\delta\sigma_H)$ is strictly
@@ -427,6 +429,9 @@ explicitly: at $\lambda=10$ it reads $\kappa\gtrsim5\times10^{-3}$.
 \end{remark}
 
 \begin{corollary}[numerical form]\label{cor:numbers}
+\emph{From Theorem~\ref{thm:B}, evaluated with the bounds of
+Proposition~\ref{prop:bounds}; the ceiling on $a_\infty$ comes from
+Section~\ref{sec:afromnu}.}
 Take $\rho_0=1$~s, $a_\infty\le3.3$ (Section~\ref{sec:afromnu}), and $\lambda\ge10$.
 Then Theorem~\ref{thm:B} gives the following ceiling $B$ on Model~1's total log-rate
 change across the $2$~s window, as a function of the floor imposed on $\kappa$:
@@ -451,6 +456,30 @@ $6.4\times10^{-2}$ at $\lambda=12$ and $4.4\times10^{-3}$ at $\lambda=15$. The
 $\kappa$ floor and the $\lambda$ prior are therefore substitutes, and only one of the
 two needs to be argued.
 \end{corollary}
+
+\begin{remark}[what Theorem~\ref{thm:B} is for, and what it does not yet cover]
+\label{rem:whyB}
+Proposition~\ref{prop:bounds} bounds the \emph{moments}; the delay-period
+observables are a slope and a curvature, that is, \emph{derivatives}. A bound on a
+function does not bound its derivative, so Proposition~\ref{prop:bounds} does not by
+itself license replacing $\nu$ by its stationary form when the quantity of interest
+is a slope. Theorem~\ref{thm:B} supplies exactly that step: it bounds the total
+\emph{change} of $\ln\nu$ across the window --- not a derivative --- and a profile of
+total range $B$ has, on the bins of the window, $|\text{slope}|\le0.752\,B$ and
+$|c_2|\le1.458\,B$. It is also where the conditions on $\lambda$ and $\kappa$ become
+numbers rather than words.
+
+Two limitations. First, Theorem~\ref{thm:B} is stated for Model~1, since step~(1) of
+its proof uses $d$ constant. Second, it is integrated rather than pointwise. Both
+would be removed by the stronger statement
+\[
+\bigl|\ln\nu(\rho)-\ln\nu_{\mathrm{stat}}(\rho)\bigr|\le\ \cdots\qquad\text{for every }\rho\ge\rho_0,
+\]
+where $\nu_{\mathrm{stat}}$ is \eqref{eq:nuasymp}: it holds for both models, reads
+directly as \emph{the cost of using the stationary formula}, and implies
+Theorem~\ref{thm:B} by applying it at the two endpoints. The same chain of elementary
+bounds proves it. This is the one derivation still to be done.
+\end{remark}
 
 \section{The standardised distance is measured, not assumed}\label{sec:afromnu}
 
@@ -483,6 +512,8 @@ whose total range is at most $B$ has, on the $20$ bin centres of the window,
 $|\text{slope}|\le0.752\,B$ and $|c_2|\le1.458\,B$.
 
 \begin{corollary}[L1, L2: the level]\label{cor:P1}
+\emph{From Theorem~\ref{thm:A}, plus the saturation argument of the main text, which
+concerns the distribution of $m$ and is untouched by \eqref{eq:warm}.}
 Both models predict that duration and coherence raise the level. Duration and
 coherence both raise the fraction of trials whose maintained target has reached the
 cap $\theta$, hence lower $d$ in the sense of first-order stochastic dominance; by
@@ -491,6 +522,8 @@ averaging over trials preserves the ordering. \emph{Not discriminating.}
 \end{corollary}
 
 \begin{corollary}[S1: the slope]\label{cor:P2}
+\emph{From Proposition~\ref{prop:statrate} for both models' stationary values, and
+Theorem~\ref{thm:B} with Corollary~\ref{cor:numbers} for Model~1's residual.}
 Model~1 predicts a log-rate slope of exactly zero
 (Proposition~\ref{prop:statrate}(ii)), and Theorem~\ref{thm:B} bounds what the
 residual transient can add: $|\text{slope}|\le0.752\,B$, which is
@@ -502,6 +535,9 @@ ceiling by a factor of $7$ to $26$.}
 \end{corollary}
 
 \begin{corollary}[S2, S3: the slope across conditions]\label{cor:P3}
+\emph{From Proposition~\ref{prop:statrate}, Theorem~\ref{thm:A},
+Corollary~\ref{cor:LS} and Corollary~\ref{cor:P1}; Model~1's residual from
+Theorem~\ref{thm:B} and Corollary~\ref{cor:numbers}.}
 Model~1 predicts the slope to be zero in \emph{every} condition, so it predicts a
 condition difference of zero, with $|\text{difference}|\le1.5\,B$. Model~2 predicts
 a difference of definite sign: by Proposition~\ref{prop:statrate}(i) the slope is
@@ -514,6 +550,9 @@ tighter floor, and their sign is the one Model~2 requires.}
 \end{corollary}
 
 \begin{corollary}[C1: the curvature]\label{cor:P4}
+\emph{From Proposition~\ref{prop:statrate}(i) for \eqref{eq:c2pred},
+Proposition~\ref{prop:statrate}(ii) for Model~1, and Theorem~\ref{thm:B} with
+Corollary~\ref{cor:numbers} for the residual.}
 Model~1 predicts $c_2=0$ exactly, with $|c_2|\le1.458\,B$. Model~2 predicts
 \begin{equation}
 c_2=-\tfrac12\left(\frac{\beta}{\delta\sigma_H}\right)^{\!2}
@@ -529,6 +568,9 @@ quantitative check on Model~2 and the identification below.
 \end{corollary}
 
 \begin{corollary}[identification]\label{cor:P5}
+\emph{From Proposition~\ref{prop:statrate}(i) and \eqref{eq:nuasymp};
+the cross-check uses Section~\ref{sec:afromnu}, which rests on
+Proposition~\ref{prop:statrate}(ii).}
 Under Model~2 the three delay-period observables determine three model quantities,
 with no free parameter. From \eqref{eq:slope},
 \begin{equation}

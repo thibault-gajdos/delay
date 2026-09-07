@@ -234,147 +234,168 @@ therefore a statement about what the term means, not a range imported from simul
 \section{Neglecting the transient}\label{sec:neglect}
 
 Let $\nustat$ denote the rate computed from the stationary moments \eqref{eq:stat},
-i.e.\ with $\sigma_H^2=\Ain$, $\sigma_{\dot H}^2=\Bin$, $c_H=0$. This section bounds
-the error committed by using $\nustat$ in place of $\nu$.
+i.e.\ with $\sigma_H^2=\Ain$, $\sigma_{\dot H}^2=\Bin$, $c_H=0$. This section
+establishes the single result the rest of the note rests on.
 
-\begin{theorem}[the cost of using the stationary rate]\label{thm:point}
-Fix $\rho\ge\rho_0\ge1$, evaluate $\bar\Delta,\bar\gamma,\bar e$ of \eqref{eq:Dbar}
-at $\rho_0$, and write $u_s:=\beta/(\delta\sqrt{\Bin})$,
-$c_g:=\Phi(0)/g(0)=1.2533$, and
+\begin{theorem}[the stationary approximation]\label{thm:main}
+Assume
+\begin{equation}
+\text{\emph{(i)}}\ \lambda\ge5\,\mathrm{s}^{-1},\qquad
+\text{\emph{(ii)}}\ \kappa\ge0.2\,\mathrm{s}^{-1},\qquad
+\text{\emph{(iii)}}\ a_\infty\le5 .
+\label{eq:conds}
+\end{equation}
+Then, throughout the analysis window $\rho\in[1,3]$~s and for both models:
+\begin{enumerate}
+\item[\emph{(a)}] $\nu(\rho)=\nustat(\rho)\,e^{\theta(\rho)}$ with
+$|\theta(\rho)|\le\mathcal{E}(\rho)$ and $\mathcal{E}(1)\le0.36$ --- the rate is
+exact to within a factor $1.43$, and to within $1.0004$ by the end of the window;
+\item[\emph{(b)}] the least-squares slope and quadratic coefficient of $\ln\nu$ on the
+$20$ bins of the window differ from those of $\ln\nustat$ by at most
+\[
+\bigl|c_1-c_1^{\mathrm{stat}}\bigr|\le0.081\ \mathrm{s}^{-1},
+\qquad
+\bigl|c_2-c_2^{\mathrm{stat}}\bigr|\le0.145\ \mathrm{s}^{-2};
+\]
+\item[\emph{(c)}] under $\lambda\ge6$ these become $0.027\,\mathrm{s}^{-1}$ and
+$0.049\,\mathrm{s}^{-2}$; under $\lambda\ge8$, $0.0030$ and $0.0058$.
+\end{enumerate}
+\end{theorem}
+
+\noindent The observed log-rate slope is $+0.867\,\mathrm{s}^{-1}$, so (b) is a
+$9\%$ error bar on it and (c) a $3\%$ one. \emph{Everything from
+Section~\ref{sec:stat} on assumes \eqref{eq:conds} and works with $\nustat$, carrying
+(b) as the error bar.} Sections~\ref{sec:conds} and~\ref{sec:proof} justify the
+hypotheses and prove the theorem.
+
+\subsection{The three conditions}\label{sec:conds}
+
+Each can be argued without reference to the measured rate.
+
+\begin{description}
+\item[(i) $\lambda\ge5\,\mathrm{s}^{-1}$, i.e.\ $1/\lambda\le200$~ms.]
+$1/\lambda$ is the time constant of the low-pass filter carrying motor preparation to
+the gate. Dendauw et al.\ estimate $\lambda\approx20\,\mathrm{s}^{-1}$ ($50$~ms) in an
+immediate-report task, so \eqref{eq:conds} is four times more permissive than the
+published value. $\lambda$ is in principle identifiable from these data, since it
+sets how fast the rate follows the stimulus; that check has not been carried out.
+\item[(ii) $\kappa\ge0.2\,\mathrm{s}^{-1}$, i.e.\ $1/\kappa\le5$~s.]
+$1/\kappa$ is the correlation time of the maintenance noise:
+$\Cov(\varepsilon(t),\varepsilon(t+r))\propto e^{-\kappa|r|}$ at stationarity, so it
+is the lag at which the fluctuation has decorrelated to $1/e$. Requiring it to be at
+most one trial says that what is maintained fluctuates \emph{within} a trial; a longer
+correlation time describes a drift carried across trials, for which the model has no
+term and which the randomised design averages out rather than expresses as a
+delay-period ramp. (i) and (ii) are substitutes: $\lambda\to\lambda+1$ buys about what
+$\kappa\to2\kappa$ buys, so only one needs to be argued hard.
+\item[(iii) $a_\infty\le5$.] Not fitted. By \eqref{eq:m1flat} the expected number of
+partial activations per $2$~s delay window is $(\omega/\pi)e^{-a^{2}/2}$; at the
+largest $\omega$ in play this is one per $19$ trials at $a=3.3$, one per $246$ at
+$a=4$, and \emph{one per $22\,000$ at $a=5$}. So (iii) says only that the model must
+produce partial activations at all --- the experiment comprises of order $10^{4}$
+trials --- not that it must reproduce the observed rate. Section~\ref{sec:afromnu}
+gives the sharper, data-based $a\le3.3$, which is not used.
+\end{description}
+
+\subsection{Proof of Theorem~\ref{thm:main}}\label{sec:proof}
+
+\begin{proposition}[pointwise error]\label{prop:point}
+Fix $\rho\ge1$, evaluate $\bar\Delta,\bar\gamma,\bar e$ of \eqref{eq:Dbar} at $\rho$,
+and write $u_s:=\beta/(\delta\sqrt{\Bin})$, $c_g:=\Phi(0)/g(0)=1.2533$ and
 \begin{equation}
 \eta:=\bar e+\frac{\bar\gamma^{2}}{\omega^{2}(1-\bar\Delta)} .
 \label{eq:eta}
 \end{equation}
-Assume $\lambda\ge1$, $\bar\Delta<1$ and $\eta<1$. Then, for both models,
+If $\bar\Delta<1$ and $\eta<1$ then, for both models,
 \begin{equation}
-\boxed{\ \
-\bigl|\ln\nu(\rho)-\ln\nustat(\rho)\bigr|\ \le\ \mathcal{E}:=
+\bigl|\ln\nu(\rho)-\ln\nustat(\rho)\bigr|\ \le\ \mathcal{E}(\rho):=
 \frac{(a_\infty^{2}+1)\bar\Delta}{2(1-\bar\Delta)}
 +\frac{\eta}{2(1-\eta)}
 +c_g\left[\frac{\bar\gamma\,a_\infty}{\omega(1-\bar\Delta)\sqrt{1-\eta}}
 +u_s\!\left(\frac{1}{\sqrt{1-\eta}}-1\right)\right].
-\ \ }
 \label{eq:point}
 \end{equation}
-\end{theorem}
+\end{proposition}
 
 \begin{proof}
-Write $\Delta:=\sigma_H^2/\Ain-1$, $\gamma:=c_H/\Ain$,
-$E:=\sigma_{\dot H}^2/\Bin-1$, so that by Proposition~\ref{prop:bounds} and its
-monotonicity clause $|\Delta|\le\bar\Delta$, $0\le\gamma\le\bar\gamma$,
-$|E|\le\bar e$ for all $\rho\ge\rho_0$. From the Kac--Rice
-formula \eqref{eq:nu} below,
+Write $\Delta:=\sigma_H^2/\Ain-1$, $\gamma:=c_H/\Ain$, $E:=\sigma_{\dot H}^2/\Bin-1$,
+so $|\Delta|\le\bar\Delta$, $0\le\gamma\le\bar\gamma$, $|E|\le\bar e$ by
+Proposition~\ref{prop:bounds}. From \eqref{eq:nu},
 \[
 \ln\nu-\ln\nustat=-\tfrac12\bigl(a^{2}-a_\infty^{2}\bigr)
 -\tfrac12\ln\frac{\sigma_H^{2}}{\Ain}+\ln\frac{G}{G_s},
 \]
-with $G=\sqrt S\,g(u)$, $G_s=\sqrt{\Bin}\,g(u_s)$. We bound the three terms. Throughout,
+with $G=\sqrt S\,g(u)$ and $G_s=\sqrt{\Bin}\,g(u_s)$. Throughout,
 $|\ln(1+x)|\le|x|/(1-|x|)$ for $|x|<1$.
 
-\emph{(1)} $a^{2}=d^{2}/\sigma_H^{2}=a_\infty^{2}/(1+\Delta)$, so
-$\bigl|a^{2}-a_\infty^{2}\bigr|=a_\infty^{2}|\Delta|/(1+\Delta)
-\le a_\infty^{2}\bar\Delta/(1-\bar\Delta)$, and the first term is at most
-$a_\infty^{2}\bar\Delta/\bigl(2(1-\bar\Delta)\bigr)$.
+\emph{(1)} $a^{2}=a_\infty^{2}/(1+\Delta)$, so
+$\bigl|a^{2}-a_\infty^{2}\bigr|\le a_\infty^{2}\bar\Delta/(1-\bar\Delta)$; halving and
+adding $\tfrac12|\ln(1+\Delta)|\le\bar\Delta/(2(1-\bar\Delta))$ gives the first term of
+\eqref{eq:point}.
 
-\emph{(2)} $\tfrac12\bigl|\ln(1+\Delta)\bigr|\le\bar\Delta/\bigl(2(1-\bar\Delta)\bigr)$.
-Adding to (1) gives the first bracket of \eqref{eq:point}.
+\emph{(2)} $S=\Bin\bigl[(1+E)-\gamma^{2}/(\omega^{2}(1+\Delta))\bigr]$ since
+$\Ain/\Bin=\omega^{-2}$, so $|S/\Bin-1|\le\eta$, hence $S\ge\Bin(1-\eta)>0$ and
+$\tfrac12|\ln(S/\Bin)|\le\eta/(2(1-\eta))$: the second term.
 
-\emph{(3a)} $S=\sigma_{\dot H}^{2}-c_H^{2}/\sigma_H^{2}
-=\Bin\bigl[(1+E)-\gamma^{2}/(\omega^{2}(1+\Delta))\bigr]$, using
-$\Ain/\Bin=\omega^{-2}$. Hence $|S/\Bin-1|\le\eta$ with $\eta$ of \eqref{eq:eta}, so
-$S\ge\Bin(1-\eta)>0$ and
-$\tfrac12\bigl|\ln(S/\Bin)\bigr|\le\eta/\bigl(2(1-\eta)\bigr)$.
-
-\emph{(3b)} $M=\beta/\delta+\gamma d/(1+\Delta)\ge\beta/\delta\ge0$, so $u=M/\sqrt S\ge0$;
-also $u_s\ge0$. $(\ln g)'=\Phi/g$ and $(\ln g)''=(\varphi g-\Phi^{2})/g^{2}=-D/g^{2}<0$, where
-$D:=\Phi^{2}-\varphi g$ satisfies $D'=\varphi(\Phi+ug)>0$ and $D(-\infty)=0$, so
-$D>0$: $g$ is log-concave and $\Phi/g$ is decreasing. Hence on $[0,\infty)$,
-$\sup(\ln g)'=\Phi(0)/g(0)=c_g$, and for $u,u_s\ge0$
-\[
-\bigl|\ln g(u)-\ln g(u_s)\bigr|\le c_g\,|u-u_s| .
-\]
-Split $u-u_s=\dfrac{M-\beta/\delta}{\sqrt S}+\dfrac{\beta}{\delta}\Bigl(\dfrac{1}{\sqrt S}-\dfrac{1}{\sqrt{\Bin}}\Bigr)$.
-For the first, $M-\beta/\delta=\gamma d/(1+\Delta)\le\bar\gamma a_\infty\sqrt{\Ain}/(1-\bar\Delta)$
-and $\sqrt S\ge\sqrt{\Bin(1-\eta)}$, giving
-$\bar\gamma a_\infty/\bigl(\omega(1-\bar\Delta)\sqrt{1-\eta}\bigr)$. For the second,
-it equals $u_s\bigl|(1+x)^{-1/2}-1\bigr|$ with $x=S/\Bin-1$, $|x|\le\eta$, hence at
-most $u_s\bigl(1/\sqrt{1-\eta}-1\bigr)$. Summing gives \eqref{eq:point}.
+\emph{(3)} $(\ln g)'=\Phi/g$ and $(\ln g)''=-D/g^{2}<0$, where $D:=\Phi^{2}-\varphi g$
+satisfies $D'=\varphi(\Phi+ug)>0$ and $D(-\infty)=0$, hence $D>0$; so $\Phi/g$ is
+decreasing and $\sup_{u\ge0}(\ln g)'=\Phi(0)/g(0)=c_g$. Since
+$M=\beta/\delta+\gamma d/(1+\Delta)\ge\beta/\delta\ge0$ we have $u,u_s\ge0$, so
+$|\ln g(u)-\ln g(u_s)|\le c_g|u-u_s|$. Splitting
+$u-u_s=\frac{M-\beta/\delta}{\sqrt S}+\frac{\beta}{\delta}\bigl(\frac1{\sqrt S}-\frac1{\sqrt{\Bin}}\bigr)$,
+the first piece is at most
+$\bar\gamma a_\infty/\bigl(\omega(1-\bar\Delta)\sqrt{1-\eta}\bigr)$ using
+$M-\beta/\delta=\gamma d/(1+\Delta)$, $d=a_\infty\sqrt{\Ain}$ and
+$\sqrt S\ge\sqrt{\Bin(1-\eta)}$; the second equals
+$u_s|(1+x)^{-1/2}-1|$ with $|x|\le\eta$, hence at most
+$u_s(1/\sqrt{1-\eta}-1)$. Multiplying by $c_g$ gives the third term.
 \end{proof}
 
-\begin{corollary}[what it costs on the measured quantities]\label{cor:transfer}
-\emph{From Theorem~\ref{thm:point}.}
-Let $f$ be the log rate on the $20$ bin centres of the window $[1,3]$~s, and
-$c_1,c_2$ the slope and quadratic coefficient of the least-squares quadratic fitted
-to it. These are linear functionals $c_j=\sum_i w^{(j)}_i f_i$ with
-$\sum_i|w^{(\mathrm{slope})}_i|=1.504$ and $\sum_i|w^{(2)}_i|=2.916$. Hence, if
-$|f-f_{\mathrm{stat}}|\le\mathcal{E}$ pointwise,
+\begin{proposition}[transfer to the measured coefficients]\label{prop:transfer}
+On the $20$ bin centres $\rho_1,\dots,\rho_{20}$ of the window, the least-squares
+slope and quadratic coefficient are linear functionals
+$c_j=\sum_i w^{(j)}_i f_i$ of the profile, with
+$\sum_i|w^{(\mathrm{slope})}_i|=1.504$ and $\sum_i|w^{(2)}_i|=2.916$. Hence
 \begin{equation}
-\bigl|c_1-c_1^{\mathrm{stat}}\bigr|\le1.504\,\mathcal{E}\ \mathrm{s}^{-1},
-\qquad
-\bigl|c_2-c_2^{\mathrm{stat}}\bigr|\le2.916\,\mathcal{E}\ \mathrm{s}^{-2}.
+\bigl|c_j-c_j^{\mathrm{stat}}\bigr|\ \le\ \sum_i\bigl|w^{(j)}_i\bigr|\,\mathcal{E}(\rho_i)
+\ \le\ \Bigl(\textstyle\sum_i\bigl|w^{(j)}_i\bigr|\Bigr)\,\mathcal{E}(1).
 \label{eq:transfer}
 \end{equation}
-\end{corollary}
+The first form is the one used: $\mathcal{E}$ decays like $e^{-\mu\rho}$ across the
+window, so it is $7$ to $10$ times smaller than the uniform second form.
+\end{proposition}
+\begin{proof}
+Immediate from Proposition~\ref{prop:point} and $\mathcal{E}$ decreasing
+(Proposition~\ref{prop:bounds}).
+\end{proof}
 
-\begin{remark}[why this step is needed]\label{rem:whyneeded}
-Proposition~\ref{prop:bounds} bounds the \emph{moments}; the observables are a slope
-and a curvature, that is, \emph{derivatives}, and a bound on a function does not bound
-its derivative. Theorem~\ref{thm:point} bridges the gap by bounding $\ln\nu$ itself,
-pointwise, after which \eqref{eq:transfer} is elementary because $c_1$ and $c_2$ are
-bounded linear functionals of the profile. Without this step, ``the transient is
-negligible'' is an assertion, not a theorem.
-\end{remark}
-
-\subsection{The conditions, and what justifies each}\label{sec:conds}
-
-Theorem~\ref{thm:point} needs exactly three things, and each can be argued without
-reference to the measured rate.
-
-\begin{description}
-\item[(C1) $\lambda\ge5$--$6\,\mathrm{s}^{-1}$, i.e.\ $1/\lambda\le170$--$200$~ms.]
-$1/\lambda$ is the time constant of the low-pass filter carrying motor preparation to
-the gate. Dendauw et al.\ estimate $\lambda\approx20\,\mathrm{s}^{-1}$ ($50$~ms) in an
-immediate-report task, so this is three to four times more permissive than the
-published value. It is in principle identifiable from these data, since $\lambda$
-sets how fast the rate follows the stimulus; that check has not been carried out.
-\item[(C2) $\kappa\ge0.2\,\mathrm{s}^{-1}$, i.e.\ $1/\kappa\le5$~s.]
-$1/\kappa$ is the correlation time of the maintenance noise:
-$\Cov(\varepsilon(t),\varepsilon(t+r))\propto e^{-\kappa|r|}$ at stationarity, so it
-is the lag at which the fluctuation has decorrelated to $1/e$. Requiring it to be at
-most one trial says that what is maintained fluctuates \emph{within} a trial; a
-longer correlation time describes a drift carried across trials, for which the model
-has no term and which the randomised design averages out rather than expresses as a
-delay-period ramp. (C1) and (C2) are substitutes: $\lambda\to\lambda+1$ buys about
-what $\kappa\to2\kappa$ buys, so only one needs to be argued hard.
-\item[(C3) $a_\infty\le5$.] Not fitted. By \eqref{eq:m1flat} the expected number of
-partial activations per $2$~s delay window is $2\nustat=(\omega/\pi)e^{-a^{2}/2}$;
-at the largest $\omega$ in play this is one per $19$ trials at $a=3.3$, one per $246$
-at $a=4$, and \emph{one per $22\,000$ at $a=5$}. So $a\le5$ says only that the model
-must produce partial activations at all --- the experiment comprises of order $10^{4}$
-trials --- not that it must reproduce the observed rate.
-\end{description}
-
-\noindent With $\rho_0=1$~s, $a_\infty\le5$ and $\beta/\delta\le0.3$:
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Under \eqref{eq:conds}, $\mathcal{E}$ of \eqref{eq:point} is increasing in
+$a_\infty$ and, at $\rho=1$, maximised over $\kappa\ge0.2$ at $\kappa=0.2$; evaluating
+gives $\mathcal{E}(1)=0.353$ at $\lambda=5$, $0.133$ at $\lambda=6$ and $0.019$ at
+$\lambda=8$, which is (a). Feeding $\mathcal{E}(\rho_i)$ into \eqref{eq:transfer}
+gives (b) and (c):
 \begin{center}
-\begin{tabular}{rrccc}
+\begin{tabular}{rrrrr}
 \toprule
-$\lambda$ & $1/\lambda$ & $\kappa\ge0.2$ & $\kappa\ge0.5$ & $\kappa\ge1$\\
+$\lambda\ge$ & $1/\lambda$ & $\mathcal{E}(1)$ & slope error & curvature error\\
 \midrule
-$4$  & $250$ ms & $9.6\times10^{-1}$ & $6.4\times10^{-1}$ & $4.1\times10^{-1}$\\
-$5$  & $200$ ms & $3.5\times10^{-1}$ & $2.3\times10^{-1}$ & $1.4\times10^{-1}$\\
-$6$  & $167$ ms & $1.3\times10^{-1}$ & $8.4\times10^{-2}$ & $5.0\times10^{-2}$\\
-$8$  & $125$ ms & $1.9\times10^{-2}$ & $1.2\times10^{-2}$ & $6.7\times10^{-3}$\\
-$10$ & $100$ ms & $2.8\times10^{-3}$ & $1.6\times10^{-3}$ & $9.1\times10^{-4}$\\
+$4$ & $250$ ms & $0.96$  & $0.253$ & $0.446$\\
+$5$ & $200$ ms & $0.353$ & $0.081$ & $0.145$\\
+$6$ & $167$ ms & $0.133$ & $0.027$ & $0.049$\\
+$8$ & $125$ ms & $0.019$ & $0.0030$ & $0.0058$\\
 \bottomrule
 \end{tabular}
 \end{center}
-\noindent Values of $\mathcal{E}$. By \eqref{eq:transfer} the stationary formula then
-misstates a slope by at most $1.504\,\mathcal{E}$ and a curvature by at most
-$2.916\,\mathcal{E}$. At $\lambda\ge6$, $\kappa\ge0.2$: $\mathcal{E}=0.133$, so the
-slope error is $\pm0.20\,\mathrm{s}^{-1}$ against an observed
-$+0.867\,\mathrm{s}^{-1}$; at $\lambda\ge5$ it is $\pm0.53$, and at $\lambda\ge8$,
-$\pm0.029$. \emph{From here on we work with $\nustat$ and carry
-$1.504\,\mathcal{E}$ as the error bar on every slope.}
+\end{proof}
+
+\begin{remark}[why the transfer step is needed]\label{rem:whyneeded}
+Proposition~\ref{prop:bounds} bounds the \emph{moments}; the observables are a slope
+and a curvature, that is, \emph{derivatives}, and a bound on a function does not bound
+its derivative. Proposition~\ref{prop:point} bridges the gap by bounding $\ln\nu$
+itself, pointwise, after which \eqref{eq:transfer} is elementary because $c_1$ and
+$c_2$ are bounded linear functionals of the profile.
+\end{remark}
 
 \section{The stationary rate}\label{sec:stat}
 
@@ -466,9 +487,9 @@ The delay-period observations are: \textbf{(L1)} the level rises with duration;
 the level is larger after the long stimulus; \textbf{(S1)} the log-rate slope is
 $+0.867\,\mathrm{s}^{-1}$; \textbf{(S2)} it is shallower after the long stimulus,
 $0.896\to0.723$; \textbf{(S3)} shallower at high coherence, $0.871\to0.726$.
-Throughout, the error bars are those of Corollary~\ref{cor:transfer}; at
-$\lambda\ge6$, $\kappa\ge0.2$, $a_\infty\le5$ they are $\pm0.20\,\mathrm{s}^{-1}$
-on a slope.
+Throughout we assume \eqref{eq:conds} and use $\nustat$, with the error bars of
+Theorem~\ref{thm:main}(b): $\pm0.081\,\mathrm{s}^{-1}$ on a slope at $\lambda\ge5$,
+$\pm0.027$ at $\lambda\ge6$.
 
 \begin{corollary}[L1, L2: the level]\label{cor:P1}
 \emph{From Proposition~\ref{prop:level}, plus the saturation argument of the main
@@ -489,27 +510,26 @@ data. Not discriminating; a genuine disagreement.
 \end{corollary}
 
 \begin{corollary}[S1: the slope]\label{cor:P2}
-\emph{From Proposition~\ref{prop:statrate} and Corollary~\ref{cor:transfer}.}
+\emph{From Proposition~\ref{prop:statrate}(ii) and Theorem~\ref{thm:main}(b).}
 Model~1 predicts a slope of exactly $0$, hence a measured slope of at most
-$1.504\,\mathcal{E}$: $0.20\,\mathrm{s}^{-1}$ at $\lambda\ge6$, $0.029$ at
-$\lambda\ge8$ (with $\kappa\ge0.2$, $a_\infty\le5$). Model~2 predicts
-$\beta a(\rho)/(\delta\sigma_H)>0$, its only source of a ramp.
+$0.081\,\mathrm{s}^{-1}$ (at $\lambda\ge5$; $0.027$ at $\lambda\ge6$). Model~2
+predicts $\beta a(\rho)/(\delta\sigma_H)>0$, its only source of a ramp.
 \emph{Discriminating: the observed $+0.867\,\mathrm{s}^{-1}$ exceeds Model~1's
-ceiling by a factor of $4.3$ at $\lambda\ge6$ and $30$ at $\lambda\ge8$.}
+ceiling by a factor of $10.8$ at $\lambda\ge5$ and $33$ at $\lambda\ge6$.}
 \end{corollary}
 
 \begin{corollary}[S2, S3: the slope across conditions]\label{cor:P3}
-\emph{From Propositions~\ref{prop:statrate} and~\ref{prop:level},
-Corollaries~\ref{cor:transfer} and~\ref{cor:P1}.}
+\emph{From Propositions~\ref{prop:statrate},~\ref{prop:level} and~\ref{cor:P1},
+with Theorem~\ref{thm:main}(b).}
 Model~1 predicts a slope of zero in \emph{every} condition, hence a condition
-difference of at most $2\times1.504\,\mathcal{E}$: $0.40\,\mathrm{s}^{-1}$ at
-$\lambda\ge6$, $0.058$ at $\lambda\ge8$. Model~2 predicts a difference of definite
+difference of at most twice the slope error: $0.161\,\mathrm{s}^{-1}$ at
+$\lambda\ge5$, $0.053$ at $\lambda\ge6$. Model~2 predicts a difference of definite
 sign: the slope increases in $a$ while the level decreases in $a$, so any
 manipulation that raises the level lowers the slope, and by Corollary~\ref{cor:P1}
 duration and coherence both raise the level. \emph{The observed differences $0.173$
-and $0.145$ carry the sign Model~2 requires; they exceed Model~1's ceiling at
-$\lambda\ge8$ but not at $\lambda\ge6$, so this leg is the one that pays for a low
-$\lambda$.}
+and $0.145$ carry the sign Model~2 requires; at $\lambda\ge6$ they exceed Model~1's
+ceiling by $3.3$ and $2.7$, at $\lambda\ge5$ only marginally. This is the leg that
+pays for a low $\lambda$; S1 does not.}
 \end{corollary}
 
 \begin{remark}[on the curvature]\label{rem:curv}
@@ -524,21 +544,22 @@ observations; the discriminating role passes to S2 and S3.
 
 \section{Summary}
 
-At $\lambda\ge6$, $\kappa\ge0.2$, $a_\infty\le5$ (Section~\ref{sec:conds}):
+Under \eqref{eq:conds} --- $\lambda\ge5$, $\kappa\ge0.2$, $a_\infty\le5$ --- with the
+error bars of Theorem~\ref{thm:main}:
 \begin{center}
-\begin{tabular}{llll}
+\begin{tabular}{lllc}
 \toprule
 & Model 1 & Model 2 & verdict\\
 \midrule
 L1, L2 level & rises & rises & shared\\
 L3 interaction & shrinks & shrinks & shared; both fail\\
-S1 slope & $0$ ($\le0.20$) & $\beta a/\delta\sigma_H>0$ & \textbf{discriminating}, $4.3\times$\\
-S2, S3 by condition & $0$ ($\le0.40$) & sign forced & sign only at this $\lambda$\\
+S1 slope & $0\pm0.081$ & $\beta a/\delta\sigma_H>0$ & \textbf{discriminating}, $10.8\times$\\
+S2, S3 by condition & $0\pm0.161$ & sign forced & sign; magnitude at $\lambda\ge6$\\
 \bottomrule
 \end{tabular}
 \end{center}
-At $\lambda\ge8$ the two ceilings become $0.029$ and $0.058$, and S2--S3 discriminate
-by magnitude as well ($3.0\times$ and $2.5\times$).
+At $\lambda\ge6$ the ceilings are $0.027$ and $0.053$, and all three of S1--S3
+discriminate by magnitude ($33\times$, $3.3\times$, $2.7\times$).
 
 \section{Numerical verification}\label{sec:checks}
 
@@ -554,8 +575,8 @@ Prop.~\ref{prop:bounds} & $|\sigma_H^2/\Ain-1|\le\bar\Delta$ & worst ratio $1.00
 Prop.~\ref{prop:bounds} & $c_H/\Ain\le\bar\gamma$ & worst ratio $1.000000$\\
 Prop.~\ref{prop:bounds} & $|\sigma_{\dot H}^2/\Bin-1|\le(\lambda/\kappa)\bar\Delta$ & worst ratio $0.997226$\\
 Prop.~\ref{prop:bounds} & tightened $\bar\Delta,\bar\gamma,\bar e$ (50-digit) & worst ratios $1.000000$ (all three)\\
-Thm~\ref{thm:point} & $|\ln\nu-\ln\nustat|\le\mathcal{E}$, $71\,079$ points & $0$ violations, worst ratio $0.612$\\
-Cor.~\ref{cor:transfer} & the two functional norms $1.504$, $2.916$ & computed exactly\\
+Prop.~\ref{prop:point} & $|\ln\nu-\ln\nustat|\le\mathcal{E}$, $71\,079$ points & $0$ violations, worst ratio $0.612$\\
+Prop.~\ref{prop:transfer} & the two functional norms $1.504$, $2.916$ & computed exactly\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -565,7 +586,7 @@ $\beta/\delta\in\{0,0.05,0.3,1,3\}$, $a_\infty\in\{0.5,1,2,3.3,6,10\}$. The $X$ 
 were verified in 50-digit arithmetic because the combination
 $P_{\varepsilon\varepsilon}-2P_{\varepsilon H}+P_{HH}$ cancels catastrophically in
 double precision; points where $\mathcal{E}$ falls below double-precision resolution
-($10^{-10}$) were excluded from the Theorem~\ref{thm:point} check for the same reason.
+($10^{-10}$) were excluded from the Theorem~\ref{prop:point} check for the same reason.
 
 \section{Consequences for the paper}
 

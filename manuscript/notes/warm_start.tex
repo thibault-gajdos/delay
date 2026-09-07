@@ -72,7 +72,14 @@ first mode has zero coefficient and relaxation is at least as fast as $\lambda$.
 $\rho:=t-\tau$; $\beta/\delta$ is the speed of temporal preparation, with $\beta=0$
 under Model~1; $d(t)=g-|m|-(\beta/\delta)(t-t_{\mathrm{offset}})^{+}$ is the distance
 to the gate; $\varphi,\Phi$ are the standard normal density and c.d.f., and
-$g(u):=u\Phi(u)+\varphi(u)$, so $g'=\Phi$, $g''=\varphi$. Write
+$g(u):=u\Phi(u)+\varphi(u)$. Since $\varphi'(u)=-u\varphi(u)$, the two middle terms of
+$g'(u)=\Phi(u)+u\varphi(u)+\varphi'(u)$ cancel, so
+\begin{equation}
+g'=\Phi,\qquad g''=\varphi ,
+\label{eq:gprime}
+\end{equation}
+and $g$ is positive, strictly increasing and strictly convex, with
+$g(0)=1/\sqrt{2\pi}$. Write
 $s^{2}:=\sigma_\varepsilon^{2}/2\kappa$ and
 \begin{equation}
 \Ain:=\frac{\lambda s^{2}}{\lambda+\kappa},\qquad
@@ -92,11 +99,29 @@ process --- which requires no stationarity --- gives
 \begin{equation}
 \nu(t)=p_{Z(t)}(0)\,\E\bigl[\dot Z\mathbf{1}_{\{\dot Z>0\}}\mid Z=0\bigr]
 =\frac{\varphi(a)}{\sigma_H}\,G,
-\qquad G=M\Phi(u)+\sqrt S\,\varphi(u)=\sqrt S\,g(u),
+\qquad G:=\E\bigl[\dot Z\mathbf{1}_{\{\dot Z>0\}}\mid Z=0\bigr],
 \label{eq:nu}
 \end{equation}
-with $a=d/\sigma_H$, $M=\beta/\delta+(c_H/\sigma_H^{2})d$,
-$S=\sigma_{\dot H}^{2}-c_H^{2}/\sigma_H^{2}$ and $u=M/\sqrt S$.
+with $a:=d/\sigma_H$. Since $(Z,\dot Z)$ is jointly Gaussian, $\dot Z$ given $Z=0$ is
+$\mathrm{N}(M,S)$ with
+\begin{equation}
+M=\frac{\beta}{\delta}+\frac{c_H}{\sigma_H^{2}}\,d,
+\qquad
+S=\sigma_{\dot H}^{2}-\frac{c_H^{2}}{\sigma_H^{2}},
+\qquad
+u:=\frac{M}{\sqrt S},
+\label{eq:MSu}
+\end{equation}
+and the expected positive part of an $\mathrm{N}(M,S)$ variable is
+$M\Phi(u)+\sqrt S\,\varphi(u)$. Substituting $u=M/\sqrt S$ into $g$ gives
+$\sqrt S\,g(u)=\sqrt S\,(M/\sqrt S)\Phi(u)+\sqrt S\,\varphi(u)$, so
+\begin{equation}
+G=M\Phi(u)+\sqrt S\,\varphi(u)=\sqrt S\,g(u).
+\label{eq:Gid}
+\end{equation}
+Writing $G$ this way is what makes the estimates of Section~\ref{sec:proof} work: it
+separates the scale $\sqrt S$ from the shape $g(u)$, and $g$ has the two properties
+used there --- $g'=\Phi\le1$ and $\log g$ concave.
 
 \begin{proposition}[the stationary rate]\label{prop:statrate}
 Write $\nustat$ for \eqref{eq:nu} evaluated at the stationary moments \eqref{eq:stat},

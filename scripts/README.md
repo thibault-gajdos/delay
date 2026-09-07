@@ -3,14 +3,16 @@
 Two languages, split by job.
 
 **Python** owns the model: the stochastic simulation, the electromyographic detector, the
-parameter-space evaluation, the closed-form frontier, the extraction of events from the
-archive, and the figures. Nothing is fitted -- the models' predictions are derived
+parameter-space evaluation, the closed-form rate formulas, the extraction of events from
+the archive, and the figures. Nothing is fitted -- the models' predictions are derived
 analytically and their effect-size ranges come from sampling the parameter space, not from
 estimating a parameter vector.
 
 **R** owns the statistics that this project computes: the analyses of variance on the
-electromyographic and electroencephalographic measures, the trend decompositions, and the
-Poisson analyses of the partial-activation counts.
+electromyographic and electroencephalographic measures and the trend decompositions -- the LEVEL, TREND and
+QUAD contrasts on the binned measures, which since 2026-09-07 are the only statistics the
+paper reports on the partial-activation counts; the unbinned point-process analysis was
+removed with the cold start (see below).
 
 The behavioural analyses of variance of Tables 1 and S1 -- accuracy, response time, premotor
 and motor execution time -- were until 2026-09-01 the one set of analyses in the paper that
@@ -118,18 +120,33 @@ All paths below are relative to `scripts/` (run `cd scripts` first); `results/` 
 the managed virtualenv. The pipeline runs top to bottom: everything downstream of the sweep
 reads its dump.
 
-Everything downstream of the sweep and the frontier is wrapped in `./rerun.sh`, which runs
-the steps below in order and takes about two minutes. The sweep and the frontier are not in
-it: both are long and both are run sharded across cores by hand.
+Everything downstream of the sweep is wrapped in `./rerun.sh`, which runs the steps below
+in order and takes about two minutes. The sweep is not in it: it is long, and is run
+sharded across cores by `./run_warm_sweep.sh`.
+
+**The stationary start (2026-09-07).** `sim.py` now draws the maintenance noise at
+maintenance onset from its own stationary law rather than setting it to zero
+(`WARM_START`). One line, and it changes what the delay-period analysis can claim. Under
+the cold start the fluctuation of the signal about the maintained level carried a mode
+decaying at 2*kappa -- as slow as 0.4 /s over the sampled range -- so the transient
+outlasted the delay and every delay-period statement was conditional on it. Started at
+stationarity the transient decays at a rate of at least lambda >= 10 /s, so the analysis
+window (which opens 1 s after stimulus offset) lies wholly in the stationary regime, and
+Model 1's delay-period rate is exactly constant at every parameter setting. Two
+consequences run through this directory: the frontier has no content left, and the
+discriminating statistic is the raw-rate TREND rather than the log-rate slope. Cold-start
+dumps and outputs are kept under their unsuffixed names for comparison.
 
 ```
 python delaymodel/empirical.py    -> (printout)              extraction, checked against the archive
 python delaymodel/targets.py      -> (printout)              empirical summaries per cell
 
 # 1. the parameter-space evaluation  (~12 min over six shards; see fused_sweep.py below)
+#    ./run_warm_sweep.sh does this natively, one shard per core, resumable
 SHARD_N=6 SHARD_I=$i \
-  python fused_sweep.py 1200 4000 results/sweep_screened_sh$i.jsonl
-cat results/sweep_screened_sh*.jsonl > results/sweep_screened.jsonl
+  python fused_sweep.py 1200 4000 results/warm/shard_$i.jsonl
+python warm_summary.py            -> results/sweep_screened_warm.jsonl  the concatenated dump
+                                     results/warm_summary.json
 
 # 2. what it says, and how much of it is noise
 python effect_sizes.py results/sweep_screened.jsonl 4 4000 0
@@ -157,9 +174,14 @@ for G in 0.25 0.50 1.00; do tag=${G/./}
 done
 python leak_summary.py            -> results/leak_summary.json     the table quoted in the letter
 
-# 3. the analytic frontier, which needs no sampling at all
-python frontier.py                -> results/frontier.json         Model 1's ramp-rate frontier
+# 3. the analytic checks, which need no sampling at all
+python mkfig.py                   -> plots/fig_approx_error.pdf    error of the stationary
+                                                                   approximation over the
+                                                                   sampled domain (manuscript
+                                                                   Figure 8)
 python theory_checks.py           -> (printout)                    verification of the Appendix
+# frontier.py is RETIRED -- see its section below. It computed the cold-start ramp-rate
+# trade-off, which the stationary start abolishes.
 
 # 4. the CSV bridge, then the figures
 # order matters: export_for_R.py reads results/representative.json, and figures_space.py
@@ -175,10 +197,12 @@ python figures.py                 -> plots/fig_traj_m{1,2}.pdf     simulated dyn
                                      plots/fig_single.pdf
                                      plots/fig_rates.pdf
                                      plots/fig_shape.pdf
-python effect_panel.py            -> results/effect_panel.json     effect-size ranges vs observed
-python figures_space.py           -> plots/fig_effect_sizes.pdf    those ranges, as a panel
-                                     plots/fig_frontier.pdf        the frontier with the draws
-                                     plots/fig_delay_profiles.pdf  the delay rate curve
+python effect_panel.py            -> results/effect_panel_warm.json  effect-size ranges vs observed
+python figures_space.py           -> plots/fig_effect_sizes_warm.pdf  those ranges, as a panel
+                                     plots/fig_rate_trend_warm.pdf    rate against trend, both models
+                                     plots/fig_delay_profiles_warm.pdf  the delay rate curve
+# the *_warm suffix is automatic when the dump name contains "warm", so the committed
+# cold-start outputs are never overwritten
 
 # 5. the statistics, in R
 Rscript R/run_stats.R             -> R/stats_tables.txt            all tables (empirical)
@@ -406,7 +430,20 @@ Model 1, so it is exactly the region a bound must not approximate away.
 and two constants taken from the discarded fit; the ceiling is superseded by the frontier
 below. The old name survives only in the git history.)
 
-### `frontier.py` -- the ramp-rate frontier of both models
+### `frontier.py` -- the ramp-rate frontier of both models (RETIRED 2026-09-07)
+
+**This script computed a property of the COLD-START model and no longer describes what the
+paper claims.** Its whole content was the trade-off Model 1 faced between the delay-period
+ramp and the delay-period rate, a trade-off that existed only because Model 1's sole route
+to a ramp was the filling-in of the maintenance variance. With the stationary start there
+is no filling-in inside the analysis window: Model 1's rate is exactly constant, the
+largest delay-period trend the formulas return anywhere in the sampled ranges is 3e-11
+/s^2, and the frontier degenerates to a flat line at zero. `figures_space.fig_frontier`
+accordingly refuses to draw it from a warm dump, and manuscript Figure 5 is now the
+rate-against-trend scatter (`fig_rate_trend`), which needs no computed envelope because
+the boundary of what Model 1 can do is the horizontal axis. The section below is kept as
+the record of what the cold-start argument was.
+
 Sharded over the lambda grid: `FR_MODEL`, `FR_SHARD_N`, `FR_SHARD_I` write
 `results/frontier_m{model}_sh{i}.npz`, and `python3 frontier.py merge` combines them into
 `results/frontier.json`. Sharding by lambda is exact -- the scatter is a product grid, no
@@ -508,6 +545,14 @@ Result, on the 164 draws admissible for Model 1 and the 148 for Model 2 at gamma
 | 0.50  | 151           | 143           | 139/148      | 140/148     | 77                          | 0              |
 | 1.00  | 144           | 131           | 141/148      | 141/148     | 75                          | 0              |
 
+**Not yet re-run under the stationary start (2026-09-07).** The table above is cold-start:
+its draw list, its admissible counts (164/148) and its "all six delay slopes > 0" column
+all come from `results/sweep_screened.jsonl`. The warm counts are 160/145 and the
+discriminating statistic is now the raw-rate trend (78/145 against 0/160), so the leak
+check should be repeated on `results/sweep_screened_warm.jsonl` before the letter quotes
+it again. Nothing about the leak argument depends on the initial condition, so the verdict
+is not expected to move; the numbers will.
+
 Nothing directional moves, and Model 1 is excluded at every leak rate. What erodes is
 admissibility itself, and the draws that drop out are those with the smallest `k*c/theta`
 (median 5.4 against 7.9 for those that survive): a leak caps the accumulator at `k*c/gamma`,
@@ -520,7 +565,19 @@ the response letter (C2.3), not in the manuscript.
 Stage 1 distils the sweep dump into the counts and distributions quoted in the manuscript.
 Stage 2 measures how much of the reported spread is simulation noise rather than parameter
 sensitivity, by re-simulating a subset of admissible draws on several seeds and decomposing
-the variance of the per-draw slope into between-draw and within-draw (Monte-Carlo) parts.
+the variance of the per-draw trend into between-draw and within-draw (Monte-Carlo) parts.
+
+Since 2026-09-07 the statistic throughout is TREND -- the linear orthogonal polynomial
+contrast of the raw rate, in /s^2 -- and not the offset-Poisson log-rate slope. The
+log-rate slope is a ratio, so a draw can earn a steep one by ramping from almost nothing;
+the trend is the product of the level and the relative rise, so it demands both, which is
+what the observation shows. The acceptance band is the between-participant 95% confidence
+interval on the observed trend, [0.375, 0.745] /s^2, and not the spread of the six
+condition means ([0.469, 0.634], still reported alongside): a spread across conditions is
+not an uncertainty on the quantity a model is asked to reproduce. Both counts are in the
+output, as are two prior-free summaries -- `pct_of_observed` (Model 2: 96.6) and
+`ratio_observed_to_max` (Model 1: 75) -- which are what the Results lead with, because a
+count of draws in a band reports the Latin-hypercube prior as much as the architecture.
 Shardable through `ES_SHARD_N`/`ES_SHARD_I`. Pool the per-draw values from the shard logs
 with `pool_noise.py` rather than averaging the shards' own decompositions: a between-draw
 variance estimated from seven draws is worthless, and one shard duly reported a

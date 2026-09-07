@@ -38,3 +38,4 @@ manuscript/notes/*.aux
 manuscript/notes/*.log
 manuscript/notes/*.out
 manuscript/notes/log.txt
+scripts/results/warm/

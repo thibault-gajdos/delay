@@ -105,8 +105,7 @@ def fig_rate_trend(fname=None):
     # are conservative and Model 1's departure from zero is entirely accounted for.
     ax.text(0.0095, -0.245, 'Model 1: zero trend at every admissible setting (largest '
                             'attainable over the\nsampled ranges, $3\\times10^{-11}$ '
-                            's$^{-2}$). The small negative offset of the simulated\npoints '
-                            'is the excluded response burst, not a prediction.',
+                            's$^{-2}$). The scatter of the simulated points is\nMonte-Carlo noise and their small negative offset is the excluded\nresponse burst; neither is a prediction.',
             color=C_M1, fontsize=7.0, va='bottom', linespacing=1.5)
     ax.axhspan(*OBS_TCI, color='0.86', zorder=0)
     ax.errorbar([OBS_RATE], [OBS_TREND],

@@ -1,5 +1,17 @@
-"""Appendix figure: how far the stationary rate is from the exact rate,
-over the sampled parameter domain.  Analytic -- no simulation needed."""
+"""Appendix figure: how far the stationary rate is from the exact rate, over the
+sampled parameter domain.  Analytic -- no simulation needed.
+
+The comparison is between the rate computed from the EXACT second-order moments of the
+maintained fluctuation, transient included, and the rate computed from their stationary
+limits.  Both use the stationary start for the maintenance noise, which is what makes the
+comparison worth drawing: the transient then decays at a rate of at least the filter gain
+lambda, so by the time the analysis window opens, 1 s after stimulus offset, the two
+agree to well under a millionth.  Started instead from zero the fluctuation would carry a
+third mode decaying at 2*kappa, as slow as 0.4 /s over the sampled range, and the window
+would sit inside the transient rather than after it.
+
+Writes plots/fig_approx_error.{pdf,png}.  Usage: python3 mkfig.py [DUMP.jsonl]
+"""
 import json, numpy as np, matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -28,12 +40,14 @@ def rate_stat(l, k, bd, d):
     s2 = 1/(2*k); Ai = l*s2/(k+l); Bi = l**2*s2*k/(k+l); us = bd/np.sqrt(Bi)
     return phi(d/np.sqrt(Ai))/np.sqrt(Ai)*(bd*Phi(us) + np.sqrt(Bi)*phi(us))
 
+import sys, os
+DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened_warm.jsonl'
 rho = np.geomspace(0.02, 3.0, 500)
 fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.9), sharey=True)
 for ax, mod, col, nm in [(axes[0], 'model1', C_M1, 'Model 1'),
                          (axes[1], 'model2', C_M2, 'Model 2')]:
     n, worst = 0, 0.0
-    for line in open('results/sweep_screened.jsonl'):
+    for line in open(DUMP):
         j = json.loads(line); p = j['params']
         l, k = p['lam'], p['kappa']
         beta = j['beta'] if mod == 'model2' else 0.0
@@ -56,5 +70,7 @@ for ax, mod, col, nm in [(axes[0], 'model1', C_M1, 'Model 1'),
 axes[0].set_ylabel(r'$|\,\nu\,/\,\nu_{\rm stat}-1\,|$   (%)')
 axes[0].text(1.06, 90, 'analysis\nwindow', fontsize=6.5, color='0.35', va='top')
 axes[0].text(0.022, 1.6, '1%', fontsize=6.5, color='0.45')
-fig.savefig('/tmp/approx_error.pdf', bbox_inches='tight')
-fig.savefig('/tmp/approx_error.png', dpi=200, bbox_inches='tight')
+os.makedirs('plots', exist_ok=True)
+fig.savefig('plots/fig_approx_error.pdf', bbox_inches='tight')
+fig.savefig('plots/fig_approx_error.png', dpi=200, bbox_inches='tight')
+print('wrote plots/fig_approx_error.pdf')

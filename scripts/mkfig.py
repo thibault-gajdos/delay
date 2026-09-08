@@ -1,14 +1,19 @@
 """Appendix figure: how far the stationary rate is from the exact rate, over the
-sampled parameter domain.  Analytic -- no simulation needed.
+admissible draws.  Analytic -- no simulation needed.
 
 The comparison is between the rate computed from the EXACT second-order moments of the
 maintained fluctuation, transient included, and the rate computed from their stationary
 limits.  Both use the stationary start for the maintenance noise, which is what makes the
 comparison worth drawing: the transient then decays at a rate of at least the filter gain
-lambda, so by the time the analysis window opens, 1 s after stimulus offset, the two
-agree to well under a millionth.  Started instead from zero the fluctuation would carry a
-third mode decaying at 2*kappa, as slow as 0.4 /s over the sampled range, and the window
-would sit inside the transient rather than after it.
+lambda, so by the time the analysis window opens, 1 s after stimulus offset, it is spent.
+Started instead from zero the fluctuation would carry a third mode decaying at 2*kappa,
+as slow as 0.4 /s over the sampled range, and the window would sit inside the transient
+rather than after it.
+
+Restricted to the admissible draws, which is where the model is used.  Over the whole
+sampled box the error reaches a per cent, on draws whose standardized distance to the
+gate is 30 or more and whose rate is therefore unmeasurable; admissibility caps that
+distance, and with it the amplification (Appendix, Corollary A.2).
 
 Writes plots/fig_approx_error.{pdf,png}.  Usage: python3 mkfig.py [DUMP.jsonl]
 """
@@ -23,21 +28,30 @@ plt.rcParams.update({'font.size': 8, 'axes.labelsize': 8.5, 'legend.fontsize': 7
 Phi, phi = norm.cdf, norm.pdf
 C_M1, C_M2 = '#c1272d', '#3182bd'
 
-def moments(r, l, k):
-    """Warm-start second-order moments of H:  sigma_H^2, c_H, sigma_Hdot^2."""
-    s2 = 1/(2*k); Ai = l*s2/(k+l); Bi = l**2*s2*k/(k+l)
+def moments(r, l, k, s2):
+    """Warm-start second-order moments of H:  sigma_H^2, c_H, sigma_Hdot^2.
+
+    s2 is SD_eps**2, the STATIONARY variance of the maintenance fluctuation, which is
+    what the sweep samples.  It does not cancel from the ratio this figure plots: it
+    sets sigma_H, hence the standardized distance to the gate a = d/sigma_H, and the
+    rate depends on a through a Gaussian, so the error is amplified by a factor of
+    order a^2.  Hard-coding sigma_eps = 1 here (s2 = 1/(2k), as an earlier version did)
+    inflates sigma_H by one to two orders of magnitude over the sampled range, deflates
+    a by the same factor, and understates the error by four orders of magnitude.
+    """
+    Ai = l*s2/(k+l); Bi = l**2*s2*k/(k+l)
     E1, E2 = np.exp(-(l+k)*r), np.exp(-2*l*r)
     X = (l+k)*(E2-E1)/(l-k) if abs(l-k) > 1e-12 else -2*l*r*E2
     return Ai*(1+X-E1), -l*X*Ai, Bi*(1+(l/k)*(X+E1)), Ai, Bi
 
-def rate(r, l, k, bd, d):
-    A, cH, B, _, _ = moments(r, l, k); sH = np.sqrt(A)
+def rate(r, l, k, s2, bd, d):
+    A, cH, B, _, _ = moments(r, l, k, s2); sH = np.sqrt(A)
     M = bd + cH/A*d; S = np.where(B - cH**2/A > 0, B - cH**2/A, np.nan)
     u = M/np.sqrt(S)
     return phi(d/sH)/sH*(M*Phi(u) + np.sqrt(S)*phi(u))
 
-def rate_stat(l, k, bd, d):
-    s2 = 1/(2*k); Ai = l*s2/(k+l); Bi = l**2*s2*k/(k+l); us = bd/np.sqrt(Bi)
+def rate_stat(l, k, s2, bd, d):
+    Ai = l*s2/(k+l); Bi = l**2*s2*k/(k+l); us = bd/np.sqrt(Bi)
     return phi(d/np.sqrt(Ai))/np.sqrt(Ai)*(bd*Phi(us) + np.sqrt(Bi)*phi(us))
 
 import sys, os
@@ -49,13 +63,14 @@ for ax, mod, col, nm in [(axes[0], 'model1', C_M1, 'Model 1'),
     n, worst = 0, 0.0
     for line in open(DUMP):
         j = json.loads(line); p = j['params']
-        l, k = p['lam'], p['kappa']
+        if not j[mod]['admissible']: continue
+        l, k, s2 = p['lam'], p['kappa'], p['SDe']**2
         beta = j['beta'] if mod == 'model2' else 0.0
         bd = beta/(3.0 + p['LRS'] - p['Lmotion'])
         d = (p['g'] - p['theta']) - bd*rho
         if np.any(d <= 0): continue
         with np.errstate(all='ignore'):
-            e = np.abs(rate(rho, l, k, bd, d)/rate_stat(l, k, bd, d) - 1)
+            e = np.abs(rate(rho, l, k, s2, bd, d)/rate_stat(l, k, s2, bd, d) - 1)
         if not np.all(np.isfinite(e)): continue
         ax.plot(rho, np.maximum(100*e, 1e-7), color=col, lw=.35, alpha=.15, zorder=1)
         n += 1; worst = max(worst, e[rho >= 1.0].max())
@@ -64,7 +79,7 @@ for ax, mod, col, nm in [(axes[0], 'model1', C_M1, 'Model 1'),
     ax.set_xlim(0.02, 3); ax.set_ylim(1e-6, 300)
     ax.axhline(1.0, color='0.55', lw=.7, ls=':', zorder=2)
     ax.set_xlabel('elapsed maintenance time (s)')
-    ax.set_title(f'{nm}, {n} parameter draws', fontsize=8)
+    ax.set_title(f'{nm}, {n} admissible draws', fontsize=8)
     ax.set_xticks([0.02, 0.1, 0.3, 1, 3]); ax.set_xticklabels(['0.02','0.1','0.3','1','3'])
     print(f'{nm}: n={n}, largest error inside the window = {100*worst:.2e} %')
 axes[0].set_ylabel(r'$|\,\nu\,/\,\nu_{\rm stat}-1\,|$   (%)')

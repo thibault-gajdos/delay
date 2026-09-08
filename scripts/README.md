@@ -545,13 +545,25 @@ Result, on the 164 draws admissible for Model 1 and the 148 for Model 2 at gamma
 | 0.50  | 151           | 143           | 139/148      | 140/148     | 77                          | 0              |
 | 1.00  | 144           | 131           | 141/148      | 141/148     | 75                          | 0              |
 
-**Not yet re-run under the stationary start (2026-09-07).** The table above is cold-start:
-its draw list, its admissible counts (164/148) and its "all six delay slopes > 0" column
-all come from `results/sweep_screened.jsonl`. The warm counts are 160/145 and the
-discriminating statistic is now the raw-rate trend (78/145 against 0/160), so the leak
-check should be repeated on `results/sweep_screened_warm.jsonl` before the letter quotes
-it again. Nothing about the leak argument depends on the initial condition, so the verdict
-is not expected to move; the numbers will.
+**Re-run under the stationary start (2026-09-07)**, on the 220 draws admissible in either
+model at zero leak (`leak_index.py`; 222 under the cold start). This is the version the
+letter should quote; the cold table above is kept for comparison.
+`results/leak_summary_warm.json`:
+
+| gamma | M1 adm. | M2 adm. | RT coherence | RT duration | M2 all six delay trends > 0 | M1 all six > 0 |
+|-------|---------|---------|--------------|-------------|-----------------------------|----------------|
+| 0.00  | 160     | 145     | 136/145      | 136/145     | 78                          | 0              |
+| 0.25  | 155     | 143     | 137/145      | 137/145     | 76                          | 0              |
+| 0.50  | 152     | 142     | 136/145      | 137/145     | 71                          | 0              |
+| 1.00  | 138     | 130     | 138/145      | 137/145     | 77                          | 0              |
+
+The verdict is the one the cold run gave, and it is now stated on the statistic the paper
+actually reports: **Model 1 never produces all six condition trends significantly positive,
+at any leak rate**, which is Corollary A.2 holding under a perturbation the corollary does
+not cover, while Model 2 does so at roughly half its admissible draws throughout. The
+log-rate slope column agrees to within three draws at every leak rate. Admissibility itself
+erodes as before (160 -> 138 and 145 -> 130 at gamma = 1), and the draws that drop out are
+again those with the smallest `k*c/theta` (median 5.4 against 7.8 for those that survive).
 
 Nothing directional moves, and Model 1 is excluded at every leak rate. What erodes is
 admissibility itself, and the draws that drop out are those with the smallest `k*c/theta`

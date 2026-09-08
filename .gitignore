@@ -17,6 +17,9 @@ scripts/.venv/
 scripts/results/logs/
 scripts/results/*.jsonl
 scripts/results/leak/*.jsonl
+scripts/results/leak/*/*.jsonl
+scripts/results/leak/*/log_*.txt
+scripts/results/leak/*/.shards
 !scripts/results/ramp_check.jsonl
 scripts/plots/*.pdf
 scripts/__pycache__/

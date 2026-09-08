@@ -8,15 +8,12 @@ Environment:
   GAMMA    the leak rate (required)
   OUT      the shard's output file (required)
   IDX      the JSON list of draw indices to re-run
-           (default results/leak/warm/adm_idx.json, written by leak_index.py)
+           (default results/leak/adm_idx.json, written by leak_index.py)
   SHARD_N, SHARD_I   split the draw list across cores
 
-Two things changed on 2026-09-07, when the maintenance noise was given its stationary
-start.  The draw list is now built from the WARM dump, since which draws are admissible
-moved (164/148 -> 160/145); and each record carries the raw-rate TREND criterion beside
-the log-rate slope criterion, the trend being the statistic the Results cite.  The paths
-are resolved from this file's own location rather than from $HOME, so the script runs
-wherever the repository is checked out.
+Each record carries the raw-rate TREND criterion beside the log-rate slope criterion, the
+trend being the statistic the Results cite.  Paths are resolved from this file's own
+location, so the script runs wherever the repository is checked out.
 """
 import os, sys, json, time
 import numpy as np
@@ -29,7 +26,7 @@ from delaymodel import sim as SIM
 
 GAMMA = float(os.environ['GAMMA'])
 OUT = os.environ['OUT']
-IDX_PATH = os.environ.get('IDX', os.path.join(HERE, 'results/leak/warm/adm_idx.json'))
+IDX_PATH = os.environ.get('IDX', os.path.join(HERE, 'results/leak/adm_idx.json'))
 IDX = json.load(open(IDX_PATH))
 sh_n = int(os.environ.get('SHARD_N', '1'))
 sh_i = int(os.environ.get('SHARD_I', '0'))

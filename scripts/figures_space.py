@@ -9,19 +9,10 @@ than from a single simulated trial.
                          observation. Under the stationary start Model 1's trend is zero
                          analytically, so the panel needs no computed frontier: the
                          boundary of what Model 1 can do is the horizontal axis.
-  fig_frontier.pdf       RETIRED. It drew the ramp-rate frontier of the COLD-START model,
-                         where Model 1 could buy a log-rate ramp out of the sigma_H
-                         transient and the figure's content was the trade-off between that
-                         ramp and the rate. With the stationary start there is no transient
-                         to buy from -- the largest delay-period trend attainable over the
-                         sampled ranges is 3e-11 /s^2 -- so the trade-off curve degenerates
-                         to a flat line at zero and the figure has nothing left to show.
-                         Kept behind a flag, and only for the cold-start dump.
   fig_delay_profiles.pdf The delay-period rate curve itself, observed against what each
                          architecture produces over its admissible space.
 
-Inputs: results/sweep_screened_warm.jsonl, results/effect_panel_warm.json,
-pma_counts.csv (and results/frontier.json only for the retired frontier figure).
+Inputs: results/sweep_screened.jsonl, results/effect_panel.json, pma_counts.csv.
 Usage: python3 figures_space.py [DUMP.jsonl]
 """
 import json, csv, os, sys
@@ -50,8 +41,7 @@ OBS_RATE, OBS_RMIN, OBS_RMAX = 0.709, 0.085, 2.785
 OBS_TREND, OBS_TLO, OBS_THI = 0.5604, 0.4685, 0.6342
 OBS_TCI = (0.3753, 0.7454)
 
-DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened_warm.jsonl'
-SFX = '_warm' if 'warm' in os.path.basename(DUMP) else ''
+DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
 recs = [json.loads(l) for l in open(DUMP)]
 
 
@@ -86,7 +76,7 @@ def fig_rate_trend(fname=None):
     the stationary start, so its cloud has to sit on the dotted line whatever its rate --
     no envelope is computed here, and none is needed.
     """
-    fname = fname or f'plots/fig_rate_trend{SFX}.pdf'
+    fname = fname or 'plots/fig_rate_trend.pdf'
     fig, ax = plt.subplots(figsize=(5.6, 4.0))
     for tag, col, lab in [('model1', C_M1, 'Model 1, admissible draws'),
                           ('model2', C_M2, 'Model 2, admissible draws')]:
@@ -122,54 +112,6 @@ def fig_rate_trend(fname=None):
     print('wrote', fname)
 
 
-# --------------------------------------------------- 1b. the retired cold-start frontier
-def fig_frontier(fname='plots/fig_frontier.pdf'):
-    if SFX:
-        print('skipping fig_frontier: it is a cold-start figure (see the module docstring)')
-        return
-    FR = json.load(open('results/frontier.json'))
-    OBS_SLOPE, OBS_SLO, OBS_SHI = 0.892, 0.659, 1.029
-    fig, ax = plt.subplots(figsize=(5.6, 4.0))
-    env = sorted(FR['models']['model1']['envelope'], key=lambda r: r['rate'])
-    x = np.array([e['rate'] for e in env]); y = np.array([e['slope_at_least'] for e in env])
-    # shade what Model 1 CANNOT reach, not what it can: the eye reads a shaded region as
-    # excluded, and the excluded region is the one above the frontier
-    ax.fill_between(x, y, 4.0, color=C_M1, alpha=.06, lw=0, zorder=0)
-    ax.plot(x, y, color=C_M1, lw=1.6, zorder=3,
-            label='Model 1: largest attainable slope (exact)')
-    ax.text(0.011, 2.15, 'beyond Model 1', color=C_M1, fontsize=7.5, style='italic')
-    if 'model2' in FR['models']:
-        # Model 2's frontier is far off the top of any scale that shows the draws, so it
-        # is annotated rather than drawn: putting it on the axis would compress everything
-        # else into a line. The annotation is anchored at the observed rate, and says so --
-        # "here" alone left the reader to guess what the number referred to.
-        v2 = FR['models']['model2']['max_slope_at_observed_rate']
-        ax.annotate(f"at the observed rate Model 2 reaches {v2['slope']:+.1f} s$^{{-1}}$\n"
-                    f"(its frontier, off the top of the panel)",
-                    xy=(OBS_RATE * 2.6, 2.50), xytext=(OBS_RATE, 1.60), ha='center',
-                    fontsize=7.5, color=C_M2, linespacing=1.35,
-                    arrowprops=dict(arrowstyle='->', color=C_M2, lw=1.2))
-    for tag, col, lab in [('model1', C_M1, 'Model 1, admissible draws'),
-                          ('model2', C_M2, 'Model 2, admissible draws')]:
-        r, s, _, _ = per_model(tag, 'slope')
-        ax.scatter(r, s, s=9, facecolor='none', edgecolor=col, lw=.6, alpha=.75,
-                   zorder=2, label=lab)
-    ax.axhspan(OBS_SLO, OBS_SHI, color='0.86', zorder=1)
-    ax.errorbar([OBS_RATE], [OBS_SLOPE],
-                xerr=[[OBS_RATE - OBS_RMIN], [OBS_RMAX - OBS_RATE]], fmt='none',
-                ecolor='0.55', elinewidth=.8, capsize=2, zorder=5)
-    ax.plot([OBS_RATE], [OBS_SLOPE], marker='*', ms=13, color=C_OBS, zorder=6,
-            label='observed')
-    ax.set_xscale('log')
-    ax.set_xlim(8e-3, 4.0); ax.set_ylim(-1.7, 2.6)
-    ax.set_xlabel('delay-period partial-activation rate (s$^{-1}$)')
-    ax.set_ylabel('delay-period log-rate slope (s$^{-1}$)')
-    ax.axhline(0, color='0.75', lw=.7, ls=':')
-    ax.legend(loc='lower left', frameon=False, handletextpad=.5)
-    fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
-    print('wrote', fname)
-
-
 # ------------------------------------------------------------ 2. the delay profile
 def fig_delay_profiles(fname=None):
     """The shape of the delay-period rate curve, one line per admissible parameter set.
@@ -181,7 +123,7 @@ def fig_delay_profiles(fname=None):
     architecture CAN produce the observed rise, not what it does at a typical setting, and a
     band taken bin by bin mixes profiles that are not comparable.
     """
-    fname = fname or f'plots/fig_delay_profiles{SFX}.pdf'
+    fname = fname or 'plots/fig_delay_profiles.pdf'
     t = np.arange(20) * 0.1 + 0.05
     cnt, expo = observed_profile()
     obs = cnt / (expo * 0.1)
@@ -223,8 +165,8 @@ def fig_effect_sizes(fname=None):
     the median; the vertical line is the observed value with its 95% CI shaded. A bar that
     does not reach the line is a quantitative failure of that model on that effect.
     Panels are lettered A-I in the order of effect_panel.NAMES."""
-    fname = fname or f'plots/fig_effect_sizes{SFX}.pdf'
-    P = json.load(open(f'results/effect_panel{SFX}.json'))
+    fname = fname or 'plots/fig_effect_sizes.pdf'
+    P = json.load(open('results/effect_panel.json'))
     keys = list(P['names'])
     ncol = 3
     nrow = int(np.ceil(len(keys) / ncol))
@@ -289,5 +231,4 @@ if __name__ == '__main__':
     os.makedirs('plots', exist_ok=True)
     fig_effect_sizes()
     fig_rate_trend()
-    fig_frontier()
     fig_delay_profiles()

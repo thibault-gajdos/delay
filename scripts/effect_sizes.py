@@ -46,7 +46,7 @@ Usage: python3 effect_sizes.py DUMP.jsonl [N_SEEDS] [NTR] [N_SUBSET]
 import json, sys, os, numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened_warm.jsonl'
+DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
 N_SEEDS = int(sys.argv[2]) if len(sys.argv) > 2 else 4
 NTR = int(sys.argv[3]) if len(sys.argv) > 3 else 4000
 N_SUBSET = int(sys.argv[4]) if len(sys.argv) > 4 else 40
@@ -58,12 +58,9 @@ SHARD_I = int(os.environ.get('ES_SHARD_I', '0'))
 _argv, sys.argv = sys.argv, sys.argv[:1]
 import fused_sweep as F
 sys.argv = _argv
-# Keep the cold-start outputs: a warm dump writes to *_warm.json so the previously
-# committed cold-start files are never overwritten.
-_SFX = '_warm' if 'warm' in os.path.basename(DUMP) else ''
-OUT = (f'results/effect_sizes_stage1{_SFX}.json' if N_SUBSET <= 0 else
-       f'results/effect_sizes{_SFX}_sh{SHARD_I}.json' if SHARD_N > 1
-       else f'results/effect_sizes{_SFX}.json')
+OUT = ('results/effect_sizes_stage1.json' if N_SUBSET <= 0 else
+       f'results/effect_sizes_sh{SHARD_I}.json' if SHARD_N > 1
+       else 'results/effect_sizes.json')
 
 # Observed per-condition delay-period TREND (raw-rate linear contrast, /s^2).  Unlike the
 # log-rate slope this statistic is LINEAR in the rate, so the mean of the per-cell,

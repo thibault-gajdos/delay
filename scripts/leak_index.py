@@ -1,17 +1,15 @@
 """leak_index.py -- the draw list the leak reruns walk.
 
-Every draw admissible in EITHER model at gamma = 0, taken from the sweep dump given on
-the command line (default: the stationary-start dump).  Written next to the dump's own
-leak directory so the cold-start list is not overwritten.
+Every draw admissible in EITHER model at gamma = 0, taken from the sweep dump.  220 draws
+as of the stationary-start sweep.
 
 Usage:  python3 leak_index.py [DUMP.jsonl]
 """
 import json, os, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened_warm.jsonl'
-SFX = 'warm' if 'warm' in os.path.basename(DUMP) else 'cold'
-OUT = os.path.join(HERE, f'results/leak/{SFX}/adm_idx.json')
+DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
+OUT = os.path.join(HERE, 'results/leak/adm_idx.json')
 
 recs = [json.loads(l) for l in open(os.path.join(HERE, DUMP))]
 idx = sorted(r['draw'] for r in recs

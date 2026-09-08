@@ -46,7 +46,7 @@ decomposition its meaning.
         almost nothing, and the trend -- being linear in the rate -- requires the level
         and the ramp together, which is what the observation actually shows.
 
-Writes results/effect_panel[_warm].json.  Usage: python3 effect_panel.py [DUMP.jsonl]
+Writes results/effect_panel.json.  Usage: python3 effect_panel.py [DUMP.jsonl]
 """
 import json, sys, os
 import numpy as np
@@ -54,10 +54,8 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from delaymodel.targets import build
 
-DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened_warm.jsonl'
-# Keep the cold-start outputs: a warm dump writes to *_warm.json so the previously
-# committed cold-start figure inputs are never overwritten.
-OUT = 'results/effect_panel%s.json' % ('_warm' if 'warm' in os.path.basename(DUMP) else '')
+DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
+OUT = 'results/effect_panel.json'
 # cell order (targets.LAB): 0-2 = 0.3 s at 0/12/50% coherence, 3-5 = 2.0 s at 0/12/50%
 SHORT, LONG = [0, 1, 2], [3, 4, 5]
 C0, C50 = [0, 3], [2, 5]
@@ -186,7 +184,7 @@ for tag in ['model1', 'model2']:
         raise SystemExit(f"{DUMP} predates the srate/pmet fields -- rerun fused_sweep.py")
     if adm and 'trend' not in adm[0]['raw']:
         raise SystemExit(f"{DUMP} predates the raw-rate trend contrast -- rerun "
-                         "fused_sweep.py (the cold-start dumps record only `slope`)")
+                         "fused_sweep.py")
     rows = [effects(*[np.asarray(m['raw'][k], float) for k in
                       ('acc', 'rt_mean', 'srate', 'rate', 'pmet_mean', 'met_mean', 'prem',
                        'trend')]) for m in adm]

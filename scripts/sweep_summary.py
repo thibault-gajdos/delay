@@ -1,8 +1,8 @@
 """Summarise the stationary-start sweep against the observed delay-period statistics.
 
-Run after run_warm_sweep.sh:  python3 warm_summary.py
-Reads results/warm/shard_*.jsonl, writes results/sweep_screened_warm.jsonl and
-results/warm_summary.json.
+Run after run_sweep.sh:  python3 sweep_summary.py
+Reads results/shards/shard_*.jsonl, writes results/sweep_screened.jsonl and
+results/sweep_summary.json.
 
 Observed targets are the raw-rate contrasts on the 20 delay bins of
 PMA_rate_delay_JASP.csv, in the same units the sweep reports.  Their F-statistics
@@ -14,11 +14,11 @@ import json, glob, numpy as np
 OBS = dict(rate=0.7091, trend=0.5604, curv=0.2099)      # s^-1, s^-2, s^-3
 
 rows = []
-for f in sorted(glob.glob("results/warm/shard_*.jsonl")):
+for f in sorted(glob.glob("results/shards/shard_*.jsonl")):
     rows += [json.loads(l) for l in open(f)]
 rows.sort(key=lambda r: r["draw"])
 assert len({r["draw"] for r in rows}) == len(rows), "duplicate draw indices"
-with open("results/sweep_screened_warm.jsonl", "w") as f:
+with open("results/sweep_screened.jsonl", "w") as f:
     for r in rows:
         f.write(json.dumps(r) + "\n")
 
@@ -55,5 +55,5 @@ for m in ("model1", "model2"):
         d[nm] = dict(median=float(np.median(v)), frac_positive=float((v > 0).mean()))
     out["models"][m] = d
 
-json.dump(out, open("results/warm_summary.json", "w"), indent=2)
+json.dump(out, open("results/sweep_summary.json", "w"), indent=2)
 print(json.dumps(out, indent=2))

@@ -58,9 +58,10 @@ dependencies once.
 scripts/
   delaymodel/          the model package: sim.py, empirical.py, targets.py
   *.py                 flat, top-level entry-point scripts
-  results/             the citable outputs (JSON, tracked), the sweep dumps and logs/
-                       (both regenerable, untracked), and leak/ (the C2.3 leak reruns)
-  plots/               figures written by figures.py and figures_space.py
+  results/             the citable outputs (JSON, tracked), the sweep dumps, shards/ and
+                       logs/ (all regenerable, untracked), and leak/ (the C2.3 leak reruns)
+  plots/               figures written by figures.py, figures_space.py and mkfig.py
+                       (untracked; the manuscript's copies are manuscript/latex/figures/)
   pyproject.toml, .python-version, uv.lock, .venv/   Python, managed by uv
   R/                   every statistical test (afex/emmeans), managed by renv
 ```
@@ -122,7 +123,7 @@ reads its dump.
 
 Everything downstream of the sweep is wrapped in `./rerun.sh`, which runs the steps below
 in order and takes about two minutes. The sweep is not in it: it is long, and is run
-sharded across cores by `./run_warm_sweep.sh`.
+sharded across cores by `./run_sweep.sh`.
 
 **The stationary start (2026-09-07).** `sim.py` now draws the maintenance noise at
 maintenance onset from its own stationary law rather than setting it to zero
@@ -142,11 +143,11 @@ python delaymodel/empirical.py    -> (printout)              extraction, checked
 python delaymodel/targets.py      -> (printout)              empirical summaries per cell
 
 # 1. the parameter-space evaluation  (~12 min over six shards; see fused_sweep.py below)
-#    ./run_warm_sweep.sh does this natively, one shard per core, resumable
+#    ./run_sweep.sh does this natively, one shard per core, resumable
 SHARD_N=6 SHARD_I=$i \
-  python fused_sweep.py 1200 4000 results/warm/shard_$i.jsonl
-python warm_summary.py            -> results/sweep_screened_warm.jsonl  the concatenated dump
-                                     results/warm_summary.json
+  python fused_sweep.py 1200 4000 results/shards/shard_$i.jsonl
+python sweep_summary.py            -> results/sweep_screened.jsonl  the concatenated dump
+                                     results/sweep_summary.json
 
 # 2. what it says, and how much of it is noise
 python effect_sizes.py results/sweep_screened.jsonl 4 4000 0
@@ -180,29 +181,28 @@ python mkfig.py                   -> plots/fig_approx_error.pdf    error of the 
                                                                    sampled domain (manuscript
                                                                    Figure 8)
 python theory_checks.py           -> (printout)                    verification of the Appendix
-# frontier.py is RETIRED -- see its section below. It computed the cold-start ramp-rate
-# trade-off, which the stationary start abolishes.
 
 # 4. the CSV bridge, then the figures
-# order matters: export_for_R.py reads results/representative.json, and figures_space.py
-# reads pma_counts.csv
-python representative.py          -> results/representative.json   the point the illustrative
-                                                                   figures are drawn at
+# order matters: figures.py reads results/representative.json, figures_space.py reads
+# pma_counts.csv and results/effect_panel.json
+python representative.py          -> results/representative.json   the vector Figure 2B is
+                                                                   drawn at
 python export_for_R.py            -> pma_counts.csv                counts and exposures, empirical
                                                                    (written at scripts/ root: R's
                                                                    SIMDIR default, "..", expects it
                                                                    there)
-python figures.py                 -> plots/fig_traj_m{1,2}.pdf     simulated dynamics
-                                     plots/fig_traj.pdf
-                                     plots/fig_single.pdf
-                                     plots/fig_rates.pdf
-                                     plots/fig_shape.pdf
-python effect_panel.py            -> results/effect_panel_warm.json  effect-size ranges vs observed
-python figures_space.py           -> plots/fig_effect_sizes_warm.pdf  those ranges, as a panel
-                                     plots/fig_rate_trend_warm.pdf    rate against trend, both models
-                                     plots/fig_delay_profiles_warm.pdf  the delay rate curve
-# the *_warm suffix is automatic when the dump name contains "warm", so the committed
-# cold-start outputs are never overwritten
+python figures.py                 -> plots/fig_traj_m{2,1}.pdf     manuscript Figure 1
+                                     plots/fig_single.pdf         manuscript Figure 2B
+python effect_panel.py            -> results/effect_panel.json    effect-size ranges vs observed
+python figures_space.py           -> plots/fig_effect_sizes.pdf   those ranges, as a panel
+                                     plots/fig_rate_trend.pdf     rate against trend, both models
+                                     plots/fig_delay_profiles.pdf the delay rate curve
+
+# 6. the manuscript's own copies, at 200 dpi (there is no script for this; the mapping is
+#    fig01,02 <- fig_traj_m2,m1;  fig04 <- fig_single;  fig08 <- fig_rate_trend;
+#    fig09 <- fig_delay_profiles;  fig10 <- fig_effect_sizes;  fig11 <- fig_approx_error.
+#    fig03, 05, 06 and 07 are not produced here.)
+cd plots && pdftoppm -r 200 -png -singlefile fig_rate_trend.pdf ../../manuscript/latex/figures/fig08
 
 # 5. the statistics, in R
 Rscript R/run_stats.R             -> R/stats_tables.txt            all tables (empirical)
@@ -237,9 +237,16 @@ Merging again removes about a quarter of the counts and is double counting.
 ### `targets.py`
 Defines `CELLS` (the six coherence x duration conditions) and the empirical summaries per
 participant and cell -- accuracy, response time, premotor and motor execution time, delay
-and stimulus partial-activation rates, delay log-rate slope, premature-response rate. These
-are descriptive targets used by the figures and by the screen's observed-rate window; they
-are not fitted to.
+and stimulus partial-activation rates, the delay-period TREND and QUAD contrasts, the
+delay log-rate slope, premature-response rate. These are descriptive targets used by the
+figures and by the screen's observed-rate window; they are not fitted to.
+
+TREND and QUAD come from the archive's own bin export (`analysis_PMA/data/
+PMA_rate_delay_JASP.csv`) rather than from the event-file reconstruction that produces
+everything else here. That export is the file the published analysis ran on, so contrasts
+taken from it reproduce the manuscript's F values exactly; the reconstruction gives a mean
+trend of 0.5551 against the export's 0.5604, and a 1% offset between the comparison target
+and the number in the Results is not worth having.
 
 Dispersion uses the interquartile range, not the standard deviation. The empirical
 premotor execution time has a long right tail -- 2.7% of trials over one second -- that the
@@ -278,7 +285,8 @@ statement comes from.
 Latin-hypercube sample over the ranges of Table 1; the production run uses 1200 draws at
 4000 trials per cell per model per draw (~6.5 s/draw, ~25 min over six shards). At every draw:
 the admissibility screen, the two RT-effect criteria (coherence, duration), the
-delay-period log-rate slope criterion (all six cells significantly positive) and the
+delay-period criteria on the raw-rate TREND and on the log-rate slope (all six cells
+significantly positive, `trend_criterion` and `slope_criterion`) and the
 motor-execution-time invariance criterion. The same sampled vector is evaluated in both
 models, with beta set to zero in Model 1, so the two are compared at identical parameters.
 
@@ -308,22 +316,23 @@ cannot test whether a prediction survives away from that value. Two bounds carry
 the weight and deserve to be visible:
 
   - `kappa` in [0.20, 30.0] s^-1, log-uniform. 1/kappa spans 5 s (slower than the whole
-    delay) to 33 ms. The range is deliberately generous, and generous *towards Model 1*:
-    small kappa is Model 1's only route to a delay-period rate still rising at the end of
-    the delay, so narrowing it would delete the region most favourable to the model the
-    evaluation exists to exclude. A floor at kappa = 2.0 was briefly imposed on 2026-08-30
-    and reverted the next day; the justification offered for it -- that the stationary
-    crossing-rate approximation loses validity below it -- was not a reason to exclude the
-    region, because nothing in the paper uses that approximation there (`kernel_moments.py`
-    computes from the kernel). For a range whose purpose is exclusion, erring wide is the
-    conservative direction.
+    delay) to 33 ms. The range is wide because nothing constrains kappa, and since the
+    stationary start it favours neither model: the transient decays at at least lambda
+    whatever kappa is, so no value of kappa gives Model 1 a delay-period ramp (Appendix,
+    Corollary A.2). Under the cold start the same width was load-bearing in Model 1's
+    favour -- small kappa was its only route to a rate still rising at the end of the
+    delay -- and a floor at kappa = 2.0 imposed on 2026-08-30 was reverted the next day for
+    that reason. The floor's justification, that the stationary crossing-rate approximation
+    loses validity below it, is now simply true and harmless: the approximation is used,
+    and `mkfig.py` measures its error over the whole domain (1.4e-5 inside the window).
   - `lam` in [10.0, 50.0], log-uniform. 1/lam is the time constant of the filter relating
     decision-related input to motor preparation, so the range corresponds to 100 down to
     20 ms; lam = 100 would mean 10 ms, faster than plausible neuromuscular filtering. This
-    bound is load-bearing in the other direction: Model 1's ramp-rate frontier
-    (`frontier.py`) is most favourable at the largest lam, so capping lam is what makes
-    the frontier a bound rather than an artefact of where the range stops. It is stated in
-    the manuscript's Table 1 note as a modelling commitment for exactly that reason.
+    bound is a modelling commitment rather than a convenience, and is stated as one in the
+    manuscript's Table 1 note: lam sets how fast the fluctuation settles, so it is what
+    puts the analysis window in the stationary regime (Appendix, Remark A.1), and a range
+    chosen after seeing that consequence would be circular. It was fixed from the
+    neuromuscular argument before any of this appendix existed.
 
 #### The EMG criterion in the screen
 
@@ -382,32 +391,34 @@ assumption. Screening on the levels removes no tested prediction, because the pa
 claim about them.
 
 It has a cost, and it should be stated. The criterion removes most of the Model 2 draws that
-reached the observed MAGNITUDE of the stimulus-period duration effect: 23 of 169 before, 2
-of 148 after. The B.2 comparison therefore has to be made on the SIGN, which is what
-Proposition B.2 predicts anyway -- and there the separation is undamaged, 44% against 1%.
+reached the observed MAGNITUDE of the stimulus-period duration effect. That comparison
+therefore has to be made on the SIGN, which is what the proposition predicts anyway -- and
+there the separation is undamaged, 33% against 0%.
 
-**Result** (`results/sweep_screened.jsonl`, 1200 draws, NTR 4000). Model 1: 164 admissible;
-delay slope median -0.02, 5th-95th percentile -0.20 to +0.09; the observed sign in 31% of
-settings; **0** draws with all six cell slopes significantly positive and **0** anywhere in
-the observed slope band [0.659, 1.029]. Model 2: 148 admissible; slope median +0.27, -0.06
-to +1.98; the observed sign in 90%; 76 with all six positive and 16 in the observed band.
+**Result** (`results/sweep_screened.jsonl`, 1200 draws, NTR 4000). Model 1: 160 admissible;
+delay-period trend median -0.007 /s^2, 5th-95th percentile -0.058 to +0.004, largest value
++0.007; **0** draws with all six condition trends significantly positive and **0** anywhere
+in the observed 95% confidence interval [0.375, 0.745]. Model 2: 145 admissible; trend
+median +0.052, -0.017 to +0.418, largest +1.157; 78 with all six positive and 6 in the
+observed interval with the rate also in range. The observed +0.5604 sits at Model 2's
+96.6th percentile and above every draw of Model 1.
 
 The fraction of admissible settings carrying the OBSERVED SIGN is the compact summary of the
-whole comparison, and `effect_panel.py` now reports it:
+whole comparison, and `effect_panel.py` reports it:
 
 | effect | Model 1 | Model 2 |
 | --- | --- | --- |
-| the seven effects both architectures share (A.2, A.3, A.4, A.5, B.1, D.2 x2) | 96-99% | 96-99% |
-| **B.2, duration effect on the stimulus-period rate** | **1%** | **45%** |
-| **C.2, delay-period log-rate slope** | **31%** | **90%** |
-| C.3, coherence x duration on the delay rate | 5% | 9% |
+| the seven effects both architectures share | 86-98% | 88-94% |
+| **duration effect on the stimulus-period rate** | **0%** | **33%** |
+| **the delay-period rate trend** | **1%** | **80%** |
+| coherence x duration on the delay rate | 3% | 5% |
 
 Two effects separate the architectures, one is missed by both, seven are indistinguishable.
 
 **Proposition B.2 was half wrong and has been corrected.** It claimed that Model 2 predicts a
 higher stimulus-locked rate after the SHORT stimulus and Model 1 the opposite. Model 1's half
-holds at 99% of its admissible settings. Model 2's does not: temporal preparation opposes the
-level effect but overturns it at only 45%, because the ramp's size and the distance to the
+holds at 96% of its admissible settings. Model 2's does not: temporal preparation opposes the
+level effect but overturns it at only 33%, because the ramp's size and the distance to the
 gate are independent parameters. The test is therefore ONE-SIDED -- it refutes Model 1 and
 does not confirm Model 2 -- and the proposition, the Results paragraph and Remark B.3 now say
 so. This was caught by reading the effect panel, which showed both models' medians on the
@@ -417,98 +428,28 @@ A fresh run with a different seed will not reproduce the exact admissibility cou
 criteria and their signs are robust, the counts are not guaranteed identical run to run.
 Keep the summary JSON alongside the script rather than regenerating it casually.
 
-### `kernel_moments.py`
-The exact non-stationary second moments of the maintained fluctuation V, and the Kac-Rice
-upcrossing rate that follows from them, keeping the V/Vdot covariance that non-stationarity
-induces. Computed from the kernel rather than from the stationary limits because the
-process is not stationary over most of the sampled range of kappa: the relative departure
-one second into maintenance is of order exp(-2 kappa), below 1e-9 only above kappa ~ 11,
-whereas Table 1 samples down to 0.2. Small kappa is also the region most favourable to
-Model 1, so it is exactly the region a bound must not approximate away.
+### Retired: `kernel_moments.py` and `frontier.py` (2026-09-07)
 
-(Renamed from model1_bound.py on 2026-08-31 -- that file also carried a ceiling argument
-and two constants taken from the discarded fit; the ceiling is superseded by the frontier
-below. The old name survives only in the git history.)
+Both computed properties of the COLD-START model, in which the maintenance noise began at
+zero and the fluctuation of the signal about the maintained level was still filling in
+during the delay window. `kernel_moments.py` held the exact non-stationary moments and the
+Kac-Rice rate that follows from them; `frontier.py` used them to compute the ramp-rate
+frontier -- the largest delay-period log-rate slope Model 1 could reach at each level of
+the rate -- which was the analytic core of the delay-period argument and the manuscript's
+old Figure 5.
 
-### `frontier.py` -- the ramp-rate frontier of both models (RETIRED 2026-09-07)
+The stationary start abolishes the trade-off they described. There is no filling-in inside
+the analysis window, Model 1's delay-period rate is exactly constant (Appendix, Corollary
+A.2), the largest trend the formulas return anywhere in the sampled ranges is 3e-11 /s^2,
+and a frontier of that is a flat line at zero. The manuscript's Figure 5 is now the
+rate-against-trend scatter (`figures_space.fig_rate_trend`), which needs no envelope
+because the boundary of what Model 1 can do is the horizontal axis. The exact moments that
+`kernel_moments.py` held survive where they are still needed, in `mkfig.py`, which uses
+them for one purpose only: to measure how far the stationary approximation is from the
+exact rate over the sampled domain (1.4e-5 inside the window, manuscript Figure 8).
 
-**This script computed a property of the COLD-START model and no longer describes what the
-paper claims.** Its whole content was the trade-off Model 1 faced between the delay-period
-ramp and the delay-period rate, a trade-off that existed only because Model 1's sole route
-to a ramp was the filling-in of the maintenance variance. With the stationary start there
-is no filling-in inside the analysis window: Model 1's rate is exactly constant, the
-largest delay-period trend the formulas return anywhere in the sampled ranges is 3e-11
-/s^2, and the frontier degenerates to a flat line at zero. `figures_space.fig_frontier`
-accordingly refuses to draw it from a warm dump, and manuscript Figure 5 is now the
-rate-against-trend scatter (`fig_rate_trend`), which needs no computed envelope because
-the boundary of what Model 1 can do is the horizontal axis. The section below is kept as
-the record of what the cold-start argument was.
-
-Sharded over the lambda grid: `FR_MODEL`, `FR_SHARD_N`, `FR_SHARD_I` write
-`results/frontier_m{model}_sh{i}.npz`, and `python3 frontier.py merge` combines them into
-`results/frontier.json`. Sharding by lambda is exact -- the scatter is a product grid, no
-shard needs another's points, and the envelope of a union is the envelope of the
-concatenation.
-The analytic core of the delay-period argument, and the strongest thing in the project,
-because it involves no sampling at all.
-
-With alpha = 0 the delay-period log-rate slope is
-
-    d(ln nu)/dtau = 0.5*(u'/u - s'/s) + (a^2/2)*(s'/s),    s = Var V, u = Var Vdot,
-
-whose first term is NEGATIVE throughout the analysis window -- u is governed by the fast
-filter and has saturated, s carries the slow mode and has not -- so the ramp lives entirely
-in the second term, which needs a large a, while the rate carries exp(-a^2/2), which needs
-a small one. **Ramp and rate are governed by the same quantity in opposite directions**,
-and the ceiling omega/2pi is attained at a = 0, where the slope is strictly negative: the
-configuration maximising Model 1's rate is one in which that rate declines.
-
-The script computes the frontier as the upper envelope of achievable (rate, slope) pairs
-over a grid in (kappa, lambda, a) -- faster than a constrained optimisation at each rate,
-and it returns the (kappa, lambda, a) attaining each point. Queries are answered from the
-raw scatter rather than from the binned envelope: binning can only lose the maximum, and a
-frontier used to exclude a model must not be under-reported.
-
-Model 2 is computed the same way with the barrier moving: temporal preparation enters the
-Kac-Rice formula only through the relative derivative Vdot + alpha, so `rate(..., alpha=)`
-handles it. Its ramp height is capped at 3.0 sigma_V -- the 75th percentile of beta/sigma_V
-over the Model 2 draws the screen actually accepts (median 1.0, max 31.2) -- because the
-analytic calculation knows nothing about admissibility, and without a cap Model 2's
-frontier grows without bound simply by making the ramp larger.
-
-Result (`results/frontier.json`), against an observed slope of +0.892 /s at a rate of
-0.709 /s, with the slope estimated as the data's slope is estimated (an offset-Poisson
-regression over the same twenty bins, not a secant -- see below):
-
-| rate at least | Model 1 max slope | Model 2 max slope |
-| --- | --- | --- |
-| 0.085 /s | +0.81 | +5.16 |
-| 0.200 | +0.40 | +4.73 |
-| 0.400 | +0.05 | +4.35 |
-| **0.709** | **+0.000** | **+4.05** |
-| 1.000 | +0.000 | +3.83 |
-
-and the largest rate at which the observed slope is attainable at all: **0.069 /s for
-Model 1, 6.44 /s for Model 2**. Model 1's figure is the sharper statement, because 0.069 /s
-is BELOW the lowest rate recorded in any participant x condition cell (0.085): there is no
-admissible (kappa, lambda, a) at which Model 1 produces both the observed ramp and partial
-activations as often as the least active participant in the least active condition. Model 2
-at the observed rate exceeds the observed slope more than fourfold.
-
-**The slope statistic matters, and using the wrong one was generous to Model 1.** Until
-2026-09-01 the frontier reported the secant between the ends of the window while the data
-were analysed with an offset-Poisson regression over twenty 0.1 s bins. For Model 1's
-strongly concave log-rate the regression weights the late, event-rich bins -- where the
-variance transient has already flattened -- and returns 45-75% of the secant. Correcting it
-tightened every entry above (at 0.085, +1.17 -> +0.81) and moved the largest rate at the
-observed slope from 0.140 to 0.069 /s, i.e. from "a fifth of the observed mean" to "outside
-the observed range altogether".
-
-The two frontiers have different STATUS, and the difference should be stated wherever they
-are quoted together. For Model 1 the frontier is a bound: with alpha = 0 the rate depends
-on nothing but kappa, lambda and the distance to the gate, all three swept, and nothing
-outside the calculation can raise it. For Model 2 it is an upper envelope under a cap read
-off the screened sample -- what the architecture can reach, not what it typically does.
+Both files are deleted rather than kept as dead code; they are in the git history at
+commit `1e361ab` if the cold-start argument ever needs to be reread.
 
 ### `ramp_check.py` -- the existence question, at high precision
 An existence question is badly served by raising the trial count uniformly across a sweep:
@@ -519,36 +460,45 @@ best of them at NTR 40000 on several independent seeds, selected two ways -- the
 those producing a realistic rate (the honest conditional question) and the best overall
 regardless of rate.
 
-Result (`results/ramp_check.jsonl`): Model 1's draws at realistic rates (0.19-1.10 s^-1)
-give slopes between -0.007 and 0.000 with MC standard errors of 0.004 or less -- not a
-small ramp, no ramp. Its draws that do ramp (+0.10, +0.13, +0.24) do so at 0.040-0.051
-s^-1. Two draws whose first-pass slopes looked positive (+0.18, +0.22) fell to +0.01 and
--0.03 on re-simulation, which is what the upward bias of a maximum looks like when it is
-checked. The sampled space and the analytic frontier agree by independent routes.
+Since the stationary start the question has an exact answer -- Corollary A.2: Model 1's
+delay-period rate is constant, so its trend is zero everywhere -- and the script's job is
+to check that the simulation agrees once the Monte-Carlo error is small enough to see the
+difference. It reports the verdict on exit, recomputed from the whole file so an
+interrupted run still says something.
+
+Result (`results/ramp_check.jsonl`), seven candidate draws at NTR 40000, three seeds each:
+
+| draw | rate /s | mean trend /s^2 | SE |
+|------|---------|-----------------|-------|
+| 628  | 0.216   | +0.0007         | 0.0005 |
+| 461  | 0.217   | +0.0000         | 0.0005 |
+| 6    | 0.141   | -0.0002         | 0.0006 |
+| 1164 | 0.120   | -0.0014         | 0.0009 |
+| 15   | 0.972   | -0.0022         | 0.0002 |
+| 220  | 0.216   | -0.0034         | 0.0007 |
+| 965  | 1.798   | -0.0085         | 0.0028 |
+
+The largest is +0.0007 /s^2 against an observed +0.5604: eight hundred times below, and
+zero to within the error. The negative values are the response-burst exclusion of Appendix
+Remark A.5, and they scale with the rate exactly as that account requires -- the most
+active draw is the most negative. This is the independent confirmation that the sweep's
++0.0074 maximum is noise and not a residual ramp.
 
 ### `leak_sweep.py` -- leak robustness (reviewer C2.3)
 
 Re-runs, at a non-zero leak on the decision variable, exactly the draws that were admissible
 in either model at zero leak. It imports `fused_sweep` and reuses its cube, `to_param`,
 `run_model` and `admissible`, so the parameter vectors are identical to the main evaluation
-and only `gamma` differs; `results/leak/adm_idx.json` is the list of those 222 draw indices,
-extracted from `results/sweep_screened.jsonl`. Resumable by line count of `OUT`;
-`SHARD_N`/`SHARD_I` split the draw list across cores. Records have the same shape as
-`sweep_screened.jsonl` minus the `raw` block. `leak_summary.py` reduces them to the table.
+and only `gamma` differs; `results/leak/adm_idx.json` is the list of those 220 draw indices,
+written by `leak_index.py` from `results/sweep_screened.jsonl`. Resumable by line count of
+`OUT`; `SHARD_N`/`SHARD_I` split the draw list across cores. Records have the same shape as
+`sweep_screened.jsonl` minus the `raw` block, plus a criterion block per model for the
+TREND and for the log-rate slope. `run_leak.sh` drives all three leak rates one shard per
+core; `chunk_leak.sh` does the same in bounded slices, for a shell that gets a fresh
+process and a hard time limit per call. `leak_summary.py` reduces them to the table.
 
-Result, on the 164 draws admissible for Model 1 and the 148 for Model 2 at gamma = 0:
-
-| gamma | M1 still adm. | M2 still adm. | RT coherence | RT duration | M2 all six delay slopes > 0 | M1 all six > 0 |
-|-------|---------------|---------------|--------------|-------------|-----------------------------|----------------|
-| 0.00  | 164           | 148           | 139/148      | 138/148     | 76                          | 0              |
-| 0.25  | 158           | 146           | 139/148      | 141/148     | 80                          | 0              |
-| 0.50  | 151           | 143           | 139/148      | 140/148     | 77                          | 0              |
-| 1.00  | 144           | 131           | 141/148      | 141/148     | 75                          | 0              |
-
-**Re-run under the stationary start (2026-09-07)**, on the 220 draws admissible in either
-model at zero leak (`leak_index.py`; 222 under the cold start). This is the version the
-letter should quote; the cold table above is kept for comparison.
-`results/leak_summary_warm.json`:
+Result (`results/leak_summary.json`), on the 160 draws admissible for Model 1 and the 145
+for Model 2 at gamma = 0:
 
 | gamma | M1 adm. | M2 adm. | RT coherence | RT duration | M2 all six delay trends > 0 | M1 all six > 0 |
 |-------|---------|---------|--------------|-------------|-----------------------------|----------------|
@@ -557,21 +507,24 @@ letter should quote; the cold table above is kept for comparison.
 | 0.50  | 152     | 142     | 136/145      | 137/145     | 71                          | 0              |
 | 1.00  | 138     | 130     | 138/145      | 137/145     | 77                          | 0              |
 
-The verdict is the one the cold run gave, and it is now stated on the statistic the paper
-actually reports: **Model 1 never produces all six condition trends significantly positive,
-at any leak rate**, which is Corollary A.2 holding under a perturbation the corollary does
-not cover, while Model 2 does so at roughly half its admissible draws throughout. The
-log-rate slope column agrees to within three draws at every leak rate. Admissibility itself
-erodes as before (160 -> 138 and 145 -> 130 at gamma = 1), and the draws that drop out are
-again those with the smallest `k*c/theta` (median 5.4 against 7.8 for those that survive).
+**Model 1 never produces all six condition trends significantly positive, at any leak
+rate.** That is worth more than the same sentence at zero leak: Corollary A.2 proves the
+delay-period rate constant for the model as specified, and a leak on the decision variable
+is a perturbation the corollary does not cover, so this is an independent check rather than
+a restatement. Model 2 clears the criterion at roughly half its admissible draws
+throughout. The log-rate slope column, recorded alongside, agrees to within three draws
+everywhere.
 
-Nothing directional moves, and Model 1 is excluded at every leak rate. What erodes is
-admissibility itself, and the draws that drop out are those with the smallest `k*c/theta`
-(median 5.4 against 7.9 for those that survive): a leak caps the accumulator at `k*c/gamma`,
-and once that asymptote approaches `theta` the threshold stops being reached. That ratio is
-the criterion for when a leak can matter at all; its smallest value at 50% coherence over
-the admissible draws is 1.5 s^-1, above the largest rate tested. The numbers are quoted in
-the response letter (C2.3), not in the manuscript.
+Nothing directional moves. What erodes is admissibility itself, and the draws that drop out
+are those with the smallest `k*c/theta` (median 5.4 against 7.8 for those that survive): a
+leak caps the accumulator at `k*c/gamma`, and once that asymptote approaches `theta` the
+threshold stops being reached. That ratio is the criterion for when a leak can matter at
+all; its smallest value at 50% coherence over the admissible draws is 1.5 s^-1, above the
+largest rate tested. The numbers are quoted in the response letter (C2.3), not in the
+manuscript.
+
+(The cold-start version of this table -- 164/148 admissible, the criterion on the log-rate
+slope -- is in the git history at commit `1e361ab` and earlier. It said the same thing.)
 
 ### `effect_sizes.py` -- the citable summary, with its noise measured
 Stage 1 distils the sweep dump into the counts and distributions quoted in the manuscript.
@@ -610,36 +563,37 @@ earlier version reported accuracy at 50% coherence; it is gone, because the admi
 screen requires accuracy above 0.80 in those cells and so pins both models near ceiling
 there, which tests nothing.
 
-Result, observed value +/- between-participant SE against each model's 5th-95th percentile:
+Result, observed value +/- between-participant SE against each model's 5th-95th percentile
+(`results/effect_panel.json`; the panel letters are the manuscript's Figure 10 A-I):
 
 | effect | observed | Model 1 | Model 2 |
 | --- | --- | --- | --- |
-| A.2 duration benefit on accuracy, at 12% vs the extremes | +0.075 +/- 0.014 | +0.020 to +0.205 | +0.018 to +0.202 |
-| duration effect on RT | +49 +/- 6 ms | +2 to +88 | +2 to +90 |
-| coherence effect on RT | +33 +/- 6 ms | +2 to +87 | +2 to +79 |
-| **B.2 duration effect on the stimulus-period rate** | **+0.057 +/- 0.015 /s** | **-0.241 to -0.004** | -0.125 to +0.143 |
-| duration effect on PMET | +49 +/- 6 ms | +4 to +242 | +5 to +768 |
-| duration effect on MET | -0.4 +/- 1.4 ms | -183 to -0 | -730 to -1 |
-| **C.3 coherence x duration on the delay rate** | **+0.107 +/- 0.051 /s** | **-0.509 to +0.055** | **-0.467 to +0.081** |
-| **C.2 delay-period log-rate slope** | **+0.892 +/- 0.092 /s** | **-0.268 to +0.092** | -1.234 to +2.075 |
+| A duration benefit on accuracy, at 12% vs the extremes | +0.075 +/- 0.014 | +0.015 to +0.196 | +0.017 to +0.204 |
+| B duration effect on RT | +49 +/- 6 ms | +1 to +80 | +1 to +85 |
+| C coherence x duration on RT | +15 +/- 8 ms | +1 to +78 | +1 to +77 |
+| D coherence effect on the stimulus-period rate | +0.054 +/- 0.020 /s | +0.012 to +0.686 | +0.001 to +0.416 |
+| **E duration effect on the stimulus-period rate** | **+0.057 +/- 0.015 /s** | **-0.340 to -0.007** | -0.217 to +0.043 |
+| F duration effect on PMET | +49 +/- 6 ms | +2 to +108 | +2 to +129 |
+| G duration effect on MET | -0.5 +/- 0.8 ms | -46 to -0.2 | -60 to -0.7 |
+| **H coherence x duration on the delay rate** | **+0.107 +/- 0.051 /s** | **-0.769 to +0.007** | **-0.750 to +0.008** |
+| **I delay-period rate trend** | **+0.560 +/- 0.094 /s^2** | **-0.058 to +0.004** | -0.017 to +0.418 |
 
 Three readings worth keeping. **The stimulus-period duration effect excludes Model 1 on its
-own**, by sign: its whole admissible range is negative where the observation is positive.
-This is Proposition B.2 as a measurement, and it is independent of everything in the delay
-period. **The coherence x duration interaction on the delay rate is missed by both models**,
-across their whole admissible spaces -- the paper's acknowledged disagreement, now
-established as a property of the architectures rather than of a parameter choice. And the
-**PMET/MET dissociation is confirmed in the data but is a weak test**: both architectures
-can also produce motor-component effects one to two orders of magnitude larger than
-anything observed, so finding a small one does not discriminate.
+own**, by sign: its whole admissible range is negative where the observation is positive,
+and it is independent of everything in the delay period. **The coherence x duration
+interaction on the delay rate is missed by both models**, across their whole admissible
+spaces -- the paper's acknowledged disagreement, established as a property of the
+architectures rather than of a parameter choice. And the **PMET/MET dissociation is
+confirmed in the data but is a weak test**: both architectures can also produce
+motor-component effects far larger than anything observed, so finding a small one does not
+discriminate.
 
-A note on which observed slope to compare against. The mean of the per-cell,
-per-participant slopes is 0.892 /s; the slope of the profile pooled across participants is
-0.817. The first is the right comparison for a single simulated homogeneous process, and
-`frontier.py` uses it: pooling mixes processes at different distances from the gate, and
-the log of a mixture is flatter than the mixture of the logs, so the pooled figure
-understates any one participant's slope and would make the frontier comparison kinder to
-Model 1 than it should be.
+A note on the observed value to compare against, which the switch to the TREND removed a
+trap from. The log-rate slope had two of them -- 0.892 /s as the mean of the per-cell,
+per-participant slopes and 0.817 as the slope of the pooled profile -- because the log of a
+mixture is flatter than the mixture of the logs, so which one to use had to be argued. The
+trend is linear in the rate, so the two coincide exactly at +0.5604 /s^2 and there is
+nothing to argue.
 
 ### `representative.py` -- the point the illustrative figures are drawn at
 Nothing is fitted, so the figures that show simulated dynamics need a rule for choosing one
@@ -659,13 +613,13 @@ Model 2 at a ramp smaller than is typical of Model 2, for a reason that has noth
 with Model 2.
 
 ### `figures_space.py`
-`fig_effect_sizes.pdf` is the panel described under `effect_panel.py`.
-`fig_frontier.pdf` puts the two quantities that must be reproduced together on the two
-axes, draws the analytic frontier as the boundary of what Model 1 can do, and shows where
-the sampled draws and the observation fall. `fig_delay_profiles.pdf` shows the delay-period
-rate curve itself, observed against each architecture, restricted to draws whose mean rate
-brackets the observed one -- without that restriction the levels differ by two orders of
-magnitude and a bin-by-bin percentile envelope mixes profiles that are not comparable.
+`fig_effect_sizes.pdf` is the panel described under `effect_panel.py`. `fig_rate_trend.pdf`
+puts the two quantities that must be reproduced together on the two axes -- the delay-period
+rate and its linear trend -- with the admissible draws of both models and the observation;
+it needs no computed frontier, because Model 1's prediction is the horizontal axis.
+`fig_delay_profiles.pdf` shows the delay-period rate curve itself, each draw divided by its
+own mean over the window so that draws whose rates differ by two orders of magnitude are
+comparable on shape.
 
 
 ### `export_for_R.py`
@@ -688,11 +642,15 @@ so simulated F values are not comparable in magnitude with the empirical ones; o
 and orderings are.
 
 ### `figures.py`
-The figures that show simulated dynamics, all drawn at the representative admissible draw
-(`representative.py`): the manuscript's Figure 1 simulated for each model -- the same
-parameter vector in both, differing only in beta -- a single trial with the detected
-intervals, the rate profiles against data, and the data-only rate/slope relation of
-Figure S3. Run `representative.py` first.
+The figures that show simulated dynamics: the manuscript's Figure 1, drawn for each model
+over thirty admissible draws -- the same thirty in both, differing only in beta -- and
+Figure 2B, one simulated trial with the detected intervals, at the representative vector.
+Run `representative.py` first (Figure 1 does not need it; Figure 2B does).
+
+Two functions were removed on 2026-09-07. `fig_rates` drew the model's rate profile against
+the data at that one vector, and is superseded by `figures_space.fig_delay_profiles`, which
+shows the whole admissible set. `fig_shape` drew the log-rate slope against the rate across
+the six conditions; its manuscript figure went when the log-rate slope did.
 
 ### `theory_checks.py`
 Verification of the Appendix (the Kac-Rice rate derivation; renumbered from Appendix A in
@@ -786,7 +744,7 @@ reconciled with the value `run_stats.R` now uses -- a possible follow-up, not do
 | --- | --- |
 | Section 2, the model | `sim.py` |
 | Section 3, predictions | derived by hand; checked by `theory_checks.py` |
-| Section 3, exclusion of Model 1 | `frontier.py` (analytic), `fused_sweep.py` + `ramp_check.py` (sampled) |
+| Section 3, exclusion of Model 1 | derived: Corollary A.2 (analytic); `fused_sweep.py` + `ramp_check.py` (sampled) |
 | Section 4, from the process to the observable | `sim.py` (`_bursts`), `theory_checks.py` |
 | Section 5, the data | `empirical.py` |
 | Sections 6-7, statistical re-analysis | `R/run_stats.R`, `R/emit_tex.R` |
@@ -794,17 +752,18 @@ reconciled with the value `run_stats.R` now uses -- a possible follow-up, not do
 | Section 9, evaluation over the parameter space | `fused_sweep.py`, `effect_sizes.py`, `ramp_check.py` |
 | Figures | `figures.py`, `figures_space.py` |
 | Appendices A, B, D, E (predictions, no closed form) | derived by hand, not separately checked numerically |
-| The Appendix, the rate and the frontier | `theory_checks.py`, `kernel_moments.py`, `frontier.py` |
+| The Appendix, the rate and the stationary approximation | `theory_checks.py`, `mkfig.py` |
 
 ---
 
 # Things that will bite
 
-**Results are tracked, not scratch.** `results/*.json` (the frontier, the effect-size
-summary, the noise decomposition, the representative vector) are the citable numbers and
-are committed to git; `results/logs/` and the large `results/*.jsonl` dumps are regenerable
-and gitignored (see `.gitignore`), except `ramp_check.jsonl`, which is small and is the
-record of the high-precision re-simulation. This
+**Results are tracked, not scratch.** `results/*.json` (the effect-size summary, the effect
+panel, the noise decomposition, the leak summary, the representative vector) are the
+citable numbers and are committed to git; `results/logs/`, `results/shards/`, `plots/` and
+the large `results/*.jsonl` dumps are regenerable and gitignored (see `.gitignore`), except
+`ramp_check.jsonl`, which is small and is the record of the high-precision
+re-simulation. This
 replaced an earlier cloud-container-only workflow where nothing persisted between
 sessions and everything had to be re-uploaded by hand -- the project now lives and runs
 entirely on the local machine (`uv`/`renv`, see the top of this file).
@@ -870,19 +829,25 @@ no behavioural measure in this design can separate the two models -- a theorem w
 gap was an observation. If a fit is ever wanted again, it is in the git history, not in the
 working tree.
 
-**A statistic that separated the models in theory did not survive contact with the sweep,
-and is gone.** The curvature of the delay-period profile was added and removed the same
-day. The theory is sound -- Model 1's log-rate slope decays geometrically at 2*kappa,
-Model 2's linearly, and the ratio of the first-quarter to the last-quarter slope separates
-them 10-18x against 1.2-3x -- but a fitted quadratic coefficient measures something else:
-it equals -k^2/2 with k = alpha/sigma_V, so it confounds the SHAPE of the ramp with its
-SIZE, and a model reproducing a large slope necessarily produces a large curvature. Worse,
-there was no matched comparison available, because Model 1 never reaches the observed slope
-at any rate. Two further traps are worth recording because they are easy to fall into
-again: pooling across participants FLATTENS curvature (log-sum-exp of concave functions is
-not concave -- measured, -0.095 per participant against -0.034 pooled, a factor of three in
-the direction one might assume impossible); and the last quarter of the window is depressed
-in the model by an effect that is not curvature at all, since `measures()` and
-`empirical.py` both score the burst preceding the response as the response rather than as a
-partial activation, so a trial whose final approach begins before the reaction signal loses
-an event from the end.
+**The curvature is an exact prediction that the simulation cannot measure cleanly, and the
+manuscript says so.** Under the stationary start the two models make opposite and exact
+claims about the quadratic contrast of the delay-period rate: zero under Model 1, since a
+constant rate has zero curvature, and positive under Model 2 wherever the gate is more than
+one fluctuation standard deviation away, since d2(nu)/drho2 = nu (beta/delta sigma_H)^2
+(a^2 - 1). The data give +0.2099 /s^3, F(1,21) = 18.891. The simulated curvatures do not
+reach it: 0 of 160 Model 1 draws and 19 of 145 Model 2 draws have all six condition
+curvatures significantly positive, and both medians sit near zero.
+
+The reason is measurement, not model, and it is worth recording because it is easy to
+misread as a failed prediction. `measures()` and `empirical.py` both score the burst
+preceding the response as the response rather than as a partial activation, so a trial
+whose final approach begins before the response signal loses an event from the END of the
+window -- and the quadratic contrast weights the ends. Restricted to the first eighteen
+bins Model 2's median curvature turns positive and Model 1's halves. The Results therefore
+report the curvature as the analytic prediction it is and the simulated distribution as a
+lower bound on it.
+
+An older trap, from the log-rate era, is still worth knowing: pooling across participants
+FLATTENS curvature (log-sum-exp of concave functions is not concave -- measured, -0.095 per
+participant against -0.034 pooled, a factor of three in the direction one might assume
+impossible). The raw-rate contrasts do not have this problem, being linear in the rate.

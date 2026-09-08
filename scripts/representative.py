@@ -2,8 +2,8 @@
 representative.py -- picks the parameter vector at which the illustrative figures are
 drawn, now that nothing is fitted.
 
-The figures that show simulated dynamics (the manuscript's Figure 1 and Figure 2, and the
-simulated rate profile of Figure S2) need one point in parameter space. It used to be a
+The one figure that shows a single simulated trial (the manuscript's Figure 2B) needs one
+point in parameter space; Figure 1 draws thirty admissible sets and needs none. It used to be a
 fitted vector. With the fits removed it is instead a REPRESENTATIVE ADMISSIBLE DRAW of the
 sweep, chosen by a rule that is stated in one line and involves no contact with the
 quantities the figures are used to discuss.
@@ -20,10 +20,10 @@ Two properties are wanted, and one rules out the obvious choice.
     draw in both models, so such draws exist; the draw is required to be admissible in
     both.
 
-  * beta is set separately, to the median of the values admissible under Model 2 (0.0183),
+  * beta is set separately, to the median of the values admissible under Model 2 (0.0088),
     and not to the value the selected draw happens to carry. The reason is a selection
     effect worth recording: requiring admissibility in BOTH models biases beta downward
-    (median 0.0075 there against 0.0183 among Model 2's own admissible draws), because a
+    (median 0.0059 there against 0.0088 among Model 2's own admissible draws), because a
     large ramp is what produces premature responses and the screen removes those. Taking
     beta from the draw would therefore illustrate Model 2 at a ramp smaller than is typical
     of Model 2, for a reason that has nothing to do with Model 2. Since beta is the ONLY
@@ -34,7 +34,7 @@ The rule: among draws admissible in both models, take the one closest to the
 coordinate-wise median of the sampled parameters of that same set, each coordinate
 standardized by its own interquartile range and taken in logarithm where it was sampled in
 logarithm. In words, the most typical admissible parameter setting. The rule touches only
-the parameters -- never the delay-period rate, the slope, or anything else the figures are
+the parameters -- never the delay-period rate, its trend, or anything else the figures are
 used to discuss -- so the illustration cannot be accused of having been selected for the
 behaviour it illustrates. A first version of this script selected instead the draw closest
 to the median RATE and SLOPE, and is a good example of why that is the wrong instinct: it
@@ -50,13 +50,6 @@ DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
 OUT = 'results/representative.json'
 
 recs = [json.loads(l) for l in open(DUMP)]
-
-
-def stats(m):
-    r = np.nanmean(np.asarray(m['raw']['rate'], float))
-    s = np.nanmean(np.asarray(m['raw']['slope'], float))
-    return r, s
-
 
 both = [r for r in recs if r['model1']['admissible'] and r['model2']['admissible']]
 if not both:

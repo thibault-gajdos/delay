@@ -41,7 +41,7 @@ def rate_stat(l, k, bd, d):
     return phi(d/np.sqrt(Ai))/np.sqrt(Ai)*(bd*Phi(us) + np.sqrt(Bi)*phi(us))
 
 import sys, os
-DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened_warm.jsonl'
+DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
 rho = np.geomspace(0.02, 3.0, 500)
 fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.9), sharey=True)
 for ax, mod, col, nm in [(axes[0], 'model1', C_M1, 'Model 1'),

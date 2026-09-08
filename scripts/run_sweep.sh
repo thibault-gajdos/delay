@@ -1,8 +1,8 @@
 #!/bin/bash
 # Stationary-start parameter sweep, run natively (macOS or Linux).
 #
-#   ./run_warm_sweep.sh          # uses all physical cores
-#   ./run_warm_sweep.sh 8        # 8 shards
+#   ./run_sweep.sh          # uses all physical cores
+#   ./run_sweep.sh 8        # 8 shards
 #
 # fused_sweep.py appends one flushed JSON line per draw and resumes by counting the
 # lines already in its shard file, so the run can be interrupted and restarted freely.
@@ -10,7 +10,7 @@
 # previous output if the count differs from the recorded one.
 set -eu
 cd "$(dirname "$0")"
-NDRAW=1200; NTR=4000; OUTDIR=results/warm
+NDRAW=1200; NTR=4000; OUTDIR=results/shards
 if command -v sysctl >/dev/null 2>&1 && sysctl -n hw.physicalcpu >/dev/null 2>&1; then
   DEF=$(sysctl -n hw.perflevel0.physicalcpu 2>/dev/null || sysctl -n hw.physicalcpu)
 else

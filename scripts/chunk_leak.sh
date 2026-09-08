@@ -7,12 +7,12 @@
 #
 # leak_sweep.py flushes one line per draw and resumes by line count, so calling this
 # repeatedly with the same arguments walks the draw list to completion. Prints progress.
-# On a machine that can run the job to completion in one go, use run_warm_leak.sh instead.
+# On a machine that can run the job to completion in one go, use run_leak.sh instead.
 set -u
 cd "$(dirname "$0")"
 G=${1:-0.25}; SECS=${2:-150}
 tag=${G/./}
-OUTDIR=results/leak/warm
+OUTDIR=results/leak
 P=$(nproc 2>/dev/null || sysctl -n hw.physicalcpu 2>/dev/null || echo 4)
 mkdir -p "$OUTDIR"
 [ -f "$OUTDIR/adm_idx.json" ] || python3 leak_index.py

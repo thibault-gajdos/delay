@@ -1,26 +1,21 @@
 """leak_summary.py -- reduce the leak reruns to the table quoted in the response letter.
 
 Reads the zero-leak sweep dump and the three leak dumps beside it, and writes
-results/leak_summary[_warm].json.  The raw leak dumps are regenerable and untracked; this
+results/leak_summary.json.  The raw leak dumps are regenerable and untracked; this
 summary is what the letter cites.
 
-  python3 leak_summary.py                       # stationary start (default)
-  python3 leak_summary.py results/sweep_screened.jsonl    # the old cold-start run
+  python3 leak_summary.py [DUMP.jsonl]
 
-The dump name decides everything else: a name containing "warm" reads
-results/leak/warm/leak_g{025,050,100}.jsonl and writes results/leak_summary_warm.json;
-otherwise the original results/leak/ files and results/leak_summary.json.  Both criteria
-are reported per model -- the raw-rate TREND, which is what the Results cite since
-2026-09-07, and the log-rate SLOPE, kept so the two runs stay comparable (cold-start
-records carry only the slope, and its column is reported as null where absent).
+Both criteria are reported per model -- the raw-rate TREND, which is what the Results
+cite, and the log-rate SLOPE, kept because it is what the earlier runs recorded and the
+two should be seen to agree.
 """
 import json, os, sys, numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened_warm.jsonl'
-WARM = 'warm' in os.path.basename(DUMP)
-LEAKDIR = 'results/leak/warm' if WARM else 'results/leak'
-OUT = f"results/leak_summary{'_warm' if WARM else ''}.json"
+DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
+LEAKDIR = 'results/leak'
+OUT = 'results/leak_summary.json'
 
 
 def load(path):

@@ -1,13 +1,13 @@
 #!/bin/bash
 # Leak-robustness rerun under the STATIONARY START (reviewer C2.3), run natively.
 #
-#   ./run_warm_leak.sh          # uses all physical cores
-#   ./run_warm_leak.sh 8        # 8 shards
+#   ./run_leak.sh          # uses all physical cores
+#   ./run_leak.sh 8        # 8 shards
 #
 # Re-runs, at each of three leak rates, exactly the draws that were admissible in either
-# model at zero leak under the stationary start (results/leak/warm/adm_idx.json, written
+# model at zero leak under the stationary start (results/leak/adm_idx.json, written
 # by leak_index.py -- 220 draws, against 222 under the cold start). Output goes to
-# results/leak/warm/, so the cold-start dumps the response letter currently quotes are
+# results/leak/, so the cold-start dumps the response letter currently quotes are
 # left alone.
 #
 # leak_sweep.py appends one flushed JSON line per draw and resumes by counting the lines
@@ -19,7 +19,7 @@
 # 55% of a full 1200-draw sweep per leak rate.
 set -eu
 cd "$(dirname "$0")"
-OUTDIR=results/leak/warm
+OUTDIR=results/leak
 if command -v sysctl >/dev/null 2>&1 && sysctl -n hw.physicalcpu >/dev/null 2>&1; then
   DEF=$(sysctl -n hw.perflevel0.physicalcpu 2>/dev/null || sysctl -n hw.physicalcpu)
 else

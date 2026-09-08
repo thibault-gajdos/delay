@@ -15,6 +15,10 @@ scripts/.venv/
 # is small and is the record of the high-precision re-simulation.  The sweep dumps are
 # large and regenerable.
 scripts/results/logs/
+scripts/results/shards/
+# per-shard intermediates of effect_sizes.py stage 2; pool_noise.py reads the logs, and
+# results/noise_pooled.json is the citable output
+scripts/results/effect_sizes_sh*.json
 scripts/results/*.jsonl
 scripts/results/leak/*.jsonl
 scripts/results/leak/*/*.jsonl

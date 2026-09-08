@@ -78,9 +78,14 @@ def build(nsub=22):
                 slope[s, k] = poisson_slope(dly[s, k], T)[1]
 
     lin, quad = delay_contrasts()
+    _, stim_trend = window_summary('stim')
+    rs_rate, rs_trend = window_summary('rs')
+    resp_rate, resp_trend = window_summary('resp')
 
     return dict(acc=acc, rt=rt, rt_sd=rt_sd, pmet=pmet, met=met, pmet_sd=pmet_sd, met_sd=met_sd,
-                dly=dly, stim=stim, prem=prem, slope=slope, trend=lin, quad=quad, ntr=ntr)
+                dly=dly, stim=stim, prem=prem, slope=slope, trend=lin, quad=quad,
+                stim_trend=stim_trend, rs_rate=rs_rate, rs_trend=rs_trend,
+                resp_rate=resp_rate, resp_trend=resp_trend, ntr=ntr)
 
 
 # --- the delay-period TREND, from the archive's own bin export -------------------------
@@ -91,9 +96,15 @@ def build(nsub=22):
 # it gives a mean trend of 0.5551 against the export's 0.5604, a 1% difference coming from
 # trial inclusion at the window edges -- and using it here would put the simulation's
 # comparison target 1% away from the number the Results report.
-JASP = os.path.join(os.environ.get('DELAY_DATA', '/home/claude/data'),
-                    'analysis_PMA/data/PMA_rate_delay_JASP.csv')
+JASPDIR = os.path.join(os.environ.get('DELAY_DATA', '/home/claude/data'),
+                       'analysis_PMA/data')
+JASP = os.path.join(JASPDIR, 'PMA_rate_delay_JASP.csv')
 BINW = 0.1                       # the export's bin width, seconds
+# The four analysis windows, as the export names them: file, and the bin indices it uses.
+WINDOWS = dict(stim=('PMA_rate_stim_JASP.csv', range(0, 20)),
+               delay=('PMA_rate_delay_JASP.csv', range(10, 30)),
+               rs=('PMA_rate_rs_JASP.csv', range(0, 2)),
+               resp=('PMA_rate_resp_JASP.csv', range(1, 3)))
 
 
 def contrast_weights(x):
@@ -108,18 +119,38 @@ def contrast_weights(x):
     return w1, q / np.dot(q, q)
 
 
-def delay_profiles(nsub=22):
-    """(nsub, 6, 20) delay-period counts per trial per bin, read from the export.  Cell
-    order is the LAB order: short duration at 0/12/50% coherence, then long."""
+def window_profiles(window='delay', nsub=22):
+    """(nsub, 6, nbin) counts per trial per bin for one analysis window, read from the
+    export.  Cell order is the LAB order: short duration at 0/12/50% coherence, then
+    long."""
     import csv
-    rows = list(csv.reader(open(JASP)))
+    fname, bins = WINDOWS[window]
+    rows = list(csv.reader(open(os.path.join(JASPDIR, fname))))
     hdr = rows[0][1:]
     dat = np.array([[float(v) for v in r[1:]] for r in rows[1:]], float)
     cells = ['stim0_coh0', 'stim0_coh12', 'stim0_coh50',
              'stim1_coh0', 'stim1_coh12', 'stim1_coh50']
-    X = np.stack([np.stack([dat[:, hdr.index(f'{c}_bin{b}')] for b in range(10, 30)], -1)
+    X = np.stack([np.stack([dat[:, hdr.index(f'{c}_bin{b}')] for b in bins], -1)
                   for c in cells], 1)
     return X[:nsub]
+
+
+def delay_profiles(nsub=22):
+    return window_profiles('delay', nsub)
+
+
+def window_summary(window, nsub=22):
+    """Per-participant, per-cell LEVEL (s^-1) and linear TREND (s^-2) of one window."""
+    try:
+        X = window_profiles(window, nsub)
+    except (FileNotFoundError, OSError, KeyError):
+        nan = np.full((nsub, 6), np.nan)
+        return nan, nan
+    n = X.shape[-1]
+    t = np.arange(n) * BINW + BINW / 2
+    w1, _ = contrast_weights(t - t.mean())
+    r = X / BINW
+    return r.mean(-1), r @ w1
 
 
 def delay_contrasts(nsub=22):

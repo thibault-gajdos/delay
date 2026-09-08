@@ -118,11 +118,11 @@ def fig_effect_sizes(fname=None):
     fname = fname or 'plots/fig_effect_sizes.pdf'
     P = json.load(open('results/effect_panel.json'))
     groups = [(g[0], list(g[1])) for g in P['groups']]
-    ncol = 3
+    ncol = 4
     # each window starts on a new row; blocks of three across
     rows_of = lambda ks: int(np.ceil(len(ks) / ncol))
     nrow = sum(rows_of(ks) for _, ks in groups)
-    fig, axes = plt.subplots(nrow, ncol, figsize=(8.6, 1.95 * nrow), squeeze=False)
+    fig, axes = plt.subplots(nrow, ncol, figsize=(9.0, 1.55 * nrow), squeeze=False)
     slots = {}
     r0 = 0
     for win, ks in groups:
@@ -150,9 +150,9 @@ def fig_effect_sizes(fname=None):
         a.axvline(o, color=C_OBS, lw=1.1, zorder=1)
         a.set_yticks([0, 1]); a.set_yticklabels([])
         a.set_ylim(-0.6, 1.6)
-        a.set_title(P['names'][k], fontsize=6.8, pad=4)
-        a.text(-0.30, 1.30, letters[k], transform=a.transAxes,
-               fontsize=9.0, fontweight='bold', va='top', ha='left')
+        a.set_title(P['names'][k], fontsize=6.4, pad=3)
+        a.text(-0.28, 1.42, letters[k], transform=a.transAxes,
+               fontsize=8.5, fontweight='bold', va='top', ha='left')
         a.tick_params(axis='x', labelsize=6.5)
         # the DIRECTION, per model, as two percentages: the share of admissible sets whose
         # effect is, at two Monte-Carlo standard errors, significantly of the observed sign
@@ -173,7 +173,7 @@ def fig_effect_sizes(fname=None):
         for c in range(ncol):
             if (r, c) in used and c == min(cc for (rr, cc) in used if rr == r):
                 axes[r][c].set_yticklabels(['Model 2', 'Model 1'], fontsize=7.2)
-    fig.subplots_adjust(wspace=0.62, hspace=1.05, bottom=0.09, left=0.16)
+    fig.subplots_adjust(wspace=0.66, hspace=1.15, bottom=0.07, left=0.13)
 
     # the window label, down the left margin, spanning its block of rows
     r0 = 0
@@ -181,16 +181,16 @@ def fig_effect_sizes(fname=None):
         n = rows_of(ks)
         top = axes[r0][0].get_position().y1
         bot = axes[r0 + n - 1][0].get_position().y0
-        fig.text(0.035, (top + bot) / 2, win, rotation=90, va='center', ha='center',
-                 fontsize=8.0, fontweight='bold', color='0.25')
-        fig.lines.append(plt.Line2D([0.055, 0.055], [bot, top], transform=fig.transFigure,
+        fig.text(0.028, (top + bot) / 2, win, rotation=90, va='center', ha='center',
+                 fontsize=7.6, fontweight='bold', color='0.25')
+        fig.lines.append(plt.Line2D([0.046, 0.046], [bot, top], transform=fig.transFigure,
                                     color='0.75', lw=1.0))
         r0 += n
 
     axes[0][0].plot([], [], color=C_OBS, lw=1.1, label='observed (95% CI shaded)')
     fig.legend(*axes[0][0].get_legend_handles_labels(), loc='lower left',
-               bbox_to_anchor=(0.16, 0.028), frameon=False, fontsize=7)
-    fig.text(0.16, 0.002, 'the two figures at the right of each bar are the percentages of '
+               bbox_to_anchor=(0.13, 0.026), frameon=False, fontsize=7)
+    fig.text(0.13, 0.002, 'the two figures at the right of each bar are the percentages of '
              'admissible parameter sets whose effect is, at two Monte-Carlo standard '
              'errors,\nsignificantly of the observed sign / significantly against it; the '
              'remainder is not distinguishable from zero. A cross marks a model whose\n'

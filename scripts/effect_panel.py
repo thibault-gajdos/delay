@@ -17,12 +17,20 @@ effects both produce; the Results, however, report those too, and a reader check
 sentence against the figure should find it there. The set is now everything the Results
 state about behavior or the partial-activation rate that the sweep records per condition.
 
-What is still missing, and why: the stimulus-, response-signal- and response-window
-TRENDS. The sweep records a per-condition trend for the delay window only, so illustrating
-those would need the sweep re-run with the contrast computed in every window. The
-electroencephalographic measures are absent for a different reason -- the model makes no
-quantitative prediction about mu-beta lateralization or the readiness potential, only
-about their direction, so there is no range to draw.
+The summaries for the three windows outside the delay come from `augment_windows.py`,
+which re-simulates the admissible draws at the sweep's own seeds and records a level and a
+linear trend in each; they are merged onto the dump here by draw index.
+
+Three classes of reported effect are absent, and the figure caption says which. The
+electroencephalographic measures, for which the models predict a direction but no
+magnitude. A handful of interactions that are null in the data and in both models. And
+everything in the RESPONSE window, together with the LEVEL in the response-signal window,
+because the simulation and the data do not measure the same thing there: the activation
+preceding a response IS the response and is excluded from the count on both sides, and in
+the model it occupies almost the whole 200 ms before the button press, leaving a simulated
+pre-response rate of 0.0005 /s against an observed 0.124. Contrasts within the
+response-signal window survive this (the fall of the rate after the signal is reproduced at
+94-98% of draws); levels do not, and are not drawn.
 
 Writes results/effect_panel.json.  Usage: python3 effect_panel.py [DUMP.jsonl]
 """
@@ -62,9 +70,15 @@ W = {
     'trend_dur': -DUR,                                # the ramp steepens after the long
     'curv':      np.ones(6) / 6.0,
     # --- response-signal window
-    'pmet_coh': -COH,
-    'pmet_dur':  DUR,
-    'met_dur':   DUR,
+    'stim_trend_coh': COH,                            # the ramp steepens with coherence
+    'stim_trend_dur': DUR,                            # and is steeper after the short
+    # --- response-signal window. The rate FALLS after the signal, so the contrasts are
+    # written on the fall, -trend, to keep the predicted sign positive.
+    'rs_fall':     -np.ones(6) / 6.0,
+    'rs_fall_dur':  DUR,                              # the fall is steeper after the long
+    'pmet_coh':    -COH,
+    'pmet_dur':     DUR,
+    'met_dur':      DUR,
 }
 # Which per-cell quantity each contrast is taken on, and the scale it is reported in.
 SRC = {
@@ -74,36 +88,44 @@ SRC = {
     'delay_coh': ('rate', 1.0), 'delay_dur': ('rate', 1.0), 'delay_int': ('rate', 1.0),
     'trend': ('trend', 1.0), 'trend_dur': ('trend', 1.0), 'curv': ('curv', 1.0),
     'pmet_coh': ('pmet', 1000.0), 'pmet_dur': ('pmet', 1000.0), 'met_dur': ('met', 1000.0),
+    'stim_trend_coh': ('stim_trend', 1.0), 'stim_trend_dur': ('stim_trend', 1.0),
+    'rs_fall': ('rs_trend', 1.0), 'rs_fall_dur': ('rs_trend', 1.0),
 }
 # Panel groups, in the order the Results take them. Each entry is (window, [keys]); the
 # figure draws one labelled block per window, three panels to a row.
 GROUPS = [
     ('Behavior', ['acc_coh', 'acc_dur', 'acc_int', 'rt_coh', 'rt_dur', 'rt_int']),
-    ('Stimulus-onset window', ['stim_coh', 'stim_dur']),
+    ('Stimulus-onset window', ['stim_coh', 'stim_dur',
+                               'stim_trend_coh', 'stim_trend_dur']),
     ('Delay window', ['delay_coh', 'delay_dur', 'delay_int',
                       'trend', 'trend_dur', 'curv']),
-    ('Response-signal window', ['pmet_coh', 'pmet_dur', 'met_dur']),
+    ('Response-signal window', ['rs_fall', 'rs_fall_dur',
+                                'pmet_coh', 'pmet_dur', 'met_dur']),
 ]
 KEYS = [k for _, ks in GROUPS for k in ks]
 
 NAMES = dict(
     acc_coh='accuracy,\n50% minus 0% coherence',
     acc_dur='accuracy,\nlong minus short',
-    acc_int='duration benefit on accuracy,\nat 12% minus at 0% and 50%',
-    rt_coh='RT, 0% minus 50% coherence (ms)',
+    acc_int='duration benefit on accuracy,\nat 12% vs 0% and 50%',
+    rt_coh='RT,\n0% minus 50% coherence (ms)',
     rt_dur='RT, short minus long (ms)',
     rt_int='coherence effect on RT,\nshort minus long (ms)',
     stim_coh='stimulus-period rate,\n50% minus 0% coherence (/s)',
     stim_dur='stimulus-period rate,\nshort minus long (/s)',
     delay_coh='delay rate,\n50% minus 0% coherence (/s)',
     delay_dur='delay rate,\nlong minus short (/s)',
-    delay_int='coherence effect on the delay rate,\nlong minus short (/s)',
+    delay_int='coherence effect on delay rate,\nlong minus short (/s)',
     trend='delay-period rate trend (/s$^2$)',
-    trend_dur='rate trend, long minus short (/s$^2$)',
+    trend_dur='delay-period rate trend,\nlong minus short (/s$^2$)',
     curv='delay-period rate curvature (/s$^3$)',
-    pmet_coh='PMET, 0% minus 50% coherence (ms)',
+    pmet_coh='PMET,\n0% minus 50% coherence (ms)',
     pmet_dur='PMET, short minus long (ms)',
-    met_dur='MET, short minus long (ms)')
+    met_dur='MET, short minus long (ms)',
+    stim_trend_coh='stimulus-period trend,\n50% minus 0% coherence (/s$^2$)',
+    stim_trend_dur='stimulus-period trend,\nshort minus long (/s$^2$)',
+    rs_fall='fall of the rate after\nthe response signal (/s$^2$)',
+    rs_fall_dur='fall after the signal,\nlong minus short (/s$^2$)')
 
 
 def effects(cells):
@@ -148,6 +170,8 @@ def effects_se(m):
     se = dict(acc=bse(acc, np.maximum(n, 1)),
               rt=g('rt_se'), pmet=g('pmet_se'), met=g('met_se'),
               trend=g('trend_se'), curv=g('curv_se'),
+              stim_trend=g('stim_trend_se'), rs_trend=g('rs_trend_se'),
+              resp_rate=g('resp_rate_se'),
               srate=pse(g('srate'), n * 2.0), rate=pse(g('rate'), n * 2.0))
     out = {}
     for k in KEYS:
@@ -158,12 +182,23 @@ def effects_se(m):
 
 
 recs = [json.loads(l) for l in open(DUMP)]
+# the other three windows, re-simulated at the sweep's own seeds by augment_windows.py
+WIN = 'results/window_effects.jsonl'
+if os.path.exists(WIN):
+    extra = {json.loads(l)['draw']: json.loads(l) for l in open(WIN)}
+    for r in recs:
+        e = extra.get(r['draw'])
+        if e:
+            for tag in ('model1', 'model2'):
+                r[tag]['raw'].update(e[tag])
 E = build()
 nsub = E['rt'].shape[0]
 obs_cells = [dict(acc=E['acc'][s], rt=E['rt'][s],
                   srate=E['stim'][s].sum(axis=-1) / 2.0,
                   rate=E['dly'][s].sum(axis=-1) / 2.0,
                   trend=E['trend'][s], curv=E['quad'][s],
+                  stim_trend=E['stim_trend'][s], rs_trend=E['rs_trend'][s],
+                  resp_rate=E['resp_rate'][s],
                   pmet=E['pmet'][s], met=E['met'][s]) for s in range(nsub)]
 per_sub = [effects(c) for c in obs_cells]
 obs = {k: float(np.nanmean([p[k] for p in per_sub])) for k in KEYS}
@@ -173,12 +208,14 @@ out = dict(source=DUMP, names=NAMES, groups=GROUPS, observed=obs, observed_se=ob
            models={})
 for tag in ['model1', 'model2']:
     adm = [r[tag] for r in recs if r[tag]['admissible']]
-    for need in ('srate', 'trend', 'curv'):
+    for need in ('srate', 'trend', 'curv', 'stim_trend', 'rs_trend', 'resp_rate'):
         if adm and need not in adm[0]['raw']:
             raise SystemExit(f"{DUMP} has no `{need}` per cell -- rerun fused_sweep.py")
     rows = [effects({k: np.asarray(m['raw'][src], float) for k, src in
                      (('acc', 'acc'), ('rt', 'rt_mean'), ('srate', 'srate'),
                       ('rate', 'rate'), ('trend', 'trend'), ('curv', 'curv'),
+                      ('stim_trend', 'stim_trend'), ('rs_trend', 'rs_trend'),
+                      ('resp_rate', 'resp_rate'),
                       ('pmet', 'pmet_mean'), ('met', 'met_mean'))}) for m in adm]
     ses = [effects_se(m) for m in adm]
     out['models'][tag] = dict(n=len(rows))

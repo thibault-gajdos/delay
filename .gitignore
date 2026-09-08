@@ -16,6 +16,7 @@ scripts/.venv/
 # large and regenerable.
 scripts/results/logs/
 scripts/results/shards/
+scripts/results/windows/
 # per-shard intermediates of effect_sizes.py stage 2; pool_noise.py reads the logs, and
 # results/noise_pooled.json is the citable output
 scripts/results/effect_sizes_sh*.json

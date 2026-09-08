@@ -165,6 +165,14 @@ python ramp_check.py 3 40000 results/sweep_screened.jsonl
                                   -> results/ramp_check.jsonl      the best candidates
                                                                    re-simulated at high NTR
 
+# 1b. the other three analysis windows, for the draws the effect panel uses
+#     ./chunk_windows.sh runs it in bounded slices; SHARD_N/SHARD_I split it across cores
+python leak_index.py              -> results/leak/adm_idx.json    the 220 admissible draws
+python augment_windows.py         -> results/window_effects.jsonl level and trend in the
+                                                                  stimulus, RS and response
+                                                                  windows, at the sweep's
+                                                                  own seeds
+
 # 2b. leak robustness (reviewer C2.3): the same draws at a non-zero leak
 for G in 0.25 0.50 1.00; do tag=${G/./}
   for i in 0 1 2 3; do
@@ -492,6 +500,29 @@ zero to within the error. The negative values are the response-burst exclusion o
 Remark A.5, and they scale with the rate exactly as that account requires -- the most
 active draw is the most negative. This is the independent confirmation that the sweep's
 +0.0074 maximum is noise and not a residual ramp.
+
+### `augment_windows.py` -- the three windows outside the delay
+
+The sweep records, per condition, a level and a linear trend for the delay window and a
+level for the stimulus window. The Results report effects in the other windows too -- the
+coherence- and duration-dependence of the stimulus-period ramp, the fall of the rate after
+the response signal and its duration-dependence -- and until 2026-09-08 none of them could
+be drawn against the model. This fills the gap without a full re-sweep: only the draws
+admissible in either model matter to the panel, they are already listed in
+`results/leak/adm_idx.json`, and each is re-simulated at the sweep's own seeds so the new
+summaries belong to the same realisation as the ones in the dump. `effect_panel.py` merges
+the output by draw index. `fused_sweep.window_stats` follows the empirical window
+definitions exactly, including the per-bin exposure the response-signal and response
+windows need, since a trial stops contributing once its response burst has begun.
+
+One asymmetry between the two sides is worth knowing, because it decides what can be
+drawn. The activation preceding a response IS the response and is excluded from the count
+on both sides; in the model it occupies almost the whole 200 ms before the button press, so
+the simulated pre-response rate is 0.0005 /s against an observed 0.124, and the
+response-signal LEVEL is low by an order of magnitude for the same reason. Contrasts within
+the response-signal window survive this (the fall of the rate after the signal is
+reproduced at 94-98% of draws); levels there and everything in the response window do not,
+and are not drawn.
 
 ### `leak_sweep.py` -- leak robustness (reviewer C2.3)
 

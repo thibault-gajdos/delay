@@ -270,6 +270,62 @@ def counts_profile(mm, t0, t1, nbin):
     return h, v.size
 
 
+def window_stats(mm, D, delay, dt):
+    """Counts and per-bin exposures for the three windows outside the delay, following
+    exactly the definitions the empirical export uses (export_for_R.empirical_rows):
+
+      stimulus   0 to 2 s from motion onset, 20 bins, every valid trial contributing
+      RS         0 to 0.2 s from response-signal onset, 2 bins
+      response   0.2 s to 0 s before the button press, 2 bins
+
+    In the last two a trial stops contributing once its response burst has begun, since a
+    partial activation is by definition an activation preceding that burst, so the exposure
+    is per bin rather than per window.  Times are measured from stimulus onset: the signal
+    is at D + delay, the response burst at D + delay + PMET and the response at
+    D + delay + RT."""
+    v = np.flatnonzero(mm['valid'])
+    t_rs = D + delay
+    out = dict(stim=(np.zeros(20), 0.0), rs=(np.zeros(2), np.zeros(2)),
+               resp=(np.zeros(2), np.zeros(2)))
+    hs = np.zeros(20); hrs = np.zeros(2); hrp = np.zeros(2)
+    ers = np.zeros(2); erp = np.zeros(2)
+    for j in v:
+        e = mm['events'][j]
+        t_burst = t_rs + mm['pmet'][j]
+        t_resp = t_rs + mm['rt'][j]
+        hs += np.histogram(e[(e >= 0) & (e < 2.0)], bins=20, range=(0, 2))[0]
+        q = e[(e >= t_rs) & (e < t_rs + 0.2)] - t_rs
+        hrs += np.histogram(q, bins=2, range=(0, 0.2))[0]
+        alive = int(np.floor((t_burst - t_rs) / 0.1))
+        ers[:min(alive + 1, 2)] += 1
+        r = e[(e >= t_resp - 0.2) & (e < t_resp)] - t_resp + 0.2
+        hrp += np.histogram(r, bins=2, range=(0, 0.2))[0]
+        aliveR = int(np.floor((t_burst - (t_resp - 0.2)) / 0.1))
+        erp[:max(min(aliveR + 1, 2), 0)] += 1
+    return dict(stim=(hs, float(v.size)), rs=(hrs, ers), resp=(hrp, erp))
+
+
+def bin_summary(counts, expo, binw):
+    """(level, trend, se_level, se_trend) of a binned rate: the mean rate over the window
+    and the linear orthogonal-polynomial contrast against time, in s^-1 and s^-2, each
+    with its Poisson Monte-Carlo standard error.  `expo` may be a scalar (constant
+    exposure) or one value per bin, which is what the response-signal and response windows
+    need, since a trial stops contributing once its response burst has begun."""
+    counts = np.asarray(counts, float)
+    expo = np.maximum(np.asarray(expo, float) * np.ones_like(counts), 1.0)
+    denom = expo * binw
+    r = counts / denom
+    n = len(counts)
+    x = (np.arange(n) + 0.5) * binw
+    x = x - x.mean()
+    w1 = x / np.dot(x, x)
+    # Poisson: Var(count_i) = count_i, floored at one event, the same convention the
+    # delay-window contrasts use
+    v = np.maximum(counts, 1.0) / denom ** 2
+    return (float(r.mean()), float(w1 @ r),
+            float(np.sqrt(np.sum(v)) / n), float(np.sqrt(np.dot(w1 ** 2, v))))
+
+
 def trend_contrasts(counts, exposure, x):
     """Linear and quadratic orthogonal-polynomial contrasts of the RAW rate against
     time, with Poisson Monte-Carlo standard errors.  This is the statistic the data
@@ -339,6 +395,13 @@ def run_model(p, alpha, model, seed0, gamma=0.0):
     # empirical.py uses; carries Proposition B.2, the only prediction outside the delay
     # on which the two models disagree
     srate = np.zeros(6)
+    # level and linear trend in the three windows outside the delay, so that the effects
+    # the Results report there can be compared with the model as the delay-period ones are
+    stim_trend = np.zeros(6); stim_trend_se = np.zeros(6)
+    rs_rate = np.zeros(6); rs_trend = np.zeros(6)
+    rs_rate_se = np.zeros(6); rs_trend_se = np.zeros(6)
+    resp_rate = np.zeros(6); resp_trend = np.zeros(6)
+    resp_rate_se = np.zeros(6); resp_trend_se = np.zeros(6)
     for k, (c, D) in enumerate(CELLS):
         s = simulate(q, c, D, NTR, model=model, seed=seed0 + k, gamma=gamma)
         m = measures(s)
@@ -362,6 +425,12 @@ def run_model(p, alpha, model, seed0, gamma=0.0):
         pmet_se[k] = np.nanstd(pv) / np.sqrt(max(np.sum(~np.isnan(pv)), 1))
         hs, es = counts_profile(m, 0.0, 2.0, 20)
         srate[k] = hs.sum() / (es * 2.0) if es > 0 else np.nan
+        # the three windows outside the delay, on the definitions the data analysis uses
+        ws = window_stats(m, D, q['delay'], DT)
+        _, stim_trend[k], _, stim_trend_se[k] = bin_summary(*ws['stim'], 0.1)
+        rs_rate[k], rs_trend[k], rs_rate_se[k], rs_trend_se[k] = bin_summary(*ws['rs'], 0.1)
+        resp_rate[k], resp_trend[k], resp_rate_se[k], resp_trend_se[k] = \
+            bin_summary(*ws['resp'], 0.1)
         h, expo = counts_profile(m, D + 1, D + 3, 20)
         prof[k] = h; prof_expo[k] = expo
         # mean delay-period partial-activation rate over the 2-s analysis window, per
@@ -376,7 +445,13 @@ def run_model(p, alpha, model, seed0, gamma=0.0):
     return dict(prem=prem, early=early, noresp=noresp, acc=acc, rt_mean=rt_mean,
                 rt_se=rt_se, rt_n=rt_n, slope=slope, slope_se=slope_se,
                 trend=trend, trend_se=trend_se, curv=curv, curv_se=curv_se,
-                rate=rate, srate=srate, met_mean=met_mean, met_se=met_se,
+                rate=rate, srate=srate,
+                stim_trend=stim_trend, stim_trend_se=stim_trend_se,
+                rs_rate=rs_rate, rs_rate_se=rs_rate_se,
+                rs_trend=rs_trend, rs_trend_se=rs_trend_se,
+                resp_rate=resp_rate, resp_rate_se=resp_rate_se,
+                resp_trend=resp_trend, resp_trend_se=resp_trend_se,
+                met_mean=met_mean, met_se=met_se,
                 pmet_mean=pmet_mean, pmet_se=pmet_se,
                 prof=prof.astype(np.int64), prof_expo=prof_expo.astype(np.int64))
 

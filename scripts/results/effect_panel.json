@@ -3,21 +3,25 @@
  "names": {
   "acc_coh": "accuracy,\n50% minus 0% coherence",
   "acc_dur": "accuracy,\nlong minus short",
-  "acc_int": "duration benefit on accuracy,\nat 12% minus at 0% and 50%",
-  "rt_coh": "RT, 0% minus 50% coherence (ms)",
+  "acc_int": "duration benefit on accuracy,\nat 12% vs 0% and 50%",
+  "rt_coh": "RT,\n0% minus 50% coherence (ms)",
   "rt_dur": "RT, short minus long (ms)",
   "rt_int": "coherence effect on RT,\nshort minus long (ms)",
   "stim_coh": "stimulus-period rate,\n50% minus 0% coherence (/s)",
   "stim_dur": "stimulus-period rate,\nshort minus long (/s)",
   "delay_coh": "delay rate,\n50% minus 0% coherence (/s)",
   "delay_dur": "delay rate,\nlong minus short (/s)",
-  "delay_int": "coherence effect on the delay rate,\nlong minus short (/s)",
+  "delay_int": "coherence effect on delay rate,\nlong minus short (/s)",
   "trend": "delay-period rate trend (/s$^2$)",
-  "trend_dur": "rate trend, long minus short (/s$^2$)",
+  "trend_dur": "delay-period rate trend,\nlong minus short (/s$^2$)",
   "curv": "delay-period rate curvature (/s$^3$)",
-  "pmet_coh": "PMET, 0% minus 50% coherence (ms)",
+  "pmet_coh": "PMET,\n0% minus 50% coherence (ms)",
   "pmet_dur": "PMET, short minus long (ms)",
-  "met_dur": "MET, short minus long (ms)"
+  "met_dur": "MET, short minus long (ms)",
+  "stim_trend_coh": "stimulus-period trend,\n50% minus 0% coherence (/s$^2$)",
+  "stim_trend_dur": "stimulus-period trend,\nshort minus long (/s$^2$)",
+  "rs_fall": "fall of the rate after\nthe response signal (/s$^2$)",
+  "rs_fall_dur": "fall after the signal,\nlong minus short (/s$^2$)"
  },
  "groups": [
   [
@@ -35,7 +39,9 @@
    "Stimulus-onset window",
    [
     "stim_coh",
-    "stim_dur"
+    "stim_dur",
+    "stim_trend_coh",
+    "stim_trend_dur"
    ]
   ],
   [
@@ -52,6 +58,8 @@
   [
    "Response-signal window",
    [
+    "rs_fall",
+    "rs_fall_dur",
     "pmet_coh",
     "pmet_dur",
     "met_dur"
@@ -67,12 +75,16 @@
   "rt_int": 14.50918760716238,
   "stim_coh": 0.05365611463409972,
   "stim_dur": 0.057137206534332456,
+  "stim_trend_coh": 0.056400974086414424,
+  "stim_trend_dur": 0.05974045436937683,
   "delay_coh": 0.0928643606522972,
   "delay_dur": 0.3116205431612586,
   "delay_int": 0.10664136772954515,
   "trend": 0.5603614304502444,
   "trend_dur": 0.13533509174933225,
   "curv": 0.20987668008304416,
+  "rs_fall": 3.5506893551555847,
+  "rs_fall_dur": 1.4018766965996272,
   "pmet_coh": 31.660285135972494,
   "pmet_dur": 49.01787813664992,
   "met_dur": -0.4920968689910668
@@ -86,12 +98,16 @@
   "rt_int": 7.98104568977118,
   "stim_coh": 0.01988934392472983,
   "stim_dur": 0.014864595866428906,
+  "stim_trend_coh": 0.018810809024846366,
+  "stim_trend_dur": 0.019349842759098835,
   "delay_coh": 0.03863775730737394,
   "delay_dur": 0.05478655125782838,
   "delay_int": 0.05094914350361529,
   "trend": 0.094398552772146,
   "trend_dur": 0.03923479491437555,
   "curv": 0.04828751558673605,
+  "rs_fall": 0.7576354116958136,
+  "rs_fall_dur": 0.5281100066884841,
   "pmet_coh": 6.1098250603784905,
   "pmet_dur": 6.065851618574122,
   "met_dur": 0.7517465900011876
@@ -219,6 +235,36 @@
     "pct_of_observed": 100.0,
     "frac_reaching": 0.0
    },
+   "stim_trend_coh": {
+    "median": 0.004507334540401988,
+    "p5": -0.05016232250533569,
+    "p95": 0.20559539473684155,
+    "min": -0.2055011450230978,
+    "max": 0.37813909774436033,
+    "covers_observed": true,
+    "sign_agrees": true,
+    "frac_right": 0.3875,
+    "frac_wrong": 0.16875,
+    "frac_null": 0.44375,
+    "n_tested": 160,
+    "pct_of_observed": 82.5,
+    "frac_reaching": 0.175
+   },
+   "stim_trend_dur": {
+    "median": -0.055457708118795905,
+    "p5": -0.4174608944372683,
+    "p95": -0.006381151181361253,
+    "min": -0.9531516290726808,
+    "max": 0.0009837092731829569,
+    "covers_observed": false,
+    "sign_agrees": false,
+    "frac_right": 0.0,
+    "frac_wrong": 0.94375,
+    "frac_null": 0.05625,
+    "n_tested": 160,
+    "pct_of_observed": 100.0,
+    "frac_reaching": 0.0
+   },
    "delay_coh": {
     "median": 0.05499238469185087,
     "p5": 0.006846874999999993,
@@ -308,6 +354,36 @@
     "n_tested": 158,
     "pct_of_observed": 100.0,
     "frac_reaching": 0.0
+   },
+   "rs_fall": {
+    "median": 0.5743804222383797,
+    "p5": 0.13567492035682915,
+    "p95": 5.176888380388288,
+    "min": 0.02499022569414323,
+    "max": 11.110408995921974,
+    "covers_observed": true,
+    "sign_agrees": true,
+    "frac_right": 0.975,
+    "frac_wrong": 0.0,
+    "frac_null": 0.025,
+    "n_tested": 160,
+    "pct_of_observed": 87.5,
+    "frac_reaching": 0.125
+   },
+   "rs_fall_dur": {
+    "median": 0.3506211888235375,
+    "p5": -0.03362895664504609,
+    "p95": 3.2456916027975815,
+    "min": -0.4675796135322007,
+    "max": 6.64365172306799,
+    "covers_observed": true,
+    "sign_agrees": true,
+    "frac_right": 0.51875,
+    "frac_wrong": 0.00625,
+    "frac_null": 0.475,
+    "n_tested": 160,
+    "pct_of_observed": 83.125,
+    "frac_reaching": 0.16875
    },
    "pmet_coh": {
     "median": 23.568609979697385,
@@ -477,6 +553,36 @@
     "pct_of_observed": 97.24137931034483,
     "frac_reaching": 0.027586206896551724
    },
+   "stim_trend_coh": {
+    "median": 0.01645317547510662,
+    "p5": -0.016693609022556413,
+    "p95": 0.17633945184461233,
+    "min": -0.1875431381341573,
+    "max": 0.34386278195488695,
+    "covers_observed": true,
+    "sign_agrees": true,
+    "frac_right": 0.6482758620689655,
+    "frac_wrong": 0.06206896551724138,
+    "frac_null": 0.2896551724137931,
+    "n_tested": 145,
+    "pct_of_observed": 80.6896551724138,
+    "frac_reaching": 0.19310344827586207
+   },
+   "stim_trend_dur": {
+    "median": -0.002061403508771918,
+    "p5": -0.21163967495633298,
+    "p95": 0.08526896165701865,
+    "min": -0.9151253132832072,
+    "max": 0.2280576441102755,
+    "covers_observed": true,
+    "sign_agrees": false,
+    "frac_right": 0.3724137931034483,
+    "frac_wrong": 0.4896551724137931,
+    "frac_null": 0.13793103448275862,
+    "n_tested": 145,
+    "pct_of_observed": 92.41379310344827,
+    "frac_reaching": 0.07586206896551724
+   },
    "delay_coh": {
     "median": 0.06719565711765621,
     "p5": 0.008373084851002268,
@@ -566,6 +672,36 @@
     "n_tested": 138,
     "pct_of_observed": 93.47826086956522,
     "frac_reaching": 0.06521739130434782
+   },
+   "rs_fall": {
+    "median": 0.9092400716597028,
+    "p5": 0.1652835963402568,
+    "p95": 6.48483991022244,
+    "min": -0.07605364247785486,
+    "max": 14.535715211082637,
+    "covers_observed": true,
+    "sign_agrees": true,
+    "frac_right": 0.9448275862068966,
+    "frac_wrong": 0.0,
+    "frac_null": 0.05517241379310345,
+    "n_tested": 145,
+    "pct_of_observed": 82.75862068965517,
+    "frac_reaching": 0.1724137931034483
+   },
+   "rs_fall_dur": {
+    "median": 0.5443369449361887,
+    "p5": -0.10976867574208093,
+    "p95": 4.274928589681775,
+    "min": -0.5931021433535877,
+    "max": 7.829348805076496,
+    "covers_observed": true,
+    "sign_agrees": true,
+    "frac_right": 0.6344827586206897,
+    "frac_wrong": 0.006896551724137931,
+    "frac_null": 0.3586206896551724,
+    "n_tested": 145,
+    "pct_of_observed": 77.93103448275862,
+    "frac_reaching": 0.2206896551724138
    },
    "pmet_coh": {
     "median": 25.408472180426163,

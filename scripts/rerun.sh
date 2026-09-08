@@ -2,9 +2,9 @@
 # rerun.sh -- everything downstream of the sweep, in order, from a clean state.
 #
 # Not here, because each is long and is run sharded across cores by hand (see README,
-# "Order of execution"): the sweep itself (run_sweep.sh), the sharded re-simulation
-# that effect_sizes.py needs for pool_noise.py, ramp_check.py, and the leak reruns
-# (run_leak.sh). Everything else is deterministic given their outputs and takes about
+# "Order of execution"): the sweep itself (run_sweep.sh), the window summaries the effect
+# panel needs (augment_windows.py), the sharded re-simulation that effect_sizes.py needs
+# for pool_noise.py, ramp_check.py, and the leak reruns (run_leak.sh). Everything else is deterministic given their outputs and takes about
 # two minutes in total.
 #
 # Usage:  ./rerun.sh            (from scripts/)

@@ -198,8 +198,9 @@ Merging again removes about a quarter of the counts and is double counting.
 ### `targets.py`
 Defines `CELLS` (the six coherence × duration conditions) and the empirical summaries per
 participant and cell — accuracy, response time, premotor and motor execution time, delay
-and stimulus partial-activation rates, the delay-period TREND and QUAD contrasts,
-premature-response rate. These are descriptive targets used by the figures and by the
+and stimulus partial-activation rates, the delay-period TREND and QUAD contrasts, the
+delay log-rate slope (printed in the summary, not used downstream), premature-response
+rate. These are descriptive targets used by the figures and by the
 screen's observed-rate window; they are not fitted to.
 
 TREND and QUAD come from the archive's own bin export (`analysis_PMA/data/

@@ -70,6 +70,7 @@
 \newcommand{\Cov}{\operatorname{Cov}}
 \newcommand{\dd}{\mathrm d}
 \newcommand{\RT}{\mathrm{RT}}
+\newcommand{\nustat}{{\nu }_{\mathrm{stat}}}
 \newcommand{\bigO}{\mathcal{O}}
 \newcommand{\1}{\mathbbm{1}}
 \newcommand{\indep}{\perp\!\!\!\perp}
@@ -341,7 +342,7 @@ y\left(t\right)=m+H\left(t\right), H\left(\tau \right)=0.
 \[ {t}_{\mathrm{RS}}=D+3+{L}_{\mathrm{RS}}. \]
 }
 
-\old{Because maintenance began no later than} \new{$t_{\mathrm{offset}}$,} the selected response \new{$s_{\mathrm{resp}}$} \old{was always available when temporal preparation began.}  \old{During the interval from} \new{$t_{\mathrm{offset}}$ to $t_{\mathrm{RS}}$, Model 1} \old{continued to transmit} \new{\emph{y}\emph{(}\emph{t}\emph{)}} \old{to the downstream gating mechanism.}  \old{In Model 2, temporal preparation instead provided an additional response-specific contribution that increased linearly from zero} \new{at $t_{\mathrm{offset}}$} \old{to a maximum magnitude} \new{\emph{$\beta$}  at $t_{\mathrm{RS}}$.  Thus, during this interval the signal reaching the gate, $\tilde{y}$(t) (a tilde marks the gate-facing signal, distinct from the maintained state y(t) itself), was given by:}
+\old{Because maintenance began no later than} \new{$t_{\mathrm{offset}}$,} the selected response \new{$s_{\mathrm{resp}}$} \old{was always available when temporal preparation began.}  \old{During the interval from} \new{$t_{\mathrm{offset}}$ to $t_{\mathrm{RS}}$, Model 1} \old{continued to transmit} \new{\emph{y}\emph{(}\emph{t}\emph{)}} \old{to the downstream gating mechanism.}  \old{In Model 2, temporal preparation instead provided an additional response-specific contribution that increased linearly from zero} \new{at $t_{\mathrm{offset}}$} \old{to a maximum magnitude} \new{\emph{$\beta$}  at $t_{\mathrm{RS}}$.  Thus, during this interval the signal reaching the gate, $\tilde{y}\left(t\right)$ (a tilde marks the gate-facing signal, distinct from the maintained state $y\left(t\right)$ itself), was given by:}
 
 {\color{addcol}
 \begin{equation}
@@ -475,11 +476,11 @@ a\left(t\right)=\frac{g-\left|m\right|-\dfrac{\beta }{\delta }{\left(t-{t}_{\mat
 \end{equation}
 }
 
-\new{for the distance from the maintained level to the gate in units of ${\sigma }_{H}$, which temporal preparation shortens at the constant speed $\beta /\delta $, the rate is Equation~\eqref{eq:nu_asymp}:}
+\new{for the distance from the maintained level to the gate in units of ${\sigma }_{H}$, which temporal preparation shortens at the constant speed $\beta /\delta $, the rate on the window is its stationary form $\nustat$, Equation~\eqref{eq:nu_asymp}, which it matches to within $7\times {10}^{-5}$ over the admissible draws (Appendix, Corollary~\ref{cor:approx}):}
 
 {\color{addcol}
 \begin{equation}
-\nu \left(t\right)=\varphi \left(a\left(t\right)\right)\left[\frac{\beta }{\delta {\sigma }_{H}}\Phi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)+\omega \varphi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)\right]
+\nustat \left(t\right)=\varphi \left(a\left(t\right)\right)\left[\frac{\beta }{\delta {\sigma }_{H}}\Phi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)+\omega \varphi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)\right]
 \tag{\ref{eq:nu_asymp}}
 \end{equation}
 }
@@ -488,7 +489,7 @@ a\left(t\right)=\frac{g-\left|m\right|-\dfrac{\beta }{\delta }{\left(t-{t}_{\mat
 
 {\color{addcol}
 \begin{equation}
-\nu =\frac{\omega }{2\pi }{e}^{-{a}^{2}/2}
+\nustat =\frac{\omega }{2\pi }{e}^{-{a}^{2}/2}
 \tag{\ref{eq:nu1}}
 \end{equation}
 }
@@ -501,7 +502,7 @@ a\left(t\right)=\frac{g-\left|m\right|-\dfrac{\beta }{\delta }{\left(t-{t}_{\mat
 
 {\color{addcol}
 \begin{equation}
-\frac{\dd \left(\ln \nu \right)}{\dd \rho }=\frac{\beta }{\delta {\sigma }_{H}}a\left(\rho \right), \quad \frac{{\dd }^{2}\left(\ln \nu \right)}{\dd {\rho }^{2}}=-{\left(\frac{\beta }{\delta {\sigma }_{H}}\right)}^{2}
+\frac{\dd \left(\ln \nustat \right)}{\dd t}\left(t\right)=\frac{\beta }{\delta {\sigma }_{H}}a\left(t\right), \quad \frac{{\dd }^{2}\left(\ln \nustat \right)}{\dd {t}^{2}}\left(t\right)=-{\left(\frac{\beta }{\delta {\sigma }_{H}}\right)}^{2}
 \tag{\ref{eq:slope}}
 \end{equation}
 }
@@ -510,7 +511,7 @@ a\left(t\right)=\frac{g-\left|m\right|-\dfrac{\beta }{\delta }{\left(t-{t}_{\mat
 
 {\color{addcol}
 \begin{equation*}
-\frac{\dd \nu }{\dd \rho }=\nu \left(\rho \right)\,\frac{\beta }{\delta {\sigma }_{H}}\,a\left(\rho \right),
+\frac{\dd \nustat }{\dd t}\left(t\right)=\nustat \left(t\right)\,\frac{\beta }{\delta {\sigma }_{H}}\,a\left(t\right),
 \end{equation*}
 }
 
@@ -520,7 +521,7 @@ a\left(t\right)=\frac{g-\left|m\right|-\dfrac{\beta }{\delta }{\left(t-{t}_{\mat
 
 \paragraph{\new{The shape of the ramp}}
 
-\new{The two models make opposite and exact predictions about the curvature of the rate. Under Model 1 the rate is constant, so its quadratic contrast is zero at every parameter setting. Under Model 2, differentiating Equation~\eqref{eq:nu_asymp} twice gives $\ddot{\nu }=\nu {\left(\beta /\delta {\sigma }_{H}\right)}^{2}\left({a}^{2}-1\right)$, so the rate is convex wherever the maintained level stands more than one fluctuation standard deviation from the gate. A positive quadratic contrast is therefore predicted by Model 2 and forbidden by Model 1. On the logarithm the same statement is simpler: by Equation~\eqref{eq:slope} the log rate is exactly a downward parabola, with the same curvature in all six conditions, since $\beta$, $\delta$ and ${\sigma }_{H}$ are properties of the participant and not of the condition.}
+\new{The two models make opposite and exact predictions about the curvature of the rate. Under Model 1 the rate is constant, so its quadratic contrast is zero at every parameter setting. Under Model 2, differentiating Equation~\eqref{eq:nu_asymp} twice gives ${\ddot{\nu }}_{\mathrm{stat}}\left(t\right)=\nustat \left(t\right){\left(\beta /\delta {\sigma }_{H}\right)}^{2}\left({a\left(t\right)}^{2}-1\right)$, so the rate is convex wherever the maintained level stands more than one fluctuation standard deviation from the gate. A positive quadratic contrast is therefore predicted by Model 2 and forbidden by Model 1. On the logarithm the same statement is simpler: by Equation~\eqref{eq:slope} the log rate is exactly a downward parabola, with the same curvature in all six conditions, since $\beta$, $\delta$ and ${\sigma }_{H}$ are properties of the participant and not of the condition.}
 
 \paragraph{\new{The coherence $\times$ duration interaction}}
 
@@ -823,19 +824,19 @@ Since $\varepsilon$ admits a continuous modification and $H$ is then a Riemann i
 \end{eqnarray*}
 
 
-$H$ is therefore a centred Gaussian process, being a linear combination of the Gaussian $\varepsilon \left(\tau \right)$ and an independent Wiener integral. Note that $K\left(0\right)=0$, which makes the first term vanish at $\rho =0$ and recovers $H\left(\tau \right)=0$, and that ${K}^{'}\left(0\right)=\lambda {\sigma }_{\varepsilon }$. Differentiating under the integral and using $K\left(0\right)=0$ to kill the boundary term, $\dot{H}\left(\tau +\rho \right)=\left(\varepsilon \left(\tau \right)/{\sigma }_{\varepsilon }\right){K}^{'}\left(\rho \right)+\int_{0}^{\rho } {K}^{'}\left(\rho -p\right)\, \dd {W}_{\varepsilon }\left(p\right)$. Write ${\sigma }_{H}^{2}\left(t\right):=\Var H\left(t\right)$, ${\sigma }_{\dot{H}}^{2}\left(t\right):=\Var \dot{H}\left(t\right)$ and ${c}_{H}\left(t\right):=\Cov \left(H\left(t\right),\dot{H}\left(t\right)\right)$, and the same symbols without a time index for their limits as $\rho \to \infty $. Because $\varepsilon \left(\tau \right)$ and ${W}_{\varepsilon }$ are independent, the It\^o isometry gives each moment as the sum of the two contributions, ${\sigma }_{H}^{2}={K}^{2}/2\kappa +\int_{0}^{\rho } {K}^{2}$, ${\sigma }_{\dot{H}}^{2}={K}^{'2}/2\kappa +\int_{0}^{\rho } {K}^{'2}$ and ${c}_{H}=K{K}^{'}/2\kappa +{K}^{2}/2$, with $K$ and ${K}^{'}$ outside the integrals evaluated at $\rho$. Evaluating them, and writing  ${E}_{1}:={e}^{-\left(\lambda +\kappa \right)\rho }$, ${E}_{2}:={e}^{-2\lambda \rho }$, with  $X:=\frac{\lambda +\kappa }{\lambda -\kappa }\left({E}_{2}-{E}_{1}\right)$ if $\kappa \neq \lambda$ and $X=-2\lambda \rho {E}_{2}$ if $\kappa = \lambda$, the three moments are
+$H$ is therefore a centred Gaussian process, being a linear combination of the Gaussian $\varepsilon \left(\tau \right)$ and an independent Wiener integral. Note that $K\left(0\right)=0$, which makes the first term vanish at $\rho =0$ and recovers $H\left(\tau \right)=0$, and that ${K}^{'}\left(0\right)=\lambda {\sigma }_{\varepsilon }$. Differentiating under the integral and using $K\left(0\right)=0$ to kill the boundary term, $\dot{H}\left(\tau +\rho \right)=\left(\varepsilon \left(\tau \right)/{\sigma }_{\varepsilon }\right){K}^{'}\left(\rho \right)+\int_{0}^{\rho } {K}^{'}\left(\rho -p\right)\, \dd {W}_{\varepsilon }\left(p\right)$. Write ${\sigma }_{H}^{2}\left(\rho \right):=\Var H\left(\tau +\rho \right)$, ${\sigma }_{\dot{H}}^{2}\left(\rho \right):=\Var \dot{H}\left(\tau +\rho \right)$ and ${c}_{H}\left(\rho \right):=\Cov \left(H\left(\tau +\rho \right),\dot{H}\left(\tau +\rho \right)\right)$, and the same symbols without an argument for their limits as $\rho \to \infty $. Because $\varepsilon \left(\tau \right)$ and ${W}_{\varepsilon }$ are independent, the It\^o isometry gives each moment as the sum of the two contributions, ${\sigma }_{H}^{2}\left(\rho \right)={K}^{2}\left(\rho \right)/2\kappa +\int_{0}^{\rho } {K}^{2}$, ${\sigma }_{\dot{H}}^{2}\left(\rho \right)={K}^{'2}\left(\rho \right)/2\kappa +\int_{0}^{\rho } {K}^{'2}$ and ${c}_{H}\left(\rho \right)=K\left(\rho \right){K}^{'}\left(\rho \right)/2\kappa +{K}^{2}\left(\rho \right)/2$. Evaluating them, and writing  ${E}_{1}\left(\rho \right):={e}^{-\left(\lambda +\kappa \right)\rho }$, ${E}_{2}\left(\rho \right):={e}^{-2\lambda \rho }$, with  $X\left(\rho \right):=\frac{\lambda +\kappa }{\lambda -\kappa }\left({E}_{2}\left(\rho \right)-{E}_{1}\left(\rho \right)\right)$ if $\kappa \neq \lambda$ and $X\left(\rho \right)=-2\lambda \rho {E}_{2}\left(\rho \right)$ if $\kappa = \lambda$, the three moments are
 
   \begin{equation}\label{eq:moments}
 \begin{aligned}
-\sigma_H^2(\rho) &= \sigma_H^2(1+X-E_1)\\
-c_H(\rho) &= -\lambda\sigma_H^2X\\
+\sigma_H^2(\rho) &= \sigma_H^2\bigl(1+X(\rho)-E_1(\rho)\bigr)\\
+c_H(\rho) &= -\lambda\,\sigma_H^2\,X(\rho)\\
 \sigma_{\dot H}^2(\rho)
-  &= \sigma_{\dot H}^2\left(1+\frac{\lambda}{\kappa}(X+E_1)\right)
+  &= \sigma_{\dot H}^2\left(1+\frac{\lambda}{\kappa}\bigl(X(\rho)+E_1(\rho)\bigr)\right)
 \end{aligned}
 \end{equation}
 
 
-where the stationary limits, reached as $\rho \to \infty $ since ${E}_{1},{E}_{2}\to 0$, are
+where the stationary limits, reached as $\rho \to \infty $ since ${E}_{1}\left(\rho \right),{E}_{2}\left(\rho \right)\to 0$, are
 
 \begin{equation}\label{eq:asymp_moments}
 {\sigma }_{H}^{2} = \frac{\lambda \, {\mathrm{SD}}_{\varepsilon }^{2}}{\lambda +\kappa }, \quad {\sigma }_{\dot{H}}^{2}= \frac{{\lambda }^{2}\kappa \, {\mathrm{SD}}_{\varepsilon }^{2}}{\lambda +\kappa }, \quad {c}_{H} = 0.
@@ -845,19 +846,19 @@ where the stationary limits, reached as $\rho \to \infty $ since ${E}_{1},{E}_{2
 Setting $\rho =0$ in Equation~\eqref{eq:moments} gives ${\sigma }_{H}^{2}\left(0\right)=0$ and ${\sigma }_{\dot{H}}^{2}\left(0\right)={\lambda }^{2}{\mathrm{SD}}_{\varepsilon }^{2}$: the fluctuation of the signal about the maintained level starts at zero and fills in, while its derivative starts above its stationary value and falls. Temporal preparation is added outside the filter (Equation~\eqref{eq:tildey}), so it shifts the mean of the gate-facing signal and leaves all three moments untouched; Equations~\eqref{eq:moments} and~\eqref{eq:asymp_moments} hold for both models.
 
 \begin{proposition}[the analysis window lies in the stationary regime]\label{prop:stationary}
-Let $\rho \ge 1$ s. Then, over the ranges of Table~\ref{tab:params}, ${E}_{1}\le 4\times {10}^{-5}$ and $\left|X\right|\le 4\times {10}^{-4}$, whatever $\kappa$. The transient terms of Equation~\eqref{eq:moments} are therefore negligible on the delay analysis window, and the three moments may be replaced there by their stationary values, Equation~\eqref{eq:asymp_moments}.
+Let $\rho \ge 1$ s. Then, over the ranges of Table~\ref{tab:params}, ${E}_{1}\left(\rho \right)\le 4\times {10}^{-5}$ and $\left|X\left(\rho \right)\right|\le 4\times {10}^{-4}$, whatever $\kappa$. The transient terms of Equation~\eqref{eq:moments} are therefore negligible on the delay analysis window, and the three moments may be replaced there by their stationary values, Equation~\eqref{eq:asymp_moments}.
 \end{proposition}
 
 
 \begin{proof}
-Time enters Equation~\eqref{eq:moments} through ${E}_{1}={e}^{-\left(\lambda +\kappa \right)\rho }$, ${E}_{2}={e}^{-2\lambda \rho }$ and $X$, and through nothing else. The first two decay at the rates $\lambda +\kappa $ and $2\lambda $, both at least
+Time enters Equation~\eqref{eq:moments} through ${E}_{1}\left(\rho \right)$, ${E}_{2}\left(\rho \right)$ and $X\left(\rho \right)$, and through nothing else. The first two decay at the rates $\lambda +\kappa $ and $2\lambda $, both at least
 
 \begin{equation*}
 \mu :=\lambda +\min \left(\lambda ,\kappa \right)\ge \lambda ,
 \end{equation*}
 
 
-and so does the third: applying the mean value theorem to $z\mapsto {e}^{-z\rho }$ between $z=\lambda +\kappa $ and $z=2\lambda $ gives $\left|{E}_{2}-{E}_{1}\right|\le \left|\lambda -\kappa \right|\rho {e}^{-\mu \rho }$, whence $\left|X\right|\le \left(\lambda +\kappa \right)\rho {e}^{-\mu \rho }$. Over the sampled ranges both bounds are largest at $\rho =1$ s, $\lambda =10$ s\textsuperscript{-1} and $\kappa =0.2$ s\textsuperscript{-1}, where ${E}_{1}\le {e}^{-10.2}<4\times {10}^{-5}$ and $\left|X\right|\le 10.2\, {e}^{-10.2}<4\times {10}^{-4}$.
+and so does the third: applying the mean value theorem to $z\mapsto {e}^{-z\rho }$ between $z=\lambda +\kappa $ and $z=2\lambda $ gives $\left|{E}_{2}\left(\rho \right)-{E}_{1}\left(\rho \right)\right|\le \left|\lambda -\kappa \right|\rho {e}^{-\mu \rho }$, whence $\left|X\left(\rho \right)\right|\le \left(\lambda +\kappa \right)\rho {e}^{-\mu \rho }$. Over the sampled ranges both bounds are largest at $\rho =1$ s, $\lambda =10$ s\textsuperscript{-1} and $\kappa =0.2$ s\textsuperscript{-1}, where ${E}_{1}\left(\rho \right)\le {e}^{-10.2}<4\times {10}^{-5}$ and $\left|X\left(\rho \right)\right|\le 10.2\, {e}^{-10.2}<4\times {10}^{-4}$.
 \end{proof}
 
 
@@ -865,7 +866,7 @@ Every mode of the transient therefore decays at least as fast as the filter gain
 
 \subsection{The crossing rate}
 
-Let $Z\left(t\right):={s}_{\mathrm{resp}}H\left(t\right)-d\left(t\right)$, so that upcrossings of $d$ by ${s}_{\mathrm{resp}}H$ are upcrossings of zero by $Z$, and $\dot{Z}=\dot{H}+\beta /\delta$. Trajectories that reach the response criterion before the end of the delay are neglected; they are premature responses, excluded from the empirical analysis and held to a small fraction of trials by the admissibility screen. Since $H$ is almost surely continuously differentiable and $\left(Z,\dot{Z}\right)$ is jointly Gaussian and non-degenerate for $\rho >0$, the Kac--Rice formula gives the expected upcrossing rate \parencite[ch. 3]{azaisLevelSetsExtrema2009}:
+Throughout this subsection the distance to the gate is a function of $t$ and the moments of Equation~\eqref{eq:moments} are functions of the elapsed maintenance time $\rho =t-\tau $. Let $Z\left(t\right):={s}_{\mathrm{resp}}H\left(t\right)-d\left(t\right)$, so that upcrossings of $d$ by ${s}_{\mathrm{resp}}H$ are upcrossings of zero by $Z$, and $\dot{Z}=\dot{H}+\beta /\delta$. Trajectories that reach the response criterion before the end of the delay are neglected; they are premature responses, excluded from the empirical analysis and held to a small fraction of trials by the admissibility screen. Since $H$ is almost surely continuously differentiable and $\left(Z,\dot{Z}\right)$ is jointly Gaussian and non-degenerate for $\rho >0$, the Kac--Rice formula gives the expected upcrossing rate \parencite[ch. 3]{azaisLevelSetsExtrema2009}:
 
 \begin{equation}
 \nu \left(t\right)={p}_{Z\left(t\right)}\left(0\right)\, \mathrm{E}\left[\dot{Z}\left(t\right){1}_{\{\dot{Z}\left(t\right)>0\}} \mid Z\left(t\right)=0\right]
@@ -873,76 +874,80 @@ Let $Z\left(t\right):={s}_{\mathrm{resp}}H\left(t\right)-d\left(t\right)$, so th
 \end{equation}
 
 
-Since $H$ is centred, $Z\left(t\right)\sim \mathrm{N}\left(-d\left(t\right),{\sigma }_{H}^{2}\left(t\right)\right)$ and ${p}_{Z\left(t\right)}\left(0\right)=\varphi \left(d\left(t\right)/{\sigma }_{H}\left(t\right)\right)/{\sigma }_{H}\left(t\right)$. Because $\left(Z,\dot{Z}\right)$ is jointly Gaussian, $\dot{Z}$ given $Z=0$ is Gaussian with mean and variance
+Since $H$ is centred, $Z\left(t\right)\sim \mathrm{N}\left(-d\left(t\right),{\sigma }_{H}^{2}\left(\rho \right)\right)$ and ${p}_{Z\left(t\right)}\left(0\right)=\varphi \left(d\left(t\right)/{\sigma }_{H}\left(\rho \right)\right)/{\sigma }_{H}\left(\rho \right)$. Because $\left(Z,\dot{Z}\right)$ is jointly Gaussian, $\dot{Z}$ given $Z=0$ is Gaussian with mean and variance
 
 \begin{equation*}
-M\left(t\right)=\frac{\beta }{\delta }+\frac{{c}_{H}\left(t\right)}{{\sigma }_{H}^{2}\left(t\right)}d\left(t\right), \quad S\left(t\right)={\sigma }_{\dot{H}}^{2}\left(t\right)-\frac{{c}_{H}{\left(t\right)}^{2}}{{\sigma }_{H}^{2}\left(t\right)}
+M\left(t\right)=\frac{\beta }{\delta }+\frac{{c}_{H}\left(\rho \right)}{{\sigma }_{H}^{2}\left(\rho \right)}d\left(t\right), \quad S\left(t\right)={\sigma }_{\dot{H}}^{2}\left(\rho \right)-\frac{{c}_{H}{\left(\rho \right)}^{2}}{{\sigma }_{H}^{2}\left(\rho \right)}
 \end{equation*}
 
 
 and for $\xi \sim \mathrm{N}\left(M,S\right)$ the expected positive part is $\mathrm{E}\left[\xi {1}_{\{\xi >0\}}\right]=M\Phi \left(M/\sqrt{S}\right)+\sqrt{S}\varphi \left(M/\sqrt{S}\right)$. Substituting into Equation~\eqref{eq:nu} gives the rate in general form,
 
 \begin{equation}
-\nu \left(t\right)=\frac{\varphi \left(d\left(t\right)/{\sigma }_{H}\left(t\right)\right)}{{\sigma }_{H}\left(t\right)}\left[M\left(t\right)\Phi \left(\frac{M\left(t\right)}{\sqrt{S\left(t\right)}}\right)+\sqrt{S\left(t\right)}\varphi \left(\frac{M\left(t\right)}{\sqrt{S\left(t\right)}}\right)\right]
+\nu \left(t\right)=\frac{\varphi \left(d\left(t\right)/{\sigma }_{H}\left(\rho \right)\right)}{{\sigma }_{H}\left(\rho \right)}\left[M\left(t\right)\Phi \left(\frac{M\left(t\right)}{\sqrt{S\left(t\right)}}\right)+\sqrt{S\left(t\right)}\varphi \left(\frac{M\left(t\right)}{\sqrt{S\left(t\right)}}\right)\right]
 \label{eq:nu2}
 \end{equation}
 
 
-On the analysis window the moments are stationary (Proposition~\ref{prop:stationary}), so ${c}_{H}=0$, and therefore $M=\beta /\delta $ and $S={\sigma }_{\dot{H}}^{2}$: both are constants, and all the time dependence of the rate is carried by the distance to the gate. Writing
+Replacing the moments by their stationary values, which Proposition~\ref{prop:stationary} licenses on the analysis window, sets ${c}_{H}=0$ and therefore $M=\beta /\delta $ and $S={\sigma }_{\dot{H}}^{2}$: both are constants, and all the time dependence is carried by the distance to the gate. Writing
 
 \begin{equation*}
 a\left(t\right):=\frac{d\left(t\right)}{{\sigma }_{H}}, \quad \omega :=\frac{{\sigma }_{\dot{H}}}{{\sigma }_{H}}=\sqrt{\lambda \kappa }
 \end{equation*}
 
 
-for the distance to the gate in units of the fluctuation and for the characteristic frequency of the fluctuation, Equation~\eqref{eq:nu2} becomes
+for the distance to the gate in units of the fluctuation and for the characteristic frequency of the fluctuation, Equation~\eqref{eq:nu2} becomes the \emph{stationary rate}
 
 \begin{equation}
-\nu \left(t\right)=\varphi \left(a\left(t\right)\right)\left[\frac{\beta }{\delta {\sigma }_{H}}\Phi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)+\omega \varphi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)\right]
+\nustat \left(t\right)=\varphi \left(a\left(t\right)\right)\left[\frac{\beta }{\delta {\sigma }_{H}}\Phi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)+\omega \varphi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)\right]
 \label{eq:nu_asymp}
 \end{equation}
 
 
-The bracket does not depend on the distance to the gate, and temporal preparation enters it only through $\beta /\delta$, the speed at which temporal preparation carries the signal toward the gate. The rate is thus a product of two factors: a Gaussian in the standardized distance to the gate, which is where the conditions and the time within the delay act, and a bracket fixed by the participant's own parameters.
+The bracket does not depend on the distance to the gate, and temporal preparation enters it only through $\beta /\delta$, the speed at which temporal preparation carries the signal toward the gate. The stationary rate is thus a product of two factors: a Gaussian in the standardized distance to the gate, which is where the conditions and the time within the delay act, and a bracket fixed by the participant's own parameters.
 
 \begin{corollary}[error of the stationary rate]\label{cor:approx}
-Write the exact moments of Equation~\eqref{eq:moments} as ${\sigma }_{H}^{2}\left(\rho \right)={\sigma }_{H}^{2}\left(1+u\right)$ and ${\sigma }_{\dot{H}}^{2}\left(\rho \right)={\sigma }_{\dot{H}}^{2}\left(1+v\right)$, let ${\nu }_{\mathrm{stat}}$ denote Equation~\eqref{eq:nu_asymp}, and set
+Let $t$ be a time in the delay analysis window and $\rho =t-\tau $ the elapsed maintenance time. Write the three moments of Equation~\eqref{eq:moments} in terms of their departures from their stationary values,
 \begin{equation*}
-\varepsilon :=\max \left(\left|u\right|,\ \left|v\right|,\ \left|X\right|\sqrt{\lambda /\kappa }\right).
+{\sigma }_{H}^{2}\left(\rho \right)={\sigma }_{H}^{2}\left(1+u\left(\rho \right)\right), \quad {\sigma }_{\dot{H}}^{2}\left(\rho \right)={\sigma }_{\dot{H}}^{2}\left(1+v\left(\rho \right)\right), \quad {c}_{H}\left(\rho \right)=w\left(\rho \right){\sigma }_{H}{\sigma }_{\dot{H}},
 \end{equation*}
-If ${\left(a+2\right)}^{2}\varepsilon \le 1/5$ then
+so that $u$ and $v$ are relative errors and $w$ --- a covariance in units of the stationary standard deviations, that is a correlation --- is the whole of the error on ${c}_{H}$, whose stationary value is zero. By Equation~\eqref{eq:moments},
 \begin{equation*}
-\left|\ln \frac{\nu \left(\rho \right)}{{\nu }_{\mathrm{stat}}\left(\rho \right)}\right|\le {\left(a+2\right)}^{2}\varepsilon .
+u\left(\rho \right)=X\left(\rho \right)-{E}_{1}\left(\rho \right), \quad v\left(\rho \right)=\frac{\lambda }{\kappa }\left(X\left(\rho \right)+{E}_{1}\left(\rho \right)\right), \quad w\left(\rho \right)=-X\left(\rho \right)\sqrt{\lambda /\kappa }.
+\end{equation*}
+Set $\eta \left(\rho \right):=\max \left(\left|u\left(\rho \right)\right|,\left|v\left(\rho \right)\right|,\left|w\left(\rho \right)\right|\right)$. If ${\left(a\left(t\right)+2\right)}^{2}\eta \left(\rho \right)\le 1/5$ then
+\begin{equation*}
+\left|\ln \frac{\nu \left(t\right)}{\nustat \left(t\right)}\right|\le {\left(a\left(t\right)+2\right)}^{2}\eta \left(\rho \right).
 \end{equation*}
 \end{corollary}
 
 \begin{proof}
-Write $g\left(m\right):=m\Phi \left(m\right)+\varphi \left(m\right)$, so that Equation~\eqref{eq:nu2} reads $\nu =\varphi \left({a}_{\rho }\right)B/{\sigma }_{H}\left(\rho \right)$ with ${a}_{\rho }:=d/{\sigma }_{H}\left(\rho \right)$ and $B:=\sqrt{S}\, g\left(M/\sqrt{S}\right)$, and ${\nu }_{\mathrm{stat}}$ is the same expression at $u=v=X=0$. Note $X\le 0$, so $M=\beta /\delta -\lambda Xd/\left(1+u\right)\ge 0$ and $g\ge g\left(0\right)=\varphi \left(0\right)$, while ${g}^{'}=\Phi \in \left(0,1\right]$. Throughout, $\varepsilon \le 1/5$ gives $1/\left(1-\varepsilon \right)\le 5/4$.
+Abbreviate $a=a\left(t\right)$, $\eta =\eta \left(\rho \right)$, and likewise for $u$, $v$ and $w$. Write $g\left(m\right):=m\Phi \left(m\right)+\varphi \left(m\right)$, so that Equation~\eqref{eq:nu2} reads $\nu \left(t\right)=\varphi \left({a}_{\rho }\right)B/{\sigma }_{H}\left(\rho \right)$ with ${a}_{\rho }:=d\left(t\right)/{\sigma }_{H}\left(\rho \right)$ and $B:=\sqrt{S}\, g\left(M/\sqrt{S}\right)$, and $\nustat \left(t\right)$ is the same expression at $u=v=w=0$. Note $X\left(\rho \right)\le 0$, so $w\ge 0$ and $M\ge \beta /\delta \ge 0$, whence $g\ge g\left(0\right)=\varphi \left(0\right)$; and ${g}^{'}=\Phi \in \left(0,1\right]$. The hypothesis gives $\eta \le 1/20$, so $1/\left(1-\eta \right)\le 5/4$ throughout.
 
-Take the three factors in turn. Since ${a}_{\rho }^{2}={a}^{2}/\left(1+u\right)$, $\left|\ln \varphi \left({a}_{\rho }\right)/\varphi \left(a\right)\right|=\left({a}^{2}/2\right)\left|u\right|/\left(1+u\right)\le \tfrac{5}{8}{a}^{2}\varepsilon$, and $\left|\ln {\sigma }_{H}/{\sigma }_{H}\left(\rho \right)\right|=\tfrac{1}{2}\left|\ln \left(1+u\right)\right|\le \tfrac{5}{8}\varepsilon$.
+Take the three factors in turn. Since ${a}_{\rho }^{2}={a}^{2}/\left(1+u\right)$, $\left|\ln \varphi \left({a}_{\rho }\right)/\varphi \left(a\right)\right|=\left({a}^{2}/2\right)\left|u\right|/\left(1+u\right)\le \tfrac{5}{8}{a}^{2}\eta$, and $\left|\ln {\sigma }_{H}/{\sigma }_{H}\left(\rho \right)\right|=\tfrac{1}{2}\left|\ln \left(1+u\right)\right|\le \tfrac{5}{8}\eta$.
 
-For the bracket, $\partial B/\partial M=\Phi \left(M/\sqrt{S}\right)\le 1$ and $\partial B/\partial \sqrt{S}=\varphi \left(M/\sqrt{S}\right)\le \varphi \left(0\right)$, so by the mean value theorem $\left|\Delta B\right|\le \left|\Delta M\right|+\varphi \left(0\right)\left|\Delta \sqrt{S}\right|$, and ${B}_{\mathrm{stat}}\ge {\sigma }_{\dot{H}}\varphi \left(0\right)$. Now $\lambda d/{\sigma }_{\dot{H}}=a\lambda /\omega =a\sqrt{\lambda /\kappa }$, so $\left|\Delta M\right|/{\sigma }_{\dot{H}}\le \tfrac{5}{4}a\varepsilon$; and $S/{\sigma }_{\dot{H}}^{2}=1+v-\left(\lambda /\kappa \right){X}^{2}/\left(1+u\right)$ with $\left(\lambda /\kappa \right){X}^{2}\le {\varepsilon }^{2}$, so $\left|\Delta \sqrt{S}\right|/{\sigma }_{\dot{H}}\le \left|S/{\sigma }_{\dot{H}}^{2}-1\right|\le \tfrac{5}{4}\varepsilon$. Hence $\left|\Delta B\right|/{B}_{\mathrm{stat}}\le \tfrac{5}{4}\sqrt{2\pi }a\varepsilon +\tfrac{5}{4}\varepsilon \le 1/4$, and $\left|\ln B/{B}_{\mathrm{stat}}\right|\le \tfrac{4}{3}\left|\Delta B\right|/{B}_{\mathrm{stat}}\le \tfrac{5}{3}\sqrt{2\pi }a\varepsilon +\tfrac{5}{3}\varepsilon$.
+For the bracket, $M=\beta /\delta +w{\sigma }_{\dot{H}}a/\left(1+u\right)$ and $S={\sigma }_{\dot{H}}^{2}\left(1+v-{w}^{2}/\left(1+u\right)\right)$, so $\left|\Delta M\right|/{\sigma }_{\dot{H}}\le \tfrac{5}{4}a\eta$ and $\left|\Delta \sqrt{S}\right|/{\sigma }_{\dot{H}}\le \left|S/{\sigma }_{\dot{H}}^{2}-1\right|\le \tfrac{5}{4}\eta$. Now $\partial B/\partial M=\Phi \left(M/\sqrt{S}\right)\le 1$ and $\partial B/\partial \sqrt{S}=\varphi \left(M/\sqrt{S}\right)\le \varphi \left(0\right)$, so by the mean value theorem $\left|\Delta B\right|\le \left|\Delta M\right|+\varphi \left(0\right)\left|\Delta \sqrt{S}\right|$; and ${B}_{\mathrm{stat}}\ge {\sigma }_{\dot{H}}\varphi \left(0\right)$. Hence $\left|\Delta B\right|/{B}_{\mathrm{stat}}\le \tfrac{5}{4}\sqrt{2\pi }a\eta +\tfrac{5}{4}\eta \le 1/4$ and $\left|\ln B/{B}_{\mathrm{stat}}\right|\le \tfrac{4}{3}\left|\Delta B\right|/{B}_{\mathrm{stat}}\le \tfrac{5}{3}\sqrt{2\pi }a\eta +\tfrac{5}{3}\eta$.
 
-Adding the three, $\left|\ln \nu /{\nu }_{\mathrm{stat}}\right|\le \left(\tfrac{5}{8}{a}^{2}+\tfrac{5}{3}\sqrt{2\pi }a+\tfrac{55}{24}\right)\varepsilon \le \left({a}^{2}+4a+4\right)\varepsilon$.
+Adding the three, $\left|\ln \nu /\nustat \right|\le \left(\tfrac{5}{8}{a}^{2}+\tfrac{5}{3}\sqrt{2\pi }a+\tfrac{55}{24}\right)\eta \le \left({a}^{2}+4a+4\right)\eta$.
 \end{proof}
 
-The moment error is therefore amplified by the squared standardized distance to the gate: $a$ enters the rate through a Gaussian, so what the transient does to ${\sigma }_{H}$ it does to the rate $a^2/2$ times over. Proposition~\ref{prop:stationary} keeps $\varepsilon$ small --- below ${10}^{-4}$ everywhere in the window, over the admissible draws --- but the amplification is why the error has to be evaluated rather than assumed. Evaluated exactly, the largest relative departure of the exact rate, Equation~\eqref{eq:nu2} at the moments of Equation~\eqref{eq:moments}, from its stationary form, Equation~\eqref{eq:nu_asymp}, is $7\times {10}^{-5}$ over the admissible draws and the whole window, under either model (Figure~\ref{fig:approx}). Over the whole sampled box it reaches a per cent, on draws whose standardized distance to the gate is 30 or more and whose rate is therefore far too small to be measured at all; admissibility caps that distance, and with it the amplification.
+The moment error is therefore amplified by the squared standardized distance to the gate: $a\left(t\right)$ enters the rate through a Gaussian, so what the transient does to ${\sigma }_{H}$ it does to the rate ${a\left(t\right)}^{2}/2$ times over. Proposition~\ref{prop:stationary} keeps $\eta \left(\rho \right)$ small --- below ${10}^{-4}$ everywhere in the window, over the admissible draws --- but the amplification is why the error has to be evaluated rather than assumed. Evaluated exactly, the largest relative departure of $\nu \left(t\right)$, Equation~\eqref{eq:nu2} at the moments of Equation~\eqref{eq:moments}, from $\nustat \left(t\right)$, Equation~\eqref{eq:nu_asymp}, is $7\times {10}^{-5}$ over the admissible draws and the whole window, under either model (Figure~\ref{fig:approx}). Over the whole sampled box it reaches a per cent, on draws whose standardized distance to the gate is 30 or more and whose rate is therefore far too small to be measured at all; admissibility caps that distance, and with it the amplification.
 
 \begin{corollary}[under Model 1 the delay-period rate is constant]\label{cor:flat}
 Under Model 1, at every parameter setting and at every time in the delay analysis window,
 
 \begin{equation}
-\nu =\frac{\omega }{2\pi }{e}^{-{a}^{2}/2}, \quad a=\frac{g-\left|m\right|}{{\sigma }_{H}}
+\nustat =\frac{\omega }{2\pi }{e}^{-{a}^{2}/2}, \quad a=\frac{g-\left|m\right|}{{\sigma }_{H}}
 \label{eq:nu1}
 \end{equation}
 
 
-which does not depend on $t$. In particular every linear or quadratic contrast of the rate across the window is zero, for every $\kappa$, every $\lambda$ and every maintained level.
+which does not depend on $t$; in particular $a\left(t\right)$ is the constant $a$. Every linear or quadratic contrast of the stationary rate across the window is therefore zero, for every $\kappa$, every $\lambda$ and every maintained level.
 
 \end{corollary}
 
 \begin{proof}
-$\beta =0$ makes $d$ constant by Equation~\eqref{eq:d}, and ${\sigma }_{H}$ is constant on the window by Proposition~\ref{prop:stationary}, so $a$ is constant. Putting $M=0$ and $S={\sigma }_{\dot{H}}^{2}$ in Equation~\eqref{eq:nu_asymp} leaves $\nu =\varphi \left(a\right){\sigma }_{\dot{H}}\varphi \left(0\right)/{\sigma }_{H}=\omega {e}^{-{a}^{2}/2}/2\pi $, the classical Rice formula.
+$\beta =0$ makes $d\left(t\right)$ constant by Equation~\eqref{eq:d}, so $a\left(t\right)$ is constant. Putting $M=0$ and $S={\sigma }_{\dot{H}}^{2}$ in Equation~\eqref{eq:nu_asymp} leaves $\nustat =\varphi \left(a\right){\sigma }_{\dot{H}}\varphi \left(0\right)/{\sigma }_{H}=\omega {e}^{-{a}^{2}/2}/2\pi $, the classical Rice formula.
 \end{proof}
 
 Model 1 does not predict a small ramp that some parameter setting might enlarge: it predicts none. A measured departure from flatness under Model 1 is therefore an artefact of measurement, of finite samples, or of one of the idealizations of Remark~\ref{rem:scope}, and not a property of the architecture.
@@ -952,17 +957,17 @@ Model 1 does not predict a small ramp that some parameter setting might enlarge:
 Under Model 2, on the analysis window,
 
 \begin{equation}
-\frac{\dd \left(\ln \nu \right)}{\dd \rho }=\frac{\beta }{\delta {\sigma }_{H}}a\left(\rho \right), \quad \frac{{\dd }^{2}\left(\ln \nu \right)}{\dd {\rho }^{2}}=-{\left(\frac{\beta }{\delta {\sigma }_{H}}\right)}^{2}
+\frac{\dd \left(\ln \nustat \right)}{\dd t}\left(t\right)=\frac{\beta }{\delta {\sigma }_{H}}a\left(t\right), \quad \frac{{\dd }^{2}\left(\ln \nustat \right)}{\dd {t}^{2}}\left(t\right)=-{\left(\frac{\beta }{\delta {\sigma }_{H}}\right)}^{2}
 \label{eq:slope}
 \end{equation}
 
 
-so that the rate itself rises, $\dd \nu /\dd \rho =\nu \left(\rho \right)\left(\beta /\delta {\sigma }_{H}\right)a\left(\rho \right)>0$, wherever the signal has not yet reached the gate.
+so that the rate itself rises, $\dd \nustat /\dd t=\nustat \left(t\right)\left(\beta /\delta {\sigma }_{H}\right)a\left(t\right)>0$, wherever the signal has not yet reached the gate.
 
 \end{corollary}
 
 \begin{proof}
-The barrier moves at constant speed, so by Equation~\eqref{eq:d} the standardized distance falls linearly, $a\left(\rho \right)=a\left(0\right)-\beta \rho /\left(\delta {\sigma }_{H}\right)$. In Equation~\eqref{eq:nu_asymp} the bracket is constant in $\rho$ and $\ln \varphi \left(a\right)=-{a}^{2}/2-\ln \sqrt{2\pi }$, so $\dd \left(\ln \nu \right)/\dd \rho =-a\dot{a}$ with $\dot{a}=-\beta /\left(\delta {\sigma }_{H}\right)$. Differentiating once more gives the curvature.
+The barrier moves at constant speed, so by Equation~\eqref{eq:d} the standardized distance falls linearly, $a\left(t\right)=a\left({t}_{\mathrm{offset}}\right)-\beta \left(t-{t}_{\mathrm{offset}}\right)/\left(\delta {\sigma }_{H}\right)$. In Equation~\eqref{eq:nu_asymp} the bracket does not depend on $t$ and $\ln \varphi \left(a\right)=-{a}^{2}/2-\ln \sqrt{2\pi }$, so $\dd \left(\ln \nustat \right)/\dd t=-a\dot{a}$ with $\dot{a}=-\beta /\left(\delta {\sigma }_{H}\right)$. Differentiating once more gives the curvature.
 \end{proof}
 
 Three consequences are used in the Results. The log rate rises at a rate proportional to the current standardized distance to the gate, so a condition with a higher rate has a smaller standardized distance and therefore a shallower log-rate slope. The curvature is negative and constant in time, so the log rate is exactly a downward parabola, and it is the same parabola in all six conditions, since $\beta$, $\delta$ and ${\sigma }_{H}$ are properties of the participant and not of the condition. And the rise of the rate itself is proportional to the rate: the slope of the raw rate is the product of the level and the relative slope, so reproducing the observed value of that slope requires a model to produce both, and neither one alone.
@@ -990,7 +995,7 @@ Suppose the accumulation of Equation~\eqref{eq:x} carries a leak, $\dd x\left(t\
 
 The reason is that the leak acts only before maintenance begins. It changes the law of $x$, hence the law of the threshold-crossing time $\tau $ and of the maintained level $m$ of Equation~\eqref{eq:m}, and therefore the distribution across trials of the standardized distance $a=\left(g-\left|m\right|\right)/{\sigma }_{H}$. It does not appear in the maintenance dynamics: from $\tau $ onward the input to the filter is $m+\varepsilon \left(t\right)$ by Equation~\eqref{eq:y_delay}, with $\varepsilon $ the Ornstein--Uhlenbeck process of Equation~\eqref{eq:epsilon}, and neither depends on how $x$ arrived. So $H$, its three moments (Equation~\eqref{eq:moments}) and the crossing rate (Equation~\eqref{eq:nu2}) are exactly as derived, at any $\gamma $.
 
-Two consequences. Corollary~\ref{cor:flat} is invariant: under Model 1 the delay-period rate is constant in $t$ on every trial and at every parameter setting, for every $\gamma $, so a leak can move the LEVEL of that rate but cannot give it a time dependence. Corollary~\ref{cor:logslope} is invariant in form, with $a$ taking whatever value the leaked accumulation leaves. A leak is therefore not a way for Model 1 to acquire a delay-period ramp.
+Two consequences. Corollary~\ref{cor:flat} is invariant: under Model 1 the delay-period stationary rate is constant in $t$ on every trial and at every parameter setting, for every $\gamma $, so a leak can move the LEVEL of that rate but cannot give it a time dependence. Corollary~\ref{cor:logslope} is invariant in form, with $a$ taking whatever value the leaked accumulation leaves. A leak is therefore not a way for Model 1 to acquire a delay-period ramp.
 
 Simulation agrees: re-running every admissible draw at $\gamma =0.25$, $0.50$ and $1.00$ s\textsuperscript{-1} leaves no Model 1 draw producing all six condition trends significantly positive at any leak rate.
 \end{remark}

@@ -458,6 +458,19 @@ def slope_criterion(res):
                 max_slope=float(np.nanmax(res['slope'])))
 
 
+def trend_criterion(res):
+    """All six delay-period raw-rate TRENDS significantly positive (lower 95% CI > 0).
+
+    The counterpart of slope_criterion on the statistic the paper now reports.  Both are
+    recorded: slope_criterion is kept so that runs made before 2026-09-07 remain
+    comparable, but the trend is what the Results cite, because it is linear in the rate
+    and so cannot be earned by ramping from an arbitrarily low level."""
+    lo = res['trend'] - 1.96 * res['trend_se']
+    ok = bool(np.isfinite(lo).all() and (lo > 0).all())
+    return dict(all_positive=ok, min_trend=float(np.nanmin(res['trend'])),
+                max_trend=float(np.nanmax(res['trend'])))
+
+
 def met_invariance(res):
     """Range of per-cell mean MET, and whether it stays within the note4.tex R7-R10
     predicted residual scale (~2.3 ms) plus a safety margin for six-cell spread."""

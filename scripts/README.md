@@ -518,7 +518,7 @@ windows need, since a trial stops contributing once its response burst has begun
 One asymmetry between the two sides is worth knowing, because it decides what can be
 drawn. The activation preceding a response IS the response and is excluded from the count
 on both sides; in the model it occupies almost the whole 200 ms before the button press, so
-the simulated pre-response rate is 0.0005 /s against an observed 0.124, and the
+the simulated pre-response rate is below 0.001 /s against an observed 0.124, and the
 response-signal LEVEL is low by an order of magnitude for the same reason. Contrasts within
 the response-signal window survive this (the fall of the rate after the signal is
 reproduced at 94-98% of draws); levels there and everything in the response window do not,

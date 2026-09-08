@@ -28,7 +28,7 @@ everything in the RESPONSE window, together with the LEVEL in the response-signa
 because the simulation and the data do not measure the same thing there: the activation
 preceding a response IS the response and is excluded from the count on both sides, and in
 the model it occupies almost the whole 200 ms before the button press, leaving a simulated
-pre-response rate of 0.0005 /s against an observed 0.124. Contrasts within the
+pre-response rate below 0.001 /s against an observed 0.124. Contrasts within the
 response-signal window survive this (the fall of the rate after the signal is reproduced at
 94-98% of draws); levels do not, and are not drawn.
 
@@ -78,6 +78,7 @@ W = {
     'rs_fall_dur':  DUR,                              # the fall is steeper after the long
     'pmet_coh':    -COH,
     'pmet_dur':     DUR,
+    'pmet_int':     np.array([1, 0, -1, -1, 0, 1]),   # coherence effect larger after short
     'met_dur':      DUR,
 }
 # Which per-cell quantity each contrast is taken on, and the scale it is reported in.
@@ -87,7 +88,8 @@ SRC = {
     'stim_coh': ('srate', 1.0), 'stim_dur': ('srate', 1.0),
     'delay_coh': ('rate', 1.0), 'delay_dur': ('rate', 1.0), 'delay_int': ('rate', 1.0),
     'trend': ('trend', 1.0), 'trend_dur': ('trend', 1.0), 'curv': ('curv', 1.0),
-    'pmet_coh': ('pmet', 1000.0), 'pmet_dur': ('pmet', 1000.0), 'met_dur': ('met', 1000.0),
+    'pmet_coh': ('pmet', 1000.0), 'pmet_dur': ('pmet', 1000.0),
+    'pmet_int': ('pmet', 1000.0), 'met_dur': ('met', 1000.0),
     'stim_trend_coh': ('stim_trend', 1.0), 'stim_trend_dur': ('stim_trend', 1.0),
     'rs_fall': ('rs_trend', 1.0), 'rs_fall_dur': ('rs_trend', 1.0),
 }
@@ -99,8 +101,8 @@ GROUPS = [
                                'stim_trend_coh', 'stim_trend_dur']),
     ('Delay window', ['delay_coh', 'delay_dur', 'delay_int',
                       'trend', 'trend_dur', 'curv']),
-    ('Response-signal window', ['rs_fall', 'rs_fall_dur',
-                                'pmet_coh', 'pmet_dur', 'met_dur']),
+    ('Response-signal window', ['rs_fall', 'rs_fall_dur', 'pmet_coh',
+                                'pmet_dur', 'pmet_int', 'met_dur']),
 ]
 KEYS = [k for _, ks in GROUPS for k in ks]
 
@@ -121,6 +123,7 @@ NAMES = dict(
     curv='delay-period rate curvature (/s$^3$)',
     pmet_coh='PMET,\n0% minus 50% coherence (ms)',
     pmet_dur='PMET, short minus long (ms)',
+    pmet_int='coherence effect on PMET,\nshort minus long (ms)',
     met_dur='MET, short minus long (ms)',
     stim_trend_coh='stimulus-period trend,\n50% minus 0% coherence (/s$^2$)',
     stim_trend_dur='stimulus-period trend,\nshort minus long (/s$^2$)',

@@ -85,7 +85,13 @@ def q(x, p):
 
 for tag in ['model1', 'model2']:
     adm = [r for r in recs if r[tag]['admissible']]
-    sl = np.array([np.nanmean(np.asarray(r[tag]['raw']['trend'], float)) for r in adm])
+    # A six-cell contrast needs all six cells. A draw in which one condition produced too
+    # few events for the trend to be estimated is dropped from the distribution rather
+    # than averaged over the five that remain, which would be a different quantity; this
+    # is the convention effect_panel.py uses, so the two agree. It costs 2 of Model 1's
+    # 160 admissible draws and 7 of Model 2's 145.
+    T = np.array([np.asarray(r[tag]['raw']['trend'], float) for r in adm])
+    sl = np.where(np.isnan(T).any(axis=1), np.nan, T.mean(axis=1))
     rt = np.array([np.nanmean(np.asarray(r[tag]['raw']['rate'], float)) for r in adm])
     ok = np.isfinite(sl)
     sl_f, rt_f = sl[ok], rt[ok]

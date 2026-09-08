@@ -17,6 +17,7 @@
   "curv": "delay-period rate curvature (/s$^3$)",
   "pmet_coh": "PMET,\n0% minus 50% coherence (ms)",
   "pmet_dur": "PMET, short minus long (ms)",
+  "pmet_int": "coherence effect on PMET,\nshort minus long (ms)",
   "met_dur": "MET, short minus long (ms)",
   "stim_trend_coh": "stimulus-period trend,\n50% minus 0% coherence (/s$^2$)",
   "stim_trend_dur": "stimulus-period trend,\nshort minus long (/s$^2$)",
@@ -62,6 +63,7 @@
     "rs_fall_dur",
     "pmet_coh",
     "pmet_dur",
+    "pmet_int",
     "met_dur"
    ]
   ]
@@ -87,6 +89,7 @@
   "rs_fall_dur": 1.4018766965996272,
   "pmet_coh": 31.660285135972494,
   "pmet_dur": 49.01787813664992,
+  "pmet_int": 11.228905641083188,
   "met_dur": -0.4920968689910668
  },
  "observed_se": {
@@ -110,6 +113,7 @@
   "rs_fall_dur": 0.5281100066884841,
   "pmet_coh": 6.1098250603784905,
   "pmet_dur": 6.065851618574122,
+  "pmet_int": 7.9852836228536335,
   "met_dur": 0.7517465900011876
  },
  "models": {
@@ -414,6 +418,21 @@
     "n_tested": 160,
     "pct_of_observed": 73.125,
     "frac_reaching": 0.26875
+   },
+   "pmet_int": {
+    "median": 29.860449555147245,
+    "p5": 1.2806030273437825,
+    "p95": 99.21040006705769,
+    "min": -61.73231241159896,
+    "max": 158.6670183543121,
+    "covers_observed": true,
+    "sign_agrees": true,
+    "frac_right": 0.86875,
+    "frac_wrong": 0.025,
+    "frac_null": 0.10625,
+    "n_tested": 160,
+    "pct_of_observed": 20.625,
+    "frac_reaching": 0.79375
    },
    "met_dur": {
     "median": -5.000203450520846,
@@ -732,6 +751,21 @@
     "n_tested": 145,
     "pct_of_observed": 61.37931034482759,
     "frac_reaching": 0.38620689655172413
+   },
+   "pmet_int": {
+    "median": 32.599121093749986,
+    "p5": -1.4995321594651108,
+    "p95": 124.36304453409817,
+    "min": -59.45043945312503,
+    "max": 187.25177806447584,
+    "covers_observed": true,
+    "sign_agrees": true,
+    "frac_right": 0.8827586206896552,
+    "frac_wrong": 0.034482758620689655,
+    "frac_null": 0.08275862068965517,
+    "n_tested": 145,
+    "pct_of_observed": 20.689655172413794,
+    "frac_reaching": 0.7931034482758621
    },
    "met_dur": {
     "median": -7.6928710937500115,

@@ -1,6 +1,6 @@
 {
- "source": "results/sweep_screened_warm.jsonl",
- "leak_dir": "results/leak/warm",
+ "source": "results/sweep_screened.jsonl",
+ "leak_dir": "results/leak",
  "n_admissible_gamma0": {
   "model1": 160,
   "model2": 145

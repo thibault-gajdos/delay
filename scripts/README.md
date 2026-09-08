@@ -331,7 +331,7 @@ the weight and deserve to be visible:
     delay -- and a floor at kappa = 2.0 imposed on 2026-08-30 was reverted the next day for
     that reason. The floor's justification, that the stationary crossing-rate approximation
     loses validity below it, is now simply true and harmless: the approximation is used,
-    and `mkfig.py` measures its error over the whole domain (1.4e-5 inside the window).
+    and `mkfig.py` measures its error over the admissible draws (6.8e-5 inside the window).
   - `lam` in [10.0, 50.0], log-uniform. 1/lam is the time constant of the filter relating
     decision-related input to motor preparation, so the range corresponds to 100 down to
     20 ms; lam = 100 would mean 10 ms, faster than plausible neuromuscular filtering. This
@@ -463,7 +463,7 @@ rate-against-trend scatter (`figures_space.fig_rate_trend`), which needs no enve
 because the boundary of what Model 1 can do is the horizontal axis. The exact moments that
 `kernel_moments.py` held survive where they are still needed, in `mkfig.py`, which uses
 them for one purpose only: to measure how far the stationary approximation is from the
-exact rate over the sampled domain (1.4e-5 inside the window, manuscript Figure 8).
+exact rate over the admissible draws (6.8e-5 inside the window, manuscript Figure 7).
 
 Both files are deleted rather than kept as dead code; they are in the git history at
 commit `1e361ab` if the cold-start argument ever needs to be reread.

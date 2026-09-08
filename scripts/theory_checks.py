@@ -12,10 +12,10 @@ Appendix A, the observable: the ratio of merged clusters to raw upcrossings unde
 25 ms rule, which is the factor any comparison between the formula and a measured rate
 must carry.
 
-Corollary A.2 -- that Model 1's delay-period rate is constant -- needs no separate
+Corollary A.3 -- that Model 1's delay-period rate is constant -- needs no separate
 numerical check: it is the stationary Rice formula with a fixed barrier, and the only
 question it raises is whether the analysis window is in fact stationary, which mkfig.py
-answers over the whole sampled domain (largest departure inside the window: 1.4e-5).
+answers over the admissible draws (largest departure inside the window: 6.8e-5).
 
 The residual condition dependence of motor execution time, from the filter transient
 after the response signal, which is what makes invariance a consequence rather than an

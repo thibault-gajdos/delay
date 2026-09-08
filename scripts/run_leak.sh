@@ -1,14 +1,12 @@
 #!/bin/bash
-# Leak-robustness rerun under the STATIONARY START (reviewer C2.3), run natively.
+# Leak-robustness rerun (reviewer C2.3), run natively.
 #
 #   ./run_leak.sh          # uses all physical cores
 #   ./run_leak.sh 8        # 8 shards
 #
-# Re-runs, at each of three leak rates, exactly the draws that were admissible in either
-# model at zero leak under the stationary start (results/leak/adm_idx.json, written
-# by leak_index.py -- 220 draws, against 222 under the cold start). Output goes to
-# results/leak/, so the cold-start dumps the response letter currently quotes are
-# left alone.
+# Re-runs, at each of three leak rates, exactly the draws admissible in either model at
+# zero leak: the 220 indices in results/leak/adm_idx.json, written by leak_index.py.
+# Output goes to results/leak/.
 #
 # leak_sweep.py appends one flushed JSON line per draw and resumes by counting the lines
 # already in its shard file, so the run can be interrupted and restarted freely. Changing

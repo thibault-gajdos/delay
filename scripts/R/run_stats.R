@@ -112,12 +112,11 @@
 ## measures: the partial-activation exports use stim0/stim1, but the mu-beta and
 ## LRP exports use stim0/stim2. The parser below reads whatever digit follows
 ## "stim" and maps the two distinct codes it finds, in ascending order, onto the
-## short/long duration labels, rather than assuming "1" for the long duration --
-## an earlier version of this script assumed stim0/stim1 everywhere, which for
-## the mu-beta and LRP files silently turned every long-duration row into a
-## missing duration level (surfacing downstream as "contrasts can be applied
-## only to factors with 2 or more levels", not as a wrong number -- an accident
-## of variable naming, not a hint about the data).
+## short/long duration labels, rather than assuming "1" for the long duration.
+## Assuming stim0/stim1 everywhere silently turns every long-duration row of the
+## mu-beta and LRP files into a missing duration level, which surfaces downstream
+## as "contrasts can be applied only to factors with 2 or more levels" rather than
+## as a wrong number.
 ##
 ## -------------------------------------------------------------------------
 
@@ -125,11 +124,9 @@ suppressPackageStartupMessages({
   library(afex); library(emmeans); library(dplyr); library(tidyr)
   library(lme4); library(lmerTest)
 })
-## The manuscript's tables report PARTIAL eta squared. afex's default effect size is
-## GENERALISED eta squared, and until 2026-09-01 this file collected that into a column
-## named eta2p -- a mislabelling, not a rounding difference: for the accuracy duration
-## effect the two are 0.027 and 0.519. Set the default to partial eta squared so that the
-## column and the manuscript agree.
+## The manuscript's tables report PARTIAL eta squared; afex's default is GENERALISED eta
+## squared. The difference is not a rounding one -- for the accuracy duration effect the
+## two are 0.027 and 0.519 -- so es_aov is set explicitly below.
 afex_options(emmeans_model = "multivariate", check_contrasts = TRUE, es_aov = "pes")
 emm_options(lmer.df = "satterthwaite")
 
@@ -252,9 +249,8 @@ analyse_period <- function(d, measure, period, pub = NULL) {
   ## pathology: the simulated response period contains no partial activations by
   ## construction, because measures() scores the burst preceding the response as the
   ## response rather than as a partial activation, and in the model essentially every
-  ## trial's final approach is that burst. Before 2026-09-01 this reached which(!empty)[1]
-  ## as NA and failed inside aov_ez with an opaque reshape error, which is what it did
-  ## the first time the simulated data were carried through this function.
+  ## trial's final approach is that burst. Left unhandled, which(!empty)[1] returns NA
+  ## and aov_ez fails with an opaque reshape error.
   if (all(empty)) {
     say("\n", strrep("=", 78))
     say(label, "   (no events in any bin: not analysed)")
@@ -458,11 +454,9 @@ if (file.exists(pf)) {
 ## ---------------------------------------------------------------------------
 ## BEHAVIOUR: accuracy, response time, premotor and motor execution time.
 ##
-## These four are the manuscript's Table 1 and Table S1, and until 2026-09-01 they
-## were the one set of analyses in the paper that no script here reproduced -- they
-## came from the original JASP runs and lived nowhere else. They are computed here
-## from the archive's own per-participant x cell exports, the same files JASP was
-## given, so the numbers are reproducible rather than inherited.
+## These four are the manuscript's Table 1 and Table S1. They are computed from the
+## archive's own per-participant x cell exports -- the same files JASP was given -- so
+## the numbers are reproducible rather than inherited.
 ##
 ## The design is duration (2) x coherence (3), fully within-subject; aov_ez applies
 ## Greenhouse-Geisser to the three-level coherence factor and to the interaction,
@@ -510,15 +504,11 @@ for (i in seq_len(nrow(BEHAV))) {
 ## ---------------------------------------------------------------------------
 ## There is no repeated-measures analysis of the simulated counts. A parameter
 ## vector is one hypothetical participant, so the simulated design has no
-## between-participant factor. Until 2026-09-03 export_for_R.py split each
-## vector's trials into 22 equal groups and this script analysed them as
-## participants; those groups were identical in parameters, their between-group
-## variance was sampling noise alone, and the resulting F values -- 32 rows per
-## model in stats_results.csv, reported nowhere in the manuscript -- were not
-## comparable with the empirical ones. The split and the analysis went on
-## 2026-09-03, and the sim_counts_m{1,2}.csv export itself on 2026-09-05; what
-## the models predict is reported as effect-size ranges over the parameter
-## space (effect_sizes.py).
+## between-participant factor: splitting one vector's trials into 22 groups and
+## analysing them as participants would give F values whose between-group variance
+## is sampling noise alone, not comparable with the empirical ones. What the models
+## predict is reported as effect-size ranges over the parameter space
+## (effect_sizes.py, effect_panel.py).
 
 ## ---------------------------------------------------------------------------
 close(OUT)
@@ -526,34 +516,17 @@ write.csv(do.call(rbind, ROWS), "stats_results.csv", row.names = FALSE)
 cat(readLines("stats_tables.txt"), sep = "\n")
 
 ## ---------------------------------------------------------------------------
-## History.
+## Two traps this analysis has, worth keeping in view.
 ##
-## This file replaces two earlier, separate scripts: a base-R version (no
-## package dependencies, written because CRAN was unreachable from the analysis
-## container at the time) and a packaged version equivalent to this one. The
-## container issue no longer applies, the two versions had drifted into a
-## maintenance burden with no benefit, and this one is the version that was
-## actually checked line by line: it fixed two bugs the base-R version did not
-## have a chance to expose the same way --
-##   (1) an unconditional reference to the second column of a 2-bin polynomial-
-##       contrast matrix, which has only one column, crashing on every 2-bin
-##       period that is not the response period (RS for all three measures,
-##       plus the mu-beta and LRP response periods);
-##   (2) a duration-code parser that assumed "stim0/stim1" naming everywhere,
-##       silently turning every long-duration row into a missing factor level
-##       for the mu-beta and LRP exports (which use "stim0/stim2"), invisible
-##       until (1) was fixed and the missing level surfaced as a crash rather
-##       than a wrong number.
-## Also removed: an "(A), for comparison" code path that ran the pooled,
-## sphericity-assuming version of the decomposition (contrasts(bin) <-
-## contr.poly(...) inside a single ANOVA) purely to show it was not what got
-## reported -- documented above instead, without keeping dead code around it.
+##   (1) A 2-bin period's polynomial-contrast matrix has one column, so an
+##       unconditional reference to its second column crashes on every such
+##       period (RS for all three measures, plus the mu-beta and LRP response
+##       periods).
+##   (2) The duration code in the column names is not consistent across measures
+##       (see the header): parsing it wrongly loses a factor level rather than
+##       giving a wrong number.
 ##
-## The one substantive numerical change from the retired base-R version: its
-## `pub` target for LRP, stimulus period was (0.636, 1.524, 0.391); this
-## script, like the retired packaged version before it, computes (0.614, 1.498,
-## 0.387) from the same input files and reproduces that number, not the older
-## one. The two implementations always agreed with each other; only the
-## hardcoded target for that one period did not, by a few percent, and has not
-## been traced further -- worth one line in the manuscript's data-provenance
-## notes if anyone re-derives that specific reference number.
+## For LRP, stimulus period, SPEC's replication target is (0.614, 1.498, 0.387),
+## the value this script computes from the archive's own files.  An older figure
+## of (0.636, 1.524, 0.391) circulates for that one period; the few per cent
+## between them has not been traced.

@@ -3,10 +3,9 @@ representative.py -- picks the parameter vector at which the illustrative figure
 drawn, now that nothing is fitted.
 
 The one figure that shows a single simulated trial (the manuscript's Figure 2B) needs one
-point in parameter space; Figure 1 draws thirty admissible sets and needs none. It used to be a
-fitted vector. With the fits removed it is instead a REPRESENTATIVE ADMISSIBLE DRAW of the
-sweep, chosen by a rule that is stated in one line and involves no contact with the
-quantities the figures are used to discuss.
+point in parameter space; Figure 1 draws thirty admissible sets and needs none. It is a
+REPRESENTATIVE ADMISSIBLE DRAW of the sweep, chosen by a rule that is stated in one line
+and involves no contact with the quantities the figures are used to discuss.
 
 Two properties are wanted, and one rules out the obvious choice.
 

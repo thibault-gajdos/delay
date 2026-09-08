@@ -11,8 +11,8 @@ Environment:
            (default results/leak/adm_idx.json, written by leak_index.py)
   SHARD_N, SHARD_I   split the draw list across cores
 
-Each record carries the raw-rate TREND criterion beside the log-rate slope criterion, the
-trend being the statistic the Results cite.  Paths are resolved from this file's own
+Each record carries the raw-rate TREND criterion, the statistic the Results cite, with
+the log-rate slope criterion beside it.  Paths are resolved from this file's own
 location, so the script runs wherever the repository is checked out.
 """
 import os, sys, json, time

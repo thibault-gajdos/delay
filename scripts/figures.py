@@ -2,11 +2,7 @@
 figures.py -- the figures that show simulated dynamics.
 
 Three of them, and they are manuscript Figures 1 (two panels, one per model) and 2B:
-plots/fig_traj_m{2,1}.pdf and plots/fig_single.pdf. Two further functions lived here until
-2026-09-07 and are gone: fig_rates, a model-against-data rate profile at this one draw,
-superseded by the delay-profile figure that shows the whole admissible set
-(figures_space.fig_delay_profiles); and fig_shape, the log-rate-slope-against-rate
-relation, whose manuscript figure went with the log-rate slope itself.
+plots/fig_traj_m{2,1}.pdf and plots/fig_single.pdf.
 
 Nothing is fitted, so these are drawn at the REPRESENTATIVE ADMISSIBLE DRAW selected by
 representative.py (see that file for the rule and for why the median of the ranges is not
@@ -154,7 +150,7 @@ def fig_single(P, n=400, fname='plots/fig_single.pdf'):
     ax[1].set_xlabel('time from stimulus onset (s)')
     ax[0].set_ylabel('gated signal')
     # panel letter: this figure is panel B of the manuscript's Figure 2, whose panel A is a
-    # hand-drawn schematic; the letter used to be added by hand after export
+    # hand-drawn schematic; the panel letter is added here rather than after export
     fig.text(0.005, 0.94, 'B', fontsize=20, weight='bold', va='top')
     fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
 

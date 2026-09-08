@@ -1,9 +1,0 @@
-[0] Config.pm:308> INFO - This is Biber 2.20
-[0] Config.pm:311> INFO - Logfile is 'note4.blg'
-[23] biber-darwin:340> INFO - === Sat Aug 22, 2026, 16:25:38
-[29] Biber.pm:420> INFO - Reading 'note4.bcf'
-[58] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
-[65] bbl.pm:676> INFO - Writing 'note4.bbl' with encoding 'UTF-8'
-[65] bbl.pm:779> INFO - Output to note4.bbl
-[65] Biber.pm:131> WARN - The file 'note4.bcf' does not contain any citations!
-[65] Biber.pm:133> INFO - WARNINGS: 1

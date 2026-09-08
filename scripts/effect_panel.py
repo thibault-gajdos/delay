@@ -11,11 +11,10 @@ Monte-Carlo standard errors, significantly of the observed sign, significantly a
 or not distinguishable from zero.
 
 The effects are grouped by ANALYSIS WINDOW, in the order the Results take them, which is
-how the figure is drawn (figures_space.fig_effect_sizes). Until 2026-09-08 the panel held
-only the nine effects that discriminate between the architectures, and left out the main
-effects both produce; the Results, however, report those too, and a reader checking a
-sentence against the figure should find it there. The set is now everything the Results
-state about behavior or the partial-activation rate that the sweep records per condition.
+how the figure is drawn (figures_space.fig_effect_sizes). The set is everything the
+Results state about behavior or the partial-activation rate: a reader checking a sentence
+against the figure should find it there, including the main effects both architectures
+produce with the same sign.
 
 The summaries for the three windows outside the delay come from `augment_windows.py`,
 which re-simulates the admissible draws at the sweep's own seeds and records a level and a
@@ -147,7 +146,7 @@ def effects_se(m):
     seed. The three-way split (significantly with the observed sign, significantly against
     it, indistinguishable from zero at two standard errors) is what the raw sign fraction
     should have been from the start. It matters most on the delay-period trend, where
-    Model 1's value is zero analytically (Appendix, Corollary A.2), so every draw's sign is
+    Model 1's value is zero analytically (Appendix, Corollary A.3), so every draw's sign is
     a coin toss and only the three-way split reports that honestly.
 
     Accuracy gets a binomial error; response time, the two execution times, the trend and

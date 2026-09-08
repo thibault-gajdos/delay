@@ -1,183 +1,95 @@
 """
-fused_sweep.py -- unified broad-parameter Monte-Carlo sweep, extending the manuscript's
-existing "first-stage parameter-space evaluation" (Table 1, 250 Latin-hypercube draws,
-task-admissibility screen, two RT-effect criteria) to ALSO check, at every admissible
-draw, the out-of-sample criteria that the current manuscript only checks at the single
-behaviorally-calibrated point:
-  (A) the delay-period partial-activation log-rate slope is positive in every cell
-      (Model 2's diagnostic prediction; Model 1 predicts no systematic ramp)
-  (B) motor execution time (MET) is close to invariant across the six cells (a
-      prediction common to both models, checked here across the sampled space rather
-      than only at the fitted point -- this is the R7-R10 argument from note4.tex)
+fused_sweep.py -- the parameter-space evaluation.
 
-Sampling plan (revised 2026-08-30 to remove circularity: the previous ranges bracketed
-the fitted/observed point itself, which is not a valid way to define an INDEPENDENT
-robustness check of that same fit -- see README "Non-circular parameter ranges" note
-below). Every bound here now comes from either a task/design constant or a pre-existing
-architectural constant that was fixed before any behavioural fit was run -- never from
-calibq_{m1,m2}.json or from targets_q.json.
+What each architecture can produce over its whole admissible parameter space
+(manuscript: Methods, "Evaluation over the parameter space"; Results, the "Simulation
+validation" subsections).  Nothing here is fitted, so this is where every effect-size
+statement in the paper comes from.
 
-  g        in [0.050, 0.200]                 (task/design: g is the distance from the
-                                                gate at theta to the response bound;
-                                                widened upper end from 0.160 to bracket
-                                                a wider admissible fraction of theta)
-  theta/g  in [0.25, 0.90]                    (unchanged -- no independent bound found
-                                                that survives being checked at a second,
-                                                independent representative point; see
-                                                README)
-  kappa    in [0.20, 30.0]    log-uniform     (UNCHANGED, but the REASON changed on
-                                                2026-09-07 with the stationary start
-                                                (delaymodel/sim.py, WARM_START).  The
-                                                old rationale was that small kappa is
-                                                Model 1's ONLY route to a delay rate
-                                                still rising at the end of the delay, so
-                                                a floor would delete the region most
-                                                favourable to the model the sweep is
-                                                trying to exclude.  That is no longer
-                                                true: with eps started at its stationary
-                                                law the moments of H relax at rate at
-                                                least lambda, uniformly in kappa, so
-                                                Model 1's delay rate is flat at EVERY
-                                                kappa and no value of kappa is more
-                                                favourable to it than another.  The
-                                                range is kept on its own terms: 1/kappa
-                                                is the correlation time of the
-                                                maintenance noise, and [0.20, 30] spans
-                                                one trial (5 s) down to one analysis bin
-                                                (33 ms), which is the natural span for a
-                                                fluctuation that is meant to be a
-                                                WITHIN-trial one.  Keeping it also means
-                                                the sampling was not re-tuned to the new
-                                                model.  NB: the corresponding sentence in
-                                                the Methods must be rewritten -- it still
-                                                carries the old rationale.)
-  SDe      in [0.003, 0.060]  log-uniform    (RESTORED as a sampled dimension 2026-08-31,
-                                               after a brief detour that sampled the
-                                               derived quantity a = (g - theta)/SDe
-                                               instead.  That detour was rejected, and
-                                               correctly: reparameterising redefines the
-                                               distribution over the parameter space
-                                               itself, and doing so in terms of the very
-                                               quantity that governs the outcome under
-                                               test is a weak form of the circularity the
-                                               2026-08-30 revision was written to remove.
-                                               The problem the detour addressed -- that
-                                               roughly half of all admissible draws sat at
-                                               a > 3, where exp(-a^2/2) leaves no
-                                               crossings and the model produces no muscle
-                                               activity at all -- is real, but it belongs
-                                               to the ACCEPTANCE SET, not to the sampling
-                                               law.  It is now handled by the EMG
-                                               criterion in admissible(), which is neutral
-                                               with respect to how the space is
-                                               parameterised.  Cost: about 40% fewer
-                                               usable draws per 250, bought back with
-                                               N_DRAWS.)
-  Lmotor   FIXED at 0.093 s                    (Dendauw et al. 2024's inherited value, per
-                                               the author's instruction 2026-08-31; it was
-                                               previously sampled over [0.008, 0.080],
-                                               whose docstring wrongly claimed to bracket
-                                               0.093 -- 0.093 is above 0.080.  r stays
-                                               free: Lmotor is a peripheral
-                                               electromechanical delay with good reason to
-                                               transfer between tasks, r is a response
-                                               criterion with less.)
-  beta     in [0.0015, 0.100] log-uniform     (upper end RAISED 2026-08-31, as was SDe's,
-                                               on a COVERAGE criterion that is
-                                               not the discarded circular one. Choosing a
-                                               range BECAUSE the fit sits in it would be
-                                               circular; requiring the range to CONTAIN
-                                               the fit is a minimum condition for the
-                                               effect sizes reported from it to describe
-                                               the model as actually fitted. The bounds
-                                               stay independently derived -- the fit is
-                                               used only as a check. Both fits fell
-                                               outside the old ranges: SDe 0.040 (M1) and
-                                               0.043 (M2) against a top of 0.030, and
-                                               beta 0.050 (M2) against a top of 0.024,
-                                               i.e. the sweep was evaluating Model 2 at a
-                                               ramp at most half the height it actually
-                                               adopts. Both now span more than an order of
-                                               magnitude, so both are log-uniform, per this
-                                               file's own convention. beta's upper end is
-                                               not derived: the admissibility screen
-                                               enforces it, since a ramp large enough to
-                                               carry the signal past the response criterion
-                                               during the delay shows up as premature
-                                               responses and is rejected.)
-  muRS     in [0.30, 1.50]                    (unchanged, architectural)
-  r        in [0.010, 0.200]  log-uniform     (unchanged -- already a task/design range,
-                                                not derived from the fit)
-  Lmotor   in [0.008, 0.080]  log-uniform     (unchanged, architectural)
-  k        in [0.5, 2.0]      log-uniform     (NEW -- freed from FIXED per the same
-                                                task/design reasoning as r and Lmotor:
-                                                nothing ties it to the immediate-report
-                                                architecture's inherited value any more
-                                                than r or Lmotor were)
-  lam      in [10.0, 50.0]    log-uniform     (NEW -- freed from FIXED; same
-                                                transfer reasoning as k, but the upper
-                                                end is NOT symmetric with it. 1/lam is
-                                                the motor-preparation filter time
-                                                constant, so [10,50] is tau in
-                                                [100, 20] ms; lam = 100 would be a 10 ms
-                                                constant, faster than plausible
-                                                neuromuscular filtering. This bound also
-                                                does argumentative work and the
-                                                manuscript says so: the Model 1 ceiling
-                                                argument (Results, Delay-locked) weakens
-                                                as lam grows -- the exact ceiling at
-                                                kappa=0.2 is 0.58/s at lam=21.5, 0.87/s
-                                                at lam=50 and 1.22/s at lam=100, against
-                                                an observed 1.45/s -- so an unbounded lam
-                                                would quietly dissolve it. The bound is
-                                                defensible on the time-constant argument
-                                                alone; it is stated in the Table 1 note
-                                                so that it cannot look chosen to protect
-                                                the conclusion.)
-  sigma_q  in [0.03, 0.30]    log-uniform     (NEW -- freed from FIXED per the user's
-                                                "let it free" on identifiability grounds.
-                                                No task/design constant pins its scale
-                                                the way tau=1s pins kappa, so this range
-                                                is anchored instead to sigx = 0.100, the
-                                                OTHER diffusion-noise SD in the model,
-                                                fixed since before any fitting: sigma_q
-                                                plays the structurally analogous role for
-                                                the post-response-signal process, so a
-                                                +-3x bracket around sigx's own fixed
-                                                value is the least arbitrary anchor
-                                                available that still does not reference
-                                                the fit. Flagged as the softest of these
-                                                bounds -- revisit if asked.
-sigx, Lmotion, LRS, delay stay fixed at Table 1's architectural point values (delay is
-the task's own 3s delay duration, not a free parameter at all).
+Latin-hypercube sample over the ranges of Table 1; at every draw, the task-admissibility
+screen and the criteria the Results report.  The same sampled vector is evaluated in both
+models, with beta set to zero in Model 1, so the two are compared at identical parameters.
 
-Latin-hypercube over the 10 continuous dimensions shared by both models (g, theta/g,
-kappa, SDe, muRS, r, Lmotor, k, lam, sigma_q -- 10 dims; beta is an 11th dimension
-sampled only for Model 2, mirroring the original design where "the same sampled vectors
-were evaluated in both models, with beta set to zero in Model 1"). Three more free
-dimensions than the 2026-08-24 design at the same N_DRAWS give substantially sparser
-per-dimension coverage; consider raising N_DRAWS above 250 if the admissible set turns
-out small enough that its composition looks noisy.
+Ranges, and where each comes from.  No bound is derived from these data: a range drawn
+around a value estimated from the data cannot test whether a prediction survives away
+from that value.
 
-Task-admissibility screen: IDENTICAL criteria to the existing manuscript text (Results >
-Behavior > Simulation validation, para 85): in every condition, <=10% premature, <=10%
-respond within 0.2s of RS, <=5% no response by 4s deadline; accuracy > 80% in both
-50%-coherence conditions.
+  g        in [0.050, 0.200]                  design: the distance from the gate at theta
+                                              to the response bound
+  theta/g  in [0.25, 0.90]                    sampled as a ratio, which keeps theta < g
+                                              as the model requires
+  kappa    in [0.20, 30.0]    log-uniform     1/kappa is the correlation time of the
+                                              maintenance noise: [0.20, 30] spans one
+                                              trial (5 s) down to one analysis bin
+                                              (33 ms), the natural span for a
+                                              within-trial fluctuation.  The width
+                                              favours neither model: with eps started at
+                                              its stationary law the moments of H relax
+                                              at rate at least lambda whatever kappa is,
+                                              so Model 1's delay rate is flat at every
+                                              kappa (Appendix, Corollary A.3).
+  SDe      in [0.003, 0.060]  log-uniform     the stationary SD of the maintenance
+                                              fluctuation, sampled directly rather than
+                                              through the derived a = (g - theta)/SDe:
+                                              reparameterising in terms of the quantity
+                                              that governs the outcome under test would
+                                              redefine the sampling law by its effect on
+                                              the result.  The problem that would have
+                                              addressed -- draws at a > 3, where
+                                              exp(-a^2/2) leaves no crossings at all --
+                                              belongs to the acceptance set, and is
+                                              handled by the EMG criterion in
+                                              admissible().
+  beta     in [0.0015, 0.100] log-uniform     Model 2 only.  The upper end is not
+                                              derived: the screen enforces it, since a
+                                              ramp large enough to carry the signal past
+                                              the response criterion during the delay
+                                              shows up as premature responses.
+  k        in [0.5, 2.0]      log-uniform     about a factor of two either side of
+                                              Dendauw et al. (2024)'s 1.183, estimated in
+                                              an immediate-report task
+  lam      in [10.0, 50.0]    log-uniform     1/lam is the motor-preparation filter time
+                                              constant, so the range is tau in [100, 20]
+                                              ms; lam = 100 would be 10 ms, faster than
+                                              plausible neuromuscular filtering.  This
+                                              bound does argumentative work -- lam is
+                                              what puts the analysis window in the
+                                              stationary regime (Appendix, Proposition
+                                              A.1) -- and is stated as a modelling
+                                              commitment in the Table 1 note.
+  r        in [0.010, 0.200]  log-uniform     response criterion on the neural drive
+  muRS     in [0.30, 1.50]                    drift of the response-signal accumulation
+  sigma_q  in [0.03, 0.30]    log-uniform     anchored to sigx = 0.100, the other
+                                              diffusion SD in the model: sigma_q plays
+                                              the analogous role after the response
+                                              signal, so a +-3x bracket around sigx is
+                                              the least arbitrary anchor available.  The
+                                              softest of these bounds.
 
-Trial count: 2000 trials/cell/model/draw, matching the existing first-stage procedure
-(calibrate.py, which used NTR=200 for its optimization search, has been removed with the
-calibration itself).
+Fixed: sigx = 0.100 (the model is invariant under a joint rescaling of every amplitude,
+so one of them sets the unit), Lmotion = LRS = 0.200 s, delay = 3 s (the task's own), and
+Lmotor = 0.093 s (Dendauw et al. 2024 -- a peripheral electromechanical delay has better
+reason to transfer between tasks than a decision-related constant, which is why r stays
+free).
 
-Leak-robustness variant (2026-08-24): an optional fourth CLI argument, GAMMA, adds a
-common leak to both accumulators (sim.py's `simulate(..., gamma=)`, the reviewer R2.3
-sensitivity request) and is threaded through every simulate() call and recorded in each
-output record. Used to repeat this identical hybrid-range sweep at gamma in
-{0.25, 0.50, 1.00} s^-1, replacing the earlier leak-robustness check (Methods, Behavior >
-Simulation validation), which had used the pre-widening Table 1 ranges and tested only
-the two RT-effect criteria via the older, narrower sweep.py.  Because run_model() already
-computes the slope and MET criteria for every draw regardless of gamma, this rerun gets
-slope/MET robustness under leak "for free," alongside the RT-effect numbers the original
-check reported.
+Latin-hypercube over the 10 dimensions shared by both models (g, theta/g, kappa, SDe,
+muRS, r, k, lam, sigma_q and Lmotor's slot); beta is an 11th, sampled for Model 2 only.
+
+Task-admissibility screen (see admissible()): in every condition, <=10% premature, <=10%
+responses within 0.2 s of the signal, <=5% no response by the 4 s deadline, accuracy
+> 80% in both 50%-coherence conditions; and, across conditions, a delay-window
+partial-activation rate in [0.04, 3.0] /s and mean premotor and motor execution times in
+the observed per-participant ranges widened by a factor of two.
+
+The production run is 1200 draws at 4000 trials per cell per model per draw (~6.5 s per
+draw, ~25 min over six shards).  Resumable by line count of OUT; SHARD_N/SHARD_I in the
+environment make shard j take the draws i with i % n == j, each writing its own file.
+The cube is regenerated identically from the fixed seed in every process, so cat-ing the
+shard files reproduces the unsharded run exactly.
+
+The optional fourth argument, GAMMA, threads a common leak into every simulate() call
+(sim.py's `gamma`) for the leak-robustness check of the response letter (C2.3); that
+check is driven by leak_sweep.py, which reuses this file's cube and screen.
 
 Usage: python3 fused_sweep.py N_DRAWS NTR OUT_FILE [GAMMA]
 """
@@ -196,7 +108,7 @@ DELAY_TB = np.arange(20) * 0.1 + 0.05
 DELAY_TB = DELAY_TB - DELAY_TB.mean()
 
 RATE_LO, RATE_HI = 0.04, 3.0   # delay-window PMA rate screen, /s (see admissible())
-# Chronometric screen, added 2026-09-01. See admissible().
+# Chronometric screen. See admissible().
 PMET_LO, PMET_HI = 0.181, 0.677     # s
 MET_LO, MET_HI = 0.046, 0.288       # s
 
@@ -250,7 +162,7 @@ def counts_profile(mm, t0, t1, nbin):
     valid trials contributing exposure -- constant across delay-window bins, since a
     valid trial's activity is fully observed there (see sim.py measures()).
 
-    One known bias, measured 2026-09-07 and deliberately left in place.  measures()
+    One known bias, measured and deliberately left in place.  measures()
     excludes the response-related burst from `events` wherever it begins, because that
     burst IS the response and its onset is what PMET is measured from.  In the model that
     burst sometimes begins BEFORE the response signal -- on up to 2% of trials at some
@@ -354,7 +266,7 @@ def poisson_slope_se(counts, exposure, x, iters=100):
     each bin) MUST enter as an offset: fitting the already-normalized rate as if it
     were itself a Poisson count (dividing out `exposure` first) discards the sample
     size and makes the resulting SE far too large, independent of how many trials
-    were simulated -- caught by a smoke test before the full sweep was run (2026-08-24)."""
+    were simulated."""
     off = np.log(max(exposure, 1))
     X = np.column_stack([np.ones_like(x), x])
     y = counts
@@ -462,10 +374,9 @@ def admissible(res):
     if (res['noresp'] > 0.05).any(): return False
     # cells index 2 and 5 are c=0.50, D=0.3 and D=2.0 (see targets.CELLS)
     if not (res['acc'][2] > 0.80 and res['acc'][5] > 0.80): return False
-    # EMG criterion (added 2026-08-31).  Every criterion above is behavioural, which is
-    # why the screen previously admitted settings producing literally zero delay-period
-    # muscle activity (101 of 216 behaviourally admissible Model 1 draws in
-    # results/fused_sweep_2026-08-31c.jsonl).  A draw of parameters stands for a
+    # EMG criterion.  Every criterion above is behavioural, and a purely behavioural
+    # screen admits settings that produce literally zero delay-period muscle activity --
+    # about half the behaviourally admissible Model 1 draws.  A draw of parameters stands for a
     # hypothetical participant, so the criterion is stated at the participant level: the
     # draw's mean delay-window partial-activation rate must fall inside the range the
     # real participants span.  Observed: 132 subject x condition cells run 0.085-2.785
@@ -476,7 +387,7 @@ def admissible(res):
     # either model exceeded 3.0); the criterion is a floor.
     rm = np.nanmean(res['rate'])
     if not (RATE_LO <= rm <= RATE_HI): return False
-    # Chronometric criterion (added 2026-09-01), same form and same justification as the
+    # Chronometric criterion, same form and same justification as the
     # rate window above: a draw stands for a hypothetical participant, and a participant
     # whose response-time decomposition is physically impossible is not one. Without it the
     # admissible set contained draws with a mean premotor execution time of -945 ms -- a
@@ -536,10 +447,9 @@ def slope_criterion(res):
 def trend_criterion(res):
     """All six delay-period raw-rate TRENDS significantly positive (lower 95% CI > 0).
 
-    The counterpart of slope_criterion on the statistic the paper now reports.  Both are
-    recorded: slope_criterion is kept so that runs made before 2026-09-07 remain
-    comparable, but the trend is what the Results cite, because it is linear in the rate
-    and so cannot be earned by ramping from an arbitrarily low level."""
+    The counterpart of slope_criterion, and the statistic the Results cite: the trend is
+    linear in the rate, so unlike a log-rate slope it cannot be earned by ramping from an
+    arbitrarily low level.  Both are recorded, and they agree."""
     lo = res['trend'] - 1.96 * res['trend_se']
     ok = bool(np.isfinite(lo).all() and (lo > 0).all())
     return dict(all_positive=ok, min_trend=float(np.nanmin(res['trend'])),
@@ -547,8 +457,8 @@ def trend_criterion(res):
 
 
 def met_invariance(res):
-    """Range of per-cell mean MET, and whether it stays within the note4.tex R7-R10
-    predicted residual scale (~2.3 ms) plus a safety margin for six-cell spread."""
+    """Range of per-cell mean MET: the model predicts it invariant across conditions,
+    to within the few milliseconds the filter transient leaves."""
     rng = float(np.nanmax(res['met_mean']) - np.nanmin(res['met_mean']))
     return dict(range_ms=rng * 1000.0)
 
@@ -556,7 +466,7 @@ def met_invariance(res):
 def main():
     rng = np.random.default_rng(SEED0)
     cube = lhs(N_DRAWS, DIMS, rng)
-    # Optional sharding (2026-08-31). The draws are independent and the LHS cube is
+    # Optional sharding. The draws are independent and the LHS cube is
     # regenerated identically from the fixed seed in every process, so a run can be split
     # across cores by having shard j of n take the draws i with i % n == j, each writing
     # its own OUT file; `cat` the shard files to recover the full dump (records carry

@@ -35,9 +35,9 @@ def moments(r, l, k, s2):
     what the sweep samples.  It does not cancel from the ratio this figure plots: it
     sets sigma_H, hence the standardized distance to the gate a = d/sigma_H, and the
     rate depends on a through a Gaussian, so the error is amplified by a factor of
-    order a^2.  Hard-coding sigma_eps = 1 here (s2 = 1/(2k), as an earlier version did)
-    inflates sigma_H by one to two orders of magnitude over the sampled range, deflates
-    a by the same factor, and understates the error by four orders of magnitude.
+    order a^2.  Hard-coding sigma_eps = 1 here (s2 = 1/(2k)) would inflate sigma_H by one
+    to two orders of magnitude over the sampled range, deflate a by the same factor, and
+    understate the error by four orders of magnitude.
     """
     Ai = l*s2/(k+l); Bi = l**2*s2*k/(k+l)
     E1, E2 = np.exp(-(l+k)*r), np.exp(-2*l*r)

@@ -20,14 +20,14 @@ DT = 1.0 / 1024.0    # native EMG/EEG acquisition rate (was 1 ms; see myonset be
 MERGE_S = round(0.025 / DT)   # myonset time_limit = 0.025 s, in samples at DT
 MIN_SAMP = 3          # myonset min_samples, already a native-rate sample count
 
-# Maintenance-noise initialisation.  WARM_START=True draws eps from its stationary
-# law N(0, SDe^2) at the moment a trial enters maintenance; False leaves eps at 0, the
-# initialisation used up to 2026-09-07.  H(tau)=0 either way -- the filter output is
-# continuous and m is defined as its value at tau -- so only eps is at issue.  The cold
-# start is the sole source of a slow (1/kappa) transient in the model; under the warm
-# start the moments of H relax at rate at least lambda, uniformly in kappa, and the
-# delay-period analysis window lies entirely outside the transient.  Kept switchable so
-# the cold start can still be run for the appendix comparison.
+# Maintenance-noise initialisation.  WARM_START=True draws eps from its stationary law
+# N(0, SDe^2) at the moment a trial enters maintenance; False leaves eps at 0.  H(tau)=0
+# either way -- the filter output is continuous and m is defined as its value at tau --
+# so only eps is at issue.  Starting eps at zero is the sole source of a slow (1/kappa)
+# transient in the model; started at stationarity the moments of H relax at rate at
+# least lambda, uniformly in kappa, so the delay-period analysis window lies entirely
+# outside the transient (Appendix, Proposition A.1).  Kept switchable for that
+# comparison; the manuscript uses WARM_START=True throughout.
 WARM_START = True
 
 PARAM_NAMES = ['k', 'lam', 'theta', 'g', 'kappa', 'SDe', 'alpha', 'muRS',

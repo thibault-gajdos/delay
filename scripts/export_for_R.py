@@ -11,11 +11,8 @@ one file R expects:
                         analyses, which require counts and exposures rather than
                         rates.
 
-Until 2026-09-05 it also wrote sim_counts_m{1,2}.csv, the same quantities from each
-model simulated at the representative parameter vector.  Nothing read them: R analyses
-the empirical counts only, and what the models predict is reported as effect-size ranges
-over the parameter space (effect_sizes.py, effect_panel.py).  Both the files and the
-function that built them are gone.
+R analyses the empirical counts only; what the models predict is reported as effect-size
+ranges over the parameter space (effect_sizes.py, effect_panel.py).
 
 Exposure is not always the number of valid trials.  A partial activation is by
 definition an activation preceding the response burst, so once that burst has

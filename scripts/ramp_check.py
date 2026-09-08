@@ -1,11 +1,9 @@
 """ramp_check.py -- does Model 1 produce a delay-period ramp ANYWHERE in the sampled space?
 
-Since the maintenance noise was given its stationary start (2026-09-07) this question has
-an exact answer -- Appendix Corollary A.2: Model 1's delay-period rate is constant, so its
-trend is zero at every parameter setting -- and the script's job changed with it. It no
-longer looks for a ramp that might be there; it checks that the SIMULATION agrees with the
-theorem once the Monte-Carlo error is small enough to see the difference. The statistic is
-now the raw-rate TREND, the one the Results report.
+The question has an exact answer -- Appendix Corollary A.3: Model 1's delay-period rate is
+constant, so its trend is zero at every parameter setting -- so this script's job is to
+check that the SIMULATION agrees with it once the Monte-Carlo error is small enough to see
+the difference. The statistic is the raw-rate TREND, the one the Results report.
 
 An existence question is badly served by raising the trial count uniformly across a
 Latin-hypercube sweep: the statistic that answers it is a MAXIMUM over draws, and a
@@ -25,7 +23,7 @@ Appends one record per (draw, seed) to results/ramp_check.jsonl; resumable.
 Each record carries `dump`, the sweep it was selected from, and records from any other dump
 are ignored on load. Without that the file silently accumulated records from two different
 Latin-hypercube cubes, in which the same `draw` index means two different parameter
-vectors -- which happened once, on 2026-09-01, and is not detectable by eye.
+vectors, and is not detectable by eye.
 Usage: python3 ramp_check.py [N_SEEDS] [NTR] [DUMP.jsonl]
 """
 import numpy as np, json, os, sys, time
@@ -43,10 +41,8 @@ OUT = 'results/ramp_check.jsonl'
 # Observed delay-period partial-activation statistics, all from the 132 subject x
 # condition cells (22 participants x 6 cells, none empty; see README "The EMG criterion").
 # OBS_RATE is the MEAN rate over the 1-3 s analysis window -- the quantity the simulation
-# reports.  It is NOT 1.446 /s: that figure, used here until 2026-08-31, is the
-# END-OF-DELAY PEAK (last 0.1 s bin), a different quantity, and comparing the simulated
-# window mean against it overstated both models' shortfall by roughly a factor of two.
-# OBS_LO/OBS_HI are the observed per-condition log-rate SLOPES, unaffected by that error.
+# reports, and not the end-of-delay peak of the last 0.1 s bin, which is a different
+# quantity (1.446 /s) and would overstate both models' shortfall by about a factor of two.
 OBS_RATE, OBS_RATE_MIN, OBS_RATE_MAX = 0.709, 0.085, 2.785
 OBS_SLOPE_LO = 0.659
 
@@ -97,7 +93,7 @@ with open(OUT, 'a') as fh:
 # The verdict, recomputed from the whole file each time so that an interrupted run still
 # reports on what it has. The per-draw mean over seeds is the estimate; the spread over
 # seeds is its Monte-Carlo error, and the question is only whether the estimate is
-# distinguishable from the zero Corollary A.2 requires.
+# distinguishable from the zero Corollary A.3 requires.
 recs = [json.loads(l) for l in open(OUT) if json.loads(l).get('dump') == DUMP]
 if recs:
     by = {}
@@ -112,4 +108,4 @@ if recs:
         print(f"{d:>5} {np.mean([x['rate'] for x in rs]):7.3f} {len(t):>6} "
               f"{t.mean():>+11.4f} {se:>8.4f}")
     print(f"\nlargest mean trend over {len(by)} candidates at NTR={NTR}: {worst:+.4f} /s^2, "
-          f"against an observed +0.5604 and a predicted 0 (Appendix, Corollary A.2)")
+          f"against an observed +0.5604 and a predicted 0 (Appendix, Corollary A.3)")

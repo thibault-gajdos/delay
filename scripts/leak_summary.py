@@ -7,8 +7,7 @@ summary is what the letter cites.
   python3 leak_summary.py [DUMP.jsonl]
 
 Both criteria are reported per model -- the raw-rate TREND, which is what the Results
-cite, and the log-rate SLOPE, kept because it is what the earlier runs recorded and the
-two should be seen to agree.
+cite, and the log-rate slope beside it, so that the two can be seen to agree.
 """
 import json, os, sys, numpy as np
 

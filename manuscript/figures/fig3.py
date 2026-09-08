@@ -1,8 +1,16 @@
+"""fig3.py -- the manuscript's Figure 3 (behavioural outcomes and the response-time
+fractionation), drawn from the archive's own behavioural exports.  Writes
+fig3_final.{png,tiff} beside itself; the manuscript copy is
+manuscript/latex/figures/fig05.png.  Needs DELAY_DATA.
+"""
 import numpy as np, pandas as pd, matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt, seaborn as sns
 rng = np.random.default_rng(20260826)
-D = '/mnt/user-data/uploads/delay/data/86cbw-osfstorage-archive/analysis_behavioral_emg/'
+import os
+D = os.path.join(os.environ.get('DELAY_DATA',
+                 os.path.expanduser('~/thib/projects/delay/data/86cbw-osfstorage-archive')),
+                 'analysis_behavioral_emg') + '/'
 COH = [0,12,50]; DUR = [300,2000]
 COL = {300:'#1FCBD1', 2000:'#DE5859'}
 sns.set_theme(style='darkgrid')
@@ -63,7 +71,7 @@ for ax,(f,pref,ylab,lab) in zip(axes, panels):
 h,l = axes[0].get_legend_handles_labels()
 fig.legend(h, l, title='Stimulus Duration', loc='center left', bbox_to_anchor=(0.895,0.5), frameon=False)
 fig.tight_layout(rect=[0,0,0.885,1])
-fig.savefig('fig3_new.png', dpi=200)
-fig.savefig('fig3_new.tiff', dpi=370, pil_kwargs={'compression':'tiff_lzw'})
+fig.savefig('fig3_final.png', dpi=200)
+fig.savefig('fig3_final.tiff', dpi=370, pil_kwargs={'compression':'tiff_lzw'})
 from PIL import Image
-print('saved', Image.open('fig3_new.tiff').size)
+print('saved', Image.open('fig3_final.tiff').size)

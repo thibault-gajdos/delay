@@ -2,13 +2,6 @@
 figures_space.py -- the two figures that come from the parameter-space evaluation rather
 than from a single simulated trial.
 
-  fig_rate_trend.pdf     The figure that carries the delay-period argument: the two
-                         quantities that have to be reproduced together -- the mean rate
-                         over the delay window and its linear trend -- on the two axes,
-                         with the admissible draws of both architectures and the
-                         observation. Under the stationary start Model 1's trend is zero
-                         analytically, so the panel needs no computed frontier: the
-                         boundary of what Model 1 can do is the horizontal axis.
   fig_delay_profiles.pdf The delay-period rate curve itself, observed against what each
                          architecture produces over its admissible space.
 
@@ -64,54 +57,6 @@ def observed_profile():
     return cnt, expo
 
 
-# ------------------------------------------- 1. rate against trend, both architectures
-def fig_rate_trend(fname=None):
-    """The delay-period argument in one panel: the window-mean rate on the x axis, its
-    linear trend on the y axis, one point per admissible parameter set.
-
-    The two quantities have to be reproduced TOGETHER, which is the whole reason the trend
-    replaced the log-rate slope: a draw can earn a steep log-rate slope by ramping from
-    almost nothing, and the raw-rate trend cannot be earned that way because it is the
-    product of the level and the relative ramp. Model 1's trend is zero analytically under
-    the stationary start, so its cloud has to sit on the dotted line whatever its rate --
-    no envelope is computed here, and none is needed.
-    """
-    fname = fname or 'plots/fig_rate_trend.pdf'
-    fig, ax = plt.subplots(figsize=(5.6, 4.0))
-    for tag, col, lab in [('model1', C_M1, 'Model 1, admissible draws'),
-                          ('model2', C_M2, 'Model 2, admissible draws')]:
-        r, y, _, _ = per_model(tag)
-        ax.scatter(r, y, s=11, facecolor='none', edgecolor=col, lw=.6, alpha=.75,
-                   zorder=2, label=lab)
-    ax.axhline(0, color=C_M1, lw=1.4, ls=(0, (4, 2)), zorder=3)
-    ax.set_ylim(-0.26, 1.26)
-    # the caption for Model 1's line goes BELOW it, in the band the draws leave empty:
-    # placed above it, it sat on top of Model 1's own cloud.
-    # The simulated points sit slightly BELOW the analytic line, and the offset is a
-    # measurement bias rather than a prediction: the response-related burst is excluded
-    # from the event count wherever it starts, and in the model it starts inside the last
-    # 200 ms of the delay window on up to 2% of trials, against 0.02% in the data. It
-    # biases both architectures' trends downward by about 0.01 s^-2, so Model 2's numbers
-    # are conservative and Model 1's departure from zero is entirely accounted for.
-    ax.text(0.0095, -0.245, 'Model 1: zero trend at every admissible setting (largest '
-                            'attainable over the\nsampled ranges, $3\\times10^{-11}$ '
-                            's$^{-2}$). The scatter of the simulated points is\nMonte-Carlo noise and their small negative offset is the excluded\nresponse burst; neither is a prediction.',
-            color=C_M1, fontsize=7.0, va='bottom', linespacing=1.5)
-    ax.axhspan(*OBS_TCI, color='0.86', zorder=0)
-    ax.errorbar([OBS_RATE], [OBS_TREND],
-                xerr=[[OBS_RATE - OBS_RMIN], [OBS_RMAX - OBS_RATE]], fmt='none',
-                ecolor='0.55', elinewidth=.8, capsize=2, zorder=5)
-    ax.plot([OBS_RATE], [OBS_TREND], marker='*', ms=13, color=C_OBS, zorder=6,
-            label='observed (95% CI shaded)')
-    ax.set_xscale('log')
-    ax.set_xlim(8e-3, 4.0)
-    ax.set_xlabel('delay-period partial-activation rate (s$^{-1}$)')
-    ax.set_ylabel('delay-period rate trend (s$^{-2}$)')
-    ax.legend(loc='upper left', frameon=False, handletextpad=.5)
-    fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
-    print('wrote', fname)
-
-
 # ------------------------------------------------------------ 2. the delay profile
 def fig_delay_profiles(fname=None):
     """The shape of the delay-period rate curve, one line per admissible parameter set.
@@ -160,68 +105,96 @@ def fig_delay_profiles(fname=None):
 
 # ---------------------------------------------------- 3. the effect-size panel
 def fig_effect_sizes(fname=None):
-    """What each model can produce, on the effects that carry an argument, against
-    the observation. Bars span the 5th-95th percentile over admissible draws, the tick is
-    the median; the vertical line is the observed value with its 95% CI shaded. A bar that
-    does not reach the line is a quantitative failure of that model on that effect.
-    Panels are lettered A-I in the order of effect_panel.NAMES."""
+    """What each model can produce, against the observation, on every effect the Results
+    report for behavior or the partial-activation rate.
+
+    Bars span the 5th-95th percentile over admissible draws; the vertical line is the
+    observed value with its 95% confidence interval shaded. A bar that does not reach the
+    line is a quantitative failure of that model on that effect. Panels are grouped by
+    ANALYSIS WINDOW, in the order the Results take them, with the window named down the
+    left margin -- a reader checking a sentence of the Results should be able to go to the
+    right block rather than hunt through an undifferentiated grid.
+    """
     fname = fname or 'plots/fig_effect_sizes.pdf'
     P = json.load(open('results/effect_panel.json'))
-    keys = list(P['names'])
+    groups = [(g[0], list(g[1])) for g in P['groups']]
     ncol = 3
-    nrow = int(np.ceil(len(keys) / ncol))
-    fig, axes = plt.subplots(nrow, ncol, figsize=(8.4, 2.0 * nrow))
-    axes = np.atleast_2d(axes).ravel()
-    for a in axes[len(keys):]:
-        a.axis('off')
-    for a, k in zip(axes, keys):
+    # each window starts on a new row; blocks of three across
+    rows_of = lambda ks: int(np.ceil(len(ks) / ncol))
+    nrow = sum(rows_of(ks) for _, ks in groups)
+    fig, axes = plt.subplots(nrow, ncol, figsize=(8.6, 1.95 * nrow), squeeze=False)
+    slots = {}
+    r0 = 0
+    for win, ks in groups:
+        for n, k in enumerate(ks):
+            slots[k] = (r0 + n // ncol, n % ncol)
+        r0 += rows_of(ks)
+    used = set(slots.values())
+    for r in range(nrow):
+        for c in range(ncol):
+            if (r, c) not in used:
+                axes[r][c].set_visible(False)
+
+    letters = {k: chr(65 + i) for i, k in enumerate(slots)}
+    for k, (r, c) in slots.items():
+        a = axes[r][c]
         for y, (tag, col) in enumerate([('model2', C_M2), ('model1', C_M1)]):
-            r = P['models'][tag][k]
-            a.plot([r['p5'], r['p95']], [y, y], color=col, lw=4, solid_capstyle='butt',
+            q = P['models'][tag][k]
+            a.plot([q['p5'], q['p95']], [y, y], color=col, lw=4, solid_capstyle='butt',
                    alpha=.85, zorder=2)
-            if not r['covers_observed']:
-                a.plot([r['p95'] if r['p95'] < P['observed'][k] else r['p5']], [y],
+            if not q['covers_observed']:
+                a.plot([q['p95'] if q['p95'] < P['observed'][k] else q['p5']], [y],
                        marker='x', ms=5, color=col, mew=1.4, zorder=4)
         o, se = P['observed'][k], P['observed_se'][k]
         a.axvspan(o - 1.96 * se, o + 1.96 * se, color='0.86', zorder=0)
         a.axvline(o, color=C_OBS, lw=1.1, zorder=1)
         a.set_yticks([0, 1]); a.set_yticklabels([])
         a.set_ylim(-0.6, 1.6)
-        a.set_title(P['names'][k], fontsize=7.0, pad=4)
-        # panel letter, in the order of NAMES (effect_panel.py); the Results cite these
-        a.text(-0.30, 1.22, chr(65 + list(keys).index(k)), transform=a.transAxes,
-               fontsize=9.5, fontweight='bold', va='top', ha='left')
+        a.set_title(P['names'][k], fontsize=6.8, pad=4)
+        a.text(-0.30, 1.30, letters[k], transform=a.transAxes,
+               fontsize=9.0, fontweight='bold', va='top', ha='left')
         a.tick_params(axis='x', labelsize=6.5)
-        # the DIRECTION, printed per model as two percentages: the share of admissible
-        # sets whose effect is, at two Monte-Carlo standard errors, significantly of the
-        # observed sign and the share significantly against it. The remainder is not
-        # distinguishable from zero and carries no directional information -- separating
-        # it out matters, because on the premature-response effect more than half of the
-        # sets produce too few premature responses to test the prediction at all, and on
-        # Model 1's delay trend the sets that are not negative are simply flat.
+        # the DIRECTION, per model, as two percentages: the share of admissible sets whose
+        # effect is, at two Monte-Carlo standard errors, significantly of the observed sign
+        # and the share significantly against it. The remainder is not distinguishable from
+        # zero and carries no directional information -- separating it out matters, because
+        # on Model 1's delay trend the sets that are not negative are simply flat.
         for y, tag in enumerate(['model2', 'model1']):
-            r = P['models'][tag][k]
+            q = P['models'][tag][k]
             col = C_M2 if tag == 'model2' else C_M1
-            a.text(1.03, y, f"{r['frac_right']*100:.0f}", transform=a.get_yaxis_transform(),
+            a.text(1.03, y, f"{q['frac_right']*100:.0f}", transform=a.get_yaxis_transform(),
                    va='center', fontsize=6.5, color=col)
             a.text(1.16, y, '/', transform=a.get_yaxis_transform(), va='center',
                    fontsize=6.5, color='0.6')
-            a.text(1.22, y, f"{r['frac_wrong']*100:.0f}", transform=a.get_yaxis_transform(),
+            a.text(1.22, y, f"{q['frac_wrong']*100:.0f}", transform=a.get_yaxis_transform(),
                    va='center', fontsize=6.5, color=col,
-                   fontweight=('bold' if r['frac_wrong'] > 0.25 else 'normal'))
-    for a in axes[len(keys):]:
-        a.set_visible(False)
+                   fontweight=('bold' if q['frac_wrong'] > 0.25 else 'normal'))
     for r in range(nrow):
-        axes[r * ncol].set_yticklabels(['Model 2', 'Model 1'], fontsize=7.5)
-    axes[0].plot([], [], color=C_OBS, lw=1.1, label='observed (95% CI shaded)')
-    fig.subplots_adjust(wspace=0.62, hspace=0.95, bottom=0.16)
-    fig.legend(*axes[0].get_legend_handles_labels(), loc='lower left',
-               bbox_to_anchor=(0.06, 0.045), frameon=False, fontsize=7)
-    fig.text(0.06, 0.005, 'the two figures at the right of each bar are the percentages of '
-             'admissible parameter sets whose effect is, at two Monte-Carlo standard errors, '
-             'significantly of the observed sign / significantly against it;\nthe remainder '
-             'is not distinguishable from zero. A cross marks a model whose 5th-95th '
-             'percentile interval does not reach the observed value.',
+        for c in range(ncol):
+            if (r, c) in used and c == min(cc for (rr, cc) in used if rr == r):
+                axes[r][c].set_yticklabels(['Model 2', 'Model 1'], fontsize=7.2)
+    fig.subplots_adjust(wspace=0.62, hspace=1.05, bottom=0.09, left=0.16)
+
+    # the window label, down the left margin, spanning its block of rows
+    r0 = 0
+    for win, ks in groups:
+        n = rows_of(ks)
+        top = axes[r0][0].get_position().y1
+        bot = axes[r0 + n - 1][0].get_position().y0
+        fig.text(0.035, (top + bot) / 2, win, rotation=90, va='center', ha='center',
+                 fontsize=8.0, fontweight='bold', color='0.25')
+        fig.lines.append(plt.Line2D([0.055, 0.055], [bot, top], transform=fig.transFigure,
+                                    color='0.75', lw=1.0))
+        r0 += n
+
+    axes[0][0].plot([], [], color=C_OBS, lw=1.1, label='observed (95% CI shaded)')
+    fig.legend(*axes[0][0].get_legend_handles_labels(), loc='lower left',
+               bbox_to_anchor=(0.16, 0.028), frameon=False, fontsize=7)
+    fig.text(0.16, 0.002, 'the two figures at the right of each bar are the percentages of '
+             'admissible parameter sets whose effect is, at two Monte-Carlo standard '
+             'errors,\nsignificantly of the observed sign / significantly against it; the '
+             'remainder is not distinguishable from zero. A cross marks a model whose\n'
+             '5th-95th percentile interval does not reach the observed value.',
              fontsize=6.6, va='bottom', color='0.35')
     fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
     print('wrote', fname)
@@ -230,5 +203,4 @@ def fig_effect_sizes(fname=None):
 if __name__ == '__main__':
     os.makedirs('plots', exist_ok=True)
     fig_effect_sizes()
-    fig_rate_trend()
     fig_delay_profiles()

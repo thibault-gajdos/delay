@@ -195,14 +195,13 @@ python figures.py                 -> plots/fig_traj_m{2,1}.pdf     manuscript Fi
                                      plots/fig_single.pdf         manuscript Figure 2B
 python effect_panel.py            -> results/effect_panel.json    effect-size ranges vs observed
 python figures_space.py           -> plots/fig_effect_sizes.pdf   those ranges, as a panel
-                                     plots/fig_rate_trend.pdf     rate against trend, both models
                                      plots/fig_delay_profiles.pdf the delay rate curve
 
 # 6. the manuscript's own copies, at 200 dpi (there is no script for this; the mapping is
-#    fig01,02 <- fig_traj_m2,m1;  fig04 <- fig_single;  fig08 <- fig_rate_trend;
-#    fig09 <- fig_delay_profiles;  fig10 <- fig_effect_sizes;  fig11 <- fig_approx_error.
-#    fig03, 05, 06 and 07 are not produced here.)
-cd plots && pdftoppm -r 200 -png -singlefile fig_rate_trend.pdf ../../manuscript/latex/figures/fig08
+#    fig01,02 <- fig_traj_m2,m1;  fig04 <- fig_single;  fig07 <- fig_delay_profiles;
+#    fig08 <- fig_effect_sizes;  fig09 <- fig_approx_error.
+#    fig03, 05, 06 and the supplemental fig10 are not produced here.)
+cd plots && pdftoppm -r 200 -png -singlefile fig_effect_sizes.pdf ../../manuscript/latex/figures/fig08
 
 # 5. the statistics, in R
 Rscript R/run_stats.R             -> R/stats_tables.txt            all tables (empirical)
@@ -403,6 +402,16 @@ median +0.052, -0.017 to +0.418, largest +1.157; 78 with all six positive and 6 
 observed interval with the rate also in range. The observed +0.5604 sits at Model 2's
 96.6th percentile and above every draw of Model 1.
 
+Since 2026-09-08 the panel covers EVERY effect on behavior or partial-activation rate that
+the Results report, not only the nine that discriminate, and is grouped by analysis window
+in the order the Results take them (`GROUPS` in the script drives both the JSON and the
+figure). The reason is navigational: a reader checking a sentence of the Results should
+find that sentence's effect in the figure rather than discover it was left out for being
+undiscriminating. Two classes are still absent, and the module docstring says so -- the
+trends within the stimulus, response-signal and response windows, which the sweep records
+for the delay window only and which would need it re-run, and the electroencephalographic
+measures, for which the models predict a direction but no magnitude.
+
 The fraction of admissible settings carrying the OBSERVED SIGN is the compact summary of the
 whole comparison, and `effect_panel.py` reports it:
 
@@ -554,7 +563,7 @@ draws (0.2%). Model 1's slope is not merely centred near zero but pinned there -
 span of its admissible space moves it about a tenth as much as Model 2's space moves
 Model 2's.
 
-### `effect_panel.py` -- what each architecture can produce, on the effects that discriminate
+### `effect_panel.py` -- what each architecture can produce, on every reported effect
 This is what the parameter-space evaluation is FOR, and the paper's Figure S6. The effects
 are chosen to be the contrasts that carry an argument -- the interactions, the one
 prediction outside the delay on which the models disagree, and the PMET/MET dissociation --
@@ -613,13 +622,16 @@ Model 2 at a ramp smaller than is typical of Model 2, for a reason that has noth
 with Model 2.
 
 ### `figures_space.py`
-`fig_effect_sizes.pdf` is the panel described under `effect_panel.py`. `fig_rate_trend.pdf`
-puts the two quantities that must be reproduced together on the two axes -- the delay-period
-rate and its linear trend -- with the admissible draws of both models and the observation;
-it needs no computed frontier, because Model 1's prediction is the horizontal axis.
-`fig_delay_profiles.pdf` shows the delay-period rate curve itself, each draw divided by its
-own mean over the window so that draws whose rates differ by two orders of magnitude are
-comparable on shape.
+`fig_effect_sizes.pdf` is the panel described under `effect_panel.py`, grouped by analysis
+window. `fig_delay_profiles.pdf` shows the delay-period rate curve itself, each draw divided
+by its own mean over the window so that draws whose rates differ by two orders of magnitude
+are comparable on shape.
+
+`fig_rate_trend.pdf` was removed on 2026-09-08 with the manuscript figure it fed (the old
+Figure 5, rate against trend with the admissible draws of both models on it). It said
+nothing the delay-window panels of `fig_effect_sizes` and the profile figure do not, and a
+scatter whose whole content is that one cloud sits on the horizontal axis is a slow way to
+say Corollary A.2.
 
 
 ### `export_for_R.py`

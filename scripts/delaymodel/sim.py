@@ -1,24 +1,19 @@
 """
-sim.py -- the extended evidence-accumulation model for delayed reports, exactly as
-specified in Achard et al. (R1 v3), together with the detection rules that turn the
-simulated gated drive into countable partial activations.
+sim.py -- the extended evidence-accumulation model for delayed reports, and the rule that
+turns the simulated drive into partial activations.
 
-Detection follows myonset (Spieser), detector_var, as used for the data:
-    th = 7 SD above baseline          -> here: the gated drive exceeds zero
-    time_limit = 0.025 s              -> intervals separated by <= 25 ms are merged
-    min_samples = 3, varying_min = 0  -> merged intervals with < 3 supra-threshold
-                                         samples are discarded
-The integrated-profile refinement is not simulated: it moves the boundaries of each
-interval but does not change their number, and only the number is counted.
+No EMG post-processing is applied to the simulation.  An activation begins at every
+upcrossing of the gate by the drive of the selected channel: no merging of nearby
+excursions, no minimum duration, no refinement of onsets.  The excursion that reaches the
+response criterion r is the response burst; its onset is where premotor time is measured
+from, and it is not counted as a partial activation.
 
 Scale convention: sigma_x fixes the amplitude unit; lambda fixes the time unit of the
 filter.  All other quantities are free.
 """
 import numpy as np
 
-DT = 1.0 / 1024.0    # native EMG/EEG acquisition rate (was 1 ms; see myonset below)
-MERGE_S = round(0.025 / DT)   # myonset time_limit = 0.025 s, in samples at DT
-MIN_SAMP = 3          # myonset min_samples, already a native-rate sample count
+DT = 1.0 / 1024.0    # the EMG/EEG acquisition rate
 
 # Maintenance-noise initialisation.  WARM_START=True draws eps from its stationary law
 # N(0, SDe^2) at the moment a trial enters maintenance; False leaves eps at 0.  H(tau)=0
@@ -36,36 +31,11 @@ PARAM_NAMES = ['k', 'lam', 'theta', 'g', 'kappa', 'SDe', 'alpha', 'muRS',
 DEFAULTS = dict(sigx=0.100, delay=3.0)
 
 
-def _bursts(active, merge=MERGE_S, min_samp=MIN_SAMP, varying=True):
-    """Indices (start, stop) of merged supra-threshold intervals of a boolean array.
-
-    Merges gaps <= `merge`, then drops intervals with fewer than the minimum number of
-    supra-threshold samples counted inside the merged interval.  With `varying` the
-    minimum is adaptive, as in myonset with varying_minRaw = 1: it is
-    `min_samp + f`, where f is the number of intervals per second of epoch containing
-    at most `2*min_samp` supra-threshold samples."""
-    if not active.any():
-        return []
-    d = np.diff(active.astype(np.int8))
-    st = list(np.flatnonzero(d == 1) + 1)
-    en = list(np.flatnonzero(d == -1) + 1)
-    if active[0]:
-        st = [0] + st
-    if active[-1]:
-        en = en + [len(active)]
-    out = [[st[0], en[0]]]
-    for a, b in zip(st[1:], en[1:]):
-        if a - out[-1][1] <= merge:
-            out[-1][1] = b
-        else:
-            out.append([a, b])
-    cnt = np.array([active[a:b].sum() for a, b in out])
-    if varying:
-        f = (cnt <= 2 * min_samp).sum() / (len(active) * DT)
-        thr = min_samp + f
-    else:
-        thr = min_samp
-    return [(a, b) for (a, b), c in zip(out, cnt) if c >= thr]
+def excursions(active):
+    """(start, stop) indices of the maximal runs of True in a boolean array: the
+    excursions of the drive above the gate, each one activation."""
+    d = np.diff(np.concatenate([[0], active.astype(np.int8), [0]]))
+    return list(zip(np.flatnonzero(d == 1), np.flatnonzero(d == -1)))
 
 
 def simulate(p, c, D, n, model=2, seed=0, post=1.8, gamma=0.0):
@@ -152,32 +122,37 @@ def simulate(p, c, D, n, model=2, seed=0, post=1.8, gamma=0.0):
 
 
 def measures(sim, windows=True):
-    """Behaviour, latencies and partial-activation event times, with the detection
-    rules applied.  Times are returned relative to stimulus onset."""
+    """Behaviour, latencies and partial-activation onset times, relative to stimulus
+    onset.  An activation begins at each upcrossing of the gate (drive > 0); the last one
+    at or before the response index is the onset of the response burst."""
     Z, ri, sr, s = sim['Z'], sim['resp_i'], sim['sresp'], sim['s']
-    q = sim['p']; D, i_RS, nt = sim['D'], sim['i_RS'], sim['nt']
+    q = sim['p']; D, i_RS = sim['D'], sim['i_RS']
     i_phys = int(round((D + q['delay']) / DT))          # physical RS onset
-    n = Z.shape[0]
+    n, nt = Z.shape
     rt = np.where(ri >= 0, (ri - i_phys) * DT + q['Lmotor'], np.nan)
     premature = (ri >= 0) & (ri < i_phys)
     noresp = ri < 0
     valid = (~premature) & (~noresp) & (rt >= 0.2) & (rt <= 4.0)
 
+    act = Z > 0
+    up = np.empty_like(act)
+    up[:, 0] = act[:, 0]
+    up[:, 1:] = act[:, 1:] & ~act[:, :-1]
+    stop = np.where(ri >= 0, ri, nt - 1)
+    up &= np.arange(nt)[None, :] <= stop[:, None]
+    rows, cols = np.nonzero(up)                        # row-major, so sorted by trial
+    bounds = np.searchsorted(rows, np.arange(n + 1))
+
     pmet = np.full(n, np.nan); met = np.full(n, np.nan)
     events = []
     for j in range(n):
-        stop = ri[j] + 1 if ri[j] >= 0 else nt
-        act = Z[j, :stop] > 0
-        bs = _bursts(act)
-        if ri[j] >= 0 and bs:
-            onset = bs[-1][0]
+        c = cols[bounds[j]:bounds[j + 1]]
+        if ri[j] >= 0 and c.size:
+            onset = c[-1]
             pmet[j] = (onset - i_phys) * DT
             met[j] = (ri[j] - onset) * DT + q['Lmotor']
-            bs = bs[:-1]
-        if valid[j]:
-            events.append(np.array([b[0] for b in bs]) * DT)
-        else:
-            events.append(np.empty(0))
+            c = c[:-1]
+        events.append(c * DT if valid[j] else np.empty(0))
     return dict(acc=(s == sr), rt=rt, pmet=pmet, met=met, valid=valid,
                 premature=premature, noresp=noresp, events=events, D=D)
 

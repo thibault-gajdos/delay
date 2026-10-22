@@ -16,10 +16,6 @@ Results state about behavior or the partial-activation rate: a reader checking a
 against the figure should find it there, including the main effects both architectures
 produce with the same sign.
 
-The summaries for the three windows outside the delay come from `augment_windows.py`,
-which re-simulates the admissible draws at the sweep's own seeds and records a level and a
-linear trend in each; they are merged onto the dump here by draw index.
-
 Three classes of reported effect are absent, and the figure caption says which. The
 electroencephalographic measures, for which the models predict a direction but no
 magnitude. A handful of interactions that are null in the data and in both models. And
@@ -183,81 +179,89 @@ def effects_se(m):
     return out
 
 
-recs = [json.loads(l) for l in open(DUMP)]
-# the other three windows, re-simulated at the sweep's own seeds by augment_windows.py
-WIN = 'results/window_effects.jsonl'
-if os.path.exists(WIN):
-    extra = {json.loads(l)['draw']: json.loads(l) for l in open(WIN)}
-    for r in recs:
-        e = extra.get(r['draw'])
-        if e:
-            for tag in ('model1', 'model2'):
-                r[tag]['raw'].update(e[tag])
-E = build()
-nsub = E['rt'].shape[0]
-obs_cells = [dict(acc=E['acc'][s], rt=E['rt'][s],
-                  srate=E['stim'][s].sum(axis=-1) / 2.0,
-                  rate=E['dly'][s].sum(axis=-1) / 2.0,
-                  trend=E['trend'][s], curv=E['quad'][s],
-                  stim_trend=E['stim_trend'][s], rs_trend=E['rs_trend'][s],
-                  resp_rate=E['resp_rate'][s],
-                  pmet=E['pmet'][s], met=E['met'][s]) for s in range(nsub)]
-per_sub = [effects(c) for c in obs_cells]
-obs = {k: float(np.nanmean([p[k] for p in per_sub])) for k in KEYS}
-obs_se = {k: float(np.nanstd([p[k] for p in per_sub], ddof=1) / np.sqrt(nsub)) for k in KEYS}
+def observed_per_subject():
+    """One dict of effects per participant, computed from the data exactly as from a
+    simulated draw."""
+    E = build()
+    nsub = E['rt'].shape[0]
+    obs_cells = [dict(acc=E['acc'][s], rt=E['rt'][s],
+                      srate=E['stim'][s].sum(axis=-1) / 2.0,
+                      rate=E['dly'][s].sum(axis=-1) / 2.0,
+                      trend=E['trend'][s], curv=E['quad'][s],
+                      stim_trend=E['stim_trend'][s], rs_trend=E['rs_trend'][s],
+                      resp_rate=E['resp_rate'][s],
+                      pmet=E['pmet'][s], met=E['met'][s]) for s in range(nsub)]
+    return [effects(c) for c in obs_cells]
 
-out = dict(source=DUMP, names=NAMES, groups=GROUPS, observed=obs, observed_se=obs_se,
-           models={})
-for tag in ['model1', 'model2']:
-    adm = [r[tag] for r in recs if r[tag]['admissible']]
-    for need in ('srate', 'trend', 'curv', 'stim_trend', 'rs_trend', 'resp_rate'):
-        if adm and need not in adm[0]['raw']:
-            raise SystemExit(f"{DUMP} has no `{need}` per cell -- rerun fused_sweep.py")
-    rows = [effects({k: np.asarray(m['raw'][src], float) for k, src in
-                     (('acc', 'acc'), ('rt', 'rt_mean'), ('srate', 'srate'),
-                      ('rate', 'rate'), ('trend', 'trend'), ('curv', 'curv'),
-                      ('stim_trend', 'stim_trend'), ('rs_trend', 'rs_trend'),
-                      ('resp_rate', 'resp_rate'),
-                      ('pmet', 'pmet_mean'), ('met', 'met_mean'))}) for m in adm]
-    ses = [effects_se(m) for m in adm]
-    out['models'][tag] = dict(n=len(rows))
-    for k in KEYS:
-        v = np.array([r[k] for r in rows], float)
-        e = np.array([x[k] for x in ses], float)
-        ok = np.isfinite(v) & np.isfinite(e)
-        v, e = v[ok], e[ok]
-        # <= and not <, so that a draw whose effect is exactly zero with exactly zero
-        # error -- no events in either condition -- counts as uninformative rather than as
-        # a disagreement
-        zero = np.abs(v) <= 2 * e
-        right = (~zero) & (np.sign(v) == np.sign(obs[k]))
-        wrong = (~zero) & (np.sign(v) != np.sign(obs[k]))
-        out['models'][tag][k] = dict(
-            median=float(np.median(v)), p5=float(np.percentile(v, 5)),
-            p95=float(np.percentile(v, 95)), min=float(v.min()), max=float(v.max()),
-            covers_observed=bool(np.percentile(v, 5) <= obs[k] <= np.percentile(v, 95)),
-            sign_agrees=bool(np.sign(np.median(v)) == np.sign(obs[k])),
-            frac_right=float(right.mean()), frac_wrong=float(wrong.mean()),
-            frac_null=float(zero.mean()), n_tested=int(v.size),
-            pct_of_observed=float((v < obs[k]).mean() * 100.0),
-            frac_reaching=float(np.mean(v >= obs[k]) if obs[k] > 0
-                                else np.mean(v <= obs[k])))
 
-json.dump(out, open(OUT, 'w'), indent=1)
-lab = {k: v.replace('\n', ' ') for k, v in NAMES.items()}
-w = max(len(v) for v in lab.values())
-print(f"{'effect':{w}} {'observed':>18} {'M1 right/wrong/0':>16} {'M2 right/wrong/0':>16}")
-for win, ks in GROUPS:
-    print(f"-- {win}")
-    for k in ks:
-        f = '%+.0f' if SRC[k][1] == 1000.0 else '%+.4f'
-        cells = []
-        for tag in ['model1', 'model2']:
-            r = out['models'][tag][k]
-            cells.append(f"{100*r['frac_right']:3.0f}/{100*r['frac_wrong']:3.0f}"
-                         f"/{100*r['frac_null']:3.0f}")
-        print(f"{lab[k]:{w}} {f % obs[k]:>9} +/-{(f % obs_se[k]).lstrip('+'):>7} "
-              f"{cells[0]:>16} {cells[1]:>16}")
-print("\ncolumns are the percentage of admissible parameter sets whose effect is, at two "
-      "Monte-Carlo\nstandard errors, significantly of the OBSERVED sign / significantly "
-      "AGAINST it / not\ndistinguishable from zero")
+def draw_effects(m):
+    """The effects of one simulated (draw, model) record."""
+    return effects({k: np.asarray(m['raw'][src], float) for k, src in
+                    (('acc', 'acc'), ('rt', 'rt_mean'), ('srate', 'srate'),
+                     ('rate', 'rate'), ('trend', 'trend'), ('curv', 'curv'),
+                     ('stim_trend', 'stim_trend'), ('rs_trend', 'rs_trend'),
+                     ('resp_rate', 'resp_rate'),
+                     ('pmet', 'pmet_mean'), ('met', 'met_mean'))})
+
+
+def main():
+    recs = [json.loads(l) for l in open(DUMP)]
+    per_sub = observed_per_subject()
+    nsub = len(per_sub)
+    obs = {k: float(np.nanmean([p[k] for p in per_sub])) for k in KEYS}
+    obs_se = {k: float(np.nanstd([p[k] for p in per_sub], ddof=1) / np.sqrt(nsub)) for k in KEYS}
+
+    out = dict(source=DUMP, names=NAMES, groups=GROUPS, observed=obs, observed_se=obs_se,
+               models={})
+    for tag in ['model1', 'model2']:
+        adm = [r[tag] for r in recs if r[tag]['admissible']]
+        for need in ('srate', 'trend', 'curv', 'stim_trend', 'rs_trend', 'resp_rate'):
+            if adm and need not in adm[0]['raw']:
+                raise SystemExit(f"{DUMP} has no `{need}` per cell -- rerun fused_sweep.py")
+        rows = [draw_effects(m) for m in adm]
+        ses = [effects_se(m) for m in adm]
+        out['models'][tag] = dict(n=len(rows))
+        for k in KEYS:
+            v = np.array([r[k] for r in rows], float)
+            e = np.array([x[k] for x in ses], float)
+            ok = np.isfinite(v) & np.isfinite(e)
+            v, e = v[ok], e[ok]
+            # <= and not <, so that a draw whose effect is exactly zero with exactly zero
+            # error -- no events in either condition -- counts as uninformative rather than as
+            # a disagreement
+            zero = np.abs(v) <= 2 * e
+            right = (~zero) & (np.sign(v) == np.sign(obs[k]))
+            wrong = (~zero) & (np.sign(v) != np.sign(obs[k]))
+            out['models'][tag][k] = dict(
+                median=float(np.median(v)), p5=float(np.percentile(v, 5)),
+                p95=float(np.percentile(v, 95)), min=float(v.min()), max=float(v.max()),
+                covers_observed=bool(np.percentile(v, 5) <= obs[k] <= np.percentile(v, 95)),
+                sign_agrees=bool(np.sign(np.median(v)) == np.sign(obs[k])),
+                frac_right=float(right.mean()), frac_wrong=float(wrong.mean()),
+                frac_null=float(zero.mean()), n_tested=int(v.size),
+                pct_of_observed=float((v < obs[k]).mean() * 100.0),
+                frac_reaching=float(np.mean(v >= obs[k]) if obs[k] > 0
+                                    else np.mean(v <= obs[k])))
+
+    json.dump(out, open(OUT, 'w'), indent=1)
+    lab = {k: v.replace('\n', ' ') for k, v in NAMES.items()}
+    w = max(len(v) for v in lab.values())
+    print(f"{'effect':{w}} {'observed':>18} {'M1 right/wrong/0':>16} {'M2 right/wrong/0':>16}")
+    for win, ks in GROUPS:
+        print(f"-- {win}")
+        for k in ks:
+            f = '%+.0f' if SRC[k][1] == 1000.0 else '%+.4f'
+            cells = []
+            for tag in ['model1', 'model2']:
+                r = out['models'][tag][k]
+                cells.append(f"{100*r['frac_right']:3.0f}/{100*r['frac_wrong']:3.0f}"
+                             f"/{100*r['frac_null']:3.0f}")
+            print(f"{lab[k]:{w}} {f % obs[k]:>9} +/-{(f % obs_se[k]).lstrip('+'):>7} "
+                  f"{cells[0]:>16} {cells[1]:>16}")
+    print("\ncolumns are the percentage of admissible parameter sets whose effect is, at two "
+          "Monte-Carlo\nstandard errors, significantly of the OBSERVED sign / significantly "
+          "AGAINST it / not\ndistinguishable from zero")
+
+
+if __name__ == '__main__':
+    main()

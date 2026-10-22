@@ -97,9 +97,10 @@ python delaymodel/empirical.py    -> (printout)              extraction, checked
 python delaymodel/targets.py      -> (printout)              empirical summaries per cell
 
 # 1. the parameter-space evaluation  (~25 min over six shards; see fused_sweep.py below)
-#    ./run_sweep.sh does this natively, one shard per core, resumable
-SHARD_N=6 SHARD_I=$i \
-  python fused_sweep.py 1200 4000 results/shards/shard_$i.jsonl
+#    ./run_sweep.sh does this natively, one shard per core, resumable;
+#    ./chunk_sweep.sh does it in bounded slices on 4 shards
+SHARD_N=4 SHARD_I=$i \
+  python fused_sweep.py 2400 10000 results/shards/shard_$i.jsonl
 python sweep_summary.py            -> results/sweep_screened.jsonl  the concatenated dump
                                       results/sweep_summary.json
 
@@ -222,20 +223,15 @@ The model of the manuscript's Theory section, and the detector.
 channel per trial. `model=1` sets the preparation term to zero. `gamma` adds a leak common
 to both accumulators, for the reviewer's sensitivity request.
 
-`measures(sim)` applies the detection rules and returns accuracy, response time, premotor
-and motor execution time, validity flags and the partial-activation event times.
+`measures(sim)` returns accuracy, response time, premotor and motor execution time,
+validity flags and the partial-activation onset times.
 
-`_bursts` is the detector, and reproduces `myonset` as it was used for the data:
-threshold, merge intervals separated by at most 25 ms, then discard merged intervals with
-fewer than `3 + f` supra-threshold samples, where `f` is the number of intervals per
-second containing at most six. On the simulated drive the adaptive part is inert (`f` is
-about 0.01/s) because the drive is smooth and has almost no short excursions; on real EMG
-it does work, which biases the model towards over-counting by a few per cent, absorbed by
-the gating parameter.
-
-The integrated-profile refinement is not simulated: it moves boundaries but not their
-number, and only the number is counted. For the same reason simulated burst durations are
-not comparable with the reported ones and are not used.
+No EMG post-processing is applied to the simulation. An activation begins at every
+upcrossing of the gate by the drive: no merging of nearby excursions, no minimum number
+of supra-threshold samples, no refinement of onsets. The excursion that reaches the
+response criterion is the response burst; its onset is where premotor time is measured
+from, and it is not a partial activation. `excursions()` returns the excursions of one
+trace, for Figure 2B.
 
 ### `fused_sweep.py` — the parameter-space evaluation
 The evaluation of what each architecture can produce over its whole admissible parameter
@@ -243,8 +239,8 @@ space (Methods, "Evaluation over the parameter space"; Results, the "Simulation 
 subsections). Nothing in the project is fitted, so this is where every effect-size
 statement comes from.
 
-Latin-hypercube sample over the ranges of Table 1; the production run is 1200 draws at
-4000 trials per cell per model per draw (~6.5 s/draw, ~25 min over six shards). At every
+Latin-hypercube sample over the ranges of Table 1; the production run is 2400 draws at
+10000 trials per cell per model per draw (~14 s/draw on one core). At every
 draw: the admissibility screen, the two RT-effect criteria, the delay-period criterion on
 the raw-rate TREND (all six cells significantly positive), and the motor-execution-time
 invariance criterion. The same sampled vector is evaluated in both models, with beta set
@@ -613,7 +609,7 @@ not been reconciled with the value `run_stats.R` computes.
 | Theoretical predictions, each window | derived by hand; checked by `theory_checks.py` |
 | Appendix, Proposition A.1 to Remark A.7 | derived by hand; `theory_checks.py`, `mkfig.py` |
 | Exclusion of Model 1 | Corollary A.3 (analytic); `fused_sweep.py` + `ramp_check.py` (sampled) |
-| From the process to the observable | `sim.py` (`_bursts`), `theory_checks.py` |
+| From the process to the observable | `sim.py` (`measures`), `theory_checks.py` |
 | The data | `empirical.py`, `targets.py` |
 | Results, all statistics | `R/run_stats.R`, `R/emit_tex.R` |
 | Evaluation over the parameter space | `fused_sweep.py`, `augment_windows.py`, `effect_sizes.py`, `effect_panel.py`, `ramp_check.py` |
@@ -644,12 +640,8 @@ raw segmented-event and behavioural files — so only the R reanalysis was ever 
 **Check that the deposited OSF archive carries the corrected copies**; the response letter
 tells the reviewer it does.
 
-**`min_samples` counts supra-threshold samples inside the merged interval**, not the
-length of the interval. A merged interval built from two short blips passes.
-
-**One timestep, three places.** `sim.py`'s `DT` is `1/1024`, the recording's own rate, and
-`MERGE_S` is derived from the 25 ms `myonset` merge window rather than hardcoded, so both
-constants are exact sample counts. `theory_checks.py` keeps its own separate `DT` and must
+**One timestep, two places.** `sim.py`'s `DT` is `1/1024`, the recording's own rate.
+`theory_checks.py` keeps its own separate `DT` and must
 be kept in step by hand; a third place that hardcodes a timestep will not follow `sim.py`
 automatically either.
 

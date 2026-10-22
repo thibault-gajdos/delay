@@ -17,7 +17,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from delaymodel.sim import simulate, measures, DT, _bursts
+from delaymodel.sim import simulate, measures, DT, excursions
 from delaymodel.targets import CELLS, LAB
 
 COL = {0: '#9ecae1', 12: '#3182bd', 50: '#08306b'}
@@ -143,7 +143,7 @@ def fig_single(P, n=400, fname='plots/fig_single.pdf'):
             a.axvline(x, color='0.7', lw=.7)
         ax[0].text(x + .02, ax[0].get_ylim()[1] * .95, lab, fontsize=6.5, color='0.5')
     act = Y[:ri + 1] > P['g']
-    for a, b in _bursts(act):
+    for a, b in excursions(act):
         col = '#c1272d' if b >= ri - 1 else '#e6892f'
         ax[1].axvspan(a * DT, b * DT, color=col, alpha=.85)
     ax[1].set_yticks([]); ax[1].set_ylabel('detected', fontsize=7)

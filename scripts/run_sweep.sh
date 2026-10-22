@@ -10,7 +10,7 @@
 # previous output if the count differs from the recorded one.
 set -eu
 cd "$(dirname "$0")"
-NDRAW=1200; NTR=4000; OUTDIR=results/shards
+NDRAW=2400; NTR=10000; OUTDIR=results/shards
 if command -v sysctl >/dev/null 2>&1 && sysctl -n hw.physicalcpu >/dev/null 2>&1; then
   DEF=$(sysctl -n hw.perflevel0.physicalcpu 2>/dev/null || sysctl -n hw.physicalcpu)
 else

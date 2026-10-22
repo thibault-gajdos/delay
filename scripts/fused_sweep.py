@@ -175,11 +175,9 @@ def counts_profile(mm, t0, t1, nbin):
     the response as a delay-period partial activation -- would be the larger distortion,
     and the correction is three orders of magnitude below the observed trend of +0.56."""
     v = np.flatnonzero(mm['valid'])
-    h = np.zeros(nbin)
-    for j in v:
-        e = mm['events'][j]
-        h += np.histogram(e[(e >= t0) & (e < t1)], bins=nbin, range=(t0, t1))[0]
-    return h, v.size
+    e = np.concatenate([mm['events'][j] for j in v]) if v.size else np.empty(0)
+    h = np.histogram(e[(e >= t0) & (e < t1)], bins=nbin, range=(t0, t1))[0]
+    return h.astype(float), v.size
 
 
 def window_stats(mm, D, delay, dt):
@@ -197,24 +195,27 @@ def window_stats(mm, D, delay, dt):
     D + delay + RT."""
     v = np.flatnonzero(mm['valid'])
     t_rs = D + delay
-    out = dict(stim=(np.zeros(20), 0.0), rs=(np.zeros(2), np.zeros(2)),
-               resp=(np.zeros(2), np.zeros(2)))
-    hs = np.zeros(20); hrs = np.zeros(2); hrp = np.zeros(2)
-    ers = np.zeros(2); erp = np.zeros(2)
-    for j in v:
-        e = mm['events'][j]
-        t_burst = t_rs + mm['pmet'][j]
-        t_resp = t_rs + mm['rt'][j]
-        hs += np.histogram(e[(e >= 0) & (e < 2.0)], bins=20, range=(0, 2))[0]
-        q = e[(e >= t_rs) & (e < t_rs + 0.2)] - t_rs
-        hrs += np.histogram(q, bins=2, range=(0, 0.2))[0]
-        alive = int(np.floor((t_burst - t_rs) / 0.1))
-        ers[:min(alive + 1, 2)] += 1
-        r = e[(e >= t_resp - 0.2) & (e < t_resp)] - t_resp + 0.2
-        hrp += np.histogram(r, bins=2, range=(0, 0.2))[0]
-        aliveR = int(np.floor((t_burst - (t_resp - 0.2)) / 0.1))
-        erp[:max(min(aliveR + 1, 2), 0)] += 1
-    return dict(stim=(hs, float(v.size)), rs=(hrs, ers), resp=(hrp, erp))
+    if v.size == 0:
+        return dict(stim=(np.zeros(20), 0.0), rs=(np.zeros(2), np.zeros(2)),
+                    resp=(np.zeros(2), np.zeros(2)))
+    ev = [mm['events'][j] for j in v]
+    e = np.concatenate(ev)
+    tid = np.repeat(np.arange(v.size), [x.size for x in ev])
+    t_burst = t_rs + mm['pmet'][v]
+    t_resp = t_rs + mm['rt'][v]
+    hs = np.histogram(e[(e >= 0) & (e < 2.0)], bins=20, range=(0, 2))[0]
+    q = e[(e >= t_rs) & (e < t_rs + 0.2)] - t_rs
+    hrs = np.histogram(q, bins=2, range=(0, 0.2))[0]
+    # a trial contributes to bin b of a window while its response burst has not begun,
+    # i.e. when the burst onset falls at or after the start of bin b
+    alive = np.floor((t_burst - t_rs) / 0.1)
+    ers = np.array([(alive >= b).sum() for b in range(2)], float)
+    er = e - (t_resp[tid] - 0.2)
+    hrp = np.histogram(er[(er >= 0) & (er < 0.2)], bins=2, range=(0, 0.2))[0]
+    aliveR = np.floor((t_burst - (t_resp - 0.2)) / 0.1)
+    erp = np.array([(aliveR >= b).sum() for b in range(2)], float)
+    return dict(stim=(hs.astype(float), float(v.size)), rs=(hrs.astype(float), ers),
+                resp=(hrp.astype(float), erp))
 
 
 def bin_summary(counts, expo, binw):

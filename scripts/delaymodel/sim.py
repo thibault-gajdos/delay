@@ -38,12 +38,13 @@ def excursions(active):
     return list(zip(np.flatnonzero(d == 1), np.flatnonzero(d == -1)))
 
 
-def simulate(p, c, D, n, model=2, seed=0, post=1.8, gamma=0.0):
+def simulate(p, c, D, n, model=2, seed=0, post=1.8, gamma_x=0.0, gamma_q=0.0):
     """One condition.  `p` is a dict of the free parameters (PARAM_NAMES).
 
     Returns a dict with, per trial: the selected side, the maintained level, the
     response-trigger index, and the gated drive of the selected channel.
-    `gamma` adds a common leak to both accumulators (reviewer R2.3)."""
+    `gamma_x` is the leak of the motion-evidence accumulator x, `gamma_q` the leak of
+    the response-signal accumulator q; both are zero in the model as specified."""
     q = dict(DEFAULTS); q.update(p)
     rng = np.random.default_rng(seed)
     lam, k, sx, sq = q['lam'], q['k'], q['sigx'], q['sigq']
@@ -88,7 +89,7 @@ def simulate(p, c, D, n, model=2, seed=0, post=1.8, gamma=0.0):
             acc = (~maint) & (i >= i_ev0) & (i < i_off)
             if acc.any():
                 na = int(acc.sum())
-                x[acc] += (s[acc] * k * c - gamma * x[acc]) * DT + sx * sqdt * rng.standard_normal(na)
+                x[acc] += (s[acc] * k * c - gamma_x * x[acc]) * DT + sx * sqdt * rng.standard_normal(na)
             inp = np.where(maint, m, x)
             if maint.any():
                 nm = int(maint.sum())
@@ -114,7 +115,7 @@ def simulate(p, c, D, n, model=2, seed=0, post=1.8, gamma=0.0):
             if i == i_RS - 1:
                 yRS = y.copy()
         else:
-            qq += (q['muRS'] - gamma * qq) * DT + sq * sqdt * rng.standard_normal(n)
+            qq += (q['muRS'] - gamma_q * qq) * DT + sq * sqdt * rng.standard_normal(n)
             y = y + lam * (yRS + sresp * qq - y) * DT
 
     return dict(Z=Z, s=s, sresp=sresp, m=m, resp_i=resp_i, i_RS=i_RS, i_off=i_off,

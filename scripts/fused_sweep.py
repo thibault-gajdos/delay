@@ -87,11 +87,12 @@ environment make shard j take the draws i with i % n == j, each writing its own 
 The cube is regenerated identically from the fixed seed in every process, so cat-ing the
 shard files reproduces the unsharded run exactly.
 
-The optional fourth argument, GAMMA, threads a common leak into every simulate() call
-(sim.py's `gamma`) for the leak-robustness check of the response letter (C2.3); that
-check is driven by leak_sweep.py, which reuses this file's cube and screen.
+The optional fourth and fifth arguments, GAMMA_X and GAMMA_Q, are the leaks of the
+motion-evidence accumulator x and of the response-signal accumulator q (sim.py's
+`gamma_x`, `gamma_q`), for the leak-robustness check of the response letter (C2.3);
+that check is driven by leak_sweep.py, which reuses this file's cube and screen.
 
-Usage: python3 fused_sweep.py N_DRAWS NTR OUT_FILE [GAMMA]
+Usage: python3 fused_sweep.py N_DRAWS NTR OUT_FILE [GAMMA_X [GAMMA_Q]]
 """
 import numpy as np, sys, time, json, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -101,7 +102,8 @@ from delaymodel.targets import CELLS, LAB
 N_DRAWS = int(sys.argv[1]) if len(sys.argv) > 1 else 250
 NTR = int(sys.argv[2]) if len(sys.argv) > 2 else 2000
 OUT = sys.argv[3] if len(sys.argv) > 3 else 'results/fused_sweep_results.jsonl'
-GAMMA = float(sys.argv[4]) if len(sys.argv) > 4 else 0.0
+GAMMA_X = float(sys.argv[4]) if len(sys.argv) > 4 else 0.0
+GAMMA_Q = float(sys.argv[5]) if len(sys.argv) > 5 else 0.0
 SEED0 = 20260824
 
 DELAY_TB = np.arange(20) * 0.1 + 0.05
@@ -287,11 +289,11 @@ def poisson_slope_se(counts, exposure, x, iters=100):
 
 
 
-def run_model(p, alpha, model, seed0, gamma=0.0):
+def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
     """Simulate all six cells for one (parameter, model) pair.  Returns per-cell arrays
-    and admissibility/criterion summaries.  `gamma` adds a common leak to both
-    accumulators (reviewer R2.3 robustness check; sim.py's `simulate()` argument of the
-    same name), 0.0 (no leak) by default."""
+    and admissibility/criterion summaries.  `gamma_x` and `gamma_q` are the leaks of the
+    two accumulators (sim.py's `simulate()` arguments of the same names), zero by
+    default."""
     q = dict(p)
     q['alpha'] = alpha
     prem = np.zeros(6); early = np.zeros(6); noresp = np.zeros(6)
@@ -316,7 +318,8 @@ def run_model(p, alpha, model, seed0, gamma=0.0):
     resp_rate = np.zeros(6); resp_trend = np.zeros(6)
     resp_rate_se = np.zeros(6); resp_trend_se = np.zeros(6)
     for k, (c, D) in enumerate(CELLS):
-        s = simulate(q, c, D, NTR, model=model, seed=seed0 + k, gamma=gamma)
+        s = simulate(q, c, D, NTR, model=model, seed=seed0 + k,
+                     gamma_x=gamma_x, gamma_q=gamma_q)
         m = measures(s)
         ri = s['resp_i']; i_phys = int(round((D + q['delay']) / DT))
         premature = (ri >= 0) & (ri < i_phys)
@@ -492,10 +495,10 @@ def main():
             # constant across cells since delay/LRS/Lmotion are fixed.
             Delta = (FIXED['delay'] + FIXED['LRS']) - FIXED['Lmotion']
             alpha2 = beta2 / Delta
-            res1 = run_model(p, 0.0, 1, SEED0 + 1000 * i, gamma=GAMMA)
-            res2 = run_model(p, alpha2, 2, SEED0 + 1000 * i + 500, gamma=GAMMA)
+            res1 = run_model(p, 0.0, 1, SEED0 + 1000 * i, GAMMA_X, GAMMA_Q)
+            res2 = run_model(p, alpha2, 2, SEED0 + 1000 * i + 500, GAMMA_X, GAMMA_Q)
             adm1 = admissible(res1); adm2 = admissible(res2)
-            rec = dict(draw=i, params=p, beta=beta2, alpha=alpha2, gamma=GAMMA,
+            rec = dict(draw=i, params=p, beta=beta2, alpha=alpha2, gamma_x=GAMMA_X, gamma_q=GAMMA_Q,
                        model1=dict(admissible=adm1,
                                    rt=rt_effects(res1) if adm1 else None,
                                    slope=slope_criterion(res1) if adm1 else None,

@@ -13,7 +13,7 @@
 set -u
 cd "$(dirname "$0")"
 SECS=${1:-165}
-NDRAW=2400; NTR=10000; P=4; OUTDIR=results/shards
+NDRAW=1200; NTR=10000; P=4; OUTDIR=results/shards
 mkdir -p "$OUTDIR"
 echo "$P" > "$OUTDIR/.shards"
 for i in $(seq 0 $((P-1))); do

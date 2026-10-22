@@ -100,7 +100,7 @@ python delaymodel/targets.py      -> (printout)              empirical summaries
 #    ./run_sweep.sh does this natively, one shard per core, resumable;
 #    ./chunk_sweep.sh does it in bounded slices on 4 shards
 SHARD_N=4 SHARD_I=$i \
-  python fused_sweep.py 2400 10000 results/shards/shard_$i.jsonl
+  python fused_sweep.py 1200 10000 results/shards/shard_$i.jsonl
 python sweep_summary.py            -> results/sweep_screened.jsonl  the concatenated dump
                                       results/sweep_summary.json
 
@@ -218,10 +218,11 @@ model has no mechanism for, and the untrimmed standard deviation is dominated by
 ### `sim.py`
 The model of the manuscript's Theory section, and the detector.
 
-`simulate(p, c, D, n, model, seed, gamma)` integrates the equations at 1024 Hz (`DT =
-1/1024`, the EMG/EEG native acquisition rate) and returns the gated drive of the selected
-channel per trial. `model=1` sets the preparation term to zero. `gamma` adds a leak common
-to both accumulators, for the reviewer's sensitivity request.
+`simulate(p, c, D, n, model, seed, gamma_x, gamma_q)` integrates the equations at 1024 Hz
+(`DT = 1/1024`, the EMG/EEG native acquisition rate) and returns the gated drive of the
+selected channel per trial. `model=1` sets the preparation term to zero. `gamma_x` and
+`gamma_q` are the leaks of the motion-evidence accumulator and of the response-signal
+accumulator, varied independently for the reviewer's sensitivity request.
 
 `measures(sim)` returns accuracy, response time, premotor and motor execution time,
 validity flags and the partial-activation onset times.
@@ -239,7 +240,7 @@ space (Methods, "Evaluation over the parameter space"; Results, the "Simulation 
 subsections). Nothing in the project is fitted, so this is where every effect-size
 statement comes from.
 
-Latin-hypercube sample over the ranges of Table 1; the production run is 2400 draws at
+Latin-hypercube sample over the ranges of Table 1; the production run is 1200 draws at
 10000 trials per cell per model per draw (~14 s/draw on one core). At every
 draw: the admissibility screen, the two RT-effect criteria, the delay-period criterion on
 the raw-rate TREND (all six cells significantly positive), and the motor-execution-time

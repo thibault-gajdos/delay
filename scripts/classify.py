@@ -34,10 +34,10 @@ DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
 OUT = 'results/classification.json'
 
 
-def main():
-    recs = [json.loads(l) for l in open(DUMP)]
-    per_sub = observed_per_subject()
-    out = dict(source=DUMP, n_draws=len(recs), observed={}, models={})
+def classify(recs, per_sub):
+    """The classification of every admissible (draw, model) record in `recs`, against the
+    observed effects of `per_sub` (effect_panel.observed_per_subject())."""
+    out = dict(n_draws=len(recs), observed={}, models={})
     for k in KEYS:
         x = np.array([p[k] for p in per_sub], float)
         x = x[np.isfinite(x)]
@@ -75,7 +75,15 @@ def main():
                 undecided.append((tag, k, int(unc.sum())))
         out['models'][tag] = res
     out['undecided'] = undecided
+    return out
+
+
+def main():
+    recs = [json.loads(l) for l in open(DUMP)]
+    out = classify(recs, observed_per_subject())
+    out['source'] = DUMP
     json.dump(out, open(OUT, 'w'), indent=1)
+    undecided = out['undecided']
 
     lab = {k: v.replace('\n', ' ') for k, v in NAMES.items()}
     w = max(len(v) for v in lab.values())

@@ -478,39 +478,44 @@ def main():
     # 1/0 = no sharding, byte-identical to the unsharded run for the same draw indices.
     shard_n = int(os.environ.get('SHARD_N', '1'))
     shard_i = int(os.environ.get('SHARD_I', '0'))
-    idx = [i for i in range(N_DRAWS) if i % shard_n == shard_i]
-    if os.path.exists(OUT):
-        done = sum(1 for _ in open(OUT))
-    else:
-        done = 0
+    # IDX, if set, is a JSON list of draw indices to evaluate instead of all of them
+    # (the leak reruns use the draws admissible at zero leak, from leak_index.py)
+    draws = json.load(open(os.environ['IDX'])) if 'IDX' in os.environ else range(N_DRAWS)
+    idx = [d for j, d in enumerate(draws) if j % shard_n == shard_i]
+    done = sum(1 for _ in open(OUT)) if os.path.exists(OUT) else 0
     print(f"resuming at {done}/{len(idx)} of shard {shard_i}/{shard_n} "
-          f"(N_DRAWS={N_DRAWS}, NTR={NTR})", flush=True)
+          f"(N_DRAWS={N_DRAWS}, NTR={NTR}, gamma_x={GAMMA_X}, gamma_q={GAMMA_Q})",
+          flush=True)
     with open(OUT, 'a') as f:
         for i in idx[done:]:
             t0 = time.time()
-            p, beta_frac = to_param(cube[i])
-            beta2 = np.exp(LO['log_beta'] + beta_frac *
-                           (HI['log_beta'] - LO['log_beta']))
-            # alpha := beta/Delta with Delta = t_RS - t_off = (delay+LRS) - Lmotion,
-            # constant across cells since delay/LRS/Lmotion are fixed.
-            Delta = (FIXED['delay'] + FIXED['LRS']) - FIXED['Lmotion']
-            alpha2 = beta2 / Delta
-            res1 = run_model(p, 0.0, 1, SEED0 + 1000 * i, GAMMA_X, GAMMA_Q)
-            res2 = run_model(p, alpha2, 2, SEED0 + 1000 * i + 500, GAMMA_X, GAMMA_Q)
-            adm1 = admissible(res1); adm2 = admissible(res2)
-            rec = dict(draw=i, params=p, beta=beta2, alpha=alpha2, gamma_x=GAMMA_X, gamma_q=GAMMA_Q,
-                       model1=dict(admissible=adm1,
-                                   rt=rt_effects(res1) if adm1 else None,
-                                   slope=slope_criterion(res1) if adm1 else None,
-                                   met=met_invariance(res1) if adm1 else None,
-                                   raw={k: v.tolist() for k, v in res1.items()}),
-                       model2=dict(admissible=adm2,
-                                   rt=rt_effects(res2) if adm2 else None,
-                                   slope=slope_criterion(res2) if adm2 else None,
-                                   met=met_invariance(res2) if adm2 else None,
-                                   raw={k: v.tolist() for k, v in res2.items()}))
+            rec = evaluate(cube, i, GAMMA_X, GAMMA_Q)
             f.write(json.dumps(rec) + "\n"); f.flush()
-            print(f"draw {i}: adm1={adm1} adm2={adm2} ({time.time()-t0:.1f}s)", flush=True)
+            print(f"draw {i}: adm1={rec['model1']['admissible']} "
+                  f"adm2={rec['model2']['admissible']} ({time.time()-t0:.1f}s)", flush=True)
+
+
+def evaluate(cube, i, gamma_x=0.0, gamma_q=0.0):
+    """The record of draw i: its parameters, and each model's admissibility and per-cell
+    summaries at the given leaks."""
+    p, beta_frac = to_param(cube[i])
+    beta2 = np.exp(LO['log_beta'] + beta_frac * (HI['log_beta'] - LO['log_beta']))
+    # alpha := beta/Delta with Delta = t_RS - t_off = (delay+LRS) - Lmotion,
+    # constant across cells since delay/LRS/Lmotion are fixed.
+    Delta = (FIXED['delay'] + FIXED['LRS']) - FIXED['Lmotion']
+    alpha2 = beta2 / Delta
+    res1 = run_model(p, 0.0, 1, SEED0 + 1000 * i, gamma_x, gamma_q)
+    res2 = run_model(p, alpha2, 2, SEED0 + 1000 * i + 500, gamma_x, gamma_q)
+    rec = dict(draw=i, params=p, beta=beta2, alpha=alpha2, gamma_x=gamma_x,
+               gamma_q=gamma_q)
+    for tag, res in (('model1', res1), ('model2', res2)):
+        adm = admissible(res)
+        rec[tag] = dict(admissible=adm,
+                        rt=rt_effects(res) if adm else None,
+                        slope=slope_criterion(res) if adm else None,
+                        met=met_invariance(res) if adm else None,
+                        raw={k: v.tolist() for k, v in res.items()})
+    return rec
 
 
 if __name__ == '__main__':

@@ -1,52 +1,25 @@
 #!/bin/bash
-# Leak-robustness rerun (reviewer C2.3), run natively.
+# Leak-robustness reruns (reviewer C2.3), run natively: the whole grid in one go.
 #
-#   ./run_leak.sh          # uses all physical cores
-#   ./run_leak.sh 8        # 8 shards
+#   ./run_leak.sh
 #
-# Re-runs, at each of three leak rates, exactly the draws admissible in either model at
-# zero leak: the 220 indices in results/leak/adm_idx.json, written by leak_index.py.
-# Output goes to results/leak/.
-#
-# leak_sweep.py appends one flushed JSON line per draw and resumes by counting the lines
-# already in its shard file, so the run can be interrupted and restarted freely. Changing
-# the shard count invalidates the shard->draw mapping, so the script wipes previous output
-# if the count differs from the recorded one.
-#
-# Cost: three leak rates x 220 draws x 2 models x 6 conditions x 4000 trials, i.e. about
-# 55% of a full 1200-draw sweep per leak rate.
+# Same grid, draws, trial count, shard count and output layout as chunk_leak.sh, so the
+# two can be used on the same output directory: gamma_x, gamma_q in {0, 0.25, 0.5, 1} /s,
+# every combination but (0, 0), each re-running the draws admissible in either model at
+# zero leak (results/leak/adm_idx.json, from leak_index.py).
 set -eu
 cd "$(dirname "$0")"
-OUTDIR=results/leak
-if command -v sysctl >/dev/null 2>&1 && sysctl -n hw.physicalcpu >/dev/null 2>&1; then
-  DEF=$(sysctl -n hw.perflevel0.physicalcpu 2>/dev/null || sysctl -n hw.physicalcpu)
-else
-  DEF=$(nproc 2>/dev/null || echo 4)
-fi
-P=${1:-$DEF}
-mkdir -p "$OUTDIR"
-[ -f "$OUTDIR/adm_idx.json" ] || python3 leak_index.py
-PREV=$(cat "$OUTDIR/.shards" 2>/dev/null || echo "$P")
-if [ "$PREV" != "$P" ]; then
-  echo "shard count changed ($PREV -> $P): wiping shard files in $OUTDIR"
-  rm -f "$OUTDIR"/leak_g*_sh*.jsonl "$OUTDIR"/log_*.txt
-fi
-echo "$P" > "$OUTDIR/.shards"
-NDRAW=$(python3 -c "import json;print(len(json.load(open('$OUTDIR/adm_idx.json'))))")
-echo "launching $P shards over $NDRAW draws, at gamma = 0.25, 0.50, 1.00"
-for G in 0.25 0.50 1.00; do
-  tag=${G/./}
-  echo "--- gamma $G ---"
-  pids=()
+NDRAW=1200; NTR=10000; P=4; G="0 0.25 0.5 1"
+IDX=results/leak/adm_idx.json
+[ -f "$IDX" ] || python3 leak_index.py
+for gx in $G; do for gq in $G; do
+  [ "$gx" = 0 ] && [ "$gq" = 0 ] && continue
+  D=results/leak/gx${gx}_gq${gq}
+  mkdir -p "$D"
   for i in $(seq 0 $((P-1))); do
-    GAMMA=$G OUT="$OUTDIR/leak_g${tag}_sh$i.jsonl" SHARD_N=$P SHARD_I=$i \
-      python3 leak_sweep.py > "$OUTDIR/log_g${tag}_$i.txt" 2>&1 &
-    pids+=($!)
+    IDX=$IDX SHARD_N=$P SHARD_I=$i python3 fused_sweep.py $NDRAW $NTR \
+      "$D/shard_$i.jsonl" $gx $gq >> "$D/log_$i.txt" 2>&1 &
   done
-  echo "pids: ${pids[*]}   progress:  cat $OUTDIR/leak_g${tag}_sh*.jsonl | wc -l   (target $NDRAW)"
   wait
-  cat "$OUTDIR"/leak_g${tag}_sh*.jsonl > "$OUTDIR/leak_g${tag}.jsonl"
-  echo "gamma $G done: $(wc -l < "$OUTDIR/leak_g${tag}.jsonl") draws"
-done
-echo
-echo "all done. now:  python3 leak_summary.py"
+  echo "gamma_x $gx, gamma_q $gq: $(cat "$D"/shard_*.jsonl | wc -l | tr -d ' ') draws"
+done; done

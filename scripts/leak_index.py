@@ -1,7 +1,6 @@
 """leak_index.py -- the draw list the leak reruns walk.
 
-Every draw admissible in EITHER model at gamma = 0, taken from the sweep dump.  220 draws
-as of the stationary-start sweep.
+Every draw admissible in EITHER model at zero leak, taken from the sweep dump.
 
 Usage:  python3 leak_index.py [DUMP.jsonl]
 """

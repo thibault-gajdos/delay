@@ -4,8 +4,8 @@ The leaks of the motion-evidence accumulator (gamma_x) and of the response-signa
 accumulator (gamma_q) are varied independently over gamma_x, gamma_q in {0, 0.25, 0.5, 1}
 /s.  At every grid point the draws admissible in either model at zero leak are re-run
 (chunk_leak.sh / run_leak.sh) and classified exactly as the main sweep is (classify.py).
-Draws inadmissible at zero leak are not re-run, so a leak can remove admissible draws
-but cannot add any.
+Draws inadmissible in both models at zero leak are not re-run, so a leak can make a draw
+admissible only in a model where it was not, among draws admissible in the other.
 
 For every effect and model, the verdict is:
   reproduced     at least one admissible draw reproduces the observed magnitude

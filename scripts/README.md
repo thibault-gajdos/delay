@@ -404,8 +404,9 @@ motion-evidence accumulator, `gamma_q` on the response-signal accumulator, over 
 {0, 0.25, 0.5, 1} /s, every combination but (0, 0). At each point `fused_sweep.py`
 re-runs, with `IDX=results/leak/adm_idx.json`, the draws admissible in either model at zero
 leak, at the main sweep's trial count and seeds, into `results/leak/gx<gx>_gq<gq>/`; only
-the leaks differ. Draws inadmissible at zero leak are not re-run, so a leak can remove
-admissible draws but cannot add any. `leak_summary.py` classifies every grid point as
+the leaks differ. Draws inadmissible in both models at zero leak are not re-run, so a leak
+can make a draw admissible only in a model where it was not, among draws admissible in
+the other. `leak_summary.py` classifies every grid point as
 `classify.py` classifies the main sweep, and lists the verdicts (reproduced, unreproduced,
 undecided) that differ from zero leak.
 

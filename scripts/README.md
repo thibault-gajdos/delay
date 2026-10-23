@@ -96,10 +96,10 @@ itself is not in it: it is long, and is run sharded across cores by `./run_sweep
 python delaymodel/empirical.py    -> (printout)              extraction, checked against the archive
 python delaymodel/targets.py      -> (printout)              empirical summaries per cell
 
-# 1. the parameter-space evaluation  (~25 min over six shards; see fused_sweep.py below)
+# 1. the parameter-space evaluation  (see fused_sweep.py below)
 #    ./run_sweep.sh does this natively, one shard per core, resumable;
-#    ./chunk_sweep.sh does it in bounded slices on 4 shards
-SHARD_N=4 SHARD_I=$i \
+#    ./chunk_sweep.sh does it in bounded slices
+DONE='results/shards/shard_*.jsonl' SHARD_N=$n SHARD_I=$i \
   python fused_sweep.py 1200 10000 results/shards/shard_$i.jsonl
 python sweep_summary.py            -> results/sweep_screened.jsonl  the concatenated dump
                                       results/sweep_summary.json
@@ -128,9 +128,13 @@ python ramp_check.py 3 40000 results/sweep_screened.jsonl
                                   -> results/ramp_check.jsonl      the best candidates
                                                                    re-simulated at high NTR
 
-# 3. leak robustness (reviewer C2.3): the same draws at a non-zero leak
-#    ./run_leak.sh drives all three rates; ./chunk_leak.sh does it in bounded slices
-python leak_summary.py            -> results/leak_summary.json     the table quoted in the letter
+# 3. leak robustness (reviewer C2.3): the draws admissible at zero leak, re-run over the
+#    grid gamma_x, gamma_q in {0, 0.25, 0.5, 1}. Needs the complete main sweep.
+#    ./run_leak.sh does the whole grid natively; ./chunk_leak.sh does it in bounded slices
+python leak_index.py              -> results/leak/adm_idx.json     the draws re-run
+python leak_summary.py            -> results/leak_summary.json     verdicts at every grid
+                                                                   point, and those that
+                                                                   differ from zero leak
 
 # 4. the analytic checks, which need no sampling at all
 python mkfig.py                   -> plots/fig_approx_error.pdf    error of the stationary
@@ -247,8 +251,10 @@ the raw-rate TREND (all six cells significantly positive), and the motor-executi
 invariance criterion. The same sampled vector is evaluated in both models, with beta set
 to zero in Model 1, so the two are compared at identical parameters.
 
-Resumable by line count of `OUT`. Shardable: `SHARD_N`/`SHARD_I` in the environment make
-shard j take the draws i with i % n == j, each writing its own file. The LHS cube is
+Resumable by draw: a draw already recorded in `OUT`, or in any file matching the glob in
+`DONE`, is skipped, so a run can be interrupted and restarted with any shard count.
+Shardable: `SHARD_N`/`SHARD_I` in the environment make shard j take the draws i with
+i % n == j, each writing its own file. `IDX` restricts the run to a JSON list of draws. The LHS cube is
 regenerated identically from the fixed seed in every process, so `cat`-ing the shard files
 reproduces the unsharded run exactly.
 
@@ -391,43 +397,17 @@ the response-signal window survive this (the fall of the rate after the signal i
 reproduced at 94–98% of draws); levels there and everything in the response window do not,
 and are not drawn.
 
-### `leak_sweep.py` — leak robustness (reviewer C2.3)
+### Leak robustness (reviewer C2.3)
 
-Re-runs, at a non-zero leak on the decision variable, exactly the draws that were admissible
-in either model at zero leak. It imports `fused_sweep` and reuses its cube, `to_param`,
-`run_model` and `admissible`, so the parameter vectors are identical to the main evaluation
-and only `gamma` differs; `results/leak/adm_idx.json` is the list of those 220 draw indices,
-written by `leak_index.py` from `results/sweep_screened.jsonl`. Resumable by line count of
-`OUT`; `SHARD_N`/`SHARD_I` split the draw list across cores. Records have the same shape as
-`sweep_screened.jsonl` minus the `raw` block, plus a criterion block per model for the
-TREND and for the log-rate slope. `run_leak.sh` drives all three leak rates one shard per
-core; `chunk_leak.sh` does the same in bounded slices, for a shell that gets a fresh
-process and a hard time limit per call. `leak_summary.py` reduces them to the table.
-
-Result (`results/leak_summary.json`), on the 160 draws admissible for Model 1 and the 145
-for Model 2 at gamma = 0:
-
-| gamma | M1 adm. | M2 adm. | RT coherence | RT duration | M2 all six delay trends > 0 | M1 all six > 0 |
-|-------|---------|---------|--------------|-------------|-----------------------------|----------------|
-| 0.00  | 160     | 145     | 136/145      | 136/145     | 78                          | 0              |
-| 0.25  | 155     | 143     | 137/145      | 137/145     | 76                          | 0              |
-| 0.50  | 152     | 142     | 136/145      | 137/145     | 71                          | 0              |
-| 1.00  | 138     | 130     | 138/145      | 137/145     | 77                          | 0              |
-
-**Model 1 never produces all six condition trends significantly positive, at any leak
-rate.** That is worth more than the same sentence at zero leak: Corollary A.3 proves the
-delay-period rate constant for the model as specified, and Remark A.6 extends it to a
-leaked accumulation, so this is the numerical check on that extension. Model 2 clears the
-criterion at roughly half its admissible draws throughout. The log-rate slope column,
-recorded alongside, agrees to within three draws everywhere.
-
-Nothing directional moves. What erodes is admissibility itself, and the draws that drop out
-are those with the smallest `k*c/theta` (median 5.4 against 7.8 for those that survive): a
-leak caps the accumulator at `k*c/gamma`, and once that asymptote approaches `theta` the
-threshold stops being reached. That ratio is the criterion for when a leak can matter at
-all; its smallest value at 50% coherence over the admissible draws is 1.5 s⁻¹, above the
-largest rate tested. The numbers are quoted in the response letter (C2.3), not in the
-manuscript.
+The leaks of the two accumulators are varied independently: `gamma_x` on the
+motion-evidence accumulator, `gamma_q` on the response-signal accumulator, over the grid
+{0, 0.25, 0.5, 1} /s, every combination but (0, 0). At each point `fused_sweep.py`
+re-runs, with `IDX=results/leak/adm_idx.json`, the draws admissible in either model at zero
+leak, at the main sweep's trial count and seeds, into `results/leak/gx<gx>_gq<gq>/`; only
+the leaks differ. Draws inadmissible at zero leak are not re-run, so a leak can remove
+admissible draws but cannot add any. `leak_summary.py` classifies every grid point as
+`classify.py` classifies the main sweep, and lists the verdicts (reproduced, unreproduced,
+undecided) that differ from zero leak.
 
 ### `effect_sizes.py` — the citable summary, with its noise measured
 Stage 1 distils the sweep dump into the counts and distributions quoted in the manuscript.
@@ -614,7 +594,7 @@ not been reconciled with the value `run_stats.R` computes.
 | The data | `empirical.py`, `targets.py` |
 | Results, all statistics | `R/run_stats.R`, `R/emit_tex.R` |
 | Evaluation over the parameter space | `fused_sweep.py`, `augment_windows.py`, `effect_sizes.py`, `effect_panel.py`, `ramp_check.py` |
-| Leak robustness (letter, C2.3) | `leak_index.py`, `leak_sweep.py`, `leak_summary.py` |
+| Leak robustness (letter, C2.3) | `leak_index.py`, `fused_sweep.py`, `leak_summary.py` |
 | Figures | `figures.py`, `figures_space.py`, `mkfig.py` |
 
 ---

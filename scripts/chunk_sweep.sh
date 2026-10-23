@@ -4,20 +4,21 @@
 #
 #   ./chunk_sweep.sh 165        # run for at most 165 s on 4 shards, then stop
 #
-# fused_sweep.py flushes one line per draw and resumes by line count, so calling this
+# fused_sweep.py flushes one line per draw and skips recorded draws, so calling this
 # repeatedly walks the sweep to completion; a draw interrupted by the time limit is
-# simply recomputed on the next call.  The shard count is fixed at 4 so that the
-# shard -> draw mapping does not depend on the machine.  On a machine that can run the
-# job in one go, use run_sweep.sh instead (it uses its own shard count; do not mix the
-# two on the same output directory).
+# simply recomputed on the next call.  Draws already recorded in any shard file
+# are skipped, so this and run_sweep.sh can be mixed freely.  On a machine that can run
+# the job in one go, use run_sweep.sh instead.
 set -u
 cd "$(dirname "$0")"
+# `timeout` is GNU coreutils; macOS has it only as gtimeout (brew coreutils)
+TO=$(command -v timeout || command -v gtimeout || true)
+[ -n "$TO" ] && TO="$TO ${1:-165}" || TO=""
 SECS=${1:-165}
 NDRAW=1200; NTR=10000; P=4; OUTDIR=results/shards
 mkdir -p "$OUTDIR"
-echo "$P" > "$OUTDIR/.shards"
 for i in $(seq 0 $((P-1))); do
-  SHARD_N=$P SHARD_I=$i timeout "$SECS" python3 fused_sweep.py $NDRAW $NTR \
+  DONE="$OUTDIR/shard_*.jsonl" SHARD_N=$P SHARD_I=$i $TO python3 fused_sweep.py $NDRAW $NTR \
     "$OUTDIR/shard_$i.jsonl" 0.0 >> "$OUTDIR/log_$i.txt" 2>&1 &
 done
 wait

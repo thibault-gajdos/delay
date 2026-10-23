@@ -9,11 +9,14 @@
 # main sweep. Each combination re-runs the draws admissible in either model at zero leak
 # (results/leak/adm_idx.json, from leak_index.py), at the main sweep's trial count and
 # seeds, into results/leak/gx<gamma_x>_gq<gamma_q>/. Each call works on the first
-# combination not yet complete; fused_sweep.py resumes by line count, so calling this
+# combination not yet complete; fused_sweep.py skips draws already recorded, so calling this
 # repeatedly walks the whole grid. On a machine that can run the job in one go, use
 # run_leak.sh instead.
 set -u
 cd "$(dirname "$0")"
+# `timeout` is GNU coreutils; macOS has it only as gtimeout (brew coreutils)
+TO=$(command -v timeout || command -v gtimeout || true)
+[ -n "$TO" ] && TO="$TO ${1:-165}" || TO=""
 SECS=${1:-165}
 NDRAW=1200; NTR=10000; P=4; G="0 0.25 0.5 1"
 IDX=results/leak/adm_idx.json
@@ -26,7 +29,7 @@ for gx in $G; do for gq in $G; do
   [ "$DONE" -ge "$N" ] && continue
   mkdir -p "$D"
   for i in $(seq 0 $((P-1))); do
-    IDX=$IDX SHARD_N=$P SHARD_I=$i timeout "$SECS" python3 fused_sweep.py $NDRAW $NTR \
+    IDX=$IDX DONE="$D/shard_*.jsonl" SHARD_N=$P SHARD_I=$i $TO python3 fused_sweep.py $NDRAW $NTR \
       "$D/shard_$i.jsonl" $gx $gq >> "$D/log_$i.txt" 2>&1 &
   done
   wait

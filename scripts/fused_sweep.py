@@ -94,7 +94,7 @@ that check is driven by leak_sweep.py, which reuses this file's cube and screen.
 
 Usage: python3 fused_sweep.py N_DRAWS NTR OUT_FILE [GAMMA_X [GAMMA_Q]]
 """
-import numpy as np, sys, time, json, os
+import numpy as np, sys, time, json, os, glob
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from delaymodel.sim import simulate, measures, DT
 from delaymodel.targets import CELLS, LAB
@@ -482,17 +482,36 @@ def main():
     # (the leak reruns use the draws admissible at zero leak, from leak_index.py)
     draws = json.load(open(os.environ['IDX'])) if 'IDX' in os.environ else range(N_DRAWS)
     idx = [d for j, d in enumerate(draws) if j % shard_n == shard_i]
-    done = sum(1 for _ in open(OUT)) if os.path.exists(OUT) else 0
-    print(f"resuming at {done}/{len(idx)} of shard {shard_i}/{shard_n} "
-          f"(N_DRAWS={N_DRAWS}, NTR={NTR}, gamma_x={GAMMA_X}, gamma_q={GAMMA_Q})",
+    # Resume by draw, not by line count: a draw is skipped if it is already recorded in
+    # OUT or in any file matching DONE (a glob, default OUT itself).  The record of a draw
+    # depends only on its index, never on the sharding, so the shard count can change
+    # between runs without losing or duplicating anything.
+    _truncate_partial(OUT)
+    done = set()
+    for path in glob.glob(os.environ.get('DONE', OUT)) + [OUT]:
+        if os.path.exists(path):
+            done |= {json.loads(l)['draw'] for l in open(path) if l.strip()}
+    todo = [d for d in idx if d not in done]
+    print(f"shard {shard_i}/{shard_n}: {len(idx) - len(todo)} of {len(idx)} draws already "
+          f"done (N_DRAWS={N_DRAWS}, NTR={NTR}, gamma_x={GAMMA_X}, gamma_q={GAMMA_Q})",
           flush=True)
     with open(OUT, 'a') as f:
-        for i in idx[done:]:
+        for i in todo:
             t0 = time.time()
             rec = evaluate(cube, i, GAMMA_X, GAMMA_Q)
             f.write(json.dumps(rec) + "\n"); f.flush()
             print(f"draw {i}: adm1={rec['model1']['admissible']} "
                   f"adm2={rec['model2']['admissible']} ({time.time()-t0:.1f}s)", flush=True)
+
+
+def _truncate_partial(path):
+    """Drop an incomplete last line, left by a run killed in the middle of a write."""
+    if not os.path.exists(path) or os.path.getsize(path) == 0:
+        return
+    with open(path, 'rb+') as f:
+        data = f.read()
+        if not data.endswith(b'\n'):
+            f.seek(0); f.truncate(data.rfind(b'\n') + 1)
 
 
 def evaluate(cube, i, gamma_x=0.0, gamma_q=0.0):

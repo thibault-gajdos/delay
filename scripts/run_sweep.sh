@@ -9,7 +9,7 @@
 # restarted with a different shard count, without losing or duplicating a draw.
 set -eu
 cd "$(dirname "$0")"
-NDRAW=1200; NTR=10000; OUTDIR=results/shards
+NDRAW=1200; NTR=40000; OUTDIR=results/shards
 if command -v sysctl >/dev/null 2>&1 && sysctl -n hw.physicalcpu >/dev/null 2>&1; then
   DEF=$(sysctl -n hw.perflevel0.physicalcpu 2>/dev/null || sysctl -n hw.physicalcpu)
 else
@@ -17,6 +17,7 @@ else
 fi
 P=${1:-$DEF}
 mkdir -p "$OUTDIR"
+python3 repair_shards.py "$OUTDIR"/shard_*.jsonl 2>/dev/null || true
 echo "launching $P shards over $NDRAW draws x $NTR trials/condition"
 for i in $(seq 0 $((P-1))); do
   DONE="$OUTDIR/shard_*.jsonl" SHARD_N=$P SHARD_I=$i \

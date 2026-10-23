@@ -18,7 +18,7 @@ cd "$(dirname "$0")"
 TO=$(command -v timeout || command -v gtimeout || true)
 [ -n "$TO" ] && TO="$TO ${1:-165}" || TO=""
 SECS=${1:-165}
-NDRAW=1200; NTR=10000; P=4; G="0 0.25 0.5 1"
+NDRAW=1200; NTR=40000; P=4; G="0 0.25 0.5 1"
 IDX=results/leak/adm_idx.json
 [ -f "$IDX" ] || python3 leak_index.py
 N=$(python3 -c "import json;print(len(json.load(open('$IDX'))))")

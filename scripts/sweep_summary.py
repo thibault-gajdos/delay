@@ -13,11 +13,9 @@ import json, glob, numpy as np
 
 OBS = dict(rate=0.7091, trend=0.5604, curv=0.2099)      # s^-1, s^-2, s^-3
 
-rows = []
-for f in sorted(glob.glob("results/shards/shard_*.jsonl")):
-    rows += [json.loads(l) for l in open(f)]
-rows.sort(key=lambda r: r["draw"])
-assert len({r["draw"] for r in rows}) == len(rows), "duplicate draw indices"
+from shardio import load
+
+rows = load("results/shards/shard_*.jsonl")
 with open("results/sweep_screened.jsonl", "w") as f:
     for r in rows:
         f.write(json.dumps(r) + "\n")

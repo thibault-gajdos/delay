@@ -23,6 +23,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from effect_panel import KEYS, NAMES, observed_per_subject
 from classify import classify
+from shardio import load as load_shards
 
 DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
 G = ['0', '0.25', '0.5', '1']
@@ -47,9 +48,7 @@ for gx in G:
         if gx == '0' and gq == '0':
             recs = [r for r in load(os.path.join(HERE, DUMP)) if r['draw'] in idx]
         else:
-            d = os.path.join(HERE, f'results/leak/gx{gx}_gq{gq}')
-            recs = [r for f in sorted(os.listdir(d)) if f.startswith('shard_')
-                    for r in load(os.path.join(d, f))]
+            recs = load_shards(os.path.join(HERE, f'results/leak/gx{gx}_gq{gq}/shard_*.jsonl'))
         if len(recs) < len(idx):
             raise SystemExit(f"gamma_x {gx}, gamma_q {gq}: {len(recs)} of {len(idx)} draws")
         c = classify(recs, per_sub)

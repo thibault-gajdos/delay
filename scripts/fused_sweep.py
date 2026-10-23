@@ -98,6 +98,8 @@ import numpy as np, sys, time, json, os, glob
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from delaymodel.sim import simulate, measures, DT
 from delaymodel.targets import CELLS, LAB
+from repair_shards import repair
+from shardio import load
 
 N_DRAWS = int(sys.argv[1]) if len(sys.argv) > 1 else 250
 NTR = int(sys.argv[2]) if len(sys.argv) > 2 else 2000
@@ -289,6 +291,28 @@ def poisson_slope_se(counts, exposure, x, iters=100):
 
 
 
+BATCH = 10000   # trials simulated at once; bounds the memory of one process
+
+
+def simulate_measures(q, c, D, n, model, seed, gamma_x, gamma_q):
+    """measures() of n simulated trials of one condition, simulated in batches of at most
+    BATCH trials so that the trajectory matrix stays small.  Batch b is seeded with
+    (seed, b); the trials of different batches are independent, and the measures are
+    concatenated, so the result is a sample of n trials whatever the batch size."""
+    parts = []
+    for b, start in enumerate(range(0, n, BATCH)):
+        nb = min(BATCH, n - start)
+        s = simulate(q, c, D, nb, model=model, seed=[seed, b],
+                     gamma_x=gamma_x, gamma_q=gamma_q)
+        parts.append(measures(s))
+        del s
+    out = {k: np.concatenate([m[k] for m in parts])
+           for k in ('acc', 'rt', 'pmet', 'met', 'valid', 'premature', 'noresp')}
+    out['events'] = [e for m in parts for e in m['events']]
+    out['D'] = D
+    return out
+
+
 def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
     """Simulate all six cells for one (parameter, model) pair.  Returns per-cell arrays
     and admissibility/criterion summaries.  `gamma_x` and `gamma_q` are the leaks of the
@@ -318,14 +342,11 @@ def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
     resp_rate = np.zeros(6); resp_trend = np.zeros(6)
     resp_rate_se = np.zeros(6); resp_trend_se = np.zeros(6)
     for k, (c, D) in enumerate(CELLS):
-        s = simulate(q, c, D, NTR, model=model, seed=seed0 + k,
-                     gamma_x=gamma_x, gamma_q=gamma_q)
-        m = measures(s)
-        ri = s['resp_i']; i_phys = int(round((D + q['delay']) / DT))
-        premature = (ri >= 0) & (ri < i_phys)
+        m = simulate_measures(q, c, D, NTR, model, seed0 + k, gamma_x, gamma_q)
+        premature = m['premature']
         rt = m['rt']
-        early_resp = (~premature) & (ri >= 0) & (rt < 0.2)
-        no_resp = (ri < 0) | ((~premature) & (rt > 4.0))
+        early_resp = (~premature) & (~m['noresp']) & (rt < 0.2)
+        no_resp = m['noresp'] | ((~premature) & (rt > 4.0))
         prem[k] = premature.mean(); early[k] = early_resp.mean(); noresp[k] = no_resp.mean()
         v = m['valid']
         acc[k] = np.nanmean(m['acc'][v]) if v.sum() else np.nan
@@ -486,11 +507,14 @@ def main():
     # OUT or in any file matching DONE (a glob, default OUT itself).  The record of a draw
     # depends only on its index, never on the sharding, so the shard count can change
     # between runs without losing or duplicating anything.
-    _truncate_partial(OUT)
+    repair(OUT)
     done = set()
-    for path in glob.glob(os.environ.get('DONE', OUT)) + [OUT]:
-        if os.path.exists(path):
-            done |= {json.loads(l)['draw'] for l in open(path) if l.strip()}
+    for pat in (os.environ.get('DONE', OUT), OUT):
+        for r in load(pat):
+            if r.get('ntr') != NTR:
+                raise SystemExit(f"{pat} holds draws at another trial count "
+                                 f"({r.get('ntr')}, not {NTR}): move it aside first")
+            done.add(r['draw'])
     todo = [d for d in idx if d not in done]
     print(f"shard {shard_i}/{shard_n}: {len(idx) - len(todo)} of {len(idx)} draws already "
           f"done (N_DRAWS={N_DRAWS}, NTR={NTR}, gamma_x={GAMMA_X}, gamma_q={GAMMA_Q})",
@@ -499,19 +523,9 @@ def main():
         for i in todo:
             t0 = time.time()
             rec = evaluate(cube, i, GAMMA_X, GAMMA_Q)
-            f.write(json.dumps(rec) + "\n"); f.flush()
+            f.write(json.dumps(rec) + "\n"); f.flush(); os.fsync(f.fileno())
             print(f"draw {i}: adm1={rec['model1']['admissible']} "
                   f"adm2={rec['model2']['admissible']} ({time.time()-t0:.1f}s)", flush=True)
-
-
-def _truncate_partial(path):
-    """Drop an incomplete last line, left by a run killed in the middle of a write."""
-    if not os.path.exists(path) or os.path.getsize(path) == 0:
-        return
-    with open(path, 'rb+') as f:
-        data = f.read()
-        if not data.endswith(b'\n'):
-            f.seek(0); f.truncate(data.rfind(b'\n') + 1)
 
 
 def evaluate(cube, i, gamma_x=0.0, gamma_q=0.0):
@@ -526,7 +540,7 @@ def evaluate(cube, i, gamma_x=0.0, gamma_q=0.0):
     res1 = run_model(p, 0.0, 1, SEED0 + 1000 * i, gamma_x, gamma_q)
     res2 = run_model(p, alpha2, 2, SEED0 + 1000 * i + 500, gamma_x, gamma_q)
     rec = dict(draw=i, params=p, beta=beta2, alpha=alpha2, gamma_x=gamma_x,
-               gamma_q=gamma_q)
+               gamma_q=gamma_q, ntr=NTR)
     for tag, res in (('model1', res1), ('model2', res2)):
         adm = admissible(res)
         rec[tag] = dict(admissible=adm,

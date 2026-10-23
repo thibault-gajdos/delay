@@ -96,11 +96,14 @@ itself is not in it: it is long, and is run sharded across cores by `./run_sweep
 python delaymodel/empirical.py    -> (printout)              extraction, checked against the archive
 python delaymodel/targets.py      -> (printout)              empirical summaries per cell
 
+# 0. on macOS, prefix the long runs with `caffeinate -i` so that the machine does not
+#    sleep:  caffeinate -i uv run bash -c './run_sweep.sh && ./run_leak.sh'
+
 # 1. the parameter-space evaluation  (see fused_sweep.py below)
 #    ./run_sweep.sh does this natively, one shard per core, resumable;
 #    ./chunk_sweep.sh does it in bounded slices
 DONE='results/shards/shard_*.jsonl' SHARD_N=$n SHARD_I=$i \
-  python fused_sweep.py 1200 10000 results/shards/shard_$i.jsonl
+  python fused_sweep.py 1200 40000 results/shards/shard_$i.jsonl
 python sweep_summary.py            -> results/sweep_screened.jsonl  the concatenated dump
                                       results/sweep_summary.json
 
@@ -245,14 +248,23 @@ subsections). Nothing in the project is fitted, so this is where every effect-si
 statement comes from.
 
 Latin-hypercube sample over the ranges of Table 1; the production run is 1200 draws at
-10000 trials per cell per model per draw (~14 s/draw on one core). At every
+40000 trials per cell per model per draw, simulated in batches of 10000 (`BATCH`) to bound
+memory. At every
 draw: the admissibility screen, the two RT-effect criteria, the delay-period criterion on
 the raw-rate TREND (all six cells significantly positive), and the motor-execution-time
 invariance criterion. The same sampled vector is evaluated in both models, with beta set
 to zero in Model 1, so the two are compared at identical parameters.
 
 Resumable by draw: a draw already recorded in `OUT`, or in any file matching the glob in
-`DONE`, is skipped, so a run can be interrupted and restarted with any shard count.
+`DONE`, is skipped, so a run can be interrupted and restarted with any shard count. Each
+record is flushed to disk (`fsync`) as soon as its draw is done, so a crash loses at most
+the draws in progress, one per shard. `run_sweep.sh` and `run_leak.sh` first drop any
+incomplete last line (`repair_shards.py`), and every reader goes through `shardio.load`,
+which skips such a line and keeps one record per draw: a record depends only on the draw
+and the leaks, so two records of one draw, left by two launches running at once, are
+identical. A record carries its trial count (`ntr`), and a run refuses to resume from files
+written at another one. Recovering from any interruption is therefore: run the same
+command again.
 Shardable: `SHARD_N`/`SHARD_I` in the environment make shard j take the draws i with
 i % n == j, each writing its own file. `IDX` restricts the run to a JSON list of draws. The LHS cube is
 regenerated identically from the fixed seed in every process, so `cat`-ing the shard files

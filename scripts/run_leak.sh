@@ -11,7 +11,7 @@
 # run can be interrupted and restarted, with any shard count.
 set -eu
 cd "$(dirname "$0")"
-NDRAW=1200; NTR=10000; G="0 0.25 0.5 1"
+NDRAW=1200; NTR=40000; G="0 0.25 0.5 1"
 if command -v sysctl >/dev/null 2>&1 && sysctl -n hw.physicalcpu >/dev/null 2>&1; then
   DEF=$(sysctl -n hw.perflevel0.physicalcpu 2>/dev/null || sysctl -n hw.physicalcpu)
 else
@@ -28,6 +28,7 @@ for gx in $G; do for gq in $G; do
   [ "$gx" = 0 ] && [ "$gq" = 0 ] && continue
   D=results/leak/gx${gx}_gq${gq}
   mkdir -p "$D"
+  python3 repair_shards.py "$D"/shard_*.jsonl 2>/dev/null || true
   for i in $(seq 0 $((P-1))); do
     IDX=$IDX DONE="$D/shard_*.jsonl" SHARD_N=$P SHARD_I=$i \
       python3 fused_sweep.py $NDRAW $NTR "$D/shard_$i.jsonl" $gx $gq \

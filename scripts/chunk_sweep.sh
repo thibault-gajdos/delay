@@ -15,7 +15,7 @@ cd "$(dirname "$0")"
 TO=$(command -v timeout || command -v gtimeout || true)
 [ -n "$TO" ] && TO="$TO ${1:-165}" || TO=""
 SECS=${1:-165}
-NDRAW=1200; NTR=10000; P=4; OUTDIR=results/shards
+NDRAW=1200; NTR=40000; P=4; OUTDIR=results/shards
 mkdir -p "$OUTDIR"
 for i in $(seq 0 $((P-1))); do
   DONE="$OUTDIR/shard_*.jsonl" SHARD_N=$P SHARD_I=$i $TO python3 fused_sweep.py $NDRAW $NTR \

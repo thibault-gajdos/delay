@@ -55,3 +55,6 @@ data/86cbw-osfstorage-archive/analysis_MBL/data/av_epochs_*.npy
 
 # local mirror of the pre-purge history
 _git_backup_*.git/
+
+# leak-grid dumps (regenerable; leak_summary.json is the citable output)
+scripts/results/leak/gx*/

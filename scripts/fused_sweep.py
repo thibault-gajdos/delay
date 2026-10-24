@@ -38,8 +38,8 @@ from that value.
                                               addressed -- draws at a > 3, where
                                               exp(-a^2/2) leaves no crossings at all --
                                               belongs to the acceptance set, and is
-                                              handled by the EMG criterion in
-                                              admissible().
+                                              handled by the activation-rate criterion
+                                              in admissible().
   beta     in [0.0015, 0.100] log-uniform     Model 2 only.  The upper end is not
                                               derived: the screen enforces it, since a
                                               ramp large enough to carry the signal past
@@ -75,11 +75,10 @@ free).
 Latin-hypercube over the 10 dimensions shared by both models (g, theta/g, kappa, SDe,
 muRS, r, k, lam, sigma_q and Lmotor's slot); beta is an 11th, sampled for Model 2 only.
 
-Task-admissibility screen (see admissible()): in every condition, <=10% premature, <=10%
-responses within 0.2 s of the signal, <=5% no response by the 4 s deadline, accuracy
-> 80% in both 50%-coherence conditions; and, across conditions, a delay-window
-partial-activation rate in [0.04, 3.0] /s and mean premotor and motor execution times in
-the observed per-participant ranges widened by a factor of two.
+Admissibility screen (see admissible()): in every condition, <=10% of trials whose
+response burst begins before the response signal, <=10% responses within 0.2 s of the
+signal, <=5% no response by the 4 s deadline; and, across conditions, a mean delay-window
+partial-activation rate in [0.02, 5] /s.  No bound is derived from the data.
 
 The production run is 1200 draws at 4000 trials per cell per model per draw (~6.5 s per
 draw, ~25 min over six shards).  Resumable by line count of OUT; SHARD_N/SHARD_I in the
@@ -111,10 +110,7 @@ SEED0 = 20260824
 DELAY_TB = np.arange(20) * 0.1 + 0.05
 DELAY_TB = DELAY_TB - DELAY_TB.mean()
 
-RATE_LO, RATE_HI = 0.04, 3.0   # delay-window PMA rate screen, /s (see admissible())
-# Chronometric screen. See admissible().
-PMET_LO, PMET_HI = 0.181, 0.677     # s
-MET_LO, MET_HI = 0.046, 0.288       # s
+RATE_LO, RATE_HI = 0.02, 5.0   # delay-window PMA rate screen, /s (see admissible())
 
 FIXED = dict(sigx=0.100, Lmotion=0.200, LRS=0.200, delay=3.0, Lmotor=0.093)
 
@@ -320,7 +316,7 @@ def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
     default."""
     q = dict(p)
     q['alpha'] = alpha
-    prem = np.zeros(6); early = np.zeros(6); noresp = np.zeros(6)
+    prem = np.zeros(6); early = np.zeros(6); noresp = np.zeros(6); burst_early = np.zeros(6)
     acc = np.zeros(6); rt_mean = np.zeros(6); rt_se = np.zeros(6); rt_n = np.zeros(6)
     slope = np.zeros(6); slope_se = np.zeros(6); rate = np.zeros(6)
     trend = np.zeros(6); trend_se = np.zeros(6)
@@ -348,6 +344,11 @@ def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
         early_resp = (~premature) & (~m['noresp']) & (rt < 0.2)
         no_resp = m['noresp'] | ((~premature) & (rt > 4.0))
         prem[k] = premature.mean(); early[k] = early_resp.mean(); noresp[k] = no_resp.mean()
+        # trials, out of all of them, whose response burst begins before the response
+        # signal: a negative premotor time.  Every premature response is one, since its
+        # burst begins at or before a press that precedes the signal; trials without a
+        # response have no burst and are not counted.
+        burst_early[k] = np.mean(np.nan_to_num(m['pmet'], nan=0.0) < 0)
         v = m['valid']
         acc[k] = np.nanmean(m['acc'][v]) if v.sum() else np.nan
         rv = rt[v]
@@ -379,7 +380,8 @@ def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
         else:
             slope[k], slope_se[k] = np.nan, np.nan
             trend[k] = trend_se[k] = curv[k] = curv_se[k] = np.nan
-    return dict(prem=prem, early=early, noresp=noresp, acc=acc, rt_mean=rt_mean,
+    return dict(prem=prem, early=early, noresp=noresp, burst_early=burst_early,
+                acc=acc, rt_mean=rt_mean,
                 rt_se=rt_se, rt_n=rt_n, slope=slope, slope_se=slope_se,
                 trend=trend, trend_se=trend_se, curv=curv, curv_se=curv_se,
                 rate=rate, srate=srate,
@@ -394,45 +396,24 @@ def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
 
 
 def admissible(res):
-    if (res['prem'] > 0.10).any(): return False
+    """A draw stands for a possible participant.  None of the bounds is derived from the
+    data.
+
+    In every condition: at most 10% of trials whose response burst begins before the
+    response signal, at most 10% responses within 0.2 s of the signal (the response-time
+    exclusion rule of the analysis), at most 5% failures to respond by the 4-s deadline
+    (the task's own).  The first criterion contains the premature responses, whose burst
+    necessarily begins before the signal, and also excludes the regime in which temporal
+    preparation alone carries the signal above the gate during the delay, giving one
+    sustained activation of several seconds that ends in the response.
+
+    Across conditions: a mean delay-window partial-activation rate in [0.02, 5] /s, which
+    excludes regimes with no muscle activity during the delay."""
+    if (res['burst_early'] > 0.10).any(): return False
     if (res['early'] > 0.10).any(): return False
     if (res['noresp'] > 0.05).any(): return False
-    # cells index 2 and 5 are c=0.50, D=0.3 and D=2.0 (see targets.CELLS)
-    if not (res['acc'][2] > 0.80 and res['acc'][5] > 0.80): return False
-    # EMG criterion.  Every criterion above is behavioural, and a purely behavioural
-    # screen admits settings that produce literally zero delay-period muscle activity --
-    # about half the behaviourally admissible Model 1 draws.  A draw of parameters stands for a
-    # hypothetical participant, so the criterion is stated at the participant level: the
-    # draw's mean delay-window partial-activation rate must fall inside the range the
-    # real participants span.  Observed: 132 subject x condition cells run 0.085-2.785
-    # per second (mean 0.709); per-participant means run 0.180-1.863.  The window used
-    # here, RATE_LO..RATE_HI = 0.04..3.0, is deliberately WIDER than either -- the
-    # conclusion this sweep supports is an EXCLUSION of Model 1, so erring wide is the
-    # conservative direction.  In practice the ceiling never binds (no admissible draw of
-    # either model exceeded 3.0); the criterion is a floor.
     rm = np.nanmean(res['rate'])
     if not (RATE_LO <= rm <= RATE_HI): return False
-    # Chronometric criterion, same form and same justification as the
-    # rate window above: a draw stands for a hypothetical participant, and a participant
-    # whose response-time decomposition is physically impossible is not one. Without it the
-    # admissible set contained draws with a mean premotor execution time of -945 ms -- a
-    # response burst beginning almost a second BEFORE the reaction signal -- and mean motor
-    # execution times of 1.4 s.
-    #
-    # The window is the range of the observed per-participant means, widened by a factor of
-    # two about their mean: observed PMET means run 270-518 ms and MET means 103-224 ms,
-    # giving 181-677 ms and 46-288 ms here.
-    #
-    # This screens on the LEVELS of the two components, and it is important that it does not
-    # screen on their EFFECTS. The paper's RS-locked predictions are that coherence and
-    # duration move the premotor component and leave the motor component alone; those are
-    # statements about differences between conditions, and they remain free to be right or
-    # wrong at every admissible draw. Screening on the level of PMET therefore removes no
-    # tested prediction, where screening on the invariance of MET would have converted a
-    # result into an assumption -- which is why that was considered and rejected.
-    pm = np.nanmean(res['pmet_mean']); mt = np.nanmean(res['met_mean'])
-    if not (np.isfinite(pm) and PMET_LO <= pm <= PMET_HI): return False
-    if not (np.isfinite(mt) and MET_LO <= mt <= MET_HI): return False
     return True
 
 

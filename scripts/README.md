@@ -287,69 +287,29 @@ of the weight:
 No bound is derived from these data. A range drawn around a value estimated from the data
 cannot test whether a prediction survives away from that value.
 
-#### The EMG criterion in the screen
+#### The admissibility screen
 
-Every behavioural criterion in `admissible()` — premature rate, very fast responses,
-no-responses, accuracy at 50% coherence — leaves one hole, and it is easy to miss and hard
-to defend: **about half of the behaviourally admissible Model 1 draws produce exactly zero
-delay-period partial activations**, and would be carried into the effect-size summaries
-anyway.
+A draw stands for a possible participant, and no bound of the screen is derived from the
+data. In every condition: at most 10% of trials whose response burst begins before the
+response signal, at most 10% responses within 0.2 s of the signal (the response-time
+exclusion rule of the analysis), at most 5% failures to respond by the 4-s deadline (the
+task's own). Across conditions: a mean delay-window partial-activation rate in
+[0.02, 5] /s (`RATE_LO`, `RATE_HI`).
 
-The tempting fix is to reparameterise — to sample `a = (g - theta)/SDe`, the standardised
-distance to the gate, instead of `SDe`, since the crossing rate goes as exp(-a²/2) and the
-raw ranges put half the box above a = 3. That is the wrong instrument. Reparameterising
-changes the *distribution over the parameter space*, not the acceptance set; doing it in
-terms of the quantity that governs the outcome under test redefines the space in a way
-chosen for its effect on the result. The screen, by contrast, acts on the acceptance set
-and is neutral with respect to parameterisation.
+The burst criterion is counted over all trials. It contains the premature responses, whose
+burst necessarily begins before the signal, so no separate criterion on them is applied.
+It also excludes a regime the behavioural criteria miss: temporal preparation alone
+carrying the signal above the gate during the delay, which gives one sustained activation
+of several seconds ending in the response, with no premature response at all (draw 801 of
+Model 2: a burst before the signal on every trial, and a mean premotor time of −2 s). In
+the data, 4 of 20 566 valid trials have a burst beginning before the signal.
 
-So `SDe` is sampled directly, and `admissible()` carries one further criterion, stated at
-the level where it is interpretable. A draw of parameters stands for a hypothetical
-participant, so the criterion asks whether that participant's mean delay-window
-partial-activation rate falls inside the range real participants span. Observed (132
-participant × condition cells, none empty): 0.085–2.785 s⁻¹, mean 0.709, median 0.603;
-per-participant means 0.180–1.863. The window `RATE_LO..RATE_HI = 0.04..3.0` is
-deliberately wider than either, because the conclusion is an *exclusion* and erring wide is
-conservative. In practice the ceiling never binds — no admissible draw of either model
-exceeds 3.0 s⁻¹ — so the criterion is a floor.
-
-Two things about the floor. **It is not a near-threshold decision.** At NTR = 4000 a draw
-exactly at 0.04 s⁻¹ yields 320 events per cell and 1920 over six, a counting SE of 5.6% per
-cell and 2.3% pooled; what the floor removes sits at 0 exactly, or (Model 1's ramp
-candidates) at 0.001–0.005 s⁻¹, one to two orders of magnitude below it. **And it induces
-no winner's curse**, because it selects on the *rate* while the reported statistic is the
-*trend*: unlike a max-over-noisy-draws rule it removes the draws whose trend rests on a
-handful of events, which lowers rather than inflates the noise in the reported extremes.
-Any statistic that is itself a maximum over cells or draws still needs the two-stage
-re-simulation `ramp_check.py` performs.
-
-#### The chronometric criterion
-
-A second participant-level criterion, on the LEVELS of the two components of response
-time: mean premotor execution time in 181–677 ms and mean motor execution time in
-46–288 ms, the observed per-participant ranges widened by a factor of two about their
-centre. Without it the admissible set contains draws whose mean PMET is **−945 ms** — a
-response burst beginning almost a second before the reaction signal — and whose mean MET
-reaches 1.4 s. Those are not participants.
-
-It constrains levels and never effects, which is what makes it admissible here: the
-RS-locked predictions are that coherence and duration move PMET and leave MET alone, and
-those remain free to fail at every admissible draw. Screening on MET *invariance* would
-convert a result into an assumption, and is not done. Screening on the levels removes no
-tested prediction, because the paper makes no claim about them.
-
-It has a cost, and it should be stated. The criterion removes most of the Model 2 draws that
-reached the observed MAGNITUDE of the stimulus-period duration effect. That comparison
-therefore has to be made on the SIGN, which is what the derivation predicts anyway — and
-there the separation is undamaged, 33% against 0%.
-
-**Result** (`results/sweep_screened.jsonl`, 1200 draws, NTR 4000). Model 1: 160 admissible;
-delay-period trend median −0.007 /s², 5th–95th percentile −0.058 to +0.004, largest value
-+0.007; **0** draws with all six condition trends significantly positive and **0** anywhere
-in the observed 95% confidence interval [0.375, 0.745]. Model 2: 145 admissible; trend
-median +0.054, −0.017 to +0.418, largest +1.157; 78 with all six positive and 6 in the
-observed interval with the rate also in range. The observed +0.5604 sits at Model 2's
-96th percentile and above every draw of Model 1.
+The rate criterion excludes regimes with no muscle activity in the delay: most draws
+satisfying the other criteria have a rate below 0.02 /s. `SDe` is sampled directly rather
+than through the standardised distance to the gate `a = (g - theta)/SDe`, which governs
+the crossing rate: reparameterising in terms of the quantity that governs the outcome under
+test would change the sampling law for its effect on the result, where the screen acts on
+the acceptance set.
 
 A fresh run with a different seed will not reproduce the exact admissibility counts; the
 criteria and their signs are robust, the counts are not guaranteed identical run to run.

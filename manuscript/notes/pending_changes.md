@@ -77,6 +77,20 @@ mouvement) et γ_q (accumulateur du signal de réponse), grille complète
 - **delay.tex, l. 578** : parle d'une fuite sur la seule variable de décision, à trois
   valeurs → grille indépendante, nouveaux résultats.
 - **lettre, C2.3** : table à refaire avec la grille.
+- **delay.tex, Appendix, théorie de la fuite (l. 976–982).** Remplacement proposé dans
+  `manuscript/notes/draft_leak_appendix.tex` (compilé dans une copie : aucune erreur) :
+  Remark sur γ_x (étendue : la Proposition sur la fenêtre du stimulus n'est pas couverte,
+  la variance étant bornée avec γ_x > 0) ; nouvelle Proposition sur γ_q (fenêtres du
+  stimulus et du délai, exactitude inchangées ; ordre des temps de réponse moyens conservé
+  pour tout γ_q) ; Remark sur le motor time sous γ_q (mécanisme, non démontré). En attente
+  d'accord.
+- **delay.tex, Results (l. 578) et Discussion (l. 673).** Renvoient à la seule fuite sur
+  la variable de décision : à étendre à γ_q, avec renvoi à la nouvelle Proposition.
+- **delay.tex, Proposition « the stimulus-period rate is higher after the long stimulus »
+  (l. 957).** Sa preuve est incomplète même sans fuite : la comparaison des variances n'est
+  établie que pour un temps de maintien grand, et l'équation du taux utilisée (celle du
+  maintien, avec ω = √(λκ)) ne s'applique pas à la condition longue, qui accumule encore.
+  À reprendre.
 
 ## 6. Règle de comparaison modèle–données
 

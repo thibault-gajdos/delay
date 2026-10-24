@@ -1,0 +1,46 @@
+% Proposed replacement for delay.tex, Appendix, "Additional remarks": from the remark
+% labelled rem:leak (line 976) to the end of the paragraph that begins "In particular
+% Corollary~\ref{cor:flat} is unaffected" (line 982).
+
+\begin{remark}[a leak on the decision variable]\label{rem:leak}
+Suppose the accumulation of Equation~\eqref{eq:x} carries a leak, $\dd x\left(t\right)=\left(skc-\gamma_{x} x\left(t\right)\right)\dd t+{\sigma }_{x}\dd {W}_{x}\left(t\right)$ with $\gamma_{x} \ge 0$. Every delay-period statement above still holds, with $a$ taking whatever value the leaked accumulation leaves.
+\end{remark}
+
+The reason is that the leak acts only before maintenance begins. It changes the law of $x$, hence the law of the threshold-crossing time $\tau $ and of the maintained level $m$ of Equation~\eqref{eq:m}, and therefore the distribution across trials of the standardized distance $a=\left(g-\left|m\right|\right)/{\sigma }_{H}$. It does not appear in the maintenance dynamics: from $\tau $ onward the input to the filter is $m+\varepsilon \left(t\right)$ by Equation~\eqref{eq:y_delay}, with $\varepsilon $ the Ornstein--Uhlenbeck process of Equation~\eqref{eq:epsilon}, and neither depends on how $x$ arrived. So $H$, its three moments (Equation~\eqref{eq:moments}) and the crossing rate (Equation~\eqref{eq:nu2}) are exactly as derived, at any $\gamma_{x}$.
+
+In particular Corollary~\ref{cor:flat} is unaffected: under Model 1 the delay-period stationary rate is constant in $t$ on every trial and at every parameter setting, for every $\gamma_{x}$, so a leak can move the level of that rate but cannot give it a time dependence. A leak is therefore not a way for Model 1 to acquire a delay-period ramp.
+
+Proposition~\ref{prop:duration} is not covered by this argument. It concerns the stimulus window, where the leak acts, and its proof uses the growth without bound of the variance of the accumulating signal. With $\gamma_{x}>0$ that variance is bounded. The leaked accumulation started at the fixed point $x_{0}$ has $\Var x\left(t\right)={\sigma }_{x}^{2}\left(1-{e}^{-2\gamma_{x} t}\right)/\left(2\gamma_{x}\right)\le {\sigma }_{x}^{2}/\left(2\gamma_{x}\right)$. The filter gives $y\left(t\right)={x}_{0}{e}^{-\lambda t}+\int_{0}^{t}\lambda {e}^{-\lambda \left(t-v\right)}x\left(v\right)\dd v$. By Minkowski's integral inequality, applied to the centred process $x-\E x$, the standard deviation of an integral is at most the integral of the standard deviations. Hence $\sqrt{\Var y\left(t\right)}\le \int_{0}^{t}\lambda {e}^{-\lambda \left(t-v\right)}\sqrt{\Var x\left(v\right)}\dd v\le {\sigma }_{x}/\sqrt{2\gamma_{x}}$, because $\int_{0}^{t}\lambda {e}^{-\lambda \left(t-v\right)}\dd v\le 1$. Whether the proposition holds at $\gamma_{x}>0$ is therefore established by the simulations, not by the derivation.
+
+\begin{proposition}[a leak on the response-signal accumulator]\label{prop:leakq}
+Suppose the accumulation of Equation~\eqref{eq:q} carries a leak, $\dd q\left(t\right)=\left({\mu }_{\mathrm{RS}}-\gamma_{q} q\left(t\right)\right)\dd t+{\sigma }_{q}\dd {W}_{q}\left(t\right)$, $q\left({t}_{\mathrm{RS}}\right)=0$, with $\gamma_{q} \ge 0$.
+\begin{enumerate}
+\item Every statement above about the stimulus and delay windows, and response accuracy, holds at every $\gamma_{q}$.
+\item Fix ${T}_{\max }>0$. On a trial with no response by ${t}_{\mathrm{RS}}$, let $T:=\min \left(\inf \left\{u\ge 0:{s}_{\mathrm{resp}}\tilde{y}\left({t}_{\mathrm{RS}}+u\right)-g\ge r\right\},{T}_{\max }\right)$ be the time from ${t}_{\mathrm{RS}}$ to the response, truncated at ${T}_{\max }$, and let $Z:={s}_{\mathrm{resp}}\tilde{y}\left({t}_{\mathrm{RS}}\right)$. If, on such trials, the law of $Z$ in a condition A stochastically dominates its law in a condition B, then $\E\left[T\right]$ is no larger in A than in B, at every $\gamma_{q}$.
+\end{enumerate}
+\end{proposition}
+
+After the signal, the gate-facing signal is its value at ${t}_{\mathrm{RS}}$ plus a process built from $q$ alone. That process has the same law in every condition and is independent of everything that happened before ${t}_{\mathrm{RS}}$. A signal that starts closer to the criterion therefore reaches it no later, path by path, whatever the leak does to $q$.
+
+\begin{proof}
+Part 1. The variable $q$ is defined from ${t}_{\mathrm{RS}}$ onward and enters the model only through Equation~\eqref{eq:y_RS}, which holds for $t\ge {t}_{\mathrm{RS}}$. The stimulus window ends 2 s after stimulus onset and the delay window at the physical response signal, both before ${t}_{\mathrm{RS}}$, and the selected response ${s}_{\mathrm{resp}}$ is fixed at maintenance onset, also before ${t}_{\mathrm{RS}}$. None of these depends on $q$, hence none depends on $\gamma_{q}$.
+
+Part 2. Write $s:={s}_{\mathrm{resp}}$ and, for $u\ge 0$, $w\left(u\right):=y\left({t}_{\mathrm{RS}}+u\right)-y\left({t}_{\mathrm{RS}}\right)$. By Equation~\eqref{eq:y_RS}, $\dd w\left(u\right)=\lambda \left(sq\left({t}_{\mathrm{RS}}+u\right)-w\left(u\right)\right)\dd u$ with $w\left(0\right)=0$. Solving this linear equation by variation of constants gives $w\left(u\right)=sQ\left(u\right)$, where
+\begin{equation*}
+Q\left(u\right):=\int_{0}^{u}\lambda {e}^{-\lambda \left(u-v\right)}q\left({t}_{\mathrm{RS}}+v\right)\dd v .
+\end{equation*}
+Since ${s}^{2}=1$, $sy\left({t}_{\mathrm{RS}}+u\right)=sy\left({t}_{\mathrm{RS}}\right)+Q\left(u\right)$. In both models $\tilde{y}-y$ is constant from ${t}_{\mathrm{RS}}$ onward (zero in Model 1, $s\beta $ in Model 2), so $s\tilde{y}\left({t}_{\mathrm{RS}}+u\right)=Z+Q\left(u\right)$. By the definition of $T$, $T=\varphi \left(g+r-Z\right)$, where for every level $b$
+\begin{equation*}
+\varphi \left(b\right):=\min \left(\inf \left\{u\ge 0:Q\left(u\right)\ge b\right\},{T}_{\max }\right).
+\end{equation*}
+
+The process $q$ on $\left[{t}_{\mathrm{RS}},\infty \right)$ is the solution of its equation started at $0$, driven by ${W}_{q}$, which is independent of ${W}_{x}$, ${W}_{\varepsilon }$, $\varepsilon \left(\tau \right)$ and the stimulus. Its parameters ${\mu }_{\mathrm{RS}}$, ${\sigma }_{q}$, $\gamma_{q}$ and $\lambda $ do not depend on the condition. Hence $Q$ has the same law in every condition, and it is independent of $Z$ and of the event that no response has occurred by ${t}_{\mathrm{RS}}$, both of which are determined by the trajectory before ${t}_{\mathrm{RS}}$.
+
+Path by path, $\varphi $ is nondecreasing: if ${b}_{1}\le {b}_{2}$, every $u$ with $Q\left(u\right)\ge {b}_{2}$ also has $Q\left(u\right)\ge {b}_{1}$, so the first such $u$ for ${b}_{1}$ comes no later than for ${b}_{2}$, and taking the minimum with ${T}_{\max }$ preserves the order. Define $h\left(z\right):=\E\left[\varphi \left(g+r-z\right)\right]$, the expectation being over $Q$. Then $h$ is nonincreasing in $z$, and $0\le h\left(z\right)\le {T}_{\max }$. By the independence of $Q$ and $Z$, $\E\left[T\mid Z\right]=h\left(Z\right)$, with the same function $h$ in every condition. Therefore $\E\left[T\right]=\E\left[h\left(Z\right)\right]$ in each condition. The law of ${Z}_{A}$ stochastically dominates that of ${Z}_{B}$ when $\Pr\left({Z}_{A}>z\right)\ge \Pr\left({Z}_{B}>z\right)$ for every $z$. An equivalent form, standard in the theory of stochastic orders, is $\E\left[f\left({Z}_{A}\right)\right]\le \E\left[f\left({Z}_{B}\right)\right]$ for every bounded nonincreasing function $f$. Taking $f=h$ gives $\E\left[T\right]$ in A no larger than in B.
+\end{proof}
+
+The response time measured from the physical response signal is ${L}_{\mathrm{RS}}+T+{L}_{\mathrm{motor}}$, the two latencies being constants, so the ordering of mean response time across conditions is the ordering of $\E\left[T\right]$. A leak on $q$ can change the size of the differences in mean response time between conditions, not their sign.
+
+\begin{remark}[motor execution time under a leak on the response-signal accumulator]\label{rem:leakq_met}
+Proposition~\ref{prop:leakq} concerns response time, not its division into premotor and motor execution time. Motor execution time is the time the signal takes to rise from the gate to the criterion, a rise of $r$, on its final approach. Without a leak the drift of $q$ is the constant ${\mu }_{\mathrm{RS}}$. With a leak it is ${\mu }_{\mathrm{RS}}-\gamma_{q} q$, which falls as $q$ grows, so the final rise is slower when it occurs later, as it does in the conditions where the signal starts further from the criterion. This is a mechanism, not a proof. It predicts that a leak on $q$ gives motor execution time a dependence on the conditions, in the same direction as that of premotor execution time. The simulations confirm the direction and give its size.
+\end{remark}

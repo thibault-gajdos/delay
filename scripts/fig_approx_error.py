@@ -17,7 +17,8 @@ sampled box the error reaches a per cent, on draws whose standardized distance t
 gate is 30 or more and whose rate is therefore unmeasurable; admissibility caps that
 distance, and with it the amplification (Appendix, Corollary A.2).
 
-Writes plots/fig_approx_error.{pdf,png}.  Usage: python3 mkfig.py [DUMP.jsonl]
+Writes plots/fig_approx_error.pdf and the manuscript's copy,
+../manuscript/latex/figures/fig09.png.  Usage: python3 fig_approx_error.py [DUMP.jsonl]
 """
 import json, numpy as np, matplotlib
 matplotlib.use('Agg')
@@ -90,5 +91,5 @@ axes[0].text(RHO0 * 1.06, 90, 'analysis\nwindow', fontsize=6.5, color='0.35', va
 axes[0].text(0.022, 1.6, '1%', fontsize=6.5, color='0.45')
 os.makedirs('plots', exist_ok=True)
 fig.savefig('plots/fig_approx_error.pdf', bbox_inches='tight')
-fig.savefig('plots/fig_approx_error.png', dpi=200, bbox_inches='tight')
+fig.savefig('../manuscript/latex/figures/fig09.png', dpi=200, bbox_inches='tight')
 print('wrote plots/fig_approx_error.pdf')

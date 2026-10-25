@@ -182,7 +182,7 @@ def counts_profile(mm, t0, t1, nbin):
 
 def window_stats(mm, D, delay, dt):
     """Counts and per-bin exposures for the three windows outside the delay, following
-    exactly the definitions the empirical export uses (export_for_R.empirical_rows):
+    the definitions of the empirical windows (delaymodel/targets.py):
 
       stimulus   0 to 2 s from motion onset, 20 bins, every valid trial contributing
       RS         0 to 0.2 s from response-signal onset, 2 bins
@@ -321,7 +321,7 @@ def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
     slope = np.zeros(6); slope_se = np.zeros(6); rate = np.zeros(6)
     trend = np.zeros(6); trend_se = np.zeros(6)
     curv = np.zeros(6); curv_se = np.zeros(6)
-    # the raw 20-bin delay profile per cell, so that figures_space.py can draw the
+    # the raw 20-bin delay profile per cell, so that fig_delay_profiles.py can draw the
     # simulated delay-period rate curve against the observed one without re-simulating
     prof = np.zeros((6, 20)); prof_expo = np.zeros(6)
     met_mean = np.zeros(6); met_se = np.zeros(6)

@@ -1,7 +1,6 @@
-"""fig3.py -- the manuscript's Figure 3 (behavioural outcomes and the response-time
-fractionation), drawn from the archive's own behavioural exports.  Writes
-fig3_final.{png,tiff} beside itself; the manuscript copy is
-manuscript/latex/figures/fig05.png.  Needs DELAY_DATA.
+"""fig_behavior.py -- behavioural outcomes and the response-time fractionation
+(manuscript Figure 5), drawn from the archive's own behavioural exports. Writes
+../manuscript/latex/figures/fig05.png. Needs DELAY_DATA.
 """
 import numpy as np, pandas as pd, matplotlib
 matplotlib.use('Agg')
@@ -71,7 +70,5 @@ for ax,(f,pref,ylab,lab) in zip(axes, panels):
 h,l = axes[0].get_legend_handles_labels()
 fig.legend(h, l, title='Stimulus Duration', loc='center left', bbox_to_anchor=(0.895,0.5), frameon=False)
 fig.tight_layout(rect=[0,0,0.885,1])
-fig.savefig('fig3_final.png', dpi=200)
-fig.savefig('fig3_final.tiff', dpi=370, pil_kwargs={'compression':'tiff_lzw'})
-from PIL import Image
-print('saved', Image.open('fig3_final.tiff').size)
+fig.savefig('../manuscript/latex/figures/fig05.png', dpi=200)
+print('wrote ../manuscript/latex/figures/fig05.png')

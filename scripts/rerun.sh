@@ -25,21 +25,21 @@ python3 classify.py
 step "leak grid"
 python3 leak_summary.py
 
-step "effect panel (ranges and signs over the admissible draws)"
-python3 effect_panel.py results/sweep_screened.jsonl | tail -3
+step "comparison table (manuscript/latex/table_comparison.tex)"
+python3 table_comparison.py
 
 step "representative parameter vector (the point Figure 2B is drawn at)"
 python3 representative.py > /dev/null && echo "wrote results/representative.json"
 
-step "the CSV bridge for R (figures_space.py reads it too)"
-python3 export_for_R.py
-
-step "figures"
+step "figures (manuscript/latex/figures/fig01,02,04,05,07,08,09.png)"
 python3 figures.py
-python3 figures_space.py results/sweep_screened.jsonl
-python3 mkfig.py
+python3 fig_behavior.py
+python3 fig_delay_profiles.py
+python3 fig_approx_error.py
+python3 fig_effects.py
 
 step "statistics on the data"
 ( cd R && Rscript run_stats.R > /dev/null && echo "wrote R/stats_tables.txt and R/stats_results.csv" )
+python3 stats_tables_tex.py
 
 step "done"

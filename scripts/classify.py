@@ -1,7 +1,7 @@
 """
 classify.py -- the model-data comparison of the Methods ("Model-data comparison").
 
-For every effect of effect_panel.py and every admissible draw of each model, the draw's
+For every effect of effects.py and every admissible draw of each model, the draw's
 estimate and its Monte-Carlo 95% interval (estimate +- 1.96 Monte-Carlo standard errors)
 are set against the empirical 95% confidence interval of the group mean (Student t,
 n - 1 degrees of freedom):
@@ -27,7 +27,7 @@ import numpy as np
 from scipy import stats
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from effect_panel import (KEYS, GROUPS, NAMES, SRC, observed_per_subject, draw_effects,
+from effects import (KEYS, GROUPS, NAMES, SRC, observed_per_subject, draw_effects,
                           effects_se)
 
 DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
@@ -36,7 +36,7 @@ OUT = 'results/classification.json'
 
 def classify(recs, per_sub):
     """The classification of every admissible (draw, model) record in `recs`, against the
-    observed effects of `per_sub` (effect_panel.observed_per_subject())."""
+    observed effects of `per_sub` (effects.observed_per_subject())."""
     out = dict(n_draws=len(recs), observed={}, models={})
     for k in KEYS:
         x = np.array([p[k] for p in per_sub], float)

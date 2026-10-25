@@ -41,7 +41,7 @@ def cell_sty(k):
 
 
 # ---------------------------------------------------------------- trajectories
-def fig_trajectories(model=2, ndraw=30, n=300, fname='plots/fig_traj.pdf',
+def fig_trajectories(model=2, ndraw=30, n=300, fname='plots/fig_traj.pdf', png=None,
                      dump='results/sweep_screened.jsonl'):
     """Manuscript Figure 1: the gated motor-preparatory signal, time-locked to the four
     trial events, with ONE MEAN TRAJECTORY PER PARAMETER SET.
@@ -119,11 +119,14 @@ def fig_trajectories(model=2, ndraw=30, n=300, fname='plots/fig_traj.pdf',
                  fontsize=6.5, frameon=False, loc='upper left')
     ax[0].set_xlabel('from onset (s)'); ax[1].set_xlabel('from offset (s)')
     ax[2].set_xlabel('(s)'); ax[3].set_xlabel('(s)')
-    fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
+    fig.savefig(fname, bbox_inches='tight')
+    if png:
+        fig.savefig(png, dpi=200, bbox_inches='tight')
+    plt.close(fig)
 
 
 # ---------------------------------------------------------------- single trial
-def fig_single(P, n=400, fname='plots/fig_single.pdf'):
+def fig_single(P, n=400, fname='plots/fig_single.pdf', png=None):
     s = simulate(P, 0.12, 2.0, n, 2, seed=7)
     m = measures(s)
     cand = [j for j in np.flatnonzero(m['valid'])
@@ -152,15 +155,19 @@ def fig_single(P, n=400, fname='plots/fig_single.pdf'):
     # panel letter: this figure is panel B of the manuscript's Figure 2, whose panel A is a
     # hand-drawn schematic; the panel letter is added here rather than after export
     fig.text(0.005, 0.94, 'B', fontsize=20, weight='bold', va='top')
-    fig.savefig(fname, bbox_inches='tight'); plt.close(fig)
+    fig.savefig(fname, bbox_inches='tight')
+    if png:
+        fig.savefig(png, dpi=200, bbox_inches='tight')
+    plt.close(fig)
 
 
 # ---------------------------------------------------------------- rates
 if __name__ == '__main__':
     R = json.load(open('results/representative.json'))
     P2 = dict(R['params'], alpha=R['alpha'])
-    fig_trajectories(2, fname='plots/fig_traj_m2.pdf')
-    fig_trajectories(1, fname='plots/fig_traj_m1.pdf')
-    fig_single(P2)
+    FIG = '../manuscript/latex/figures/'
+    fig_trajectories(2, fname='plots/fig_traj_m2.pdf', png=FIG + 'fig01.png')
+    fig_trajectories(1, fname='plots/fig_traj_m1.pdf', png=FIG + 'fig02.png')
+    fig_single(P2, png=FIG + 'fig04.png')
     print(f"figures written at the representative draw {R['draw']} "
           f"(beta = {R['beta']:.4f}, the Model 2 admissible median)")

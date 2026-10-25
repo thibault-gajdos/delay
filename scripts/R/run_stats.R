@@ -1,8 +1,8 @@
 ## run_stats.R -----------------------------------------------------------------
 ##
-## Every statistical test reported in the manuscript, on the empirical data and
-## on the simulated data, in one place. Python produces the simulations and the
-## event extraction; R does the statistics. Nothing here reprocesses a signal:
+## Every statistical test on the data reported in the manuscript, in one place.
+## Python produces the simulations and the model-data comparison; R does the
+## statistics on the data. Nothing here reprocesses a signal:
 ## the empirical inputs are the bin means exported in the OSF archive, so that
 ## the manuscript's tables and the ones produced here rest on identical numbers
 ## and any difference is attributable to the analysis, not to a re-extraction.
@@ -13,17 +13,13 @@
 ## INPUTS
 ##   the JASP export files of the OSF archive, path in ARCHIVE, including the
 ##   behavioural exports in analysis_behavioral_emg/
-##   pma_counts.csv, written by export_for_R.py
 ##
 ## OUTPUTS
 ##   stats_tables.txt    human-readable tables, one per measure and period
-##   stats_results.csv   one row per effect, for emit_tex.R and any further use
+##   stats_results.csv   one row per effect, read by stats_tables_tex.py
 ##
 ## PACKAGES  afex (repeated-measures ANOVA, Greenhouse-Geisser, effect sizes),
-##   emmeans (trend contrasts), dplyr/tidyr (data reshaping), lme4/lmerTest
-##   (the delay-period Poisson mixed model), performance (its overdispersion
-##   check). All are ordinary CRAN packages; there is no base-R fallback here
-##   any more (see "History" at the end of this file).
+##   emmeans, dplyr/tidyr (data reshaping). All are ordinary CRAN packages.
 ##
 ## -------------------------------------------------------------------------
 ## WHY THE TIME-BIN FACTOR IS NOT ANALYSED AS AN OMNIBUS EFFECT
@@ -123,16 +119,13 @@
 
 suppressPackageStartupMessages({
   library(afex); library(emmeans); library(dplyr); library(tidyr)
-  library(lme4); library(lmerTest)
 })
 ## The manuscript's tables report PARTIAL eta squared; afex's default is GENERALISED eta
 ## squared. The difference is not a rounding one -- for the accuracy duration effect the
 ## two are 0.027 and 0.519 -- so es_aov is set explicitly below.
 afex_options(emmeans_model = "multivariate", check_contrasts = TRUE, es_aov = "pes")
-emm_options(lmer.df = "satterthwaite")
 
 ARCHIVE  <- Sys.getenv("ARCHIVE", "../data")
-SIMDIR   <- Sys.getenv("SIMDIR", "..")
 OUT      <- file("stats_tables.txt", "w")
 say      <- function(...) cat(..., "\n", file = OUT, sep = "")
 ROWS     <- list()
@@ -152,24 +145,19 @@ SPEC <- tribble(
   ~measure, ~period,     ~file,                                    ~bins,   ~pub,
   "PMA", "stimulus", "analysis_PMA/data/PMA_rate_stim_JASP.csv",   0:19,  c(13.38, 5.25,  0.312),
   "PMA", "delay",    "analysis_PMA/data/PMA_rate_delay_JASP.csv", 10:29,  c(33.19, 3.36,  3.474),
-  "PMA", "RS",       "analysis_PMA/data/PMA_rate_rs_JASP.csv",     0:1,   c(36.56, 1.159, 0.041),
-  "PMA", "response", "analysis_PMA/data/PMA_rate_resp_JASP.csv",   1:2,   c(NA, NA, NA),
   "MBL", "stimulus", "analysis_MBL/data/MBL_stim_JASP.csv",        1:20,  c(2.146, 2.813, 0.755),
   "MBL", "delay",    "analysis_MBL/data/MBL_delay_JASP.csv",      11:30,  c(3.177, 1.257, 1.586),
-  "MBL", "RS",       "analysis_MBL/data/MBL_rs_JASP.csv",          1:2,   c(3.039, 0.160, 1.216),
-  "MBL", "response", "analysis_MBL/data/MBL_resp_JASP.csv",        1:2,   c(0.006, 0.364, 0.161),
   "LRP", "stimulus", "analysis_LRP/data/LRP_stim_JASP.csv",        1:20,  c(0.614, 1.498, 0.387),
   "LRP", "delay",    "analysis_LRP/data/LRP_delay_JASP.csv",      11:30,  c(0.019, 0.44,  0.378),
   "LRP", "RS",       "analysis_LRP/data/LRP_rs_JASP.csv",          1:2,   c(0.185, 0.252, 0.267),
   "LRP", "response", "analysis_LRP/data/LRP_resp_JASP.csv",        0:1,   c(0.400, 0.31,  0.666)
 )
-## Note on PMA|response: no `pub` target -- the response-period export files
-## carry a post-submission correction (Statistical Analysis; the final bin is
-## exactly zero for every participant, by construction) that changes the
-## duration effect from null-as-submitted to significant, so there is nothing
-## un-corrected to reproduce.
+## The partial-activation rate and mu-beta lateralization are analysed in the
+## stimulus and delay periods only; in the RS and response periods they are
+## described, not tested (Materials and Methods, Statistical Analysis). The
+## lateralized readiness potential is tested in all four periods.
 ## Note on LRP|stimulus: the target here is this script's own value, not an
-## independently published one -- see "History" at the end of this file.
+## independently published one -- see the end of this file.
 
 ## ---------------------------------------------------------------------------
 ## Reading. The exports are wide: one column per cell and bin, named
@@ -240,7 +228,7 @@ f_vs_zero <- function(v) {
 }
 
 ## ---------------------------------------------------------------------------
-## The seven effects (three when a period has only one informative bin), as
+## The seven effects (five in a two-bin period, which has no quadratic), as
 ## two or three two-way ANOVAs on the derived scores plus the score-vs-zero
 ## tests. aov_ez applies Greenhouse-Geisser to the three-level coherence
 ## factor; duration and the intercept-like vs-zero test need no correction.
@@ -249,51 +237,6 @@ analyse_period <- function(d, measure, period, pub = NULL) {
   s  <- make_scores(d, per_second = (measure == "PMA"))
   nb <- max(d$bin)
   label <- sprintf("%s, %s period", measure, period)
-
-  ## A period whose window holds a single informative bin cannot support a
-  ## profile analysis. In the response period the bin from -0.1 to 0 s is, in
-  ## the corrected files, exactly zero for every participant and cell, because
-  ## a partial activation is by definition an activation that precedes the
-  ## response-producing burst, and the burst begins on average about 160 ms
-  ## before the button press. LEVEL and TREND are then the same number up to a
-  ## constant, a repeated-measures analysis is invariant under rescaling of the
-  ## dependent variable, and every time-related effect would return the F of
-  ## the corresponding main effect a second time. Such periods are analysed on
-  ## the informative bin alone, with three effects, not seven.
-  empty <- d %>% group_by(bin) %>% summarise(z = all(y == 0)) %>% pull(z)
-  ## A period with NO informative bin at all cannot be analysed, and this is not a
-  ## pathology: the simulated response period contains no partial activations by
-  ## construction, because measures() scores the burst preceding the response as the
-  ## response rather than as a partial activation, and in the model essentially every
-  ## trial's final approach is that burst. Left unhandled, which(!empty)[1] returns NA
-  ## and aov_ez fails with an opaque reshape error.
-  if (all(empty)) {
-    say("\n", strrep("=", 78))
-    say(label, "   (no events in any bin: not analysed)")
-    say(strrep("=", 78))
-    return(invisible(NULL))
-  }
-  if (nb == 2 && any(empty)) {
-    k <- which(!empty)[1]
-    s1 <- d %>% filter(bin == k) %>% select(subj, dur, coh, y)
-    a <- aov_ez("subj", "y", s1, within = c("dur", "coh"))
-    say("\n", strrep("=", 78))
-    say(label, "   (one informative bin: level analysis only)")
-    say(strrep("=", 78))
-    capture.output(print(a$anova_table), file = OUT, append = TRUE)
-    AT <- a$anova_table
-    add_row(measure, period, "duration", 1, AT["dur", "den Df"], AT["dur", "F"], AT["dur", "Pr(>F)"], AT["dur", "pes"])
-    add_row(measure, period, "coherence", AT["coh", "num Df"], AT["coh", "den Df"], AT["coh", "F"], AT["coh", "Pr(>F)"], AT["coh", "pes"])
-    add_row(measure, period, "duration x coherence", AT["dur:coh", "num Df"], AT["dur:coh", "den Df"], AT["dur:coh", "F"], AT["dur:coh", "Pr(>F)"], AT["dur:coh", "pes"])
-    if (!is.null(pub) && !any(is.na(pub))) {
-      got <- c(AT["dur", "F"], AT["coh", "F"], AT["dur:coh", "F"])
-      ok <- all(abs(got - pub) <= pmax(0.004, 0.01 * abs(pub)))
-      say(sprintf("\n   replication check: %s   [%s]",
-                  paste(sprintf("%.3f", pub), collapse = ", "),
-                  if (ok) "reproduced" else "DOES NOT REPRODUCE"))
-    }
-    return(invisible(a))
-  }
 
   say("\n", strrep("=", 78)); say(label, "   (", nb, " bins)"); say(strrep("=", 78))
 
@@ -392,94 +335,6 @@ for (h in list(list(1:10, "first half, 0.05-0.95 s"),
       collapse = "  "))
 }
 
-## ---------------------------------------------------------------------------
-## Poisson analyses of the partial-activation counts, delay window (Appendix
-## B12). The counts are a point process; the trend is estimated directly on
-## exact activation times rather than on 0.1-s bin counts, so it carries no
-## binning choice at all. This is a different quantity from the TREND score
-## above -- the point-process slope is d(log rate)/dt, a multiplicative rate of
-## change, where TREND is an additive one -- so the two can disagree in detail
-## even when they agree in sign and significance.
-##
-## Requires pma_counts.csv, written by the Python side: one row per
-## participant, cell and bin, with the raw count and the number of
-## contributing trials. Three estimators are given; they should agree, and
-## disagreement would point to a misspecified random structure, not to a
-## substantive effect.
-
-pf <- file.path(SIMDIR, "pma_counts.csv")
-if (file.exists(pf)) {
-  d <- read.csv(pf) %>% filter(period == "delay") %>%
-    mutate(subj = factor(subj),
-           dur  = factor(cell %/% 3, labels = c("0.3 s", "2 s")),
-           coh  = factor(cell %% 3, labels = c("0%", "12%", "50%")),
-           t    = (bin + 0.5) * 0.1 - 1.0,          # centred, seconds
-           cohn = c(0, .12, .5)[cell %% 3 + 1] - mean(c(0, .12, .5)),
-           durn = ifelse(cell >= 3, .5, -.5))
-
-  say("\n", strrep("=", 78))
-  say("Poisson analyses of the delay-period counts (Table S6)")
-  say(strrep("=", 78))
-
-  ## (1) two-stage: fit per participant and cell, then repeated-measures ANOVA
-  ##     on the coefficients. The second level supplies the standard errors, so
-  ##     the clustering of upcrossings within a burst -- which overdisperses the
-  ##     counts relative to Poisson -- does not bias inference.
-  co <- d %>% group_by(subj, dur, coh) %>%
-    group_modify(~{
-      m <- glm(count ~ t + I(t^2), family = poisson,
-               offset = log(ntrial), data = .x)
-      tibble(slope = coef(m)[["t"]], curv = 2 * coef(m)[["I(t^2)"]])
-    }) %>% ungroup()
-  say("\n-- two-stage: per participant and cell, then repeated-measures ANOVA")
-  capture.output(print(aov_ez("subj", "slope", co, within = c("dur", "coh"))$anova_table),
-                 file = OUT, append = TRUE)
-  capture.output(print(aov_ez("subj", "curv",  co, within = c("dur", "coh"))$anova_table),
-                 file = OUT, append = TRUE)
-  s0 <- co %>% group_by(subj) %>% summarise(v = mean(slope)); t0 <- t.test(s0$v)
-  c0 <- co %>% group_by(subj) %>% summarise(v = mean(curv));  tc <- t.test(c0$v)
-  say(sprintf("   slope vs zero: %+.4f, t(%d) = %.2f, p = %.4g",
-              mean(s0$v), t0$parameter, t0$statistic, t0$p.value))
-  say(sprintf("   curvature vs zero: %+.4f, t(%d) = %.2f, p = %.4g",
-              mean(c0$v), tc$parameter, tc$statistic, tc$p.value))
-
-  ## (2) one-stage Poisson mixed model with random slopes. The random slope is
-  ##     what makes the between-participant variability in the trend an
-  ##     estimated variance component rather than the error term; without it
-  ##     the standard error of the fixed slope would be far too small. An
-  ##     observation-level random effect absorbs the overdispersion the
-  ##     clustering creates.
-  d$obs <- factor(seq_len(nrow(d)))
-  m1 <- glmer(count ~ t * durn + t * cohn + offset(log(ntrial)) +
-                (1 + t | subj) + (1 | obs),
-              family = poisson, data = d,
-              control = glmerControl(optimizer = "bobyqa",
-                                     optCtrl = list(maxfun = 4e5)))
-  say("\n-- one-stage Poisson mixed model, random intercept and slope by participant")
-  capture.output(print(summary(m1)$coefficients), file = OUT, append = TRUE)
-  if (requireNamespace("performance", quietly = TRUE))
-    capture.output(print(performance::check_overdispersion(m1)),
-                   file = OUT, append = TRUE)
-
-  ## (3) trends by cell, on the response scale
-  say("\n-- estimated trends by cell (emmeans)")
-  capture.output(print(emtrends(m1, ~ durn * cohn, var = "t",
-                                at = list(durn = c(-.5, .5),
-                                          cohn = c(0, .12, .5) - mean(c(0, .12, .5))))),
-                 file = OUT, append = TRUE)
-}
-
-## ---------------------------------------------------------------------------
-## BEHAVIOUR: accuracy, response time, premotor and motor execution time.
-##
-## These four are the manuscript's Table 1 and Table S1. They are computed from the
-## archive's own per-participant x cell exports -- the same files JASP was given -- so
-## the numbers are reproducible rather than inherited.
-##
-## The design is duration (2) x coherence (3), fully within-subject; aov_ez applies
-## Greenhouse-Geisser to the three-level coherence factor and to the interaction,
-## which is why their degrees of freedom are fractional.
-
 BEHAV <- tribble(
   ~measure,    ~file,             ~label,
   "Accuracy",  "accuracy.csv",    "response accuracy",
@@ -518,15 +373,6 @@ for (i in seq_len(nrow(BEHAV))) {
             at[j, "num Df"], at[j, "den Df"], at[j, "F"], at[j, "Pr(>F)"], at[j, "pes"])
   }
 }
-
-## ---------------------------------------------------------------------------
-## There is no repeated-measures analysis of the simulated counts. A parameter
-## vector is one hypothetical participant, so the simulated design has no
-## between-participant factor: splitting one vector's trials into 22 groups and
-## analysing them as participants would give F values whose between-group variance
-## is sampling noise alone, not comparable with the empirical ones. What the models
-## predict is reported as effect-size ranges over the parameter space
-## (effect_sizes.py, effect_panel.py).
 
 ## ---------------------------------------------------------------------------
 close(OUT)

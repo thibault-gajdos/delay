@@ -55,8 +55,9 @@
 ##           over the period, prespecified because the model predicts exactly
 ##           this during the delay.
 ##
-##   QUAD   the quadratic contrast: does the profile bend, on top of any
-##           straight-line trend? Prespecified for one reason: mu-beta
+##   QUAD   the quadratic coefficient of the least-squares fit on time in
+##           seconds, in units of the measure per second squared: does the
+##           profile bend, on top of any straight-line trend? Prespecified for one reason: mu-beta
 ##           lateralisation during the stimulus period rises for about a second
 ##           and then flattens, so its trend over the full window is close to
 ##           zero even though the measure clearly is not flat throughout. A
@@ -135,9 +136,11 @@ SIMDIR   <- Sys.getenv("SIMDIR", "..")
 OUT      <- file("stats_tables.txt", "w")
 say      <- function(...) cat(..., "\n", file = OUT, sep = "")
 ROWS     <- list()
-add_row  <- function(measure, period, effect, df1, df2, F, p, eta2p)
+add_row  <- function(measure, period, effect, df1, df2, F, p, eta2p,
+                     estimate = NA_real_, ci_lo = NA_real_, ci_hi = NA_real_)
   ROWS[[length(ROWS) + 1]] <<- data.frame(measure = measure, period = period,
-    effect = effect, df1 = df1, df2 = df2, F = F, p = p, eta2p = eta2p)
+    effect = effect, df1 = df1, df2 = df2, F = F, p = p, eta2p = eta2p,
+    estimate = estimate, ci_lo = ci_lo, ci_hi = ci_hi)
 
 ## ---------------------------------------------------------------------------
 ## Windows. `pub` holds the manuscript's F for duration, coherence and their
@@ -193,19 +196,27 @@ read_long <- function(path, bins) {
 }
 
 ## ---------------------------------------------------------------------------
-## Scores. LEVEL is the mean over bins; TREND is the ordinary-least-squares
-## slope against time, in units per second, obtained from the linear
-## polynomial contrast rescaled so the coefficient is a rate of change rather
-## than a normalised projection (F and p are unaffected by the rescaling; only
-## the coefficient is); QUAD is the quadratic contrast, which has no natural
-## unit and is reported as F and partial eta squared only.
+## Scores, in physical units. Time is the bin centre in seconds, centred on the
+## window. LEVEL is the mean over bins. TREND is the linear coefficient and QUAD
+## the quadratic coefficient of the least-squares fit
+##     y(t) = b0 + b1 t + b2 t^2
+## to the bin values: TREND = b1, in units of the measure per second, and
+## QUAD = b2, in units of the measure per second squared (for the partial-
+## activation rate, in s^-1, these are s^-2 and s^-3). Both are linear
+## contrasts of the bin values. Because the centred bin times are symmetric about
+## zero, t is orthogonal to t^2 - mean(t^2), so b1 is also the slope of the
+## straight-line fit and b2 is the projection of y on t^2 - mean(t^2), by the
+## Frisch-Waugh theorem. F and p are those of the orthogonal polynomial
+## contrasts: a repeated-measures analysis is invariant under rescaling of the
+## dependent variable, so only the coefficients change.
 
 make_scores <- function(d, width = 0.1) {
   nb <- max(d$bin)
-  P  <- contr.poly(nb)
-  tt <- (seq_len(nb) - (nb + 1) / 2) * width
-  wl <- tt / sum(tt^2)                          # slope, units per second
-  w2 <- if (nb > 2) P[, 2] else NA_real_        # no quadratic contrast with 2 bins
+  tt <- (seq_len(nb) - (nb + 1) / 2) * width   # centred bin times, s
+  wl <- tt / sum(tt^2)                          # b1, units per second
+  q  <- tt^2 - mean(tt^2)
+  q  <- q - tt * sum(q * tt) / sum(tt^2)        # zero for symmetric tt; kept for safety
+  w2 <- if (nb > 2) q / sum(q^2) else NA_real_  # b2, units per second squared
   d %>% arrange(subj, dur, coh, bin) %>%
     group_by(subj, dur, coh) %>%
     summarise(level = mean(y),
@@ -220,7 +231,8 @@ make_scores <- function(d, width = 0.1) {
 f_vs_zero <- function(v) {
   tt <- t.test(v)
   df2 <- unname(tt$parameter); Fval <- unname(tt$statistic^2)
-  list(df1 = 1, df2 = df2, F = Fval, p = tt$p.value, eta2p = Fval / (Fval + df2))
+  list(df1 = 1, df2 = df2, F = Fval, p = tt$p.value, eta2p = Fval / (Fval + df2),
+       estimate = unname(tt$estimate), ci_lo = tt$conf.int[1], ci_hi = tt$conf.int[2])
 }
 
 ## ---------------------------------------------------------------------------
@@ -291,28 +303,30 @@ analyse_period <- function(d, measure, period, pub = NULL) {
 
   m0 <- s %>% group_by(subj) %>% summarise(v = mean(trend))
   t0 <- f_vs_zero(m0$v)
-  say(sprintf("\n   trend vs zero: %+.5f units/s, F(%.0f,%.0f) = %.2f, p = %.4g",
-              mean(m0$v), t0$df1, t0$df2, t0$F, t0$p))
+  say(sprintf("\n   trend vs zero: %+.5f units/s [95%% CI %+.5f, %+.5f], F(%.0f,%.0f) = %.2f, p = %.4g",
+              mean(m0$v), t0$ci_lo, t0$ci_hi, t0$df1, t0$df2, t0$F, t0$p))
 
   AL <- a_level$anova_table; AT <- a_trend$anova_table
   add_row(measure, period, "duration", 1, AL["dur","den Df"], AL["dur","F"], AL["dur","Pr(>F)"], AL["dur","pes"])
   add_row(measure, period, "coherence", AL["coh","num Df"], AL["coh","den Df"], AL["coh","F"], AL["coh","Pr(>F)"], AL["coh","pes"])
   add_row(measure, period, "duration x coherence", AL["dur:coh","num Df"], AL["dur:coh","den Df"], AL["dur:coh","F"], AL["dur:coh","Pr(>F)"], AL["dur:coh","pes"])
-  add_row(measure, period, "time (linear)", t0$df1, t0$df2, t0$F, t0$p, t0$eta2p)
+  add_row(measure, period, "time (linear)", t0$df1, t0$df2, t0$F, t0$p, t0$eta2p,
+          t0$estimate, t0$ci_lo, t0$ci_hi)
   add_row(measure, period, "duration x time (linear)", 1, AT["dur","den Df"], AT["dur","F"], AT["dur","Pr(>F)"], AT["dur","pes"])
   add_row(measure, period, "coherence x time (linear)", AT["coh","num Df"], AT["coh","den Df"], AT["coh","F"], AT["coh","Pr(>F)"], AT["coh","pes"])
   add_row(measure, period, "duration x coherence x time (linear)", AT["dur:coh","num Df"], AT["dur:coh","den Df"], AT["dur:coh","F"], AT["dur:coh","Pr(>F)"], AT["dur:coh","pes"])
 
   if (nb > 2) {
     a_quad <- aov_ez("subj", "quad", s, within = c("dur", "coh"))
-    say("\n-- QUAD (quadratic contrast): curvature, and its interactions with duration/coherence")
+    say("\n-- QUAD (quadratic coefficient, units/s^2): curvature, and its interactions with duration/coherence")
     capture.output(print(a_quad$anova_table), file = OUT, append = TRUE)
     q0 <- s %>% group_by(subj) %>% summarise(v = mean(quad))
     tq <- f_vs_zero(q0$v)
-    say(sprintf("   curvature vs zero: %+.5f, F(%.0f,%.0f) = %.2f, p = %.4g",
-                mean(q0$v), tq$df1, tq$df2, tq$F, tq$p))
+    say(sprintf("   curvature vs zero: %+.5f units/s^2 [95%% CI %+.5f, %+.5f], F(%.0f,%.0f) = %.2f, p = %.4g",
+                mean(q0$v), tq$ci_lo, tq$ci_hi, tq$df1, tq$df2, tq$F, tq$p))
     AC <- a_quad$anova_table
-    add_row(measure, period, "time (quadratic)", tq$df1, tq$df2, tq$F, tq$p, tq$eta2p)
+    add_row(measure, period, "time (quadratic)", tq$df1, tq$df2, tq$F, tq$p, tq$eta2p,
+            tq$estimate, tq$ci_lo, tq$ci_hi)
     add_row(measure, period, "duration x time (quadratic)", 1, AC["dur","den Df"], AC["dur","F"], AC["dur","Pr(>F)"], AC["dur","pes"])
     add_row(measure, period, "coherence x time (quadratic)", AC["coh","num Df"], AC["coh","den Df"], AC["coh","F"], AC["coh","Pr(>F)"], AC["coh","pes"])
     add_row(measure, period, "duration x coherence x time (quadratic)", AC["dur:coh","num Df"], AC["dur:coh","den Df"], AC["dur:coh","F"], AC["dur:coh","Pr(>F)"], AC["dur:coh","pes"])

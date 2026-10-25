@@ -5,7 +5,9 @@ The comparison is between the rate computed from the EXACT second-order moments 
 maintained fluctuation, transient included, and the rate computed from their stationary
 limits.  Both use the stationary start for the maintenance noise, which is what makes the
 comparison worth drawing: the transient then decays at a rate of at least the filter gain
-lambda, so by the time the analysis window opens, 1 s after stimulus offset, it is spent.
+lambda, so by the time the analysis window opens it is spent.  The window opens 1 s after
+the physical stimulus offset, and maintenance begins at the latest Lmotion after it, so the
+elapsed maintenance time in the window is at least 1 - Lmotion = 0.8 s.
 Started instead from zero the fluctuation would carry a third mode decaying at 2*kappa,
 as slow as 0.4 /s over the sampled range, and the window would sit inside the transient
 rather than after it.
@@ -57,6 +59,7 @@ def rate_stat(l, k, s2, bd, d):
 import sys, os
 DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
 rho = np.geomspace(0.02, 3.0, 500)
+RHO0 = 1.0 - 0.2          # start of the delay window in elapsed maintenance time: 1 s - Lmotion
 fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.9), sharey=True)
 for ax, mod, col, nm in [(axes[0], 'model1', C_M1, 'Model 1'),
                          (axes[1], 'model2', C_M2, 'Model 2')]:
@@ -73,8 +76,8 @@ for ax, mod, col, nm in [(axes[0], 'model1', C_M1, 'Model 1'),
             e = np.abs(rate(rho, l, k, s2, bd, d)/rate_stat(l, k, s2, bd, d) - 1)
         if not np.all(np.isfinite(e)): continue
         ax.plot(rho, np.maximum(100*e, 1e-7), color=col, lw=.35, alpha=.15, zorder=1)
-        n += 1; worst = max(worst, e[rho >= 1.0].max())
-    ax.axvspan(1.0, 3.0, color='0.90', zorder=0)
+        n += 1; worst = max(worst, e[rho >= RHO0].max())
+    ax.axvspan(RHO0, 3.0, color='0.90', zorder=0)
     ax.set_xscale('log'); ax.set_yscale('log')
     ax.set_xlim(0.02, 3); ax.set_ylim(1e-6, 300)
     ax.axhline(1.0, color='0.55', lw=.7, ls=':', zorder=2)
@@ -83,7 +86,7 @@ for ax, mod, col, nm in [(axes[0], 'model1', C_M1, 'Model 1'),
     ax.set_xticks([0.02, 0.1, 0.3, 1, 3]); ax.set_xticklabels(['0.02','0.1','0.3','1','3'])
     print(f'{nm}: n={n}, largest error inside the window = {100*worst:.2e} %')
 axes[0].set_ylabel(r'$|\,\nu\,/\,\nu_{\rm stat}-1\,|$   (%)')
-axes[0].text(1.06, 90, 'analysis\nwindow', fontsize=6.5, color='0.35', va='top')
+axes[0].text(RHO0 * 1.06, 90, 'analysis\nwindow', fontsize=6.5, color='0.35', va='top')
 axes[0].text(0.022, 1.6, '1%', fontsize=6.5, color='0.45')
 os.makedirs('plots', exist_ok=True)
 fig.savefig('plots/fig_approx_error.pdf', bbox_inches='tight')

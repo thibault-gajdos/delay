@@ -77,20 +77,12 @@ mouvement) et γ_q (accumulateur du signal de réponse), grille complète
 - **delay.tex, l. 578** : parle d'une fuite sur la seule variable de décision, à trois
   valeurs → grille indépendante, nouveaux résultats.
 - **lettre, C2.3** : table à refaire avec la grille.
-- **delay.tex, Appendix, théorie de la fuite (l. 976–982).** Remplacement proposé dans
-  `manuscript/notes/draft_leak_appendix.tex` (compilé dans une copie : aucune erreur) :
-  Remark sur γ_x (étendue : la Proposition sur la fenêtre du stimulus n'est pas couverte,
-  la variance étant bornée avec γ_x > 0) ; nouvelle Proposition sur γ_q (fenêtres du
-  stimulus et du délai, exactitude inchangées ; ordre des temps de réponse moyens conservé
-  pour tout γ_q) ; Remark sur le motor time sous γ_q (mécanisme, non démontré). En attente
-  d'accord.
-- **delay.tex, Results (l. 578) et Discussion (l. 673).** Renvoient à la seule fuite sur
-  la variable de décision : à étendre à γ_q, avec renvoi à la nouvelle Proposition.
-- **delay.tex, Proposition « the stimulus-period rate is higher after the long stimulus »
-  (l. 957).** Sa preuve est incomplète même sans fuite : la comparaison des variances n'est
-  établie que pour un temps de maintien grand, et l'équation du taux utilisée (celle du
-  maintien, avec ω = √(λκ)) ne s'applique pas à la condition longue, qui accumule encore.
-  À reprendre.
+- **delay.tex, Appendix, Remark rem:leak (l. 976–982).** Remplacement par une seule
+  remarque sur les deux fuites : `manuscript/notes/draft_leak_appendix.tex` (compilé dans
+  une copie : aucune erreur). En attente d'accord.
+- **delay.tex, Results (l. 578) et Discussion (l. 673).** Une phrase chacune, renvoyant à
+  la remarque : les fuites des deux accumulateurs ne changent rien aux énoncés sur le délai,
+  et la grille complète ne change aucun verdict.
 
 ## 6. Règle de comparaison modèle–données
 
@@ -126,3 +118,35 @@ Tous les nombres issus des simulations, dans la v5, delay.tex et la lettre, nota
   Discussion l. 667) la présente comme « the paper's clearest disagreement with its own
   model ». Avec 40 000 essais et l'ancien critère, chacun des deux modèles la reproduit
   avec quelques jeux (5 et 8). À réécrire selon les résultats de la relance.
+
+## 9. Erreurs trouvées dans l'Appendix de delay.tex (vérification du 25 octobre)
+
+Vérifiés et corrects : solution de H et noyau K ; trois moments (contrôle numérique,
+écart relatif 6 × 10⁻¹³) ; limites stationnaires ; algèbre de la Proposition A.1 ;
+formule de Kac–Rice et taux stationnaire (simulation : rapport 0,99 à 1,01, avec et sans
+préparation temporelle) ; preuve de la Corollary A.2 ; Corollaries A.3 et A.4.
+
+- **Début de la fenêtre du délai.** La fenêtre s'ouvre 1 s après la fin physique du
+  stimulus ; le maintien commence au plus tard L_motion = 0,2 s après. Le temps de maintien
+  écoulé est donc d'au moins 0,8 s, pas 1 s (paragraphe après la Proposition A.1 ;
+  `mkfig.py`, corrigé). À ρ = 0,8 s : E₁ ≤ 2,9 × 10⁻⁴, |X| ≤ 2,3 × 10⁻³. Énoncer la
+  Proposition A.1 à ρ ≥ 0,8 s.
+- **Chiffres de l'erreur stationnaire.** Le texte (après la Corollary A.2) dit η < 10⁻⁴
+  dans la fenêtre et un écart relatif maximal de 7 × 10⁻⁵ ; légende de la Figure (approx) :
+  6,8 × 10⁻³ %. Avec la fenêtre correcte et les jeux admissibles actuels : η ≤ 1,7 × 10⁻³,
+  écart relatif maximal 3,1 × 10⁻³ (Modèle 1) et 1,2 × 10⁻³ (Modèle 2). La conclusion
+  (fenêtre stationnaire) tient.
+- **Proposition A.5 fausse telle qu'énoncée** (« at every parameter setting »). Contre-
+  exemple : jeu 51 du Modèle 1 (non admissible), effet court − long de +0,17 s⁻¹, z = 4,0.
+  Sur les jeux admissibles, elle tient numériquement (227 de 228 significativement
+  négatifs, 0 contre). Sa preuve a deux lacunes (comparaison des variances seulement pour
+  un maintien long ; usage de l'équation du taux en maintien pour une condition qui
+  accumule encore). À reformuler (énoncé restreint, ou résultat numérique).
+- **Canal non sélectionné** (Setup and notation : « several fluctuation standard deviations
+  further away over the whole admissible space »). Faux pour les essais où |m| est petit :
+  les deux canaux sont alors à la même distance de la porte. Sur des jeux admissibles du
+  Modèle 1, le rapport des taux stationnaires (non sélectionné / sélectionné) atteint 0,19.
+  À reformuler.
+- **Conséquences de la Corollary A.4.** Elles valent essai par essai. « The same parabola
+  in all six conditions » : même courbure, pas même parabole. Le log du taux moyen d'une
+  condition (mélange sur les essais) n'est pas exactement une parabole.

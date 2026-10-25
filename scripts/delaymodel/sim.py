@@ -25,9 +25,6 @@ DT = 1.0 / 1024.0    # the EMG/EEG acquisition rate
 # comparison; the manuscript uses WARM_START=True throughout.
 WARM_START = True
 
-PARAM_NAMES = ['k', 'lam', 'theta', 'g', 'kappa', 'SDe', 'alpha', 'muRS',
-               'sigq', 'r', 'Lmotor', 'Lmotion', 'LRS']
-
 DEFAULTS = dict(sigx=0.100, delay=3.0)
 
 
@@ -39,7 +36,8 @@ def excursions(active):
 
 
 def simulate(p, c, D, n, model=2, seed=0, post=1.8, gamma_x=0.0, gamma_q=0.0):
-    """One condition.  `p` is a dict of the free parameters (PARAM_NAMES).
+    """One condition.  `p` is a dict of the parameters (fused_sweep.to_param, with
+    `alpha` := beta / (t_RS - t_offset) added).
 
     Returns a dict with, per trial: the selected side, the maintained level, the
     response-trigger index, and the gated drive of the selected channel.
@@ -122,7 +120,7 @@ def simulate(p, c, D, n, model=2, seed=0, post=1.8, gamma_x=0.0, gamma_q=0.0):
                 D=D, t_RS=t_RS, nt=nt, p=q)
 
 
-def measures(sim, windows=True):
+def measures(sim):
     """Behaviour, latencies and partial-activation onset times, relative to stimulus
     onset.  An activation begins at each upcrossing of the gate (drive > 0); the last one
     at or before the response index is the onset of the response burst."""
@@ -156,15 +154,3 @@ def measures(sim, windows=True):
         events.append(c * DT if valid[j] else np.empty(0))
     return dict(acc=(s == sr), rt=rt, pmet=pmet, met=met, valid=valid,
                 premature=premature, noresp=noresp, events=events, D=D)
-
-
-def rate_profile(mm, t0, t1, nbin):
-    """Mean number of events per bin per valid trial, window [t0,t1) from onset."""
-    v = np.flatnonzero(mm['valid'])
-    if v.size == 0:
-        return np.zeros(nbin)
-    h = np.zeros(nbin)
-    for j in v:
-        e = mm['events'][j]
-        h += np.histogram(e[(e >= t0) & (e < t1)], bins=nbin, range=(t0, t1))[0]
-    return h / v.size

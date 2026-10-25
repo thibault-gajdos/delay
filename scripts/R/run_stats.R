@@ -339,8 +339,8 @@ BEHAV <- tribble(
   ~measure,    ~file,             ~label,
   "Accuracy",  "accuracy.csv",    "response accuracy",
   "Mean RT",   "mean_RT.csv",     "mean response time",
-  "Mean PMET", "mean_PMET.csv",   "mean premotor execution time",
-  "Mean MET",  "mean_MET.csv",    "mean motor execution time")
+  "Mean PMT",  "mean_PMET.csv",   "mean premotor time",
+  "Mean MT",   "mean_MET.csv",    "mean motor time")
 
 read_behav <- function(path) {
   d <- read.csv(path, check.names = FALSE)

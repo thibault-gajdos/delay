@@ -2,22 +2,22 @@
 effects.py -- the effects compared between the models and the data.
 
 Every effect is a fixed linear combination of the six coherence x duration condition
-values of one quantity (accuracy, response time, PMET, MET, or a level, trend or curvature
-of the partial-activation rate in one analysis window). It is computed in the same way for
-each participant (observed_per_subject) and for each simulated parameter vector
-(draw_effects), and its Monte-Carlo standard error is propagated from the per-condition
-errors the sweep records (effects_se). Used by classify.py, leak_summary.py, fig_effects.py
+values of one quantity: accuracy, response time, premotor time (PMT), motor time (MT), or
+the mean level, slope or curvature of the PMA rate in one analysis window. It is computed
+in the same way for each participant (observed_per_subject) and for each simulated
+parameter vector (draw_effects), and its Monte-Carlo standard error is propagated from the
+per-condition errors the sweep records (effects_se). Used by classify.py, leak_summary.py, fig_effects.py
 and table_comparison.py.
 """
-import json, sys, os
+import sys, os
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from delaymodel.targets import build
 
-# cell order (targets.LAB): 0-2 = 0.3 s at 0/12/50% coherence, 3-5 = 2.0 s at 0/12/50%
-# Contrast weights, one per effect, applied to the six condition values (cell order of
-# targets.LAB). The name of each effect says which difference is taken.
+# Contrast weights, one per effect, applied to the six condition values in the order of
+# targets.CELLS: 0-2 = 0.3 s at 0/12/50% coherence, 3-5 = 2.0 s at 0/12/50%. The name of
+# each effect says which difference is taken.
 DUR = np.array([1, 1, 1, -1, -1, -1]) / 3.0          # short minus long
 COH = np.array([-.5, 0, .5, -.5, 0, .5])             # 50% minus 0% coherence
 W = {
@@ -40,9 +40,7 @@ W = {
     'curv':      np.ones(6) / 6.0,
     'stim_trend_coh': COH,                            # 50% minus 0%
     'stim_trend_dur': DUR,                            # short minus long
-    # --- response-signal window: the fall of the rate after the signal, minus its trend
-    'rs_fall':     -np.ones(6) / 6.0,
-    'rs_fall_dur':  DUR,                              # short minus long of the trend
+    # --- PMT and MT
     'pmet_coh':    -COH,                              # 0% minus 50%
     'pmet_dur':     DUR,                              # short minus long
     'pmet_int':     np.array([1, 0, -1, -1, 0, 1]),   # coherence effect, short minus long
@@ -58,22 +56,20 @@ SRC = {
     'pmet_coh': ('pmet', 1000.0), 'pmet_dur': ('pmet', 1000.0),
     'pmet_int': ('pmet', 1000.0), 'met_dur': ('met', 1000.0),
     'stim_trend_coh': ('stim_trend', 1.0), 'stim_trend_dur': ('stim_trend', 1.0),
-    'rs_fall': ('rs_trend', 1.0), 'rs_fall_dur': ('rs_trend', 1.0),
 }
 # Panel groups, in the order the Results take them. Each entry is (window, [keys]); the
 # figure draws one labelled block per window, three panels to a row.
 GROUPS = [
-    ('Accuracy, RT, PMET and MET', ['acc_coh', 'acc_dur', 'acc_int', 'rt_coh', 'rt_dur',
-                                    'rt_int', 'pmet_coh', 'pmet_dur', 'pmet_int', 'met_dur']),
-    ('Stimulus-onset window', ['stim_coh', 'stim_dur',
-                               'stim_trend_coh', 'stim_trend_dur']),
-    ('Delay window', ['delay_coh', 'delay_dur', 'delay_int',
-                      'trend', 'trend_dur', 'curv']),
-    ('Response-signal window', ['rs_fall', 'rs_fall_dur']),
+    ('Accuracy, RT, PMT and MT', ['acc_coh', 'acc_dur', 'acc_int', 'rt_coh', 'rt_dur',
+                                  'rt_int', 'pmet_coh', 'pmet_dur', 'pmet_int', 'met_dur']),
+    ('Stimulus-onset window', ['stim_coh', 'stim_dur', 'stim_trend_coh', 'stim_trend_dur']),
+    ('Delay window', ['delay_coh', 'delay_dur', 'delay_int', 'trend', 'trend_dur', 'curv']),
 ]
-# Effects whose direction the derivations fix at every parameter setting: no sign
-# summary is reported for them (Materials and Methods, Model-data comparison).
-SIGN_FIXED = {'trend', 'rt_coh', 'rt_dur', 'pmet_coh', 'pmet_dur'}
+# Effects whose direction the derivations fix at every parameter setting (Results,
+# Theoretical predictions): no sign summary is reported for them (Materials and Methods,
+# Model-data comparison).
+SIGN_FIXED = {'acc_coh', 'acc_dur', 'rt_coh', 'rt_dur', 'pmet_coh', 'pmet_dur',
+              'stim_coh', 'delay_coh', 'delay_dur', 'trend'}
 KEYS = [k for _, ks in GROUPS for k in ks]
 
 NAMES = dict(
@@ -83,22 +79,20 @@ NAMES = dict(
     rt_coh='RT,\n0% minus 50% coherence (ms)',
     rt_dur='RT, short minus long (ms)',
     rt_int='coherence effect on RT,\nshort minus long (ms)',
-    stim_coh='stimulus-period rate,\n50% minus 0% coherence (/s)',
-    stim_dur='stimulus-period rate,\nshort minus long (/s)',
-    delay_coh='delay rate,\n50% minus 0% coherence (/s)',
-    delay_dur='delay rate,\nlong minus short (/s)',
-    delay_int='coherence effect on delay rate,\nlong minus short (/s)',
-    trend='delay-period rate trend (/s$^2$)',
-    trend_dur='delay-period rate trend,\nlong minus short (/s$^2$)',
-    curv='delay-period rate curvature (/s$^3$)',
-    pmet_coh='PMET,\n0% minus 50% coherence (ms)',
-    pmet_dur='PMET, short minus long (ms)',
-    pmet_int='coherence effect on PMET,\nshort minus long (ms)',
-    met_dur='MET, short minus long (ms)',
-    stim_trend_coh='stimulus-period trend,\n50% minus 0% coherence (/s$^2$)',
-    stim_trend_dur='stimulus-period trend,\nshort minus long (/s$^2$)',
-    rs_fall='fall of the rate after\nthe response signal (/s$^2$)',
-    rs_fall_dur='fall after the signal,\nlong minus short (/s$^2$)')
+    pmet_coh='PMT,\n0% minus 50% coherence (ms)',
+    pmet_dur='PMT, short minus long (ms)',
+    pmet_int='coherence effect on PMT,\nshort minus long (ms)',
+    met_dur='MT, short minus long (ms)',
+    stim_coh='mean PMA rate,\n50% minus 0% coherence (/s)',
+    stim_dur='mean PMA rate,\nshort minus long (/s)',
+    stim_trend_coh='PMA-rate slope,\n50% minus 0% coherence (/s$^2$)',
+    stim_trend_dur='PMA-rate slope,\nshort minus long (/s$^2$)',
+    delay_coh='mean PMA rate,\n50% minus 0% coherence (/s)',
+    delay_dur='mean PMA rate,\nlong minus short (/s)',
+    delay_int='coherence effect on mean PMA rate,\nlong minus short (/s)',
+    trend='PMA-rate slope (/s$^2$)',
+    trend_dur='PMA-rate slope,\nlong minus short (/s$^2$)',
+    curv='PMA-rate curvature (/s$^3$)')
 
 
 def effects(cells):
@@ -108,31 +102,14 @@ def effects(cells):
 
 
 def effects_se(m):
-    """Monte-Carlo standard error of each effect, propagated from the per-cell errors the
-    sweep records.
-
-    Without this the sign of an effect is not interpretable. A draw whose true effect is a
-    thousandth of a second returns a sign that is a coin toss, and counting it as agreeing
-    or disagreeing with the data says nothing about the architecture -- it reports the
-    seed. The three-way split (significantly with the observed sign, significantly against
-    it, indistinguishable from zero at two standard errors) is what the raw sign fraction
-    should have been from the start. It matters most on the delay-period trend, where
-    Model 1's value is zero analytically (Appendix, Corollary A.3), so every draw's sign is
-    a coin toss and only the three-way split reports that honestly.
-
-    Accuracy gets a binomial error; response time, the two execution times, the trend and
-    the curvature use the per-cell standard errors already in the dump; the two rates use
-    the Poisson error of the event count behind them, recovered as rate x exposure x
-    window.
-    """
+    """Monte-Carlo standard error of each effect, propagated from the per-condition errors
+    the sweep records: binomial for accuracy, the between-trial error of a mean for RT,
+    PMT and MT, and the Poisson error of the event counts for the PMA rates, slopes and
+    curvature. Count-based errors are floored at one event, so that a condition with no
+    event is not credited with zero uncertainty."""
     g = lambda k: np.asarray(m['raw'][k], float)
     acc, n = g('acc'), g('rt_n')
 
-    # every count-based error is floored at ONE event. A cell in which the simulation
-    # produced no premature response at all has an empirical binomial variance of exactly
-    # zero, and taking that at face value would declare a difference of a single trial
-    # infinitely significant. The floor is the standard small-count device: the
-    # uncertainty on an observed zero is the uncertainty on one.
     def bse(p, ntr):
         p = np.maximum(p, 1.0 / ntr)
         return np.sqrt(np.clip(p * (1 - p), 0, None) / ntr)
@@ -143,8 +120,7 @@ def effects_se(m):
     se = dict(acc=bse(acc, np.maximum(n, 1)),
               rt=g('rt_se'), pmet=g('pmet_se'), met=g('met_se'),
               trend=g('trend_se'), curv=g('curv_se'),
-              stim_trend=g('stim_trend_se'), rs_trend=g('rs_trend_se'),
-              resp_rate=g('resp_rate_se'),
+              stim_trend=g('stim_trend_se'),
               srate=pse(g('srate'), n * 2.0), rate=pse(g('rate'), n * 2.0))
     out = {}
     for k in KEYS:
@@ -163,8 +139,7 @@ def observed_per_subject():
                       srate=E['stim'][s].sum(axis=-1) / 2.0,
                       rate=E['dly'][s].sum(axis=-1) / 2.0,
                       trend=E['trend'][s], curv=E['quad'][s],
-                      stim_trend=E['stim_trend'][s], rs_trend=E['rs_trend'][s],
-                      resp_rate=E['resp_rate'][s],
+                      stim_trend=E['stim_trend'][s],
                       pmet=E['pmet'][s], met=E['met'][s]) for s in range(nsub)]
     return [effects(c) for c in obs_cells]
 
@@ -174,6 +149,5 @@ def draw_effects(m):
     return effects({k: np.asarray(m['raw'][src], float) for k, src in
                     (('acc', 'acc'), ('rt', 'rt_mean'), ('srate', 'srate'),
                      ('rate', 'rate'), ('trend', 'trend'), ('curv', 'curv'),
-                     ('stim_trend', 'stim_trend'), ('rs_trend', 'rs_trend'),
-                     ('resp_rate', 'resp_rate'),
+                     ('stim_trend', 'stim_trend'),
                      ('pmet', 'pmet_mean'), ('met', 'met_mean'))})

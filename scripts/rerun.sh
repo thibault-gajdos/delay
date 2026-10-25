@@ -2,7 +2,7 @@
 # rerun.sh -- every analysis downstream of the simulations, in order.
 #
 # The simulations themselves are not here: run_sweep.sh and run_leak.sh produce them
-# (README, "Order of execution"). Everything below is deterministic given their output.
+# (README). Everything below is deterministic given their output.
 #
 # Usage, from scripts/, on the machine that holds the data:
 #   export DELAY_DATA="$HOME/thib/projects/delay/data/86cbw-osfstorage-archive"
@@ -16,10 +16,10 @@ export DELAY_DATA ARCHIVE
 
 step () { printf '\n=== %s\n' "$1"; }
 
-step "concatenated sweep and its summary"
-python3 sweep_summary.py > /dev/null && echo "wrote results/sweep_screened.jsonl, results/sweep_summary.json"
+step "concatenated sweep (results/sweep_screened.jsonl)"
+python3 sweep_summary.py
 
-step "model-data comparison (classification of every admissible draw)"
+step "model-data comparison (classification of every admissible parameter vector)"
 python3 classify.py
 
 step "leak grid"

@@ -19,9 +19,12 @@ OUT = '../manuscript/latex/table_comparison.tex'
 
 
 def num(x, k):
-    """Three significant figures, or whole milliseconds for response-time effects."""
+    """Three significant figures; response-time effects in milliseconds, to one decimal
+    below 10 ms and whole milliseconds above."""
     if SRC[k][1] == 1000.0:
-        t = f'{x:.0f}'
+        t = f'{x:.1f}' if abs(x) < 9.95 else f'{x:.0f}'
+        if t == '-0.0':
+            t = '0.0'
     elif abs(x) >= 1e-3 or x == 0:
         t = f'{x:.3g}'
     else:
@@ -31,6 +34,7 @@ def num(x, k):
 
 
 def tex(s):
+    """An effect name as LaTeX text."""
     return (s.replace('\n', ' ').replace('%', r'\%').replace('/s$^2$', 's$^{-2}$')
              .replace('/s$^3$', 's$^{-3}$').replace('(/s)', '(s$^{-1}$)'))
 

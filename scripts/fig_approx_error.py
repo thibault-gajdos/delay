@@ -1,5 +1,6 @@
-"""Appendix figure: how far the stationary rate is from the exact rate, over the
-admissible draws.  Analytic -- no simulation needed.
+"""fig_approx_error.py -- how far the stationary PMA rate is from the exact rate, over
+the admissible parameter vectors (manuscript Figure 7; Appendix, Corollary A.2).
+Analytic -- no simulation needed.
 
 The comparison is between the rate computed from the EXACT second-order moments of the
 maintained fluctuation, transient included, and the rate computed from their stationary
@@ -8,14 +9,8 @@ comparison worth drawing: the transient then decays at a rate of at least the fi
 lambda, so by the time the analysis window opens it is spent.  The window opens 1 s after
 the physical stimulus offset, and maintenance begins at the latest Lmotion after it, so the
 elapsed maintenance time in the window is at least 1 - Lmotion = 0.8 s.
-Started instead from zero the fluctuation would carry a third mode decaying at 2*kappa,
-as slow as 0.4 /s over the sampled range, and the window would sit inside the transient
-rather than after it.
 
-Restricted to the admissible draws, which is where the model is used.  Over the whole
-sampled box the error reaches a per cent, on draws whose standardized distance to the
-gate is 30 or more and whose rate is therefore unmeasurable; admissibility caps that
-distance, and with it the amplification (Appendix, Corollary A.2).
+Restricted to the admissible parameter vectors, which is where the model is used.
 
 Writes plots/fig_approx_error.pdf and the manuscript's copy,
 ../manuscript/latex/figures/fig09.png.  Usage: python3 fig_approx_error.py [DUMP.jsonl]
@@ -83,7 +78,7 @@ for ax, mod, col, nm in [(axes[0], 'model1', C_M1, 'Model 1'),
     ax.set_xlim(0.02, 3); ax.set_ylim(1e-6, 300)
     ax.axhline(1.0, color='0.55', lw=.7, ls=':', zorder=2)
     ax.set_xlabel('elapsed maintenance time (s)')
-    ax.set_title(f'{nm}, {n} admissible draws', fontsize=8)
+    ax.set_title(f'{nm}, {n} admissible parameter vectors', fontsize=8)
     ax.set_xticks([0.02, 0.1, 0.3, 1, 3]); ax.set_xticklabels(['0.02','0.1','0.3','1','3'])
     print(f'{nm}: n={n}, largest error inside the window = {100*worst:.2e} %')
 axes[0].set_ylabel(r'$|\,\nu\,/\,\nu_{\rm stat}-1\,|$   (%)')

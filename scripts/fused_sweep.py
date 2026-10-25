@@ -80,23 +80,23 @@ response burst begins before the response signal, <=10% responses within 0.2 s o
 signal, <=5% no response by the 4 s deadline; and, across conditions, a mean delay-window
 partial-activation rate in [0.02, 5] /s.  No bound is derived from the data.
 
-The production run is 1200 draws at 4000 trials per cell per model per draw (~6.5 s per
-draw, ~25 min over six shards).  Resumable by line count of OUT; SHARD_N/SHARD_I in the
-environment make shard j take the draws i with i % n == j, each writing its own file.
-The cube is regenerated identically from the fixed seed in every process, so cat-ing the
-shard files reproduces the unsharded run exactly.
+The production run is 1200 draws at 40000 trials per condition per model, simulated in
+batches of BATCH trials.  Resumable by draw: a draw already recorded in OUT, or in any file
+matching the glob in the environment variable DONE, is skipped.  SHARD_N/SHARD_I in the
+environment make shard j take the draws i with i % n == j, each writing its own file; IDX
+restricts the run to a JSON list of draws.  The cube is regenerated identically from the
+fixed seed in every process, so the record of a draw does not depend on the sharding.
 
 The optional fourth and fifth arguments, GAMMA_X and GAMMA_Q, are the leaks of the
 motion-evidence accumulator x and of the response-signal accumulator q (sim.py's
-`gamma_x`, `gamma_q`), for the leak-robustness check of the response letter (C2.3);
-that check is driven by leak_sweep.py, which reuses this file's cube and screen.
+`gamma_x`, `gamma_q`), for the leak-robustness analysis (run_leak.sh).
 
 Usage: python3 fused_sweep.py N_DRAWS NTR OUT_FILE [GAMMA_X [GAMMA_Q]]
 """
 import numpy as np, sys, time, json, os, glob
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from delaymodel.sim import simulate, measures, DT
-from delaymodel.targets import CELLS, LAB
+from delaymodel.targets import CELLS
 from repair_shards import repair
 from shardio import load
 
@@ -158,72 +158,19 @@ def to_param(row):
 
 
 def counts_profile(mm, t0, t1, nbin):
-    """Raw event counts per bin (not divided by trial count), plus the number of
-    valid trials contributing exposure -- constant across delay-window bins, since a
-    valid trial's activity is fully observed there (see sim.py measures()).
-
-    One known bias, measured and deliberately left in place.  measures()
-    excludes the response-related burst from `events` wherever it begins, because that
-    burst IS the response and its onset is what PMET is measured from.  In the model that
-    burst sometimes begins BEFORE the response signal -- on up to 2% of trials at some
-    admissible settings -- so it is removed from the last two bins of the delay window and
-    depresses the window's linear trend.  Participants almost never do this: the empirical
-    premotor time is negative on 0.02% of trials.  The bias is about -0.01 s^-2 and applies
-    to both architectures, so it makes Model 2's trend conservative and accounts entirely
-    for Model 1's simulated median of -0.007 s^-2 against an analytic value of zero.  It is
-    left alone rather than patched because the alternative -- counting a burst that became
-    the response as a delay-period partial activation -- would be the larger distortion,
-    and the correction is three orders of magnitude below the observed trend of +0.56."""
+    """Event counts per bin over [t0, t1) from stimulus onset, and the number of valid
+    trials behind them.  The response-related burst is not a PMA and is never counted
+    (sim.measures), wherever it begins."""
     v = np.flatnonzero(mm['valid'])
     e = np.concatenate([mm['events'][j] for j in v]) if v.size else np.empty(0)
     h = np.histogram(e[(e >= t0) & (e < t1)], bins=nbin, range=(t0, t1))[0]
     return h.astype(float), v.size
 
 
-def window_stats(mm, D, delay, dt):
-    """Counts and per-bin exposures for the three windows outside the delay, following
-    the definitions of the empirical windows (delaymodel/targets.py):
-
-      stimulus   0 to 2 s from motion onset, 20 bins, every valid trial contributing
-      RS         0 to 0.2 s from response-signal onset, 2 bins
-      response   0.2 s to 0 s before the button press, 2 bins
-
-    In the last two a trial stops contributing once its response burst has begun, since a
-    partial activation is by definition an activation preceding that burst, so the exposure
-    is per bin rather than per window.  Times are measured from stimulus onset: the signal
-    is at D + delay, the response burst at D + delay + PMET and the response at
-    D + delay + RT."""
-    v = np.flatnonzero(mm['valid'])
-    t_rs = D + delay
-    if v.size == 0:
-        return dict(stim=(np.zeros(20), 0.0), rs=(np.zeros(2), np.zeros(2)),
-                    resp=(np.zeros(2), np.zeros(2)))
-    ev = [mm['events'][j] for j in v]
-    e = np.concatenate(ev)
-    tid = np.repeat(np.arange(v.size), [x.size for x in ev])
-    t_burst = t_rs + mm['pmet'][v]
-    t_resp = t_rs + mm['rt'][v]
-    hs = np.histogram(e[(e >= 0) & (e < 2.0)], bins=20, range=(0, 2))[0]
-    q = e[(e >= t_rs) & (e < t_rs + 0.2)] - t_rs
-    hrs = np.histogram(q, bins=2, range=(0, 0.2))[0]
-    # a trial contributes to bin b of a window while its response burst has not begun,
-    # i.e. when the burst onset falls at or after the start of bin b
-    alive = np.floor((t_burst - t_rs) / 0.1)
-    ers = np.array([(alive >= b).sum() for b in range(2)], float)
-    er = e - (t_resp[tid] - 0.2)
-    hrp = np.histogram(er[(er >= 0) & (er < 0.2)], bins=2, range=(0, 0.2))[0]
-    aliveR = np.floor((t_burst - (t_resp - 0.2)) / 0.1)
-    erp = np.array([(aliveR >= b).sum() for b in range(2)], float)
-    return dict(stim=(hs.astype(float), float(v.size)), rs=(hrs.astype(float), ers),
-                resp=(hrp.astype(float), erp))
-
-
 def bin_summary(counts, expo, binw):
-    """(level, trend, se_level, se_trend) of a binned rate: the mean rate over the window
-    and the linear orthogonal-polynomial contrast against time, in s^-1 and s^-2, each
-    with its Poisson Monte-Carlo standard error.  `expo` may be a scalar (constant
-    exposure) or one value per bin, which is what the response-signal and response windows
-    need, since a trial stops contributing once its response burst has begun."""
+    """(level, slope, se_level, se_slope) of a binned rate: the mean rate over the window
+    and the least-squares slope against time, in s^-1 and s^-2, each with its Poisson
+    Monte-Carlo standard error.  `expo` is the number of trials behind every bin."""
     counts = np.asarray(counts, float)
     expo = np.maximum(np.asarray(expo, float) * np.ones_like(counts), 1.0)
     denom = expo * binw
@@ -240,13 +187,11 @@ def bin_summary(counts, expo, binw):
 
 
 def trend_contrasts(counts, exposure, x):
-    """Linear and quadratic orthogonal-polynomial contrasts of the RAW rate against
-    time, with Poisson Monte-Carlo standard errors.  This is the statistic the data
-    analysis uses (Methods: TREND and QUAD on the binned rate); the offset-Poisson
-    log-rate slope below is a different quantity and is kept only as a secondary
-    record.  `counts` are per-bin event counts, `exposure` the number of trials
-    backing each bin, `x` the centred bin times in seconds.  Returns
-    (linear, se_linear, quadratic, se_quadratic) in s^-2 and s^-3."""
+    """Slope and curvature of the rate against time -- the linear and quadratic
+    coefficients of the least-squares fit on the centred bin times in seconds, as in the
+    data analysis -- with Poisson Monte-Carlo standard errors.  `counts` are per-bin event
+    counts, `exposure` the number of trials backing each bin, `x` the centred bin times.
+    Returns (slope, se_slope, curvature, se_curvature) in s^-2 and s^-3."""
     w1 = x / np.dot(x, x)                                   # OLS slope weights
     q = x ** 2 - (x ** 2).mean()
     q = q - x * (np.dot(q, x) / np.dot(x, x))               # orthogonalised
@@ -259,32 +204,6 @@ def trend_contrasts(counts, exposure, x):
     # credited with zero uncertainty (same convention as the other count measures).
     v = np.maximum(counts, 1.0) / denom ** 2
     return lin, float(np.sqrt(np.dot(w1 ** 2, v))), quad, float(np.sqrt(np.dot(w2 ** 2, v)))
-
-
-def poisson_slope_se(counts, exposure, x, iters=100):
-    """Offset Poisson-GLM slope (log mu = log(exposure) + b0 + b1*x) and its analytic
-    SE from the final Fisher information. `exposure` (the number of trials backing
-    each bin) MUST enter as an offset: fitting the already-normalized rate as if it
-    were itself a Poisson count (dividing out `exposure` first) discards the sample
-    size and makes the resulting SE far too large, independent of how many trials
-    were simulated."""
-    off = np.log(max(exposure, 1))
-    X = np.column_stack([np.ones_like(x), x])
-    y = counts
-    b = np.array([np.log(max(y.mean(), 1e-4)) - off, 0.0])
-    A = None
-    for _ in range(iters):
-        mu = np.exp(np.clip(off + X @ b, -30, 30))
-        z = X @ b + (y - mu) / np.maximum(mu, 1e-12)
-        A = X.T @ (mu[:, None] * X) + 1e-9 * np.eye(2)
-        bn = np.linalg.solve(A, X.T @ (mu * z))
-        if np.max(np.abs(bn - b)) < 1e-11:
-            b = bn
-            break
-        b = bn
-    cov = np.linalg.inv(A)
-    return b[1], np.sqrt(cov[1, 1])
-
 
 
 BATCH = 10000   # trials simulated at once; bounds the memory of one process
@@ -311,32 +230,21 @@ def simulate_measures(q, c, D, n, model, seed, gamma_x, gamma_q):
 
 def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
     """Simulate all six cells for one (parameter, model) pair.  Returns per-cell arrays
-    and admissibility/criterion summaries.  `gamma_x` and `gamma_q` are the leaks of the
+    and the admissibility screen's inputs.  `gamma_x` and `gamma_q` are the leaks of the
     two accumulators (sim.py's `simulate()` arguments of the same names), zero by
     default."""
     q = dict(p)
     q['alpha'] = alpha
     prem = np.zeros(6); early = np.zeros(6); noresp = np.zeros(6); burst_early = np.zeros(6)
     acc = np.zeros(6); rt_mean = np.zeros(6); rt_se = np.zeros(6); rt_n = np.zeros(6)
-    slope = np.zeros(6); slope_se = np.zeros(6); rate = np.zeros(6)
+    rate = np.zeros(6); srate = np.zeros(6)
     trend = np.zeros(6); trend_se = np.zeros(6)
     curv = np.zeros(6); curv_se = np.zeros(6)
-    # the raw 20-bin delay profile per cell, so that fig_delay_profiles.py can draw the
-    # simulated delay-period rate curve against the observed one without re-simulating
-    prof = np.zeros((6, 20)); prof_expo = np.zeros(6)
+    stim_trend = np.zeros(6); stim_trend_se = np.zeros(6)
     met_mean = np.zeros(6); met_se = np.zeros(6)
     pmet_mean = np.zeros(6); pmet_se = np.zeros(6)
-    # stimulus-period partial-activation rate, 0-2 s from motion onset, the window
-    # empirical.py uses; carries Proposition B.2, the only prediction outside the delay
-    # on which the two models disagree
-    srate = np.zeros(6)
-    # level and linear trend in the three windows outside the delay, so that the effects
-    # the Results report there can be compared with the model as the delay-period ones are
-    stim_trend = np.zeros(6); stim_trend_se = np.zeros(6)
-    rs_rate = np.zeros(6); rs_trend = np.zeros(6)
-    rs_rate_se = np.zeros(6); rs_trend_se = np.zeros(6)
-    resp_rate = np.zeros(6); resp_trend = np.zeros(6)
-    resp_rate_se = np.zeros(6); resp_trend_se = np.zeros(6)
+    # the 20-bin delay profile per cell, for fig_delay_profiles.py
+    prof = np.zeros((6, 20)); prof_expo = np.zeros(6)
     for k, (c, D) in enumerate(CELLS):
         m = simulate_measures(q, c, D, NTR, model, seed0 + k, gamma_x, gamma_q)
         premature = m['premature']
@@ -345,9 +253,7 @@ def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
         no_resp = m['noresp'] | ((~premature) & (rt > 4.0))
         prem[k] = premature.mean(); early[k] = early_resp.mean(); noresp[k] = no_resp.mean()
         # trials, out of all of them, whose response burst begins before the response
-        # signal: a negative premotor time.  Every premature response is one, since its
-        # burst begins at or before a press that precedes the signal; trials without a
-        # response have no burst and are not counted.
+        # signal (a negative premotor time); every premature response is one
         burst_early[k] = np.mean(np.nan_to_num(m['pmet'], nan=0.0) < 0)
         v = m['valid']
         acc[k] = np.nanmean(m['acc'][v]) if v.sum() else np.nan
@@ -361,37 +267,23 @@ def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
         pv = m['pmet'][v]
         pmet_mean[k] = np.nanmean(pv) if v.sum() else np.nan
         pmet_se[k] = np.nanstd(pv) / np.sqrt(max(np.sum(~np.isnan(pv)), 1))
+        # stimulus-onset window: 0 to 2 s from motion onset
         hs, es = counts_profile(m, 0.0, 2.0, 20)
         srate[k] = hs.sum() / (es * 2.0) if es > 0 else np.nan
-        # the three windows outside the delay, on the definitions the data analysis uses
-        ws = window_stats(m, D, q['delay'], DT)
-        _, stim_trend[k], _, stim_trend_se[k] = bin_summary(*ws['stim'], 0.1)
-        rs_rate[k], rs_trend[k], rs_rate_se[k], rs_trend_se[k] = bin_summary(*ws['rs'], 0.1)
-        resp_rate[k], resp_trend[k], resp_rate_se[k], resp_trend_se[k] = \
-            bin_summary(*ws['resp'], 0.1)
+        _, stim_trend[k], _, stim_trend_se[k] = bin_summary(hs, float(es), 0.1)
+        # delay window: 1 to 3 s from motion offset
         h, expo = counts_profile(m, D + 1, D + 3, 20)
         prof[k] = h; prof_expo[k] = expo
-        # mean delay-period partial-activation rate over the 2-s analysis window, per
-        # trial per second -- directly comparable with the observed end-of-delay rate.
         rate[k] = h.sum() / (expo * 2.0) if expo > 0 else np.nan
         if (h > 0).sum() >= 4 and expo > 0:
-            slope[k], slope_se[k] = poisson_slope_se(h, expo, DELAY_TB)
             trend[k], trend_se[k], curv[k], curv_se[k] = trend_contrasts(h, expo, DELAY_TB)
         else:
-            slope[k], slope_se[k] = np.nan, np.nan
             trend[k] = trend_se[k] = curv[k] = curv_se[k] = np.nan
     return dict(prem=prem, early=early, noresp=noresp, burst_early=burst_early,
-                acc=acc, rt_mean=rt_mean,
-                rt_se=rt_se, rt_n=rt_n, slope=slope, slope_se=slope_se,
+                acc=acc, rt_mean=rt_mean, rt_se=rt_se, rt_n=rt_n,
                 trend=trend, trend_se=trend_se, curv=curv, curv_se=curv_se,
-                rate=rate, srate=srate,
-                stim_trend=stim_trend, stim_trend_se=stim_trend_se,
-                rs_rate=rs_rate, rs_rate_se=rs_rate_se,
-                rs_trend=rs_trend, rs_trend_se=rs_trend_se,
-                resp_rate=resp_rate, resp_rate_se=resp_rate_se,
-                resp_trend=resp_trend, resp_trend_se=resp_trend_se,
-                met_mean=met_mean, met_se=met_se,
-                pmet_mean=pmet_mean, pmet_se=pmet_se,
+                rate=rate, srate=srate, stim_trend=stim_trend, stim_trend_se=stim_trend_se,
+                met_mean=met_mean, met_se=met_se, pmet_mean=pmet_mean, pmet_se=pmet_se,
                 prof=prof.astype(np.int64), prof_expo=prof_expo.astype(np.int64))
 
 
@@ -415,58 +307,6 @@ def admissible(res):
     rm = np.nanmean(res['rate'])
     if not (RATE_LO <= rm <= RATE_HI): return False
     return True
-
-
-def rt_effects(res):
-    """Coherence slope (marginal over duration, 3 levels) and duration difference
-    (marginal over coherence), with MC-SE, mirroring the manuscript's existing
-    RT-effect test (para 86)."""
-    rt = res['rt_mean']; se = res['rt_se']
-    coh_marg = np.array([(rt[0] + rt[3]) / 2, (rt[1] + rt[4]) / 2, (rt[2] + rt[5]) / 2])
-    coh_se = np.array([np.sqrt(se[0]**2 + se[3]**2) / 2,
-                        np.sqrt(se[1]**2 + se[4]**2) / 2,
-                        np.sqrt(se[2]**2 + se[5]**2) / 2])
-    x = np.array([0.0, 0.12, 0.50]); x = x - x.mean()
-    w = x / (x @ x)
-    coh_slope = w @ coh_marg
-    coh_slope_se = np.sqrt((w**2) @ (coh_se**2))
-    dur_short = rt[0:3].mean(); dur_long = rt[3:6].mean()
-    dur_short_se = np.sqrt((se[0:3]**2).sum()) / 3
-    dur_long_se = np.sqrt((se[3:6]**2).sum()) / 3
-    dur_diff = dur_short - dur_long
-    dur_diff_se = np.sqrt(dur_short_se**2 + dur_long_se**2)
-    coh_supported = (coh_slope + 1.96 * coh_slope_se) < 0
-    dur_supported = (dur_diff - 1.96 * dur_diff_se) > 0
-    return dict(coh_slope=coh_slope, coh_slope_se=coh_slope_se,
-                dur_diff=dur_diff, dur_diff_se=dur_diff_se,
-                coh_supported=bool(coh_supported), dur_supported=bool(dur_supported))
-
-
-def slope_criterion(res):
-    """All six delay-period log-rate slopes significantly positive (lower 95% CI > 0)."""
-    lo = res['slope'] - 1.96 * res['slope_se']
-    ok = np.isfinite(lo).all() and (lo > 0).all()
-    return dict(all_positive=bool(ok), min_slope=float(np.nanmin(res['slope'])),
-                max_slope=float(np.nanmax(res['slope'])))
-
-
-def trend_criterion(res):
-    """All six delay-period raw-rate TRENDS significantly positive (lower 95% CI > 0).
-
-    The counterpart of slope_criterion, and the statistic the Results cite: the trend is
-    linear in the rate, so unlike a log-rate slope it cannot be earned by ramping from an
-    arbitrarily low level.  Both are recorded, and they agree."""
-    lo = res['trend'] - 1.96 * res['trend_se']
-    ok = bool(np.isfinite(lo).all() and (lo > 0).all())
-    return dict(all_positive=ok, min_trend=float(np.nanmin(res['trend'])),
-                max_trend=float(np.nanmax(res['trend'])))
-
-
-def met_invariance(res):
-    """Range of per-cell mean MET: the model predicts it invariant across conditions,
-    to within the few milliseconds the filter transient leaves."""
-    rng = float(np.nanmax(res['met_mean']) - np.nanmin(res['met_mean']))
-    return dict(range_ms=rng * 1000.0)
 
 
 def main():
@@ -524,11 +364,7 @@ def evaluate(cube, i, gamma_x=0.0, gamma_q=0.0):
                gamma_q=gamma_q, ntr=NTR)
     for tag, res in (('model1', res1), ('model2', res2)):
         adm = admissible(res)
-        rec[tag] = dict(admissible=adm,
-                        rt=rt_effects(res) if adm else None,
-                        slope=slope_criterion(res) if adm else None,
-                        met=met_invariance(res) if adm else None,
-                        raw={k: v.tolist() for k, v in res.items()})
+        rec[tag] = dict(admissible=adm, raw={k: v.tolist() for k, v in res.items()})
     return rec
 
 

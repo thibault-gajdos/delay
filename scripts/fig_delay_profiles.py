@@ -1,5 +1,5 @@
 """
-fig_delay_profiles.py -- the shape of the delay-period rate curve (manuscript Figure 7):
+fig_delay_profiles.py -- the shape of the delay-window PMA rate (manuscript Figure 5):
 one line per admissible parameter vector of each model, each divided by its own mean over
 the delay analysis window, against the observed profile normalised the same way.
 
@@ -34,15 +34,9 @@ def per_model(tag, stat='trend'):
 
 
 def fig_delay_profiles(fname=None):
-    """The shape of the delay-period rate curve, one line per admissible parameter set.
-
-    Each thin line is the delay-period profile of one admissible draw, divided by its own
-    mean over the window so that draws whose rates differ by two orders of magnitude can be
-    compared on shape; the observed profile is normalised the same way. Showing the family
-    rather than a median or a percentile band is the point: the question is whether the
-    architecture CAN produce the observed rise, not what it does at a typical setting, and a
-    band taken bin by bin mixes profiles that are not comparable.
-    """
+    """One line per admissible parameter vector: its delay-window PMA rate divided by its
+    own mean over the window, against the observed profile normalised the same way. A
+    vector enters if its profile rests on at least 200 events."""
     fname = fname or 'plots/fig_delay_profiles.pdf'
     t = np.arange(20) * 0.1 + 0.05
     obs = build()['dly'].mean(axis=(0, 1))          # per-trial counts per bin, averaged
@@ -54,9 +48,6 @@ def fig_delay_profiles(fname=None):
         _, _, prof, pex = per_model(tag)
         rate = prof / (pex[:, None] * 0.1)
         m = rate.mean(axis=1)
-        # a draw enters only if its profile rests on at least 200 events over the window:
-        # below that the normalised curve is Poisson noise rather than shape. This is a
-        # precision criterion on the estimate, not a selection on what the estimate says.
         keep = (m > 0) & (prof.sum(axis=1) >= 200)
         norm = rate[keep] / m[keep][:, None]
         for y in norm:
@@ -64,14 +55,14 @@ def fig_delay_profiles(fname=None):
         a.plot(t, np.median(norm, axis=0), color=col, lw=2.0, zorder=3)
         a.plot(t, obs_n, 'o-', ms=3, color=C_OBS, lw=1.2, zorder=4)
         a.set_xlabel('time into the delay analysis window (s)')
-        a.set_title(f'{name}, {keep.sum()} admissible parameter sets', fontsize=8)
+        a.set_title(f'{name}, {keep.sum()} admissible parameter vectors', fontsize=8)
         a.set_ylim(0, 3.2)
         a.axhline(1.0, color='0.75', lw=.7, ls=':')
-    ax[0].set_ylabel('partial-activation rate,\nrelative to its own window mean')
+    ax[0].set_ylabel('PMA rate,\nrelative to its own window mean')
     ax[1].legend([plt.Line2D([], [], color=C_M2, lw=.4),
                   plt.Line2D([], [], color=C_M2, lw=2.0),
                   plt.Line2D([], [], color=C_OBS, lw=1.2, marker='o', ms=3)],
-                 ['one admissible parameter set', 'median over parameter sets', 'observed'],
+                 ['one admissible parameter vector', 'median over vectors', 'observed'],
                  fontsize=6.5, frameon=False, loc='upper left')
     fig.savefig(fname, bbox_inches='tight')
     fig.savefig(PNG, dpi=200, bbox_inches='tight'); plt.close(fig)

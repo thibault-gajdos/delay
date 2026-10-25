@@ -166,3 +166,10 @@ Corrigés dans l'Appendix :
   figure (fig09) est à régénérer avec `mkfig.py` (fenêtre à 0,8 s).
 - **Numérotation** : la lettre de réponse cite « Remark A.6 » et « Corollary A.3 » ; les
   numéros sont inchangés, mais les contenus cités (C2.3) sont à mettre à jour.
+
+## 11. Intégration dans delay.tex (25 octobre)
+
+Le contenu de la v5 (Introduction, Methods) est intégré dans delay.tex, avec les
+modifications des sections 1 à 10. Les Results sont réorganisés (Accuracy, RT, PMT and MT ;
+puis une sous-section par fenêtre) et suivent la règle de comparaison de la v5. Reste à
+faire : la lettre de réponse (C2.3 et les autres points qui citent des chiffres).

@@ -1,13 +1,8 @@
 """
-figures.py -- the figures that show simulated dynamics.
-
-Three of them, and they are manuscript Figures 1 (two panels, one per model) and 2B:
-plots/fig_traj_m{2,1}.pdf and plots/fig_single.pdf.
-
-Nothing is fitted, so these are drawn at the REPRESENTATIVE ADMISSIBLE DRAW selected by
-representative.py (see that file for the rule and for why the median of the ranges is not
-usable). The same parameter vector is used for both models, so the two trajectory figures
-differ only in beta -- which is the only term in which the architectures differ.
+figures.py -- the figures that show simulated dynamics: manuscript Figure 1 (the mean
+signal reaching the gate under each model, over thirty parameter vectors admissible in both
+models; ../manuscript/latex/figures/fig01.png and fig02.png) and Figure 2B (one simulated
+trial at the vector chosen by representative.py; fig04.png).
 
 Run representative.py first.  Usage: python3 figures.py
 """
@@ -15,14 +10,13 @@ import numpy as np, json, sys, os
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from scipy.stats import norm
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from delaymodel.sim import simulate, measures, DT, excursions
-from delaymodel.targets import CELLS, LAB
+from delaymodel.targets import CELLS
 
 COL = {0: '#9ecae1', 12: '#3182bd', 50: '#08306b'}
 C_M1, C_M2 = '#c1272d', '#3182bd'
-# common time grids for Figure 1, so every draw's mean can be interpolated onto the same axis
+# common time grids for Figure 1, so every vector's mean can be interpolated onto the same axis
 TG0 = np.linspace(0.0, 2.2, 300)
 TG1 = np.linspace(-0.1, 3.2, 400)
 TG2 = np.linspace(0.0, 0.45, 120)
@@ -43,22 +37,12 @@ def cell_sty(k):
 # ---------------------------------------------------------------- trajectories
 def fig_trajectories(model=2, ndraw=30, n=300, fname='plots/fig_traj.pdf', png=None,
                      dump='results/sweep_screened.jsonl'):
-    """Manuscript Figure 1: the gated motor-preparatory signal, time-locked to the four
-    trial events, with ONE MEAN TRAJECTORY PER PARAMETER SET.
-
-    Each thin line is the mean over trials of one admissible draw of the sweep; the thick
-    line is the mean over draws. The variability shown is therefore variability across the
-    parameter space, not across trials within one setting -- which is the variability the
-    paper's claims are about, since every claim is of the form "at every admissible
-    parameter setting". A single simulated point, or a band around it, cannot show that.
-
-    The vertical axis is in units of each draw's own distance to the gate: 0 is the
-    maintained level and 1 is the gate g, so that draws with different amplitudes are
-    superimposable. Without this the figure would be dominated by the arbitrary amplitude
-    scale, which the model fixes only by convention (sigma_x = 0.1).
-
-    Draws are those admissible in BOTH models, and the same draws are used in both panels,
-    so the two figures differ in beta and in nothing else.
+    """Manuscript Figure 1: the signal reaching the gate, time-locked to the four trial
+    events. Each thin line is the mean over trials of one admissible parameter vector; the
+    thick line is the mean over vectors. The vertical axis is in units of each vector's own
+    distance from the maintenance target to the gate (0: maintenance target, 1: gate g).
+    The vectors are admissible in both models and are the same in both panels, so the two
+    panels differ only in beta.
     """
     recs = [json.loads(l) for l in open(dump)]
     both = [r for r in recs if r['model1']['admissible'] and r['model2']['admissible']]
@@ -108,14 +92,14 @@ def fig_trajectories(model=2, ndraw=30, n=300, fname='plots/fig_traj.pdf', png=N
         a.axhline(0.0, color='0.6', ls=':', lw=.8)
         a.set_title(ttl, fontsize=8)
         a.set_ylim(-0.6, 1.9)
-    ax[0].set_ylabel('signal, in units of the distance\nfrom the maintained level to the gate')
+    ax[0].set_ylabel('signal, in units of the distance\nfrom the maintenance target to the gate')
     ax[0].text(0.03, 1.04, '$g$', fontsize=8, color='0.3')
-    ax[0].text(0.03, 0.04, 'maintained level', fontsize=7, color='0.55')
+    ax[0].text(0.03, 0.04, 'maintenance target', fontsize=7, color='0.55')
     for a in ax[1:]:
         a.set_yticklabels([])
     ax[1].legend([plt.Line2D([], [], color=(C_M1 if model == 1 else C_M2), lw=.5),
                   plt.Line2D([], [], color=(C_M1 if model == 1 else C_M2), lw=2.0)],
-                 [f'one admissible parameter set ({len(sel)} shown)', 'mean over parameter sets'],
+                 [f'one admissible parameter vector ({len(sel)} shown)', 'mean over vectors'],
                  fontsize=6.5, frameon=False, loc='upper left')
     ax[0].set_xlabel('from onset (s)'); ax[1].set_xlabel('from offset (s)')
     ax[2].set_xlabel('(s)'); ax[3].set_xlabel('(s)')
@@ -149,9 +133,9 @@ def fig_single(P, n=400, fname='plots/fig_single.pdf', png=None):
     for a, b in excursions(act):
         col = '#c1272d' if b >= ri - 1 else '#e6892f'
         ax[1].axvspan(a * DT, b * DT, color=col, alpha=.85)
-    ax[1].set_yticks([]); ax[1].set_ylabel('detected', fontsize=7)
+    ax[1].set_yticks([]); ax[1].set_ylabel('activations', fontsize=7)
     ax[1].set_xlabel('time from stimulus onset (s)')
-    ax[0].set_ylabel('gated signal')
+    ax[0].set_ylabel('signal reaching the gate')
     # panel letter: this figure is panel B of the manuscript's Figure 2, whose panel A is a
     # hand-drawn schematic; the panel letter is added here rather than after export
     fig.text(0.005, 0.94, 'B', fontsize=20, weight='bold', va='top')
@@ -161,7 +145,6 @@ def fig_single(P, n=400, fname='plots/fig_single.pdf', png=None):
     plt.close(fig)
 
 
-# ---------------------------------------------------------------- rates
 if __name__ == '__main__':
     R = json.load(open('results/representative.json'))
     P2 = dict(R['params'], alpha=R['alpha'])

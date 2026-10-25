@@ -1,5 +1,5 @@
-"""fig_behavior.py -- behavioural outcomes and the response-time fractionation
-(manuscript Figure 5), drawn from the archive's own behavioural exports. Writes
+"""fig_behavior.py -- accuracy, mean RT, mean premotor time (PMT) and mean motor time (MT)
+by condition (manuscript Figure 3), drawn from the archive's own behavioural exports. Writes
 ../manuscript/latex/figures/fig05.png. Needs DELAY_DATA.
 """
 import numpy as np, pandas as pd, matplotlib
@@ -45,8 +45,8 @@ def morey_boot(A, B=10000):
 
 panels = [('accuracy','accuracy','p(correct)','A'),
           ('mean_RT','mean_RT','Mean RT (s)','B'),
-          ('mean_PMET','mean_PMT','Mean PMET (s)','C'),
-          ('mean_MET','mean_MT','Mean MET (s)','D')]
+          ('mean_PMET','mean_PMT','Mean PMT (s)','C'),
+          ('mean_MET','mean_MT','Mean MT (s)','D')]
 
 fig, axes = plt.subplots(1, 4, figsize=(16.6, 4.138))
 x = np.arange(3)

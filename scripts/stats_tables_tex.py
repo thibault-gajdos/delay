@@ -2,14 +2,15 @@
 stats_tables_tex.py -- the ANOVA tables of the manuscript, from R/stats_results.csv.
 
 Writes, in ../manuscript/latex/:
-  table_behav.tex   accuracy, mean RT, mean PMET, mean MET
+  table_behav.tex   accuracy, mean RT, mean PMT, mean MT
   table_pma.tex     partial-activation rate, stimulus and delay periods
   table_lrp.tex     lateralized readiness potential, all four periods
   table_mbl.tex     mu-beta lateralization, stimulus and delay periods
 Each file holds one tabular; captions and labels are in the manuscript. For the rows
 testing a time contrast against zero, the estimate and its 95% confidence interval are
 given: the slope of the least-squares fit on time in seconds, and the coefficient of the
-squared time term (R/run_stats.R).
+squared time term (R/run_stats.R), in units of the measure per second and per second
+squared.
 """
 import csv
 
@@ -67,7 +68,7 @@ def sel(measure, period):
 
 
 open(OUT + 'table_behav.tex', 'w').write(tabular(
-    [(m, sel(m, 'behaviour')) for m in ('Accuracy', 'Mean RT', 'Mean PMET', 'Mean MET')],
+    [(m, sel(m, 'behaviour')) for m in ('Accuracy', 'Mean RT', 'Mean PMT', 'Mean MT')],
     est=False))
 for measure, periods, fname in (('PMA', ('stimulus', 'delay'), 'table_pma.tex'),
                                 ('LRP', ('stimulus', 'delay', 'RS', 'response'),

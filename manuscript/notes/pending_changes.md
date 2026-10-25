@@ -8,8 +8,9 @@ Textes concernés :
 - **delay.tex** : `manuscript/latex/delay.tex` ;
 - **lettre** : `manuscript/response_letter_2026-09-08.md` (et .docx).
 
-Question ouverte, à trancher avant toute modification : quel texte fait référence,
-la v5 ou delay.tex ?
+Ordre de travail (décidé le 25 octobre) : on travaille d'abord sur la v5 (docx) ; son
+contenu sera ensuite intégré dans delay.tex. L'Appendix de delay.tex est déjà corrigé
+(section 9) ; les modifications du texte principal ci-dessous sont à reporter dans la v5.
 
 ## 1. Détection des activations dans les simulations (décidé le 22 octobre)
 
@@ -77,9 +78,8 @@ mouvement) et γ_q (accumulateur du signal de réponse), grille complète
 - **delay.tex, l. 578** : parle d'une fuite sur la seule variable de décision, à trois
   valeurs → grille indépendante, nouveaux résultats.
 - **lettre, C2.3** : table à refaire avec la grille.
-- **delay.tex, Appendix, Remark rem:leak (l. 976–982).** Remplacement par une seule
-  remarque sur les deux fuites : `manuscript/notes/draft_leak_appendix.tex` (compilé dans
-  une copie : aucune erreur). En attente d'accord.
+- **delay.tex, Appendix, Remark rem:leak.** Fait le 25 octobre (une seule remarque sur les
+  deux fuites, avec la phrase sur la grille).
 - **delay.tex, Results (l. 578) et Discussion (l. 673).** Une phrase chacune, renvoyant à
   la remarque : les fuites des deux accumulateurs ne changent rien aux énoncés sur le délai,
   et la grille complète ne change aucun verdict.
@@ -119,34 +119,50 @@ Tous les nombres issus des simulations, dans la v5, delay.tex et la lettre, nota
   model ». Avec 40 000 essais et l'ancien critère, chacun des deux modèles la reproduit
   avec quelques jeux (5 et 8). À réécrire selon les résultats de la relance.
 
-## 9. Erreurs trouvées dans l'Appendix de delay.tex (vérification du 25 octobre)
+## 9. Appendix de delay.tex : corrigé le 25 octobre
 
-Vérifiés et corrects : solution de H et noyau K ; trois moments (contrôle numérique,
-écart relatif 6 × 10⁻¹³) ; limites stationnaires ; algèbre de la Proposition A.1 ;
-formule de Kac–Rice et taux stationnaire (simulation : rapport 0,99 à 1,01, avec et sans
-préparation temporelle) ; preuve de la Corollary A.2 ; Corollaries A.3 et A.4.
+Vérifiés et corrects sans changement : solution de H et noyau K ; trois moments
+(contrôle numérique, écart relatif 6 × 10⁻¹³) ; limites stationnaires ; formule de
+Kac–Rice et taux stationnaire (simulation : rapport 0,99 à 1,01) ; preuve de la
+Corollary A.2 ; Corollary A.3.
 
-- **Début de la fenêtre du délai.** La fenêtre s'ouvre 1 s après la fin physique du
-  stimulus ; le maintien commence au plus tard L_motion = 0,2 s après. Le temps de maintien
-  écoulé est donc d'au moins 0,8 s, pas 1 s (paragraphe après la Proposition A.1 ;
-  `mkfig.py`, corrigé). À ρ = 0,8 s : E₁ ≤ 2,9 × 10⁻⁴, |X| ≤ 2,3 × 10⁻³. Énoncer la
-  Proposition A.1 à ρ ≥ 0,8 s.
-- **Chiffres de l'erreur stationnaire.** Le texte (après la Corollary A.2) dit η < 10⁻⁴
-  dans la fenêtre et un écart relatif maximal de 7 × 10⁻⁵ ; légende de la Figure (approx) :
-  6,8 × 10⁻³ %. Avec la fenêtre correcte et les jeux admissibles actuels : η ≤ 1,7 × 10⁻³,
-  écart relatif maximal 3,1 × 10⁻³ (Modèle 1) et 1,2 × 10⁻³ (Modèle 2). La conclusion
-  (fenêtre stationnaire) tient.
-- **Proposition A.5 fausse telle qu'énoncée** (« at every parameter setting »). Contre-
-  exemple : jeu 51 du Modèle 1 (non admissible), effet court − long de +0,17 s⁻¹, z = 4,0.
-  Sur les jeux admissibles, elle tient numériquement (227 de 228 significativement
-  négatifs, 0 contre). Sa preuve a deux lacunes (comparaison des variances seulement pour
-  un maintien long ; usage de l'équation du taux en maintien pour une condition qui
-  accumule encore). À reformuler (énoncé restreint, ou résultat numérique).
-- **Canal non sélectionné** (Setup and notation : « several fluctuation standard deviations
-  further away over the whole admissible space »). Faux pour les essais où |m| est petit :
-  les deux canaux sont alors à la même distance de la porte. Sur des jeux admissibles du
-  Modèle 1, le rapport des taux stationnaires (non sélectionné / sélectionné) atteint 0,19.
-  À reformuler.
-- **Conséquences de la Corollary A.4.** Elles valent essai par essai. « The same parabola
-  in all six conditions » : même courbure, pas même parabole. Le log du taux moyen d'une
-  condition (mélange sur les essais) n'est pas exactement une parabole.
+Corrigés dans l'Appendix :
+- Proposition A.1 et paragraphe suivant : la fenêtre du délai commence au plus tôt 0,8 s
+  après le début du maintien (et non 1 s) ; bornes E₁ < 3 × 10⁻⁴, |X| < 2,4 × 10⁻³.
+- Après la Corollary A.2 : η < 2 × 10⁻³ ; écart relatif maximal 3 × 10⁻³ (Modèle 1) et
+  1,3 × 10⁻³ (Modèle 2) ; 20 % sur l'ensemble de l'hypercube, pour a proche de 40.
+- Corollary A.4 : ajout de l'énoncé au niveau de la condition (pente et courbure du log du
+  taux moyen, courbure du taux moyen, en fonction de la moyenne et de la variance de a
+  pondérées par le taux) ; paragraphe « Three consequences » réécrit.
+- Proposition A.5 : remplacée par une décomposition exacte (un essai en accumulation ne
+  franchit pas la porte ; différence long − court = essais atteignant θ pendant
+  l'accumulation supplémentaire − essais maintenus sous θ après le stimulus court) ; le
+  signe est établi numériquement (227 jeux admissibles sur 228 du Modèle 1, aucun contre).
+- Canal non sélectionné (Setup and notation) : énoncé exact (au plus le taux du canal
+  sélectionné ; rapport e^(−2g|m|/σ_H²) sous le Modèle 1).
+- Remark A.6 : les deux fuites.
+
+## 10. Texte principal : conséquences des corrections de l'Appendix (à reporter dans la v5)
+
+- **Fenêtre du stimulus, effet de la durée** (delay.tex l. 433). Le mécanisme décrit
+  (« the long stimulus keeps adding both evidence and variance … its fluctuation
+  saturates ») est faux : un essai en accumulation ne franchit pas la porte. Mécanisme
+  correct : après le stimulus long, davantage d'essais atteignent θ, le niveau le plus
+  proche de la porte ; après le stimulus court, les essais restés sous θ y sont maintenus.
+  La prédiction du Modèle 1 (taux plus élevé après le stimulus long) devient un résultat
+  numérique sur les jeux admissibles, non un énoncé valable à tout réglage.
+- **Ordre des pentes du log du taux entre conditions** (l. 520 et l. 552). Remplacer « a
+  condition with a higher rate has a smaller distance and therefore a shallower log-rate
+  slope » : la pente est proportionnelle à la distance moyenne pondérée par le taux.
+- **Courbure prédite par le Modèle 2** (l. 524). Condition exacte : E_ν[a²] > 1 ; suffisante :
+  chaque essai contributeur à plus d'un écart-type de la porte.
+- **« Neither the duration nor the coherence factor modulated the curvature …, as
+  Corollary A.4 requires »** (l. 548). Faux : la courbure du taux brut dépend de la
+  condition ; supprimer « as Corollary A.4 requires ».
+- **Tendance et courbure « set by the same two quantities »** (l. 582) : ajouter la
+  dispersion de a entre essais.
+- **Erreur de l'approximation stationnaire** : Results l. 479 (« within 7 × 10⁻⁵ ») et
+  légende de la figure correspondante (l. 713, « 6.8 × 10⁻³ % ») → 3 × 10⁻³, soit 0,3 %. La
+  figure (fig09) est à régénérer avec `mkfig.py` (fenêtre à 0,8 s).
+- **Numérotation** : la lettre de réponse cite « Remark A.6 » et « Corollary A.3 » ; les
+  numéros sont inchangés, mais les contenus cités (C2.3) sont à mettre à jour.

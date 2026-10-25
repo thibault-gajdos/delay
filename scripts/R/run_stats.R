@@ -210,8 +210,12 @@ read_long <- function(path, bins) {
 ## contrasts: a repeated-measures analysis is invariant under rescaling of the
 ## dependent variable, so only the coefficients change.
 
-make_scores <- function(d, width = 0.1) {
+make_scores <- function(d, width = 0.1, per_second = FALSE) {
   nb <- max(d$bin)
+  ## The partial-activation exports hold the mean number of activations per trial
+  ## in each bin; dividing by the bin width turns them into a rate in s^-1, so
+  ## that LEVEL, TREND and QUAD are in s^-1, s^-2 and s^-3.
+  if (per_second) d <- d %>% mutate(y = y / width)
   tt <- (seq_len(nb) - (nb + 1) / 2) * width   # centred bin times, s
   wl <- tt / sum(tt^2)                          # b1, units per second
   q  <- tt^2 - mean(tt^2)
@@ -242,7 +246,7 @@ f_vs_zero <- function(v) {
 ## factor; duration and the intercept-like vs-zero test need no correction.
 
 analyse_period <- function(d, measure, period, pub = NULL) {
-  s  <- make_scores(d)
+  s  <- make_scores(d, per_second = (measure == "PMA"))
   nb <- max(d$bin)
   label <- sprintf("%s, %s period", measure, period)
 

@@ -10,6 +10,8 @@ import json
 from shardio import load
 
 rows = load("results/shards/shard_*.jsonl")
+if not rows:
+    raise SystemExit("no shard in results/shards: run run_sweep.sh first")
 with open("results/sweep_screened.jsonl", "w") as f:
     for r in rows:
         f.write(json.dumps(r) + "\n")

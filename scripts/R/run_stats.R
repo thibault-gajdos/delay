@@ -301,7 +301,7 @@ for (i in seq_len(nrow(SPEC))) {
 ## Mu-beta lateralisation, stimulus window, resolved into two halves.
 ##
 ## Reported because the TREND over the full window is essentially null while
-## the LEVEL-side coherence x time interaction (Table 2/S4) is not: the
+## the LEVEL-side coherence x time interaction (Table S4) is not: the
 ## coherence dependence of the slope is present in the first half and gone in
 ## the second, which is what saturation of the maintained level implies --
 ## trajectories that have reached the internal threshold are pinned at a

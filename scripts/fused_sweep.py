@@ -2,78 +2,32 @@
 fused_sweep.py -- the parameter-space evaluation.
 
 What each architecture can produce over its whole admissible parameter space
-(manuscript: Methods, "Evaluation over the parameter space"; Results, the "Simulation
-validation" subsections).  Nothing here is fitted, so this is where every effect-size
-statement in the paper comes from.
+(manuscript: Methods, "Evaluation over the parameter space"; Results, the "Model--data
+comparison" subsections).  Nothing here is fitted.
 
-Latin-hypercube sample over the ranges of Table 1; at every draw, the task-admissibility
-screen and the criteria the Results report.  The same sampled vector is evaluated in both
+Latin-hypercube sample over the ranges of Table 1; at every parameter vector, the
+admissibility screen and the simulated measures.  The same sampled vector is evaluated in both
 models, with beta set to zero in Model 1, so the two are compared at identical parameters.
 
-Ranges, and where each comes from.  No bound is derived from these data: a range drawn
-around a value estimated from the data cannot test whether a prediction survives away
-from that value.
+Ranges (Table 1; their justification is in Methods, "Evaluation over the parameter
+space"):
 
-  g        in [0.050, 0.200]                  design: the distance from the gate at theta
-                                              to the response bound
-  theta/g  in [0.25, 0.90]                    sampled as a ratio, which keeps theta < g
-                                              as the model requires
-  kappa    in [0.20, 30.0]    log-uniform     1/kappa is the correlation time of the
-                                              maintenance noise: [0.20, 30] spans one
-                                              trial (5 s) down to one analysis bin
-                                              (33 ms), the natural span for a
-                                              within-trial fluctuation.  The width
-                                              favours neither model: with eps started at
-                                              its stationary law the moments of H relax
-                                              at rate at least lambda whatever kappa is,
-                                              so Model 1's delay rate is flat at every
-                                              kappa (Appendix, Corollary A.3).
-  SDe      in [0.003, 0.060]  log-uniform     the stationary SD of the maintenance
-                                              fluctuation, sampled directly rather than
-                                              through the derived a = (g - theta)/SDe:
-                                              reparameterising in terms of the quantity
-                                              that governs the outcome under test would
-                                              redefine the sampling law by its effect on
-                                              the result.  The problem that would have
-                                              addressed -- draws at a > 3, where
-                                              exp(-a^2/2) leaves no crossings at all --
-                                              belongs to the acceptance set, and is
-                                              handled by the activation-rate criterion
-                                              in admissible().
-  beta     in [0.0015, 0.100] log-uniform     Model 2 only.  The upper end is not
-                                              derived: the screen enforces it, since a
-                                              ramp large enough to carry the signal past
-                                              the response criterion during the delay
-                                              shows up as premature responses.
-  k        in [0.5, 2.0]      log-uniform     about a factor of two either side of
-                                              Dendauw et al. (2024)'s 1.183, estimated in
-                                              an immediate-report task
-  lam      in [10.0, 50.0]    log-uniform     1/lam is the motor-preparation filter time
-                                              constant, so the range is tau in [100, 20]
-                                              ms; lam = 100 would be 10 ms, faster than
-                                              plausible neuromuscular filtering.  This
-                                              bound does argumentative work -- lam is
-                                              what puts the analysis window in the
-                                              stationary regime (Appendix, Proposition
-                                              A.1) -- and is stated as a modelling
-                                              commitment in the Table 1 note.
-  r        in [0.010, 0.200]  log-uniform     response criterion on the neural drive
-  muRS     in [0.30, 1.50]                    drift of the response-signal accumulation
-  sigma_q  in [0.03, 0.30]    log-uniform     anchored to sigx = 0.100, the other
-                                              diffusion SD in the model: sigma_q plays
-                                              the analogous role after the response
-                                              signal, so a +-3x bracket around sigx is
-                                              the least arbitrary anchor available.  The
-                                              softest of these bounds.
+  g        in [0.050, 0.200]
+  theta/g  in [0.25, 0.90]                    sampled as a ratio, so that theta < g
+  kappa    in [0.20, 30.0]    log-uniform     kappa_epsilon in the manuscript
+  SDe      in [0.003, 0.060]  log-uniform     stationary SD of the maintenance noise
+  beta     in [0.0015, 0.100] log-uniform     Model 2 only
+  k        in [0.5, 2.0]      log-uniform
+  lam      in [10.0, 50.0]    log-uniform
+  r        in [0.010, 0.200]  log-uniform
+  muRS     in [0.30, 1.50]
+  sigma_q  in [0.03, 0.30]    log-uniform
 
-Fixed: sigx = 0.100 (the model is invariant under a joint rescaling of every amplitude,
-so one of them sets the unit), Lmotion = LRS = 0.200 s, delay = 3 s (the task's own), and
-Lmotor = 0.093 s (Dendauw et al. 2024 -- a peripheral electromechanical delay has better
-reason to transfer between tasks than a decision-related constant, which is why r stays
-free).
+Fixed: sigx = 0.100 (sets the amplitude unit), Lmotion = LRS = 0.200 s, delay = 3 s,
+Lmotor = 0.093 s.
 
-Latin-hypercube over the 10 dimensions shared by both models (g, theta/g, kappa, SDe,
-muRS, r, k, lam, sigma_q and Lmotor's slot); beta is an 11th, sampled for Model 2 only.
+The cube has 10 dimensions: the nine parameters above shared by both models, and beta,
+used in Model 2 only.
 
 Admissibility screen (see admissible()): in every condition, <=10% of trials whose
 response burst begins before the response signal, <=10% responses within 0.2 s of the

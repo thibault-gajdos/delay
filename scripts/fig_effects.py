@@ -1,5 +1,5 @@
 """
-fig_effects.py -- the model-data comparison, effect by effect (manuscript Figure 8).
+fig_effects.py -- the model-data comparison, effect by effect (manuscript Figure 6).
 
 For every effect and each model: the range of the effect over the admissible parameter
 vectors (minimum to maximum), against the observed group mean and its 95% confidence

@@ -7,10 +7,10 @@ PMA, stimulus period   (20 bins)
 Anova Table (Type 3 tests)
 
 Response: level
-        num Df den Df        MSE       F     pes   Pr(>F)   
-dur     1.0000 21.000 6.9856e-05 13.3814 0.38920 0.001467 **
-coh     1.3338 28.009 6.6966e-05  5.2515 0.20004 0.021255 * 
-dur:coh 1.9767 41.512 3.2923e-05  0.3119 0.01463 0.731253   
+        num Df den Df       MSE       F     pes   Pr(>F)   
+dur     1.0000 21.000 0.0069856 13.3814 0.38920 0.001467 **
+coh     1.3338 28.009 0.0066966  5.2515 0.20004 0.021255 * 
+dur:coh 1.9767 41.512 0.0032923  0.3119 0.01463 0.731253   
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
@@ -18,26 +18,26 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 Anova Table (Type 3 tests)
 
 Response: trend
-        num Df den Df        MSE      F      pes   Pr(>F)   
-dur     1.0000 21.000 1.2356e-04 9.5320 0.312196 0.005583 **
-coh     1.7237 36.197 6.6072e-05 6.1454 0.226387 0.007001 **
-dur:coh 1.8656 39.177 5.0662e-05 0.7291 0.033555 0.479770   
+        num Df den Df       MSE      F      pes   Pr(>F)   
+dur     1.0000 21.000 0.0123557 9.5320 0.312196 0.005583 **
+coh     1.7237 36.197 0.0066072 6.1454 0.226387 0.007001 **
+dur:coh 1.8656 39.177 0.0050662 0.7291 0.033555 0.479770   
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-   trend vs zero: +0.00966 units/s [95% CI +0.00604, +0.01327], F(1,21) = 30.87, p = 1.633e-05
+   trend vs zero: +0.09658 units/s [95% CI +0.06043, +0.13274], F(1,21) = 30.87, p = 1.633e-05
 
 -- QUAD (quadratic coefficient, units/s^2): curvature, and its interactions with duration/coherence
 Anova Table (Type 3 tests)
 
 Response: quad
-        num Df den Df        MSE      F      pes  Pr(>F)  
-dur     1.0000 21.000 6.9352e-05 3.5548 0.144770 0.07329 .
-coh     1.8956 39.807 1.3089e-04 0.5247 0.024378 0.58619  
-dur:coh 1.5915 33.421 1.3913e-04 0.4030 0.018831 0.62490  
+        num Df den Df       MSE      F      pes  Pr(>F)  
+dur     1.0000 21.000 0.0069352 3.5548 0.144770 0.07329 .
+coh     1.8956 39.807 0.0130890 0.5247 0.024378 0.58619  
+dur:coh 1.5915 33.421 0.0139134 0.4030 0.018831 0.62490  
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-   curvature vs zero: +0.00227 units/s^2 [95% CI -0.00065, +0.00519], F(1,21) = 2.62, p = 0.1204
+   curvature vs zero: +0.02272 units/s^2 [95% CI -0.00646, +0.05190], F(1,21) = 2.62, p = 0.1204
 
    replication check: 13.380, 5.250, 0.312   [reproduced]
 
@@ -49,10 +49,10 @@ PMA, delay period   (20 bins)
 Anova Table (Type 3 tests)
 
 Response: level
-        num Df den Df        MSE       F     pes    Pr(>F)    
-dur     1.0000 21.000 0.00100611 33.1863 0.61245 1.019e-05 ***
-coh     1.9594 41.148 0.00036359  3.3607 0.13796   0.04538 *  
-dur:coh 1.9248 40.421 0.00014231  3.4739 0.14194   0.04217 *  
+        num Df den Df      MSE       F     pes    Pr(>F)    
+dur     1.0000 21.000 0.100611 33.1863 0.61245 1.019e-05 ***
+coh     1.9594 41.148 0.036359  3.3607 0.13796   0.04538 *  
+dur:coh 1.9248 40.421 0.014231  3.4739 0.14194   0.04217 *  
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
@@ -60,69 +60,26 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
 Anova Table (Type 3 tests)
 
 Response: trend
-        num Df den Df        MSE       F     pes   Pr(>F)   
-dur     1.0000 21.000 0.00050799 11.8981 0.36167 0.002403 **
-coh     1.6959 35.615 0.00039038  0.5245 0.02437 0.567013   
-dur:coh 1.7357 36.450 0.00017211  0.5084 0.02364 0.579870   
+        num Df den Df      MSE       F     pes   Pr(>F)   
+dur     1.0000 21.000 0.050799 11.8981 0.36167 0.002403 **
+coh     1.6959 35.615 0.039038  0.5245 0.02437 0.567013   
+dur:coh 1.7357 36.450 0.017211  0.5084 0.02364 0.579870   
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-   trend vs zero: +0.05604 units/s [95% CI +0.03640, +0.07567], F(1,21) = 35.24, p = 6.832e-06
+   trend vs zero: +0.56036 units/s [95% CI +0.36405, +0.75667], F(1,21) = 35.24, p = 6.832e-06
 
 -- QUAD (quadratic coefficient, units/s^2): curvature, and its interactions with duration/coherence
 Anova Table (Type 3 tests)
 
 Response: quad
-        num Df den Df        MSE      F      pes Pr(>F)
-dur     1.0000 21.000 0.00056259 0.7513 0.034540 0.3959
-coh     1.9470 40.887 0.00045248 1.8548 0.081158 0.1703
-dur:coh 1.8589 39.036 0.00038671 0.9465 0.043127 0.3909
-   curvature vs zero: +0.02099 units/s^2 [95% CI +0.01095, +0.03103], F(1,21) = 18.89, p = 0.0002838
+        num Df den Df      MSE      F      pes Pr(>F)
+dur     1.0000 21.000 0.056259 0.7513 0.034540 0.3959
+coh     1.9470 40.887 0.045248 1.8548 0.081158 0.1703
+dur:coh 1.8589 39.036 0.038671 0.9465 0.043127 0.3909
+   curvature vs zero: +0.20988 units/s^2 [95% CI +0.10946, +0.31030], F(1,21) = 18.89, p = 0.0002838
 
    replication check: 33.190, 3.360, 3.474   [reproduced]
-
-==============================================================================
-PMA, RS period   (2 bins)
-==============================================================================
-
--- LEVEL: duration, coherence, duration x coherence  (identical to the manuscript's own duration/coherence/interaction effects)
-Anova Table (Type 3 tests)
-
-Response: level
-        num Df den Df        MSE       F     pes    Pr(>F)    
-dur     1.0000 21.000 0.00151188 36.5585 0.63515 5.322e-06 ***
-coh     1.5628 32.818 0.00189875  1.1591 0.05231    0.3151    
-dur:coh 1.9066 40.039 0.00050858  0.0414 0.00197    0.9542    
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
--- TREND (linear contrast): time, and its interactions with duration/coherence
-Anova Table (Type 3 tests)
-
-Response: trend
-        num Df den Df      MSE      F      pes  Pr(>F)  
-dur     1.0000 21.000 0.092037 7.0465 0.251242 0.01483 *
-coh     1.8385 38.608 0.195455 0.4075 0.019033 0.65109  
-dur:coh 1.7463 36.673 0.081210 0.5868 0.027185 0.53905  
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-   trend vs zero: -0.35507 units/s [95% CI -0.51263, -0.19751], F(1,21) = 21.96, p = 0.000126
-
-   replication check: 36.560, 1.159, 0.041   [reproduced]
-
-==============================================================================
-PMA, response period   (one informative bin: level analysis only)
-==============================================================================
-Anova Table (Type 3 tests)
-
-Response: y
-        num Df den Df        MSE      F      pes  Pr(>F)  
-dur     1.0000 21.000 0.00024210 7.6132 0.266072 0.01176 *
-coh     1.9038 39.980 0.00022567 1.8452 0.080768 0.17275  
-dur:coh 1.8618 39.098 0.00019944 0.3419 0.016020 0.69729  
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 ==============================================================================
 MBL, stimulus period   (20 bins)
@@ -205,60 +162,6 @@ Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’
    curvature vs zero: +0.00696 units/s^2 [95% CI -0.00102, +0.01494], F(1,21) = 3.29, p = 0.08401
 
    replication check: 3.177, 1.257, 1.586   [reproduced]
-
-==============================================================================
-MBL, RS period   (2 bins)
-==============================================================================
-
--- LEVEL: duration, coherence, duration x coherence  (identical to the manuscript's own duration/coherence/interaction effects)
-Anova Table (Type 3 tests)
-
-Response: level
-        num Df den Df        MSE      F      pes  Pr(>F)  
-dur     1.0000 21.000 0.00088247 3.0391 0.126422 0.09591 .
-coh     1.9020 39.942 0.00156708 0.1597 0.007548 0.84274  
-dur:coh 1.9981 41.960 0.00085678 1.2156 0.054720 0.30672  
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
--- TREND (linear contrast): time, and its interactions with duration/coherence
-Anova Table (Type 3 tests)
-
-Response: trend
-        num Df den Df     MSE      F      pes Pr(>F)
-dur     1.0000 21.000 0.13847 1.5091 0.067045 0.2329
-coh     1.9871 41.728 0.10219 0.0236 0.001124 0.9762
-dur:coh 1.6634 34.931 0.19329 1.4585 0.064941 0.2456
-
-   trend vs zero: +0.00937 units/s [95% CI -0.07076, +0.08950], F(1,21) = 0.06, p = 0.8102
-
-   replication check: 3.039, 0.160, 1.216   [reproduced]
-
-==============================================================================
-MBL, response period   (2 bins)
-==============================================================================
-
--- LEVEL: duration, coherence, duration x coherence  (identical to the manuscript's own duration/coherence/interaction effects)
-Anova Table (Type 3 tests)
-
-Response: level
-        num Df den Df       MSE      F       pes Pr(>F)
-dur     1.0000 21.000 0.0016373 0.0064 0.0003069 0.9368
-coh     1.9481 40.909 0.0016290 0.3641 0.0170423 0.6915
-dur:coh 1.6458 34.562 0.0013135 0.1610 0.0076072 0.8108
-
--- TREND (linear contrast): time, and its interactions with duration/coherence
-Anova Table (Type 3 tests)
-
-Response: trend
-        num Df den Df     MSE      F      pes Pr(>F)
-dur     1.0000 21.000 0.20318 2.1286 0.092035 0.1594
-coh     1.9767 41.511 0.14137 0.2525 0.011880 0.7755
-dur:coh 1.7244 36.213 0.16349 0.7187 0.033090 0.4747
-
-   trend vs zero: +0.12536 units/s [95% CI +0.04901, +0.20172], F(1,21) = 11.66, p = 0.002608
-
-   replication check: 0.006, 0.364, 0.161   [reproduced]
 
 ==============================================================================
 LRP, stimulus period   (20 bins)
@@ -399,56 +302,6 @@ MBL, stimulus period, resolved into two halves (descriptive; Table S5)
       0.3 s/0% -0.0200  0.3 s/12% -0.0241  0.3 s/50% -0.0210  2 s/0% -0.0078  2 s/12% -0.0118  2 s/50% -0.0067
 
 ==============================================================================
-Poisson analyses of the delay-period counts (Table S6)
-==============================================================================
-
--- two-stage: per participant and cell, then repeated-measures ANOVA
-Anova Table (Type 3 tests)
-
-Response: slope
-        num Df den Df     MSE      F      pes  Pr(>F)  
-dur     1.0000 21.000 0.18010 4.7810 0.185447 0.04024 *
-coh     1.3828 29.040 0.15076 4.1951 0.166506 0.03789 *
-dur:coh 1.8679 39.226 0.10386 0.3938 0.018405 0.66314  
----
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-Anova Table (Type 3 tests)
-
-Response: curv
-        num Df den Df     MSE      F      pes Pr(>F)
-dur     1.0000  21.00 1.07037 0.1666 0.007873 0.6872
-coh     1.8371  38.58 0.69504 0.8561 0.039168 0.4243
-dur:coh 1.8224  38.27 0.56224 2.3862 0.102033 0.1099
-   slope vs zero: +0.9286, t(21) = 10.15, p = 1.502e-09
-   curvature vs zero: -0.2530, t(21) = -3.30, p = 0.003434
-
--- one-stage Poisson mixed model, random intercept and slope by participant
-              Estimate Std. Error    z value      Pr(>|z|)
-(Intercept) -3.0449104 0.14981754 -20.324125  7.867945e-92
-t            0.8606614 0.08126476  10.590832  3.286567e-26
-durn         0.4962887 0.01474349  33.661547 2.113216e-248
-cohn         0.3390744 0.03330174  10.181881  2.388983e-24
-t:durn      -0.1599374 0.02497840  -6.403025  1.523279e-10
-t:cohn      -0.2644999 0.05640387  -4.689393  2.740172e-06
-# Overdispersion test
-
-       dispersion ratio =    0.880
-  Pearson's Chi-Squared = 2314.994
-                p-value =        1
-
-
--- estimated trends by cell (emmeans)
- durn    cohn t.trend     SE  df asymp.LCL asymp.UCL
- -0.5 -0.2067   0.995 0.0835 Inf     0.832     1.159
-  0.5 -0.2067   0.835 0.0828 Inf     0.673     0.998
- -0.5 -0.0867   0.964 0.0828 Inf     0.801     1.126
-  0.5 -0.0867   0.804 0.0820 Inf     0.643     0.964
- -0.5  0.2933   0.863 0.0841 Inf     0.698     1.028
-  0.5  0.2933   0.703 0.0833 Inf     0.540     0.866
-
-Confidence level used: 0.95 
-
-==============================================================================
 BEHAVIOUR (archive exports, analysis_behavioral_emg/)
 ==============================================================================
 
@@ -474,7 +327,7 @@ dur:coh 1.6787 35.252 0.00045297  4.6071 0.17992 0.0216332 *
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-Mean PMET -- mean premotor execution time  (n = 22)
+Mean PMT -- mean premotor time  (n = 22)
 Anova Table (Type 3 tests)
 
 Response: y
@@ -485,7 +338,7 @@ dur:coh 1.7212 36.144 0.00046050  3.575 0.14547 0.0445610 *
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-Mean MET -- mean motor execution time  (n = 22)
+Mean MT -- mean motor time  (n = 22)
 Anova Table (Type 3 tests)
 
 Response: y

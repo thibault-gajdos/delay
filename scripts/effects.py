@@ -69,7 +69,7 @@ GROUPS = [
 # Theoretical predictions): no sign summary is reported for them (Materials and Methods,
 # Model-data comparison).
 SIGN_FIXED = {'acc_coh', 'acc_dur', 'rt_coh', 'rt_dur', 'pmet_coh', 'pmet_dur',
-              'stim_coh', 'delay_coh', 'delay_dur', 'trend'}
+              'stim_coh', 'delay_coh', 'trend'}
 KEYS = [k for _, ks in GROUPS for k in ks]
 
 NAMES = dict(

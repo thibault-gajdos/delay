@@ -38,6 +38,30 @@
    "hi": 31.106680719014697,
    "n": 22
   },
+  "pmet_coh": {
+   "mean": 31.660285135972494,
+   "lo": 18.954208351545255,
+   "hi": 44.36636192039973,
+   "n": 22
+  },
+  "pmet_dur": {
+   "mean": 49.01787813664992,
+   "lo": 36.40324913059937,
+   "hi": 61.63250714270047,
+   "n": 22
+  },
+  "pmet_int": {
+   "mean": 11.228905641083188,
+   "lo": -5.377400735080432,
+   "hi": 27.835212017246807,
+   "n": 22
+  },
+  "met_dur": {
+   "mean": -0.49209686899106975,
+   "lo": -2.0554394852843627,
+   "hi": 1.0712457473022234,
+   "n": 22
+  },
   "stim_coh": {
    "mean": 0.05365611463409972,
    "lo": 0.012293959645681196,
@@ -97,42 +121,6 @@
    "lo": 0.10945729414136428,
    "hi": 0.31029606602472415,
    "n": 22
-  },
-  "rs_fall": {
-   "mean": 3.550689355155584,
-   "lo": 1.9751002637370147,
-   "hi": 5.126278446574153,
-   "n": 22
-  },
-  "rs_fall_dur": {
-   "mean": 1.4018766965996272,
-   "lo": 0.30361181515102853,
-   "hi": 2.500141578048226,
-   "n": 22
-  },
-  "pmet_coh": {
-   "mean": 31.660285135972494,
-   "lo": 18.954208351545255,
-   "hi": 44.36636192039973,
-   "n": 22
-  },
-  "pmet_dur": {
-   "mean": 49.01787813664992,
-   "lo": 36.40324913059937,
-   "hi": 61.63250714270047,
-   "n": 22
-  },
-  "pmet_int": {
-   "mean": 11.228905641083188,
-   "lo": -5.377400735080432,
-   "hi": 27.835212017246807,
-   "n": 22
-  },
-  "met_dur": {
-   "mean": -0.49209686899106975,
-   "lo": -2.0554394852843627,
-   "hi": 1.0712457473022234,
-   "n": 22
   }
  },
  "grid": [
@@ -151,6 +139,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -160,13 +152,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -175,6 +161,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -184,13 +174,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -242,6 +226,38 @@
       "sign_observed": 217,
       "sign_opposite": 4,
       "sign_uncertain": 7
+     },
+     "pmet_coh": {
+      "reproduces": 63,
+      "does_not": 158,
+      "uncertain": 7,
+      "sign_observed": 218,
+      "sign_opposite": 0,
+      "sign_uncertain": 10
+     },
+     "pmet_dur": {
+      "reproduces": 32,
+      "does_not": 187,
+      "uncertain": 9,
+      "sign_observed": 227,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 86,
+      "does_not": 116,
+      "uncertain": 26,
+      "sign_observed": 214,
+      "sign_opposite": 5,
+      "sign_uncertain": 9
+     },
+     "met_dur": {
+      "reproduces": 63,
+      "does_not": 144,
+      "uncertain": 21,
+      "sign_observed": 213,
+      "sign_opposite": 0,
+      "sign_uncertain": 15
      },
      "stim_coh": {
       "reproduces": 118,
@@ -322,54 +338,6 @@
       "sign_observed": 1,
       "sign_opposite": 142,
       "sign_uncertain": 83
-     },
-     "rs_fall": {
-      "reproduces": 29,
-      "does_not": 193,
-      "uncertain": 6,
-      "sign_observed": 226,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rs_fall_dur": {
-      "reproduces": 50,
-      "does_not": 131,
-      "uncertain": 47,
-      "sign_observed": 171,
-      "sign_opposite": 0,
-      "sign_uncertain": 57
-     },
-     "pmet_coh": {
-      "reproduces": 63,
-      "does_not": 158,
-      "uncertain": 7,
-      "sign_observed": 218,
-      "sign_opposite": 0,
-      "sign_uncertain": 10
-     },
-     "pmet_dur": {
-      "reproduces": 32,
-      "does_not": 187,
-      "uncertain": 9,
-      "sign_observed": 227,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 86,
-      "does_not": 116,
-      "uncertain": 26,
-      "sign_observed": 214,
-      "sign_opposite": 5,
-      "sign_uncertain": 9
-     },
-     "met_dur": {
-      "reproduces": 63,
-      "does_not": 144,
-      "uncertain": 21,
-      "sign_observed": 213,
-      "sign_opposite": 0,
-      "sign_uncertain": 15
      }
     },
     "model2": {
@@ -420,6 +388,38 @@
       "sign_observed": 193,
       "sign_opposite": 5,
       "sign_uncertain": 6
+     },
+     "pmet_coh": {
+      "reproduces": 54,
+      "does_not": 139,
+      "uncertain": 11,
+      "sign_observed": 199,
+      "sign_opposite": 0,
+      "sign_uncertain": 5
+     },
+     "pmet_dur": {
+      "reproduces": 39,
+      "does_not": 160,
+      "uncertain": 5,
+      "sign_observed": 201,
+      "sign_opposite": 0,
+      "sign_uncertain": 3
+     },
+     "pmet_int": {
+      "reproduces": 75,
+      "does_not": 114,
+      "uncertain": 15,
+      "sign_observed": 191,
+      "sign_opposite": 5,
+      "sign_uncertain": 8
+     },
+     "met_dur": {
+      "reproduces": 51,
+      "does_not": 139,
+      "uncertain": 14,
+      "sign_observed": 194,
+      "sign_opposite": 1,
+      "sign_uncertain": 9
      },
      "stim_coh": {
       "reproduces": 80,
@@ -500,54 +500,6 @@
       "sign_observed": 80,
       "sign_opposite": 78,
       "sign_uncertain": 46
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 173,
-      "uncertain": 9,
-      "sign_observed": 191,
-      "sign_opposite": 7,
-      "sign_uncertain": 6
-     },
-     "rs_fall_dur": {
-      "reproduces": 45,
-      "does_not": 105,
-      "uncertain": 54,
-      "sign_observed": 139,
-      "sign_opposite": 2,
-      "sign_uncertain": 63
-     },
-     "pmet_coh": {
-      "reproduces": 54,
-      "does_not": 139,
-      "uncertain": 11,
-      "sign_observed": 199,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 39,
-      "does_not": 160,
-      "uncertain": 5,
-      "sign_observed": 201,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 75,
-      "does_not": 114,
-      "uncertain": 15,
-      "sign_observed": 191,
-      "sign_opposite": 5,
-      "sign_uncertain": 8
-     },
-     "met_dur": {
-      "reproduces": 51,
-      "does_not": 139,
-      "uncertain": 14,
-      "sign_observed": 194,
-      "sign_opposite": 1,
-      "sign_uncertain": 9
      }
     }
    }
@@ -567,6 +519,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -576,13 +532,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -591,6 +541,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -600,13 +554,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -658,6 +606,38 @@
       "sign_observed": 216,
       "sign_opposite": 4,
       "sign_uncertain": 7
+     },
+     "pmet_coh": {
+      "reproduces": 63,
+      "does_not": 154,
+      "uncertain": 10,
+      "sign_observed": 217,
+      "sign_opposite": 0,
+      "sign_uncertain": 10
+     },
+     "pmet_dur": {
+      "reproduces": 32,
+      "does_not": 188,
+      "uncertain": 7,
+      "sign_observed": 226,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 87,
+      "does_not": 121,
+      "uncertain": 19,
+      "sign_observed": 213,
+      "sign_opposite": 4,
+      "sign_uncertain": 10
+     },
+     "met_dur": {
+      "reproduces": 68,
+      "does_not": 138,
+      "uncertain": 21,
+      "sign_observed": 196,
+      "sign_opposite": 11,
+      "sign_uncertain": 20
      },
      "stim_coh": {
       "reproduces": 117,
@@ -738,54 +718,6 @@
       "sign_observed": 1,
       "sign_opposite": 141,
       "sign_uncertain": 83
-     },
-     "rs_fall": {
-      "reproduces": 29,
-      "does_not": 192,
-      "uncertain": 6,
-      "sign_observed": 225,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rs_fall_dur": {
-      "reproduces": 49,
-      "does_not": 130,
-      "uncertain": 48,
-      "sign_observed": 170,
-      "sign_opposite": 0,
-      "sign_uncertain": 57
-     },
-     "pmet_coh": {
-      "reproduces": 63,
-      "does_not": 154,
-      "uncertain": 10,
-      "sign_observed": 217,
-      "sign_opposite": 0,
-      "sign_uncertain": 10
-     },
-     "pmet_dur": {
-      "reproduces": 32,
-      "does_not": 188,
-      "uncertain": 7,
-      "sign_observed": 226,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 87,
-      "does_not": 121,
-      "uncertain": 19,
-      "sign_observed": 213,
-      "sign_opposite": 4,
-      "sign_uncertain": 10
-     },
-     "met_dur": {
-      "reproduces": 68,
-      "does_not": 138,
-      "uncertain": 21,
-      "sign_observed": 196,
-      "sign_opposite": 11,
-      "sign_uncertain": 20
      }
     },
     "model2": {
@@ -836,6 +768,38 @@
       "sign_observed": 193,
       "sign_opposite": 5,
       "sign_uncertain": 6
+     },
+     "pmet_coh": {
+      "reproduces": 55,
+      "does_not": 138,
+      "uncertain": 11,
+      "sign_observed": 198,
+      "sign_opposite": 0,
+      "sign_uncertain": 6
+     },
+     "pmet_dur": {
+      "reproduces": 39,
+      "does_not": 157,
+      "uncertain": 8,
+      "sign_observed": 201,
+      "sign_opposite": 0,
+      "sign_uncertain": 3
+     },
+     "pmet_int": {
+      "reproduces": 72,
+      "does_not": 116,
+      "uncertain": 16,
+      "sign_observed": 191,
+      "sign_opposite": 5,
+      "sign_uncertain": 8
+     },
+     "met_dur": {
+      "reproduces": 53,
+      "does_not": 136,
+      "uncertain": 15,
+      "sign_observed": 182,
+      "sign_opposite": 7,
+      "sign_uncertain": 15
      },
      "stim_coh": {
       "reproduces": 80,
@@ -916,54 +880,6 @@
       "sign_observed": 80,
       "sign_opposite": 77,
       "sign_uncertain": 47
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 173,
-      "uncertain": 9,
-      "sign_observed": 190,
-      "sign_opposite": 7,
-      "sign_uncertain": 7
-     },
-     "rs_fall_dur": {
-      "reproduces": 44,
-      "does_not": 105,
-      "uncertain": 55,
-      "sign_observed": 140,
-      "sign_opposite": 2,
-      "sign_uncertain": 62
-     },
-     "pmet_coh": {
-      "reproduces": 55,
-      "does_not": 138,
-      "uncertain": 11,
-      "sign_observed": 198,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 39,
-      "does_not": 157,
-      "uncertain": 8,
-      "sign_observed": 201,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 72,
-      "does_not": 116,
-      "uncertain": 16,
-      "sign_observed": 191,
-      "sign_opposite": 5,
-      "sign_uncertain": 8
-     },
-     "met_dur": {
-      "reproduces": 53,
-      "does_not": 136,
-      "uncertain": 15,
-      "sign_observed": 182,
-      "sign_opposite": 7,
-      "sign_uncertain": 15
      }
     }
    }
@@ -983,6 +899,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -992,13 +912,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -1007,6 +921,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -1016,13 +934,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -1074,6 +986,38 @@
       "sign_observed": 216,
       "sign_opposite": 4,
       "sign_uncertain": 7
+     },
+     "pmet_coh": {
+      "reproduces": 63,
+      "does_not": 151,
+      "uncertain": 13,
+      "sign_observed": 216,
+      "sign_opposite": 0,
+      "sign_uncertain": 11
+     },
+     "pmet_dur": {
+      "reproduces": 31,
+      "does_not": 186,
+      "uncertain": 10,
+      "sign_observed": 226,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 86,
+      "does_not": 127,
+      "uncertain": 14,
+      "sign_observed": 214,
+      "sign_opposite": 4,
+      "sign_uncertain": 9
+     },
+     "met_dur": {
+      "reproduces": 65,
+      "does_not": 133,
+      "uncertain": 29,
+      "sign_observed": 176,
+      "sign_opposite": 25,
+      "sign_uncertain": 26
      },
      "stim_coh": {
       "reproduces": 117,
@@ -1154,54 +1098,6 @@
       "sign_observed": 1,
       "sign_opposite": 141,
       "sign_uncertain": 83
-     },
-     "rs_fall": {
-      "reproduces": 29,
-      "does_not": 192,
-      "uncertain": 6,
-      "sign_observed": 225,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rs_fall_dur": {
-      "reproduces": 49,
-      "does_not": 130,
-      "uncertain": 48,
-      "sign_observed": 169,
-      "sign_opposite": 0,
-      "sign_uncertain": 58
-     },
-     "pmet_coh": {
-      "reproduces": 63,
-      "does_not": 151,
-      "uncertain": 13,
-      "sign_observed": 216,
-      "sign_opposite": 0,
-      "sign_uncertain": 11
-     },
-     "pmet_dur": {
-      "reproduces": 31,
-      "does_not": 186,
-      "uncertain": 10,
-      "sign_observed": 226,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 86,
-      "does_not": 127,
-      "uncertain": 14,
-      "sign_observed": 214,
-      "sign_opposite": 4,
-      "sign_uncertain": 9
-     },
-     "met_dur": {
-      "reproduces": 65,
-      "does_not": 133,
-      "uncertain": 29,
-      "sign_observed": 176,
-      "sign_opposite": 25,
-      "sign_uncertain": 26
      }
     },
     "model2": {
@@ -1252,6 +1148,38 @@
       "sign_observed": 192,
       "sign_opposite": 5,
       "sign_uncertain": 6
+     },
+     "pmet_coh": {
+      "reproduces": 52,
+      "does_not": 137,
+      "uncertain": 14,
+      "sign_observed": 197,
+      "sign_opposite": 0,
+      "sign_uncertain": 6
+     },
+     "pmet_dur": {
+      "reproduces": 38,
+      "does_not": 157,
+      "uncertain": 8,
+      "sign_observed": 200,
+      "sign_opposite": 0,
+      "sign_uncertain": 3
+     },
+     "pmet_int": {
+      "reproduces": 72,
+      "does_not": 115,
+      "uncertain": 16,
+      "sign_observed": 191,
+      "sign_opposite": 5,
+      "sign_uncertain": 7
+     },
+     "met_dur": {
+      "reproduces": 56,
+      "does_not": 131,
+      "uncertain": 16,
+      "sign_observed": 172,
+      "sign_opposite": 14,
+      "sign_uncertain": 17
      },
      "stim_coh": {
       "reproduces": 79,
@@ -1332,54 +1260,6 @@
       "sign_observed": 80,
       "sign_opposite": 76,
       "sign_uncertain": 47
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 172,
-      "uncertain": 9,
-      "sign_observed": 189,
-      "sign_opposite": 7,
-      "sign_uncertain": 7
-     },
-     "rs_fall_dur": {
-      "reproduces": 45,
-      "does_not": 104,
-      "uncertain": 54,
-      "sign_observed": 140,
-      "sign_opposite": 2,
-      "sign_uncertain": 61
-     },
-     "pmet_coh": {
-      "reproduces": 52,
-      "does_not": 137,
-      "uncertain": 14,
-      "sign_observed": 197,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 38,
-      "does_not": 157,
-      "uncertain": 8,
-      "sign_observed": 200,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 72,
-      "does_not": 115,
-      "uncertain": 16,
-      "sign_observed": 191,
-      "sign_opposite": 5,
-      "sign_uncertain": 7
-     },
-     "met_dur": {
-      "reproduces": 56,
-      "does_not": 131,
-      "uncertain": 16,
-      "sign_observed": 172,
-      "sign_opposite": 14,
-      "sign_uncertain": 17
      }
     }
    }
@@ -1399,6 +1279,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -1408,13 +1292,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -1423,6 +1301,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -1432,13 +1314,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -1490,6 +1366,38 @@
       "sign_observed": 210,
       "sign_opposite": 4,
       "sign_uncertain": 7
+     },
+     "pmet_coh": {
+      "reproduces": 66,
+      "does_not": 143,
+      "uncertain": 12,
+      "sign_observed": 211,
+      "sign_opposite": 0,
+      "sign_uncertain": 10
+     },
+     "pmet_dur": {
+      "reproduces": 34,
+      "does_not": 178,
+      "uncertain": 9,
+      "sign_observed": 220,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 80,
+      "does_not": 123,
+      "uncertain": 18,
+      "sign_observed": 209,
+      "sign_opposite": 4,
+      "sign_uncertain": 8
+     },
+     "met_dur": {
+      "reproduces": 62,
+      "does_not": 131,
+      "uncertain": 28,
+      "sign_observed": 145,
+      "sign_opposite": 47,
+      "sign_uncertain": 29
      },
      "stim_coh": {
       "reproduces": 116,
@@ -1570,54 +1478,6 @@
       "sign_observed": 1,
       "sign_opposite": 136,
       "sign_uncertain": 82
-     },
-     "rs_fall": {
-      "reproduces": 28,
-      "does_not": 187,
-      "uncertain": 6,
-      "sign_observed": 218,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rs_fall_dur": {
-      "reproduces": 48,
-      "does_not": 127,
-      "uncertain": 46,
-      "sign_observed": 163,
-      "sign_opposite": 0,
-      "sign_uncertain": 58
-     },
-     "pmet_coh": {
-      "reproduces": 66,
-      "does_not": 143,
-      "uncertain": 12,
-      "sign_observed": 211,
-      "sign_opposite": 0,
-      "sign_uncertain": 10
-     },
-     "pmet_dur": {
-      "reproduces": 34,
-      "does_not": 178,
-      "uncertain": 9,
-      "sign_observed": 220,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 80,
-      "does_not": 123,
-      "uncertain": 18,
-      "sign_observed": 209,
-      "sign_opposite": 4,
-      "sign_uncertain": 8
-     },
-     "met_dur": {
-      "reproduces": 62,
-      "does_not": 131,
-      "uncertain": 28,
-      "sign_observed": 145,
-      "sign_opposite": 47,
-      "sign_uncertain": 29
      }
     },
     "model2": {
@@ -1668,6 +1528,38 @@
       "sign_observed": 191,
       "sign_opposite": 5,
       "sign_uncertain": 5
+     },
+     "pmet_coh": {
+      "reproduces": 52,
+      "does_not": 134,
+      "uncertain": 15,
+      "sign_observed": 195,
+      "sign_opposite": 0,
+      "sign_uncertain": 6
+     },
+     "pmet_dur": {
+      "reproduces": 40,
+      "does_not": 154,
+      "uncertain": 7,
+      "sign_observed": 198,
+      "sign_opposite": 0,
+      "sign_uncertain": 3
+     },
+     "pmet_int": {
+      "reproduces": 69,
+      "does_not": 117,
+      "uncertain": 15,
+      "sign_observed": 191,
+      "sign_opposite": 4,
+      "sign_uncertain": 6
+     },
+     "met_dur": {
+      "reproduces": 50,
+      "does_not": 129,
+      "uncertain": 22,
+      "sign_observed": 152,
+      "sign_opposite": 29,
+      "sign_uncertain": 20
      },
      "stim_coh": {
       "reproduces": 79,
@@ -1748,54 +1640,6 @@
       "sign_observed": 79,
       "sign_opposite": 75,
       "sign_uncertain": 46
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 170,
-      "uncertain": 9,
-      "sign_observed": 187,
-      "sign_opposite": 7,
-      "sign_uncertain": 7
-     },
-     "rs_fall_dur": {
-      "reproduces": 43,
-      "does_not": 104,
-      "uncertain": 54,
-      "sign_observed": 137,
-      "sign_opposite": 2,
-      "sign_uncertain": 62
-     },
-     "pmet_coh": {
-      "reproduces": 52,
-      "does_not": 134,
-      "uncertain": 15,
-      "sign_observed": 195,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 40,
-      "does_not": 154,
-      "uncertain": 7,
-      "sign_observed": 198,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 69,
-      "does_not": 117,
-      "uncertain": 15,
-      "sign_observed": 191,
-      "sign_opposite": 4,
-      "sign_uncertain": 6
-     },
-     "met_dur": {
-      "reproduces": 50,
-      "does_not": 129,
-      "uncertain": 22,
-      "sign_observed": 152,
-      "sign_opposite": 29,
-      "sign_uncertain": 20
      }
     }
    }
@@ -1815,6 +1659,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -1824,13 +1672,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -1839,6 +1681,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -1848,13 +1694,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -1906,6 +1746,38 @@
       "sign_observed": 216,
       "sign_opposite": 4,
       "sign_uncertain": 7
+     },
+     "pmet_coh": {
+      "reproduces": 63,
+      "does_not": 152,
+      "uncertain": 12,
+      "sign_observed": 222,
+      "sign_opposite": 0,
+      "sign_uncertain": 5
+     },
+     "pmet_dur": {
+      "reproduces": 35,
+      "does_not": 184,
+      "uncertain": 8,
+      "sign_observed": 226,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 90,
+      "does_not": 112,
+      "uncertain": 25,
+      "sign_observed": 215,
+      "sign_opposite": 5,
+      "sign_uncertain": 7
+     },
+     "met_dur": {
+      "reproduces": 61,
+      "does_not": 146,
+      "uncertain": 20,
+      "sign_observed": 214,
+      "sign_opposite": 0,
+      "sign_uncertain": 13
      },
      "stim_coh": {
       "reproduces": 116,
@@ -1986,54 +1858,6 @@
       "sign_observed": 1,
       "sign_opposite": 141,
       "sign_uncertain": 83
-     },
-     "rs_fall": {
-      "reproduces": 31,
-      "does_not": 193,
-      "uncertain": 3,
-      "sign_observed": 221,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "rs_fall_dur": {
-      "reproduces": 50,
-      "does_not": 125,
-      "uncertain": 52,
-      "sign_observed": 170,
-      "sign_opposite": 0,
-      "sign_uncertain": 57
-     },
-     "pmet_coh": {
-      "reproduces": 63,
-      "does_not": 152,
-      "uncertain": 12,
-      "sign_observed": 222,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 35,
-      "does_not": 184,
-      "uncertain": 8,
-      "sign_observed": 226,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 90,
-      "does_not": 112,
-      "uncertain": 25,
-      "sign_observed": 215,
-      "sign_opposite": 5,
-      "sign_uncertain": 7
-     },
-     "met_dur": {
-      "reproduces": 61,
-      "does_not": 146,
-      "uncertain": 20,
-      "sign_observed": 214,
-      "sign_opposite": 0,
-      "sign_uncertain": 13
      }
     },
     "model2": {
@@ -2084,6 +1908,38 @@
       "sign_observed": 190,
       "sign_opposite": 6,
       "sign_uncertain": 6
+     },
+     "pmet_coh": {
+      "reproduces": 55,
+      "does_not": 136,
+      "uncertain": 11,
+      "sign_observed": 196,
+      "sign_opposite": 0,
+      "sign_uncertain": 6
+     },
+     "pmet_dur": {
+      "reproduces": 44,
+      "does_not": 153,
+      "uncertain": 5,
+      "sign_observed": 201,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 80,
+      "does_not": 108,
+      "uncertain": 14,
+      "sign_observed": 191,
+      "sign_opposite": 5,
+      "sign_uncertain": 6
+     },
+     "met_dur": {
+      "reproduces": 50,
+      "does_not": 136,
+      "uncertain": 16,
+      "sign_observed": 192,
+      "sign_opposite": 2,
+      "sign_uncertain": 8
      },
      "stim_coh": {
       "reproduces": 78,
@@ -2164,54 +2020,6 @@
       "sign_observed": 80,
       "sign_opposite": 71,
       "sign_uncertain": 50
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 169,
-      "uncertain": 11,
-      "sign_observed": 189,
-      "sign_opposite": 6,
-      "sign_uncertain": 7
-     },
-     "rs_fall_dur": {
-      "reproduces": 47,
-      "does_not": 102,
-      "uncertain": 53,
-      "sign_observed": 145,
-      "sign_opposite": 2,
-      "sign_uncertain": 55
-     },
-     "pmet_coh": {
-      "reproduces": 55,
-      "does_not": 136,
-      "uncertain": 11,
-      "sign_observed": 196,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 44,
-      "does_not": 153,
-      "uncertain": 5,
-      "sign_observed": 201,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 80,
-      "does_not": 108,
-      "uncertain": 14,
-      "sign_observed": 191,
-      "sign_opposite": 5,
-      "sign_uncertain": 6
-     },
-     "met_dur": {
-      "reproduces": 50,
-      "does_not": 136,
-      "uncertain": 16,
-      "sign_observed": 192,
-      "sign_opposite": 2,
-      "sign_uncertain": 8
      }
     }
    }
@@ -2231,6 +2039,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -2240,13 +2052,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -2255,6 +2061,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -2264,13 +2074,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -2322,6 +2126,38 @@
       "sign_observed": 215,
       "sign_opposite": 4,
       "sign_uncertain": 7
+     },
+     "pmet_coh": {
+      "reproduces": 63,
+      "does_not": 151,
+      "uncertain": 12,
+      "sign_observed": 219,
+      "sign_opposite": 0,
+      "sign_uncertain": 7
+     },
+     "pmet_dur": {
+      "reproduces": 34,
+      "does_not": 182,
+      "uncertain": 10,
+      "sign_observed": 225,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 89,
+      "does_not": 116,
+      "uncertain": 21,
+      "sign_observed": 215,
+      "sign_opposite": 5,
+      "sign_uncertain": 6
+     },
+     "met_dur": {
+      "reproduces": 65,
+      "does_not": 137,
+      "uncertain": 24,
+      "sign_observed": 195,
+      "sign_opposite": 11,
+      "sign_uncertain": 20
      },
      "stim_coh": {
       "reproduces": 115,
@@ -2402,54 +2238,6 @@
       "sign_observed": 1,
       "sign_opposite": 140,
       "sign_uncertain": 83
-     },
-     "rs_fall": {
-      "reproduces": 31,
-      "does_not": 192,
-      "uncertain": 3,
-      "sign_observed": 220,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "rs_fall_dur": {
-      "reproduces": 51,
-      "does_not": 124,
-      "uncertain": 51,
-      "sign_observed": 169,
-      "sign_opposite": 0,
-      "sign_uncertain": 57
-     },
-     "pmet_coh": {
-      "reproduces": 63,
-      "does_not": 151,
-      "uncertain": 12,
-      "sign_observed": 219,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "pmet_dur": {
-      "reproduces": 34,
-      "does_not": 182,
-      "uncertain": 10,
-      "sign_observed": 225,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 89,
-      "does_not": 116,
-      "uncertain": 21,
-      "sign_observed": 215,
-      "sign_opposite": 5,
-      "sign_uncertain": 6
-     },
-     "met_dur": {
-      "reproduces": 65,
-      "does_not": 137,
-      "uncertain": 24,
-      "sign_observed": 195,
-      "sign_opposite": 11,
-      "sign_uncertain": 20
      }
     },
     "model2": {
@@ -2500,6 +2288,38 @@
       "sign_observed": 189,
       "sign_opposite": 6,
       "sign_uncertain": 6
+     },
+     "pmet_coh": {
+      "reproduces": 53,
+      "does_not": 133,
+      "uncertain": 15,
+      "sign_observed": 195,
+      "sign_opposite": 0,
+      "sign_uncertain": 6
+     },
+     "pmet_dur": {
+      "reproduces": 42,
+      "does_not": 150,
+      "uncertain": 9,
+      "sign_observed": 200,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 77,
+      "does_not": 108,
+      "uncertain": 16,
+      "sign_observed": 190,
+      "sign_opposite": 5,
+      "sign_uncertain": 6
+     },
+     "met_dur": {
+      "reproduces": 49,
+      "does_not": 132,
+      "uncertain": 20,
+      "sign_observed": 181,
+      "sign_opposite": 8,
+      "sign_uncertain": 12
      },
      "stim_coh": {
       "reproduces": 77,
@@ -2580,54 +2400,6 @@
       "sign_observed": 80,
       "sign_opposite": 70,
       "sign_uncertain": 50
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 168,
-      "uncertain": 11,
-      "sign_observed": 188,
-      "sign_opposite": 6,
-      "sign_uncertain": 7
-     },
-     "rs_fall_dur": {
-      "reproduces": 47,
-      "does_not": 101,
-      "uncertain": 53,
-      "sign_observed": 145,
-      "sign_opposite": 2,
-      "sign_uncertain": 54
-     },
-     "pmet_coh": {
-      "reproduces": 53,
-      "does_not": 133,
-      "uncertain": 15,
-      "sign_observed": 195,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 42,
-      "does_not": 150,
-      "uncertain": 9,
-      "sign_observed": 200,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 77,
-      "does_not": 108,
-      "uncertain": 16,
-      "sign_observed": 190,
-      "sign_opposite": 5,
-      "sign_uncertain": 6
-     },
-     "met_dur": {
-      "reproduces": 49,
-      "does_not": 132,
-      "uncertain": 20,
-      "sign_observed": 181,
-      "sign_opposite": 8,
-      "sign_uncertain": 12
      }
     }
    }
@@ -2647,6 +2419,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -2656,13 +2432,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -2671,6 +2441,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -2680,13 +2454,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -2738,6 +2506,38 @@
       "sign_observed": 214,
       "sign_opposite": 4,
       "sign_uncertain": 7
+     },
+     "pmet_coh": {
+      "reproduces": 64,
+      "does_not": 148,
+      "uncertain": 13,
+      "sign_observed": 219,
+      "sign_opposite": 0,
+      "sign_uncertain": 6
+     },
+     "pmet_dur": {
+      "reproduces": 33,
+      "does_not": 180,
+      "uncertain": 12,
+      "sign_observed": 224,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 89,
+      "does_not": 119,
+      "uncertain": 17,
+      "sign_observed": 214,
+      "sign_opposite": 5,
+      "sign_uncertain": 6
+     },
+     "met_dur": {
+      "reproduces": 68,
+      "does_not": 130,
+      "uncertain": 27,
+      "sign_observed": 176,
+      "sign_opposite": 23,
+      "sign_uncertain": 26
      },
      "stim_coh": {
       "reproduces": 115,
@@ -2818,54 +2618,6 @@
       "sign_observed": 1,
       "sign_opposite": 139,
       "sign_uncertain": 83
-     },
-     "rs_fall": {
-      "reproduces": 31,
-      "does_not": 191,
-      "uncertain": 3,
-      "sign_observed": 219,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "rs_fall_dur": {
-      "reproduces": 49,
-      "does_not": 124,
-      "uncertain": 52,
-      "sign_observed": 167,
-      "sign_opposite": 0,
-      "sign_uncertain": 58
-     },
-     "pmet_coh": {
-      "reproduces": 64,
-      "does_not": 148,
-      "uncertain": 13,
-      "sign_observed": 219,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 33,
-      "does_not": 180,
-      "uncertain": 12,
-      "sign_observed": 224,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 89,
-      "does_not": 119,
-      "uncertain": 17,
-      "sign_observed": 214,
-      "sign_opposite": 5,
-      "sign_uncertain": 6
-     },
-     "met_dur": {
-      "reproduces": 68,
-      "does_not": 130,
-      "uncertain": 27,
-      "sign_observed": 176,
-      "sign_opposite": 23,
-      "sign_uncertain": 26
      }
     },
     "model2": {
@@ -2916,6 +2668,38 @@
       "sign_observed": 189,
       "sign_opposite": 6,
       "sign_uncertain": 6
+     },
+     "pmet_coh": {
+      "reproduces": 52,
+      "does_not": 134,
+      "uncertain": 15,
+      "sign_observed": 195,
+      "sign_opposite": 0,
+      "sign_uncertain": 6
+     },
+     "pmet_dur": {
+      "reproduces": 42,
+      "does_not": 152,
+      "uncertain": 7,
+      "sign_observed": 200,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 77,
+      "does_not": 111,
+      "uncertain": 13,
+      "sign_observed": 190,
+      "sign_opposite": 5,
+      "sign_uncertain": 6
+     },
+     "met_dur": {
+      "reproduces": 54,
+      "does_not": 130,
+      "uncertain": 17,
+      "sign_observed": 171,
+      "sign_opposite": 15,
+      "sign_uncertain": 15
      },
      "stim_coh": {
       "reproduces": 77,
@@ -2996,54 +2780,6 @@
       "sign_observed": 80,
       "sign_opposite": 70,
       "sign_uncertain": 50
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 168,
-      "uncertain": 11,
-      "sign_observed": 187,
-      "sign_opposite": 6,
-      "sign_uncertain": 8
-     },
-     "rs_fall_dur": {
-      "reproduces": 47,
-      "does_not": 101,
-      "uncertain": 53,
-      "sign_observed": 146,
-      "sign_opposite": 2,
-      "sign_uncertain": 53
-     },
-     "pmet_coh": {
-      "reproduces": 52,
-      "does_not": 134,
-      "uncertain": 15,
-      "sign_observed": 195,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 42,
-      "does_not": 152,
-      "uncertain": 7,
-      "sign_observed": 200,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 77,
-      "does_not": 111,
-      "uncertain": 13,
-      "sign_observed": 190,
-      "sign_opposite": 5,
-      "sign_uncertain": 6
-     },
-     "met_dur": {
-      "reproduces": 54,
-      "does_not": 130,
-      "uncertain": 17,
-      "sign_observed": 171,
-      "sign_opposite": 15,
-      "sign_uncertain": 15
      }
     }
    }
@@ -3063,6 +2799,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -3072,13 +2812,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -3087,6 +2821,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -3096,13 +2834,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -3154,6 +2886,38 @@
       "sign_observed": 209,
       "sign_opposite": 3,
       "sign_uncertain": 8
+     },
+     "pmet_coh": {
+      "reproduces": 66,
+      "does_not": 143,
+      "uncertain": 11,
+      "sign_observed": 213,
+      "sign_opposite": 0,
+      "sign_uncertain": 7
+     },
+     "pmet_dur": {
+      "reproduces": 37,
+      "does_not": 175,
+      "uncertain": 8,
+      "sign_observed": 219,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 86,
+      "does_not": 118,
+      "uncertain": 16,
+      "sign_observed": 209,
+      "sign_opposite": 5,
+      "sign_uncertain": 6
+     },
+     "met_dur": {
+      "reproduces": 62,
+      "does_not": 132,
+      "uncertain": 26,
+      "sign_observed": 147,
+      "sign_opposite": 45,
+      "sign_uncertain": 28
      },
      "stim_coh": {
       "reproduces": 114,
@@ -3234,54 +2998,6 @@
       "sign_observed": 1,
       "sign_opposite": 135,
       "sign_uncertain": 82
-     },
-     "rs_fall": {
-      "reproduces": 30,
-      "does_not": 187,
-      "uncertain": 3,
-      "sign_observed": 214,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "rs_fall_dur": {
-      "reproduces": 49,
-      "does_not": 122,
-      "uncertain": 49,
-      "sign_observed": 161,
-      "sign_opposite": 0,
-      "sign_uncertain": 59
-     },
-     "pmet_coh": {
-      "reproduces": 66,
-      "does_not": 143,
-      "uncertain": 11,
-      "sign_observed": 213,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "pmet_dur": {
-      "reproduces": 37,
-      "does_not": 175,
-      "uncertain": 8,
-      "sign_observed": 219,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 86,
-      "does_not": 118,
-      "uncertain": 16,
-      "sign_observed": 209,
-      "sign_opposite": 5,
-      "sign_uncertain": 6
-     },
-     "met_dur": {
-      "reproduces": 62,
-      "does_not": 132,
-      "uncertain": 26,
-      "sign_observed": 147,
-      "sign_opposite": 45,
-      "sign_uncertain": 28
      }
     },
     "model2": {
@@ -3332,6 +3048,38 @@
       "sign_observed": 187,
       "sign_opposite": 5,
       "sign_uncertain": 7
+     },
+     "pmet_coh": {
+      "reproduces": 55,
+      "does_not": 134,
+      "uncertain": 10,
+      "sign_observed": 193,
+      "sign_opposite": 0,
+      "sign_uncertain": 6
+     },
+     "pmet_dur": {
+      "reproduces": 40,
+      "does_not": 151,
+      "uncertain": 8,
+      "sign_observed": 197,
+      "sign_opposite": 0,
+      "sign_uncertain": 2
+     },
+     "pmet_int": {
+      "reproduces": 76,
+      "does_not": 115,
+      "uncertain": 8,
+      "sign_observed": 189,
+      "sign_opposite": 5,
+      "sign_uncertain": 5
+     },
+     "met_dur": {
+      "reproduces": 50,
+      "does_not": 130,
+      "uncertain": 19,
+      "sign_observed": 153,
+      "sign_opposite": 29,
+      "sign_uncertain": 17
      },
      "stim_coh": {
       "reproduces": 77,
@@ -3412,54 +3160,6 @@
       "sign_observed": 80,
       "sign_opposite": 69,
       "sign_uncertain": 49
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 166,
-      "uncertain": 11,
-      "sign_observed": 185,
-      "sign_opposite": 6,
-      "sign_uncertain": 8
-     },
-     "rs_fall_dur": {
-      "reproduces": 47,
-      "does_not": 101,
-      "uncertain": 51,
-      "sign_observed": 144,
-      "sign_opposite": 2,
-      "sign_uncertain": 53
-     },
-     "pmet_coh": {
-      "reproduces": 55,
-      "does_not": 134,
-      "uncertain": 10,
-      "sign_observed": 193,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 40,
-      "does_not": 151,
-      "uncertain": 8,
-      "sign_observed": 197,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 76,
-      "does_not": 115,
-      "uncertain": 8,
-      "sign_observed": 189,
-      "sign_opposite": 5,
-      "sign_uncertain": 5
-     },
-     "met_dur": {
-      "reproduces": 50,
-      "does_not": 130,
-      "uncertain": 19,
-      "sign_observed": 153,
-      "sign_opposite": 29,
-      "sign_uncertain": 17
      }
     }
    }
@@ -3479,6 +3179,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -3488,13 +3192,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -3503,6 +3201,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -3512,13 +3214,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -3570,6 +3266,38 @@
       "sign_observed": 211,
       "sign_opposite": 8,
       "sign_uncertain": 7
+     },
+     "pmet_coh": {
+      "reproduces": 65,
+      "does_not": 147,
+      "uncertain": 14,
+      "sign_observed": 218,
+      "sign_opposite": 0,
+      "sign_uncertain": 8
+     },
+     "pmet_dur": {
+      "reproduces": 33,
+      "does_not": 183,
+      "uncertain": 10,
+      "sign_observed": 224,
+      "sign_opposite": 0,
+      "sign_uncertain": 2
+     },
+     "pmet_int": {
+      "reproduces": 90,
+      "does_not": 114,
+      "uncertain": 22,
+      "sign_observed": 208,
+      "sign_opposite": 9,
+      "sign_uncertain": 9
+     },
+     "met_dur": {
+      "reproduces": 61,
+      "does_not": 146,
+      "uncertain": 19,
+      "sign_observed": 215,
+      "sign_opposite": 0,
+      "sign_uncertain": 11
      },
      "stim_coh": {
       "reproduces": 117,
@@ -3650,54 +3378,6 @@
       "sign_observed": 1,
       "sign_opposite": 144,
       "sign_uncertain": 80
-     },
-     "rs_fall": {
-      "reproduces": 31,
-      "does_not": 192,
-      "uncertain": 3,
-      "sign_observed": 225,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "rs_fall_dur": {
-      "reproduces": 44,
-      "does_not": 124,
-      "uncertain": 58,
-      "sign_observed": 169,
-      "sign_opposite": 0,
-      "sign_uncertain": 57
-     },
-     "pmet_coh": {
-      "reproduces": 65,
-      "does_not": 147,
-      "uncertain": 14,
-      "sign_observed": 218,
-      "sign_opposite": 0,
-      "sign_uncertain": 8
-     },
-     "pmet_dur": {
-      "reproduces": 33,
-      "does_not": 183,
-      "uncertain": 10,
-      "sign_observed": 224,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 90,
-      "does_not": 114,
-      "uncertain": 22,
-      "sign_observed": 208,
-      "sign_opposite": 9,
-      "sign_uncertain": 9
-     },
-     "met_dur": {
-      "reproduces": 61,
-      "does_not": 146,
-      "uncertain": 19,
-      "sign_observed": 215,
-      "sign_opposite": 0,
-      "sign_uncertain": 11
      }
     },
     "model2": {
@@ -3748,6 +3428,38 @@
       "sign_observed": 188,
       "sign_opposite": 7,
       "sign_uncertain": 5
+     },
+     "pmet_coh": {
+      "reproduces": 56,
+      "does_not": 134,
+      "uncertain": 10,
+      "sign_observed": 195,
+      "sign_opposite": 0,
+      "sign_uncertain": 5
+     },
+     "pmet_dur": {
+      "reproduces": 44,
+      "does_not": 147,
+      "uncertain": 9,
+      "sign_observed": 197,
+      "sign_opposite": 0,
+      "sign_uncertain": 3
+     },
+     "pmet_int": {
+      "reproduces": 84,
+      "does_not": 98,
+      "uncertain": 18,
+      "sign_observed": 185,
+      "sign_opposite": 7,
+      "sign_uncertain": 8
+     },
+     "met_dur": {
+      "reproduces": 47,
+      "does_not": 136,
+      "uncertain": 17,
+      "sign_observed": 191,
+      "sign_opposite": 1,
+      "sign_uncertain": 8
      },
      "stim_coh": {
       "reproduces": 80,
@@ -3828,54 +3540,6 @@
       "sign_observed": 81,
       "sign_opposite": 69,
       "sign_uncertain": 47
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 168,
-      "uncertain": 10,
-      "sign_observed": 186,
-      "sign_opposite": 7,
-      "sign_uncertain": 7
-     },
-     "rs_fall_dur": {
-      "reproduces": 49,
-      "does_not": 99,
-      "uncertain": 52,
-      "sign_observed": 142,
-      "sign_opposite": 1,
-      "sign_uncertain": 57
-     },
-     "pmet_coh": {
-      "reproduces": 56,
-      "does_not": 134,
-      "uncertain": 10,
-      "sign_observed": 195,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 44,
-      "does_not": 147,
-      "uncertain": 9,
-      "sign_observed": 197,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 84,
-      "does_not": 98,
-      "uncertain": 18,
-      "sign_observed": 185,
-      "sign_opposite": 7,
-      "sign_uncertain": 8
-     },
-     "met_dur": {
-      "reproduces": 47,
-      "does_not": 136,
-      "uncertain": 17,
-      "sign_observed": 191,
-      "sign_opposite": 1,
-      "sign_uncertain": 8
      }
     }
    }
@@ -3895,6 +3559,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -3904,13 +3572,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -3919,6 +3581,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -3928,13 +3594,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -3986,6 +3646,38 @@
       "sign_observed": 210,
       "sign_opposite": 8,
       "sign_uncertain": 7
+     },
+     "pmet_coh": {
+      "reproduces": 65,
+      "does_not": 147,
+      "uncertain": 13,
+      "sign_observed": 217,
+      "sign_opposite": 0,
+      "sign_uncertain": 8
+     },
+     "pmet_dur": {
+      "reproduces": 35,
+      "does_not": 179,
+      "uncertain": 11,
+      "sign_observed": 224,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 90,
+      "does_not": 117,
+      "uncertain": 18,
+      "sign_observed": 207,
+      "sign_opposite": 9,
+      "sign_uncertain": 9
+     },
+     "met_dur": {
+      "reproduces": 67,
+      "does_not": 137,
+      "uncertain": 21,
+      "sign_observed": 196,
+      "sign_opposite": 11,
+      "sign_uncertain": 18
      },
      "stim_coh": {
       "reproduces": 116,
@@ -4066,54 +3758,6 @@
       "sign_observed": 1,
       "sign_opposite": 143,
       "sign_uncertain": 80
-     },
-     "rs_fall": {
-      "reproduces": 31,
-      "does_not": 191,
-      "uncertain": 3,
-      "sign_observed": 224,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "rs_fall_dur": {
-      "reproduces": 44,
-      "does_not": 123,
-      "uncertain": 58,
-      "sign_observed": 169,
-      "sign_opposite": 0,
-      "sign_uncertain": 56
-     },
-     "pmet_coh": {
-      "reproduces": 65,
-      "does_not": 147,
-      "uncertain": 13,
-      "sign_observed": 217,
-      "sign_opposite": 0,
-      "sign_uncertain": 8
-     },
-     "pmet_dur": {
-      "reproduces": 35,
-      "does_not": 179,
-      "uncertain": 11,
-      "sign_observed": 224,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 90,
-      "does_not": 117,
-      "uncertain": 18,
-      "sign_observed": 207,
-      "sign_opposite": 9,
-      "sign_uncertain": 9
-     },
-     "met_dur": {
-      "reproduces": 67,
-      "does_not": 137,
-      "uncertain": 21,
-      "sign_observed": 196,
-      "sign_opposite": 11,
-      "sign_uncertain": 18
      }
     },
     "model2": {
@@ -4164,6 +3808,38 @@
       "sign_observed": 187,
       "sign_opposite": 7,
       "sign_uncertain": 5
+     },
+     "pmet_coh": {
+      "reproduces": 55,
+      "does_not": 133,
+      "uncertain": 11,
+      "sign_observed": 194,
+      "sign_opposite": 0,
+      "sign_uncertain": 5
+     },
+     "pmet_dur": {
+      "reproduces": 45,
+      "does_not": 145,
+      "uncertain": 9,
+      "sign_observed": 196,
+      "sign_opposite": 0,
+      "sign_uncertain": 3
+     },
+     "pmet_int": {
+      "reproduces": 82,
+      "does_not": 102,
+      "uncertain": 15,
+      "sign_observed": 184,
+      "sign_opposite": 7,
+      "sign_uncertain": 8
+     },
+     "met_dur": {
+      "reproduces": 48,
+      "does_not": 132,
+      "uncertain": 19,
+      "sign_observed": 179,
+      "sign_opposite": 6,
+      "sign_uncertain": 14
      },
      "stim_coh": {
       "reproduces": 79,
@@ -4244,54 +3920,6 @@
       "sign_observed": 81,
       "sign_opposite": 68,
       "sign_uncertain": 47
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 167,
-      "uncertain": 10,
-      "sign_observed": 185,
-      "sign_opposite": 7,
-      "sign_uncertain": 7
-     },
-     "rs_fall_dur": {
-      "reproduces": 49,
-      "does_not": 98,
-      "uncertain": 52,
-      "sign_observed": 141,
-      "sign_opposite": 1,
-      "sign_uncertain": 57
-     },
-     "pmet_coh": {
-      "reproduces": 55,
-      "does_not": 133,
-      "uncertain": 11,
-      "sign_observed": 194,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 45,
-      "does_not": 145,
-      "uncertain": 9,
-      "sign_observed": 196,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 82,
-      "does_not": 102,
-      "uncertain": 15,
-      "sign_observed": 184,
-      "sign_opposite": 7,
-      "sign_uncertain": 8
-     },
-     "met_dur": {
-      "reproduces": 48,
-      "does_not": 132,
-      "uncertain": 19,
-      "sign_observed": 179,
-      "sign_opposite": 6,
-      "sign_uncertain": 14
      }
     }
    }
@@ -4311,6 +3939,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -4320,13 +3952,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -4335,6 +3961,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -4344,13 +3974,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -4402,6 +4026,38 @@
       "sign_observed": 209,
       "sign_opposite": 7,
       "sign_uncertain": 8
+     },
+     "pmet_coh": {
+      "reproduces": 68,
+      "does_not": 148,
+      "uncertain": 8,
+      "sign_observed": 216,
+      "sign_opposite": 0,
+      "sign_uncertain": 8
+     },
+     "pmet_dur": {
+      "reproduces": 37,
+      "does_not": 177,
+      "uncertain": 10,
+      "sign_observed": 222,
+      "sign_opposite": 0,
+      "sign_uncertain": 2
+     },
+     "pmet_int": {
+      "reproduces": 90,
+      "does_not": 121,
+      "uncertain": 13,
+      "sign_observed": 206,
+      "sign_opposite": 9,
+      "sign_uncertain": 9
+     },
+     "met_dur": {
+      "reproduces": 67,
+      "does_not": 129,
+      "uncertain": 28,
+      "sign_observed": 176,
+      "sign_opposite": 25,
+      "sign_uncertain": 23
      },
      "stim_coh": {
       "reproduces": 116,
@@ -4482,54 +4138,6 @@
       "sign_observed": 1,
       "sign_opposite": 142,
       "sign_uncertain": 80
-     },
-     "rs_fall": {
-      "reproduces": 31,
-      "does_not": 190,
-      "uncertain": 3,
-      "sign_observed": 223,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "rs_fall_dur": {
-      "reproduces": 44,
-      "does_not": 123,
-      "uncertain": 57,
-      "sign_observed": 167,
-      "sign_opposite": 0,
-      "sign_uncertain": 57
-     },
-     "pmet_coh": {
-      "reproduces": 68,
-      "does_not": 148,
-      "uncertain": 8,
-      "sign_observed": 216,
-      "sign_opposite": 0,
-      "sign_uncertain": 8
-     },
-     "pmet_dur": {
-      "reproduces": 37,
-      "does_not": 177,
-      "uncertain": 10,
-      "sign_observed": 222,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 90,
-      "does_not": 121,
-      "uncertain": 13,
-      "sign_observed": 206,
-      "sign_opposite": 9,
-      "sign_uncertain": 9
-     },
-     "met_dur": {
-      "reproduces": 67,
-      "does_not": 129,
-      "uncertain": 28,
-      "sign_observed": 176,
-      "sign_opposite": 25,
-      "sign_uncertain": 23
      }
     },
     "model2": {
@@ -4580,6 +4188,38 @@
       "sign_observed": 187,
       "sign_opposite": 7,
       "sign_uncertain": 5
+     },
+     "pmet_coh": {
+      "reproduces": 51,
+      "does_not": 132,
+      "uncertain": 16,
+      "sign_observed": 193,
+      "sign_opposite": 0,
+      "sign_uncertain": 6
+     },
+     "pmet_dur": {
+      "reproduces": 44,
+      "does_not": 147,
+      "uncertain": 8,
+      "sign_observed": 196,
+      "sign_opposite": 0,
+      "sign_uncertain": 3
+     },
+     "pmet_int": {
+      "reproduces": 79,
+      "does_not": 105,
+      "uncertain": 15,
+      "sign_observed": 184,
+      "sign_opposite": 7,
+      "sign_uncertain": 8
+     },
+     "met_dur": {
+      "reproduces": 52,
+      "does_not": 128,
+      "uncertain": 19,
+      "sign_observed": 168,
+      "sign_opposite": 14,
+      "sign_uncertain": 17
      },
      "stim_coh": {
       "reproduces": 79,
@@ -4660,54 +4300,6 @@
       "sign_observed": 81,
       "sign_opposite": 68,
       "sign_uncertain": 47
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 167,
-      "uncertain": 10,
-      "sign_observed": 185,
-      "sign_opposite": 7,
-      "sign_uncertain": 7
-     },
-     "rs_fall_dur": {
-      "reproduces": 49,
-      "does_not": 98,
-      "uncertain": 52,
-      "sign_observed": 141,
-      "sign_opposite": 1,
-      "sign_uncertain": 57
-     },
-     "pmet_coh": {
-      "reproduces": 51,
-      "does_not": 132,
-      "uncertain": 16,
-      "sign_observed": 193,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 44,
-      "does_not": 147,
-      "uncertain": 8,
-      "sign_observed": 196,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 79,
-      "does_not": 105,
-      "uncertain": 15,
-      "sign_observed": 184,
-      "sign_opposite": 7,
-      "sign_uncertain": 8
-     },
-     "met_dur": {
-      "reproduces": 52,
-      "does_not": 128,
-      "uncertain": 19,
-      "sign_observed": 168,
-      "sign_opposite": 14,
-      "sign_uncertain": 17
      }
     }
    }
@@ -4727,6 +4319,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -4736,13 +4332,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -4751,6 +4341,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -4760,13 +4354,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -4818,6 +4406,38 @@
       "sign_observed": 205,
       "sign_opposite": 6,
       "sign_uncertain": 8
+     },
+     "pmet_coh": {
+      "reproduces": 66,
+      "does_not": 144,
+      "uncertain": 9,
+      "sign_observed": 210,
+      "sign_opposite": 0,
+      "sign_uncertain": 9
+     },
+     "pmet_dur": {
+      "reproduces": 39,
+      "does_not": 171,
+      "uncertain": 9,
+      "sign_observed": 217,
+      "sign_opposite": 0,
+      "sign_uncertain": 2
+     },
+     "pmet_int": {
+      "reproduces": 87,
+      "does_not": 117,
+      "uncertain": 15,
+      "sign_observed": 202,
+      "sign_opposite": 8,
+      "sign_uncertain": 9
+     },
+     "met_dur": {
+      "reproduces": 61,
+      "does_not": 132,
+      "uncertain": 26,
+      "sign_observed": 149,
+      "sign_opposite": 44,
+      "sign_uncertain": 26
      },
      "stim_coh": {
       "reproduces": 115,
@@ -4898,54 +4518,6 @@
       "sign_observed": 1,
       "sign_opposite": 138,
       "sign_uncertain": 79
-     },
-     "rs_fall": {
-      "reproduces": 30,
-      "does_not": 186,
-      "uncertain": 3,
-      "sign_observed": 218,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "rs_fall_dur": {
-      "reproduces": 43,
-      "does_not": 121,
-      "uncertain": 55,
-      "sign_observed": 163,
-      "sign_opposite": 0,
-      "sign_uncertain": 56
-     },
-     "pmet_coh": {
-      "reproduces": 66,
-      "does_not": 144,
-      "uncertain": 9,
-      "sign_observed": 210,
-      "sign_opposite": 0,
-      "sign_uncertain": 9
-     },
-     "pmet_dur": {
-      "reproduces": 39,
-      "does_not": 171,
-      "uncertain": 9,
-      "sign_observed": 217,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 87,
-      "does_not": 117,
-      "uncertain": 15,
-      "sign_observed": 202,
-      "sign_opposite": 8,
-      "sign_uncertain": 9
-     },
-     "met_dur": {
-      "reproduces": 61,
-      "does_not": 132,
-      "uncertain": 26,
-      "sign_observed": 149,
-      "sign_opposite": 44,
-      "sign_uncertain": 26
      }
     },
     "model2": {
@@ -4996,6 +4568,38 @@
       "sign_observed": 185,
       "sign_opposite": 7,
       "sign_uncertain": 5
+     },
+     "pmet_coh": {
+      "reproduces": 52,
+      "does_not": 135,
+      "uncertain": 10,
+      "sign_observed": 191,
+      "sign_opposite": 0,
+      "sign_uncertain": 6
+     },
+     "pmet_dur": {
+      "reproduces": 41,
+      "does_not": 147,
+      "uncertain": 9,
+      "sign_observed": 194,
+      "sign_opposite": 0,
+      "sign_uncertain": 3
+     },
+     "pmet_int": {
+      "reproduces": 76,
+      "does_not": 107,
+      "uncertain": 14,
+      "sign_observed": 183,
+      "sign_opposite": 7,
+      "sign_uncertain": 7
+     },
+     "met_dur": {
+      "reproduces": 49,
+      "does_not": 125,
+      "uncertain": 23,
+      "sign_observed": 151,
+      "sign_opposite": 29,
+      "sign_uncertain": 17
      },
      "stim_coh": {
       "reproduces": 79,
@@ -5076,54 +4680,6 @@
       "sign_observed": 81,
       "sign_opposite": 67,
       "sign_uncertain": 46
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 165,
-      "uncertain": 10,
-      "sign_observed": 184,
-      "sign_opposite": 7,
-      "sign_uncertain": 6
-     },
-     "rs_fall_dur": {
-      "reproduces": 48,
-      "does_not": 97,
-      "uncertain": 52,
-      "sign_observed": 139,
-      "sign_opposite": 1,
-      "sign_uncertain": 57
-     },
-     "pmet_coh": {
-      "reproduces": 52,
-      "does_not": 135,
-      "uncertain": 10,
-      "sign_observed": 191,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 41,
-      "does_not": 147,
-      "uncertain": 9,
-      "sign_observed": 194,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 76,
-      "does_not": 107,
-      "uncertain": 14,
-      "sign_observed": 183,
-      "sign_opposite": 7,
-      "sign_uncertain": 7
-     },
-     "met_dur": {
-      "reproduces": 49,
-      "does_not": 125,
-      "uncertain": 23,
-      "sign_observed": 151,
-      "sign_opposite": 29,
-      "sign_uncertain": 17
      }
     }
    }
@@ -5143,6 +4699,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -5152,13 +4712,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -5167,6 +4721,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -5176,13 +4734,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -5234,6 +4786,38 @@
       "sign_observed": 202,
       "sign_opposite": 14,
       "sign_uncertain": 8
+     },
+     "pmet_coh": {
+      "reproduces": 63,
+      "does_not": 154,
+      "uncertain": 7,
+      "sign_observed": 216,
+      "sign_opposite": 0,
+      "sign_uncertain": 8
+     },
+     "pmet_dur": {
+      "reproduces": 37,
+      "does_not": 181,
+      "uncertain": 6,
+      "sign_observed": 223,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 96,
+      "does_not": 105,
+      "uncertain": 23,
+      "sign_observed": 196,
+      "sign_opposite": 16,
+      "sign_uncertain": 12
+     },
+     "met_dur": {
+      "reproduces": 60,
+      "does_not": 146,
+      "uncertain": 18,
+      "sign_observed": 213,
+      "sign_opposite": 0,
+      "sign_uncertain": 11
      },
      "stim_coh": {
       "reproduces": 114,
@@ -5314,54 +4898,6 @@
       "sign_observed": 2,
       "sign_opposite": 140,
       "sign_uncertain": 79
-     },
-     "rs_fall": {
-      "reproduces": 29,
-      "does_not": 192,
-      "uncertain": 3,
-      "sign_observed": 218,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "rs_fall_dur": {
-      "reproduces": 49,
-      "does_not": 117,
-      "uncertain": 58,
-      "sign_observed": 169,
-      "sign_opposite": 2,
-      "sign_uncertain": 53
-     },
-     "pmet_coh": {
-      "reproduces": 63,
-      "does_not": 154,
-      "uncertain": 7,
-      "sign_observed": 216,
-      "sign_opposite": 0,
-      "sign_uncertain": 8
-     },
-     "pmet_dur": {
-      "reproduces": 37,
-      "does_not": 181,
-      "uncertain": 6,
-      "sign_observed": 223,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 96,
-      "does_not": 105,
-      "uncertain": 23,
-      "sign_observed": 196,
-      "sign_opposite": 16,
-      "sign_uncertain": 12
-     },
-     "met_dur": {
-      "reproduces": 60,
-      "does_not": 146,
-      "uncertain": 18,
-      "sign_observed": 213,
-      "sign_opposite": 0,
-      "sign_uncertain": 11
      }
     },
     "model2": {
@@ -5412,6 +4948,38 @@
       "sign_observed": 174,
       "sign_opposite": 15,
       "sign_uncertain": 8
+     },
+     "pmet_coh": {
+      "reproduces": 53,
+      "does_not": 135,
+      "uncertain": 9,
+      "sign_observed": 192,
+      "sign_opposite": 0,
+      "sign_uncertain": 5
+     },
+     "pmet_dur": {
+      "reproduces": 49,
+      "does_not": 143,
+      "uncertain": 5,
+      "sign_observed": 195,
+      "sign_opposite": 0,
+      "sign_uncertain": 2
+     },
+     "pmet_int": {
+      "reproduces": 89,
+      "does_not": 88,
+      "uncertain": 20,
+      "sign_observed": 175,
+      "sign_opposite": 16,
+      "sign_uncertain": 6
+     },
+     "met_dur": {
+      "reproduces": 42,
+      "does_not": 136,
+      "uncertain": 19,
+      "sign_observed": 187,
+      "sign_opposite": 1,
+      "sign_uncertain": 9
      },
      "stim_coh": {
       "reproduces": 79,
@@ -5492,54 +5060,6 @@
       "sign_observed": 79,
       "sign_opposite": 72,
       "sign_uncertain": 41
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 166,
-      "uncertain": 9,
-      "sign_observed": 185,
-      "sign_opposite": 7,
-      "sign_uncertain": 5
-     },
-     "rs_fall_dur": {
-      "reproduces": 48,
-      "does_not": 98,
-      "uncertain": 51,
-      "sign_observed": 141,
-      "sign_opposite": 2,
-      "sign_uncertain": 54
-     },
-     "pmet_coh": {
-      "reproduces": 53,
-      "does_not": 135,
-      "uncertain": 9,
-      "sign_observed": 192,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 49,
-      "does_not": 143,
-      "uncertain": 5,
-      "sign_observed": 195,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 89,
-      "does_not": 88,
-      "uncertain": 20,
-      "sign_observed": 175,
-      "sign_opposite": 16,
-      "sign_uncertain": 6
-     },
-     "met_dur": {
-      "reproduces": 42,
-      "does_not": 136,
-      "uncertain": 19,
-      "sign_observed": 187,
-      "sign_opposite": 1,
-      "sign_uncertain": 9
      }
     }
    }
@@ -5559,6 +5079,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -5568,13 +5092,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -5583,6 +5101,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -5592,13 +5114,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -5650,6 +5166,38 @@
       "sign_observed": 201,
       "sign_opposite": 14,
       "sign_uncertain": 8
+     },
+     "pmet_coh": {
+      "reproduces": 63,
+      "does_not": 153,
+      "uncertain": 7,
+      "sign_observed": 214,
+      "sign_opposite": 0,
+      "sign_uncertain": 9
+     },
+     "pmet_dur": {
+      "reproduces": 37,
+      "does_not": 176,
+      "uncertain": 10,
+      "sign_observed": 222,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 95,
+      "does_not": 108,
+      "uncertain": 20,
+      "sign_observed": 196,
+      "sign_opposite": 15,
+      "sign_uncertain": 12
+     },
+     "met_dur": {
+      "reproduces": 66,
+      "does_not": 132,
+      "uncertain": 25,
+      "sign_observed": 194,
+      "sign_opposite": 10,
+      "sign_uncertain": 19
      },
      "stim_coh": {
       "reproduces": 113,
@@ -5730,54 +5278,6 @@
       "sign_observed": 2,
       "sign_opposite": 139,
       "sign_uncertain": 79
-     },
-     "rs_fall": {
-      "reproduces": 29,
-      "does_not": 191,
-      "uncertain": 3,
-      "sign_observed": 217,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "rs_fall_dur": {
-      "reproduces": 49,
-      "does_not": 116,
-      "uncertain": 58,
-      "sign_observed": 169,
-      "sign_opposite": 2,
-      "sign_uncertain": 52
-     },
-     "pmet_coh": {
-      "reproduces": 63,
-      "does_not": 153,
-      "uncertain": 7,
-      "sign_observed": 214,
-      "sign_opposite": 0,
-      "sign_uncertain": 9
-     },
-     "pmet_dur": {
-      "reproduces": 37,
-      "does_not": 176,
-      "uncertain": 10,
-      "sign_observed": 222,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 95,
-      "does_not": 108,
-      "uncertain": 20,
-      "sign_observed": 196,
-      "sign_opposite": 15,
-      "sign_uncertain": 12
-     },
-     "met_dur": {
-      "reproduces": 66,
-      "does_not": 132,
-      "uncertain": 25,
-      "sign_observed": 194,
-      "sign_opposite": 10,
-      "sign_uncertain": 19
      }
     },
     "model2": {
@@ -5828,6 +5328,38 @@
       "sign_observed": 174,
       "sign_opposite": 15,
       "sign_uncertain": 7
+     },
+     "pmet_coh": {
+      "reproduces": 49,
+      "does_not": 136,
+      "uncertain": 11,
+      "sign_observed": 191,
+      "sign_opposite": 0,
+      "sign_uncertain": 5
+     },
+     "pmet_dur": {
+      "reproduces": 48,
+      "does_not": 141,
+      "uncertain": 7,
+      "sign_observed": 194,
+      "sign_opposite": 0,
+      "sign_uncertain": 2
+     },
+     "pmet_int": {
+      "reproduces": 86,
+      "does_not": 88,
+      "uncertain": 22,
+      "sign_observed": 174,
+      "sign_opposite": 16,
+      "sign_uncertain": 6
+     },
+     "met_dur": {
+      "reproduces": 48,
+      "does_not": 128,
+      "uncertain": 20,
+      "sign_observed": 175,
+      "sign_opposite": 6,
+      "sign_uncertain": 15
      },
      "stim_coh": {
       "reproduces": 78,
@@ -5908,54 +5440,6 @@
       "sign_observed": 79,
       "sign_opposite": 71,
       "sign_uncertain": 41
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 165,
-      "uncertain": 9,
-      "sign_observed": 184,
-      "sign_opposite": 7,
-      "sign_uncertain": 5
-     },
-     "rs_fall_dur": {
-      "reproduces": 48,
-      "does_not": 97,
-      "uncertain": 51,
-      "sign_observed": 140,
-      "sign_opposite": 2,
-      "sign_uncertain": 54
-     },
-     "pmet_coh": {
-      "reproduces": 49,
-      "does_not": 136,
-      "uncertain": 11,
-      "sign_observed": 191,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 48,
-      "does_not": 141,
-      "uncertain": 7,
-      "sign_observed": 194,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 86,
-      "does_not": 88,
-      "uncertain": 22,
-      "sign_observed": 174,
-      "sign_opposite": 16,
-      "sign_uncertain": 6
-     },
-     "met_dur": {
-      "reproduces": 48,
-      "does_not": 128,
-      "uncertain": 20,
-      "sign_observed": 175,
-      "sign_opposite": 6,
-      "sign_uncertain": 15
      }
     }
    }
@@ -5975,6 +5459,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -5984,13 +5472,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -5999,6 +5481,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -6008,13 +5494,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -6066,6 +5546,38 @@
       "sign_observed": 200,
       "sign_opposite": 14,
       "sign_uncertain": 8
+     },
+     "pmet_coh": {
+      "reproduces": 63,
+      "does_not": 150,
+      "uncertain": 9,
+      "sign_observed": 213,
+      "sign_opposite": 0,
+      "sign_uncertain": 9
+     },
+     "pmet_dur": {
+      "reproduces": 41,
+      "does_not": 176,
+      "uncertain": 5,
+      "sign_observed": 221,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 93,
+      "does_not": 110,
+      "uncertain": 19,
+      "sign_observed": 197,
+      "sign_opposite": 15,
+      "sign_uncertain": 10
+     },
+     "met_dur": {
+      "reproduces": 68,
+      "does_not": 128,
+      "uncertain": 26,
+      "sign_observed": 175,
+      "sign_opposite": 23,
+      "sign_uncertain": 24
      },
      "stim_coh": {
       "reproduces": 113,
@@ -6146,54 +5658,6 @@
       "sign_observed": 2,
       "sign_opposite": 138,
       "sign_uncertain": 79
-     },
-     "rs_fall": {
-      "reproduces": 29,
-      "does_not": 190,
-      "uncertain": 3,
-      "sign_observed": 216,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "rs_fall_dur": {
-      "reproduces": 48,
-      "does_not": 116,
-      "uncertain": 58,
-      "sign_observed": 167,
-      "sign_opposite": 2,
-      "sign_uncertain": 53
-     },
-     "pmet_coh": {
-      "reproduces": 63,
-      "does_not": 150,
-      "uncertain": 9,
-      "sign_observed": 213,
-      "sign_opposite": 0,
-      "sign_uncertain": 9
-     },
-     "pmet_dur": {
-      "reproduces": 41,
-      "does_not": 176,
-      "uncertain": 5,
-      "sign_observed": 221,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 93,
-      "does_not": 110,
-      "uncertain": 19,
-      "sign_observed": 197,
-      "sign_opposite": 15,
-      "sign_uncertain": 10
-     },
-     "met_dur": {
-      "reproduces": 68,
-      "does_not": 128,
-      "uncertain": 26,
-      "sign_observed": 175,
-      "sign_opposite": 23,
-      "sign_uncertain": 24
      }
     },
     "model2": {
@@ -6244,6 +5708,38 @@
       "sign_observed": 174,
       "sign_opposite": 15,
       "sign_uncertain": 7
+     },
+     "pmet_coh": {
+      "reproduces": 49,
+      "does_not": 136,
+      "uncertain": 11,
+      "sign_observed": 191,
+      "sign_opposite": 0,
+      "sign_uncertain": 5
+     },
+     "pmet_dur": {
+      "reproduces": 48,
+      "does_not": 142,
+      "uncertain": 6,
+      "sign_observed": 194,
+      "sign_opposite": 0,
+      "sign_uncertain": 2
+     },
+     "pmet_int": {
+      "reproduces": 85,
+      "does_not": 90,
+      "uncertain": 21,
+      "sign_observed": 175,
+      "sign_opposite": 16,
+      "sign_uncertain": 5
+     },
+     "met_dur": {
+      "reproduces": 52,
+      "does_not": 127,
+      "uncertain": 17,
+      "sign_observed": 165,
+      "sign_opposite": 13,
+      "sign_uncertain": 18
      },
      "stim_coh": {
       "reproduces": 78,
@@ -6324,54 +5820,6 @@
       "sign_observed": 79,
       "sign_opposite": 71,
       "sign_uncertain": 41
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 165,
-      "uncertain": 9,
-      "sign_observed": 183,
-      "sign_opposite": 7,
-      "sign_uncertain": 6
-     },
-     "rs_fall_dur": {
-      "reproduces": 49,
-      "does_not": 97,
-      "uncertain": 50,
-      "sign_observed": 140,
-      "sign_opposite": 2,
-      "sign_uncertain": 54
-     },
-     "pmet_coh": {
-      "reproduces": 49,
-      "does_not": 136,
-      "uncertain": 11,
-      "sign_observed": 191,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 48,
-      "does_not": 142,
-      "uncertain": 6,
-      "sign_observed": 194,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 85,
-      "does_not": 90,
-      "uncertain": 21,
-      "sign_observed": 175,
-      "sign_opposite": 16,
-      "sign_uncertain": 5
-     },
-     "met_dur": {
-      "reproduces": 52,
-      "does_not": 127,
-      "uncertain": 17,
-      "sign_observed": 165,
-      "sign_opposite": 13,
-      "sign_uncertain": 18
      }
     }
    }
@@ -6391,6 +5839,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "unreproduced",
      "stim_trend_coh": "reproduced",
@@ -6400,13 +5852,7 @@
      "delay_int": "reproduced",
      "trend": "unreproduced",
      "trend_dur": "unreproduced",
-     "curv": "unreproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "unreproduced"
     },
     "model2": {
      "acc_coh": "reproduced",
@@ -6415,6 +5861,10 @@
      "rt_coh": "reproduced",
      "rt_dur": "reproduced",
      "rt_int": "reproduced",
+     "pmet_coh": "reproduced",
+     "pmet_dur": "reproduced",
+     "pmet_int": "reproduced",
+     "met_dur": "reproduced",
      "stim_coh": "reproduced",
      "stim_dur": "reproduced",
      "stim_trend_coh": "reproduced",
@@ -6424,13 +5874,7 @@
      "delay_int": "reproduced",
      "trend": "reproduced",
      "trend_dur": "reproduced",
-     "curv": "reproduced",
-     "rs_fall": "reproduced",
-     "rs_fall_dur": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced"
+     "curv": "reproduced"
     }
    },
    "counts": {
@@ -6482,6 +5926,38 @@
       "sign_observed": 195,
       "sign_opposite": 15,
       "sign_uncertain": 8
+     },
+     "pmet_coh": {
+      "reproduces": 64,
+      "does_not": 145,
+      "uncertain": 9,
+      "sign_observed": 209,
+      "sign_opposite": 0,
+      "sign_uncertain": 9
+     },
+     "pmet_dur": {
+      "reproduces": 43,
+      "does_not": 167,
+      "uncertain": 8,
+      "sign_observed": 217,
+      "sign_opposite": 0,
+      "sign_uncertain": 1
+     },
+     "pmet_int": {
+      "reproduces": 88,
+      "does_not": 112,
+      "uncertain": 18,
+      "sign_observed": 193,
+      "sign_opposite": 16,
+      "sign_uncertain": 9
+     },
+     "met_dur": {
+      "reproduces": 59,
+      "does_not": 131,
+      "uncertain": 28,
+      "sign_observed": 148,
+      "sign_opposite": 45,
+      "sign_uncertain": 25
      },
      "stim_coh": {
       "reproduces": 113,
@@ -6562,54 +6038,6 @@
       "sign_observed": 2,
       "sign_opposite": 135,
       "sign_uncertain": 78
-     },
-     "rs_fall": {
-      "reproduces": 28,
-      "does_not": 187,
-      "uncertain": 3,
-      "sign_observed": 212,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "rs_fall_dur": {
-      "reproduces": 46,
-      "does_not": 115,
-      "uncertain": 57,
-      "sign_observed": 163,
-      "sign_opposite": 2,
-      "sign_uncertain": 53
-     },
-     "pmet_coh": {
-      "reproduces": 64,
-      "does_not": 145,
-      "uncertain": 9,
-      "sign_observed": 209,
-      "sign_opposite": 0,
-      "sign_uncertain": 9
-     },
-     "pmet_dur": {
-      "reproduces": 43,
-      "does_not": 167,
-      "uncertain": 8,
-      "sign_observed": 217,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 88,
-      "does_not": 112,
-      "uncertain": 18,
-      "sign_observed": 193,
-      "sign_opposite": 16,
-      "sign_uncertain": 9
-     },
-     "met_dur": {
-      "reproduces": 59,
-      "does_not": 131,
-      "uncertain": 28,
-      "sign_observed": 148,
-      "sign_opposite": 45,
-      "sign_uncertain": 25
      }
     },
     "model2": {
@@ -6660,6 +6088,38 @@
       "sign_observed": 173,
       "sign_opposite": 15,
       "sign_uncertain": 6
+     },
+     "pmet_coh": {
+      "reproduces": 49,
+      "does_not": 136,
+      "uncertain": 9,
+      "sign_observed": 190,
+      "sign_opposite": 0,
+      "sign_uncertain": 4
+     },
+     "pmet_dur": {
+      "reproduces": 49,
+      "does_not": 138,
+      "uncertain": 7,
+      "sign_observed": 192,
+      "sign_opposite": 0,
+      "sign_uncertain": 2
+     },
+     "pmet_int": {
+      "reproduces": 82,
+      "does_not": 97,
+      "uncertain": 15,
+      "sign_observed": 175,
+      "sign_opposite": 16,
+      "sign_uncertain": 3
+     },
+     "met_dur": {
+      "reproduces": 47,
+      "does_not": 127,
+      "uncertain": 20,
+      "sign_observed": 149,
+      "sign_opposite": 30,
+      "sign_uncertain": 15
      },
      "stim_coh": {
       "reproduces": 78,
@@ -6740,54 +6200,6 @@
       "sign_observed": 79,
       "sign_opposite": 70,
       "sign_uncertain": 40
-     },
-     "rs_fall": {
-      "reproduces": 22,
-      "does_not": 163,
-      "uncertain": 9,
-      "sign_observed": 181,
-      "sign_opposite": 7,
-      "sign_uncertain": 6
-     },
-     "rs_fall_dur": {
-      "reproduces": 47,
-      "does_not": 97,
-      "uncertain": 50,
-      "sign_observed": 138,
-      "sign_opposite": 2,
-      "sign_uncertain": 54
-     },
-     "pmet_coh": {
-      "reproduces": 49,
-      "does_not": 136,
-      "uncertain": 9,
-      "sign_observed": 190,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_dur": {
-      "reproduces": 49,
-      "does_not": 138,
-      "uncertain": 7,
-      "sign_observed": 192,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 82,
-      "does_not": 97,
-      "uncertain": 15,
-      "sign_observed": 175,
-      "sign_opposite": 16,
-      "sign_uncertain": 3
-     },
-     "met_dur": {
-      "reproduces": 47,
-      "does_not": 127,
-      "uncertain": 20,
-      "sign_observed": 149,
-      "sign_opposite": 30,
-      "sign_uncertain": 15
      }
     }
    }

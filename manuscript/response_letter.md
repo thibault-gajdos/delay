@@ -6,8 +6,6 @@ DRAFT — internal working copy, not yet formatted for submission.
 
 Cette lettre est mise à jour contre `manuscript/latex/delay.tex` du 25 octobre 2026, qui intègre la v5 (Introduction, Methods) et la nouvelle évaluation de l'espace des paramètres. Les notes internes sont repérées dans le texte (« NOTE INTERNE »). Points à régler avant l'envoi :
 
--   **Éditeur (van Ede)** : la v5 a retiré de l'Introduction la citation de van Ede & Nobre (2023). La réponse à la note éditoriale suppose qu'elle est rétablie. À rétablir dans le manuscrit, ou à changer dans la lettre.
--   **C1.6 (renvoi à la Figure 2)** : les Results ne renvoient plus à la Figure 2 pour définir PMT et MT. La réponse suppose que le renvoi est rétabli.
 -   **C2.4 (« second accumulation phase »)** : réponse inchangée sur le fond (on garde le nom), à relire.
 -   **C2.7 (autres formats sensoriels)** : traitement partiel, comme avant.
 -   **C1.7 (α fonction du délai)** : comme avant.
@@ -80,8 +78,6 @@ Across the delay, the partial-activation rate has a positive slope (0.560 s⁻²
 **Response.** The two components are now called premotor time (PMT) and motor time (MT). They are defined in Materials and Methods, illustrated in Figure 2A, and the Results refer back to Figure 2A where mean PMT and MT are first reported.
 
 *Manuscript location*: Materials and Methods, "Theoretical framework" (last paragraph but one); Figure 2A; Results, "Accuracy, RT, PMT and MT" > Empirical results.
-
-> [NOTE INTERNE — ne pas envoyer telle quelle] Le renvoi à la Figure 2A dans les Results est à rétablir dans le manuscrit (voir « Note pour les auteurs »).
 
 ## C1.7 — Different delays, to show build-up.
 
@@ -204,8 +200,6 @@ Numerically, we varied the two leak rates independently over 0, 0.25, 0.5 and 1 
 **Response.** Added a citation to van Ede & Nobre (2023) in the Introduction, in the context of accounts of working memory as action-oriented.
 
 *Manuscript location*: Introduction, third paragraph.
-
-> [NOTE INTERNE — ne pas envoyer telle quelle] La citation est à rétablir dans le manuscrit (voir « Note pour les auteurs »).
 
 # Additional changes made on our own initiative
 

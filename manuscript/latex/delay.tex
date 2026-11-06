@@ -355,7 +355,7 @@ During the delay, a PMA in the response-associated channel is an upcrossing, by 
 a(t):=\frac{g-|m|-\dfrac{\beta}{\delta}\left(t-t_{\mathrm{offset}}\right)^{+}}{\sigma_{H}}
 \label{eq:a}
 \end{equation}
-for the distance from the maintenance target to the gate in units of $\sigma_{H}$, which temporal preparation shortens at the constant speed $\beta/\delta$, the rate on the window is its stationary form $\nustat$, Equation~\eqref{eq:nu_asymp}. Over the admissible parameter vectors, the two differ by at most $3\times10^{-3}$ in relative terms under Model 1 and $1.2\times10^{-3}$ under Model 2 (Appendix, Corollary~\ref{cor:approx}; Fig.~\ref{fig:approx}):
+for the distance from the maintenance target to the gate in units of $\sigma_{H}$, which temporal preparation shortens at the constant speed $\beta/\delta$, the rate on the window is its stationary form $\nustat$, Equation~\eqref{eq:nu_asymp}. Evaluated exactly over the admissible parameter vectors, the two differ by at most $3\times10^{-3}$ in relative terms under Model 1 and $1.2\times10^{-3}$ under Model 2 (Fig.~\ref{fig:approx}; Appendix, Corollary~\ref{cor:approx}):
 \begin{equation}
 \nustat(t)=\varphi\left(a(t)\right)\left[\frac{\beta}{\delta\sigma_{H}}\Phi\left(\frac{\beta}{\delta\sigma_{\dot{H}}}\right)+\omega\,\varphi\left(\frac{\beta}{\delta\sigma_{\dot{H}}}\right)\right],
 \tag{\ref{eq:nu_asymp}}
@@ -496,7 +496,7 @@ The EEG results complement this picture. MBL tracked motion-evidence accumulatio
 
 Of the three measures, the PMA rate was the most sensitive readout of motor preparation here: neither EEG measure revealed the full coherence- and duration-dependent structure it did across the stimulus-onset, delay and RS windows, likely because PMAs are single-trial events measured directly from muscle. The PMA rate is therefore a promising tool for studying how decision evidence, temporal expectation and action constraints jointly shape motor preparation \parencites{balsdonSecondaryMotorIntegration2023}{dendauwGatedCascadeDiffusion2024}{ramayyaHumanResponseTimes2025}{roggeMotorCorticalSignals2022}{servantIntegratedTheoryDeciding2021}.
 
-What the parameter-space evaluation establishes is a difference in what the two models can produce at all. With the maintenance fluctuation already at its stationary amplitude when maintenance begins, the model without temporal preparation has a PMA rate that is constant across the delay at every value of every parameter (Appendix, Corollary~\ref{cor:flat}), whereas the observed rate rises more than fourfold across the window. The same statement covers the shape, since a constant rate has zero curvature as well as zero slope, while the observed profile is both rising and convex. Leakage in the motion-evidence accumulator or in the RS-evidence accumulator changes the maintenance target but not the maintenance dynamics, so this prediction is unchanged, and no combination of the two leakage rates we examined changes whether a model reproduces an effect (Appendix, Remark~\ref{rem:leak}). The PMA rate was the only measure that separated the two models quantitatively; MBL and the LRP separate them only by the presence or absence of a delay-window ramp.
+What the parameter-space evaluation establishes is a difference in what the two models can produce at all. On the delay window, the fluctuation of the maintained signal has settled to its stationary amplitude (Appendix, Proposition~\ref{prop:stationary}). There, the model without temporal preparation has a stationary PMA rate that is constant across the delay at every value of every parameter (Appendix, Corollary~\ref{cor:flat}), and over the admissible parameter vectors its exact rate departs from that constant by at most 0.3\% (Fig.~\ref{fig:approx}), whereas the observed rate rises more than fourfold across the window. The same statement covers the shape, since a constant rate has zero curvature as well as zero slope, while the observed profile is both rising and convex. Leakage in the motion-evidence accumulator or in the RS-evidence accumulator changes the maintenance target but not the maintenance dynamics, so this prediction is unchanged, and no combination of the two leakage rates we examined changes whether a model reproduces an effect (Appendix, Remark~\ref{rem:leak}). The PMA rate was the only measure that separated the two models quantitatively; MBL and the LRP separate them only by the presence or absence of a delay-window ramp.
 
 A scope condition concerns the coherence range: we sampled three levels (0\%, 12\%, and 50\%), coarser than the five- or six-level logarithmic series more commonly used to characterize psychometric and chronometric functions in random-dot motion studies \parencites[e.g., 3.2--51.2\%][]{roitmanResponseNeuronsLateral2002}[6.4--51.2\%][]{kianiBoundedIntegrationParietal2008}. This was sufficient to establish the coherence-dependent effects reported here, though not their full functional form. A second concerns delay length, fixed here at 3 s: companion data \parencite{achardExtendingContinuousFlow2025} show the same build-up preserved across 3--7 s delays when the response mapping is foreknown, but largely absent when revealed only at the RS.
 
@@ -536,7 +536,7 @@ In conclusion, delayed decision reports are not generated by storing an abstract
 
 \begin{center}\includegraphics[width=\linewidth]{figures/fig09.png}\end{center}
 
-\captionof{figure}{\textbf{Error of the stationary approximation, over the admissible parameter vectors.} Each thin line is one admissible vector: the relative difference between the exact PMA rate, Equation~\eqref{eq:nu2} with the transient moments of Equation~\eqref{eq:moments}, and its stationary form, Equation~\eqref{eq:nu_asymp}, as a function of elapsed maintenance time. Both axes are logarithmic. The shaded band marks elapsed maintenance times of 0.8 s and more, which contain the whole delay analysis window (Proposition~\ref{prop:stationary}). Left, Model 1; right, Model 2. Inside the window the largest departure is 0.3\% under Model 1 and 0.12\% under Model 2 (Corollary~\ref{cor:approx}).}\label{fig:approx}
+\captionof{figure}{\textbf{Error of the stationary approximation, over the admissible parameter vectors.} Each thin line is one admissible vector: the relative difference between the exact PMA rate, Equation~\eqref{eq:nu2} with the transient moments of Equation~\eqref{eq:moments}, and its stationary form, Equation~\eqref{eq:nu_asymp}, as a function of elapsed maintenance time. Both axes are logarithmic. The shaded band marks elapsed maintenance times of 0.8 s and more, which contain the whole delay analysis window (Proposition~\ref{prop:stationary}). Left, Model 1; right, Model 2. Inside the window the largest departure is 0.3\% under Model 1 and 0.12\% under Model 2.}\label{fig:approx}
 
 
 \section{Tables}
@@ -596,224 +596,310 @@ Note. The ranges are those sampled in the parameter-space evaluation (Materials 
 
 \section{Appendix. The rate of partial muscle activations (PMAs)}
 
-This appendix derives the instantaneous rate at which the maintained motor-preparatory signal crosses the gate upward, which is a PMA, and the properties of that rate which the Results test.
-
+This appendix derives the rate at which the maintained motor-preparatory signal crosses the gate upward. Each such crossing is a PMA. It then derives the properties of that rate that the Results test.
 
 \subsection{Setup and notation}
 
-Notation follows the Theoretical framework (Materials and Methods) and Table~\ref{tab:params}; $\varphi$ and $\Phi$ are the standard normal density and distribution function. Fix a trial that has entered maintenance at time $\tau $ with selected response ${s}_{\mathrm{resp}}$ and maintenance target $m$ (Equation~\eqref{eq:m}), and write $\rho :=t-\tau $ for elapsed maintenance time. For $t\ge \tau $ let $y\left(t\right)=m+H\left(t\right)$, so that $H$ is the fluctuation of the motor-preparatory signal about the maintenance target. By Equations~\eqref{eq:epsilon} and~\eqref{eq:y_delay},
+Notation follows the Theoretical framework (Materials and Methods) and Table~\ref{tab:params}. $\varphi$ and $\Phi$ are the standard normal density and distribution function.
 
+\paragraph{The maintained fluctuation.} Fix a trial. Let $\tau$ be the time at which it enters maintenance, ${s}_{\mathrm{resp}}$ its selected response, and $m$ its maintenance target (Equation~\eqref{eq:m}). Write $\rho :=t-\tau $ for the elapsed maintenance time. For $t\ge \tau $, write $y\left(t\right)=m+H\left(t\right)$: $H$ is the fluctuation of the motor-preparatory signal about the maintenance target. By Equations~\eqref{eq:epsilon} and~\eqref{eq:y_delay},
 \begin{eqnarray}
-    \dd \varepsilon \left(t\right) &=& -\kappa_{\varepsilon} \varepsilon \left(t\right)\, \dd t+{\sigma }_{\varepsilon }\, \dd {W}_{\varepsilon }\left(t\right), \qquad \varepsilon \left(\tau \right)\sim \mathrm{N}\left(0,{\mathrm{SD}}_{\varepsilon }^{2}\right), \nonumber \\
-    \dd H\left(t\right) &= &\lambda \left(\varepsilon \left(t\right)-H\left(t\right)\right)\, \dd t
+    \dd \varepsilon \left(t\right) &=& -\kappa_{\varepsilon} \varepsilon \left(t\right) \dd t+{\sigma }_{\varepsilon } \dd {W}_{\varepsilon }\left(t\right), \qquad \varepsilon \left(\tau \right)\sim \mathrm{N}\left(0,{\mathrm{SD}}_{\varepsilon }^{2}\right), \nonumber \\
+    \dd H\left(t\right) &= &\lambda \left(\varepsilon \left(t\right)-H\left(t\right)\right) \dd t,
 \label{eq:H}
 \end{eqnarray}
+with ${\sigma }_{\varepsilon }={\mathrm{SD}}_{\varepsilon }\sqrt{2\kappa_{\varepsilon} }$. So ${\mathrm{SD}}_{\varepsilon }^{2}$ is the stationary variance of $\varepsilon$, and the maintenance noise starts in its stationary state. It is independent of ${W}_{\varepsilon }$ and of the motion-evidence noise. Also $H\left(\tau \right)=0$, because the filter output is continuous and $m$ is its value at $\tau $.
 
-
-with ${\sigma }_{\varepsilon }={\mathrm{SD}}_{\varepsilon }\sqrt{2\kappa_{\varepsilon} }$, so that ${\mathrm{SD}}_{\varepsilon }^{2}$ is the stationary variance of $\varepsilon$ and the maintenance noise begins in its own stationary state, independently of ${W}_{\varepsilon }$ and of the motion-evidence noise. By construction $H\left(\tau \right)=0$, since the filter output is continuous and $m$ is its value at $\tau $.
-
-Since $\varepsilon$ is symmetric and independent of the sign of the response, ${s}_{\mathrm{resp}}H$ has the same law as $H$. Writing $\delta :={t}_{\mathrm{RS}}-{t}_{\mathrm{offset}}$ for the length of the preparation window and $d(t)$ for the distance from the maintenance target to the gate,
-
+\paragraph{The distance to the gate.} Write $\delta :={t}_{\mathrm{RS}}-{t}_{\mathrm{offset}}$ for the length of the preparation window. The distance from the maintenance target to the gate is
 \begin{equation}
-d\left(t\right)=g-\left|m\right|-\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}
+d\left(t\right):=g-\left|m\right|-\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}.
 \label{eq:d}
 \end{equation}
+Under Model 1, $\beta =0$ and $d$ is constant. Under Model 2, temporal preparation shortens $d$ at the constant speed $\beta /\delta$.
 
+\paragraph{PMAs as upcrossings.} A PMA on the selected channel begins when ${s}_{\mathrm{resp}}H$ crosses $d\left(t\right)$ upward. Since $\varepsilon$ is symmetric and independent of ${s}_{\mathrm{resp}}$, ${s}_{\mathrm{resp}}H$ has the same law as $H$.
 
-(the second term present only under temporal preparation, so that $\beta =0$ under Model 1), a PMA on the selected channel begins exactly when ${s}_{\mathrm{resp}}H$ crosses $d\left(t\right)$ upward. Temporal preparation therefore carries the signal toward the gate at the constant speed $\beta /\delta$. The non-selected channel activates when ${s}_{\mathrm{resp}}H$ falls below $-\left(g+\left|m\right|+\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}\right)$. Since ${s}_{\mathrm{resp}}H$ has the same law as $-{s}_{\mathrm{resp}}H$, its rate is that of the selected channel with $d\left(t\right)$ replaced by this distance, which is larger than $d\left(t\right)$ by $2\left|m\right|+2\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}$, and with the barrier moving away rather than toward the signal. In the stationary regime established below, its rate is therefore at most that of the selected channel, with equality only when $m=0$ and $\beta =0$; under Model 1 the ratio of the two rates is ${e}^{-2g\left|m\right|/{\sigma }_{H}^{2}}$. It is not considered further.
+The non-selected channel activates when ${s}_{\mathrm{resp}}H$ falls below $-\left(g+\left|m\right|+\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}\right)$. By the same symmetry, its rate is that of the selected channel with $d\left(t\right)$ replaced by this distance. This distance is larger than $d\left(t\right)$ by $2\left|m\right|+2\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}$, and the barrier moves away from the signal rather than toward it. In the stationary regime established below, the rate of the non-selected channel is therefore at most that of the selected channel, with equality only when $m=0$ and $\beta =0$. Under Model 1 the ratio of the two rates is ${e}^{-2g\left|m\right|/{\sigma }_{H}^{2}}$. The non-selected channel is not considered further.
 
 \subsection{The maintained fluctuation}
 
-Solving Equation~\eqref{eq:H} gives
+The fluctuation $H$ starts at zero when maintenance begins. Proposition~\ref{prop:H} writes it as a stationary process minus a single transient term, and gives the moments of the stationary process. Proposition~\ref{prop:stationary} shows that the transient is negligible on the delay analysis window.
 
-\begin{eqnarray*}
-    \varepsilon \left(\tau +\rho \right)&=&\varepsilon \left(\tau \right){e}^{-\kappa_{\varepsilon} \rho }+{\sigma }_{\varepsilon }\int_{0}^{\rho } {e}^{-\kappa_{\varepsilon} \left(\rho -p\right)}\,\dd {W}_{\varepsilon }\left(p\right),\\ H\left(\tau +\rho \right)&=&\lambda \int_{0}^{\rho } {e}^{-\lambda \left(\rho -q\right)}\varepsilon \left(\tau +q\right)\, \dd q
-\end{eqnarray*}
-
-
-Since $\varepsilon$ admits a continuous modification and $H$ is then a Riemann integral of a continuous function, almost surely $H\in {C}^{1}$. Substituting the first line into the second and exchanging the order of integration (permissible because the integrand is bounded on $\{0\le p\le q\le \rho \}$) gives
-
-\begin{eqnarray*}
-    H\left(\tau +\rho \right)&=&\frac{\varepsilon \left(\tau \right)}{{\sigma }_{\varepsilon }}K\left(\rho \right)+\int_{0}^{\rho } K\left(\rho -p\right)\,
-    \dd {W}_{\varepsilon }\left(p\right) \\
-    K\left(v\right)&=&
-    \begin{cases}
-        \frac{\lambda {\sigma }_{\varepsilon }}{\lambda -\kappa_{\varepsilon} }\left({e}^{-\kappa_{\varepsilon} v}-{e}^{-\lambda v}\right), & \kappa_{\varepsilon} \neq \lambda, \\
-\lambda {\sigma }_{\varepsilon }\,v\,{e}^{-\lambda v}, & \kappa_{\varepsilon} =\lambda.
-        \end{cases}
-\end{eqnarray*}
-
-
-$H$ is therefore a centred Gaussian process, being a linear combination of the Gaussian $\varepsilon \left(\tau \right)$ and an independent Wiener integral. Note that $K\left(0\right)=0$, which makes the first term vanish at $\rho =0$ and recovers $H\left(\tau \right)=0$, and that ${K}^{'}\left(0\right)=\lambda {\sigma }_{\varepsilon }$. Differentiating under the integral and using $K\left(0\right)=0$ to kill the boundary term, $\dot{H}\left(\tau +\rho \right)=\left(\varepsilon \left(\tau \right)/{\sigma }_{\varepsilon }\right){K}^{'}\left(\rho \right)+\int_{0}^{\rho } {K}^{'}\left(\rho -p\right)\, \dd {W}_{\varepsilon }\left(p\right)$. Write ${\sigma }_{H}^{2}\left(\rho \right):=\Var H\left(\tau +\rho \right)$, ${\sigma }_{\dot{H}}^{2}\left(\rho \right):=\Var \dot{H}\left(\tau +\rho \right)$ and ${c}_{H}\left(\rho \right):=\Cov \left(H\left(\tau +\rho \right),\dot{H}\left(\tau +\rho \right)\right)$, and the same symbols without an argument for their limits as $\rho \to \infty $. Because $\varepsilon \left(\tau \right)$ and ${W}_{\varepsilon }$ are independent, the It\^o isometry gives each moment as the sum of the two contributions, ${\sigma }_{H}^{2}\left(\rho \right)={K}^{2}\left(\rho \right)/2\kappa_{\varepsilon} +\int_{0}^{\rho } {K}^{2}$, ${\sigma }_{\dot{H}}^{2}\left(\rho \right)={K}^{'2}\left(\rho \right)/2\kappa_{\varepsilon} +\int_{0}^{\rho } {K}^{'2}$ and ${c}_{H}\left(\rho \right)=K\left(\rho \right){K}^{'}\left(\rho \right)/2\kappa_{\varepsilon} +{K}^{2}\left(\rho \right)/2$. Evaluating them, and writing  ${E}_{1}\left(\rho \right):={e}^{-\left(\lambda +\kappa_{\varepsilon} \right)\rho }$, ${E}_{2}\left(\rho \right):={e}^{-2\lambda \rho }$, with  $X\left(\rho \right):=\frac{\lambda +\kappa_{\varepsilon} }{\lambda -\kappa_{\varepsilon} }\left({E}_{2}\left(\rho \right)-{E}_{1}\left(\rho \right)\right)$ if $\kappa_{\varepsilon} \neq \lambda$ and $X\left(\rho \right)=-2\lambda \rho {E}_{2}\left(\rho \right)$ if $\kappa_{\varepsilon} = \lambda$, the three moments are
-
-  \begin{equation}\label{eq:moments}
-\begin{aligned}
-\sigma_H^2(\rho) &= \sigma_H^2\bigl(1+X(\rho)-E_1(\rho)\bigr)\\
-c_H(\rho) &= -\lambda\,\sigma_H^2\,X(\rho)\\
-\sigma_{\dot H}^2(\rho)
-  &= \sigma_{\dot H}^2\left(1+\frac{\lambda}{\kappa_{\varepsilon}}\bigl(X(\rho)+E_1(\rho)\bigr)\right)
-\end{aligned}
-\end{equation}
-
-
-where the stationary limits, reached as $\rho \to \infty $ since ${E}_{1}\left(\rho \right),{E}_{2}\left(\rho \right)\to 0$, are
-
+\begin{proposition}[the maintained fluctuation]\label{prop:H}
+Extend $\varepsilon$ to a stationary Ornstein--Uhlenbeck process on the whole real line, and let
+\begin{equation*}
+H_{\infty}(t):=\lambda\int_{-\infty}^{t}e^{-\lambda(t-s)}\varepsilon(s)\dd s
+\end{equation*}
+be the output of the filter in its stationary state. Then:
+\begin{enumerate}
+\item[(i)] for every $\rho\ge 0$, $H(\tau+\rho)=H_{\infty}(\tau+\rho)-e^{-\lambda\rho}H_{\infty}(\tau)$;
+\item[(ii)] $H_{\infty}$ is a stationary centred Gaussian process with continuously differentiable paths, and
 \begin{equation}\label{eq:asymp_moments}
-{\sigma }_{H}^{2} = \frac{\lambda \, {\mathrm{SD}}_{\varepsilon }^{2}}{\lambda +\kappa_{\varepsilon} }, \quad {\sigma }_{\dot{H}}^{2}= \frac{{\lambda }^{2}\kappa_{\varepsilon} \, {\mathrm{SD}}_{\varepsilon }^{2}}{\lambda +\kappa_{\varepsilon} }, \quad {c}_{H} = 0.
+\sigma_{H}^{2}:=\Var H_{\infty}(t)=\frac{\lambda\mathrm{SD}_{\varepsilon}^{2}}{\lambda+\kappa_{\varepsilon}}, \quad
+\sigma_{\dot{H}}^{2}:=\Var \dot{H}_{\infty}(t)=\frac{\lambda^{2}\kappa_{\varepsilon}\mathrm{SD}_{\varepsilon}^{2}}{\lambda+\kappa_{\varepsilon}},
 \end{equation}
-
-
-Setting $\rho =0$ in Equation~\eqref{eq:moments} gives ${\sigma }_{H}^{2}\left(0\right)=0$ and ${\sigma }_{\dot{H}}^{2}\left(0\right)={\lambda }^{2}{\mathrm{SD}}_{\varepsilon }^{2}$: the fluctuation of the signal about the maintenance target starts at zero and fills in, while its derivative starts above its stationary value and falls. Temporal preparation is added outside the filter (Equation~\eqref{eq:tildey}), so it shifts the mean of the signal reaching the gate and leaves all three moments untouched; Equations~\eqref{eq:moments} and~\eqref{eq:asymp_moments} hold for both models.
-
-\begin{proposition}[the analysis window lies in the stationary regime]\label{prop:stationary}
-Let $\rho \ge 0.8$ s. Then, over the ranges of Table~\ref{tab:params}, ${E}_{1}\left(\rho \right)<3\times {10}^{-4}$ and $\left|X\left(\rho \right)\right|<2.4\times {10}^{-3}$, whatever $\kappa_{\varepsilon}$. The transient terms of Equation~\eqref{eq:moments} are therefore negligible on the delay analysis window, and the three moments may be replaced there by their stationary values, Equation~\eqref{eq:asymp_moments}.
+and $\Cov\left(H_{\infty}(t),\dot{H}_{\infty}(t)\right)=0$.
+\end{enumerate}
 \end{proposition}
 
+Part (i) holds because $H$ and $H_{\infty}$ are driven by the same input and differ only in their starting value; the filter forgets that difference at the rate $\lambda$. Part (ii) follows from the fact that the expectations of products of stationary processes do not change in time.
 
 \begin{proof}
-Time enters Equation~\eqref{eq:moments} through ${E}_{1}\left(\rho \right)$, ${E}_{2}\left(\rho \right)$ and $X\left(\rho \right)$, and through nothing else. The first two decay at the rates $\lambda +\kappa_{\varepsilon} $ and $2\lambda $, both at least
+\emph{The extension.} The stationary Ornstein--Uhlenbeck process is time-reversible. Since $\varepsilon(\tau)$ is drawn from its stationary law, $\varepsilon$ can be extended to a stationary process on the whole real line whose restriction to $[\tau,\infty)$ has the law of Equation~\eqref{eq:H}. Only this restriction enters $H$, so the law of $H$ is unchanged.
 
+\emph{Part (i).} Differentiating the integral that defines $H_{\infty}$ gives $\dd H_{\infty}(t)=\lambda\left(\varepsilon(t)-H_{\infty}(t)\right)\dd t$. This is the equation that $H$ solves (Equation~\eqref{eq:H}). The difference $D:=H_{\infty}-H$ therefore solves $\dd D=-\lambda D\dd t$ on $[\tau,\infty)$. Its initial value is $D(\tau)=H_{\infty}(\tau)$, since $H(\tau)=0$. Hence $D(\tau+\rho)=e^{-\lambda\rho}H_{\infty}(\tau)$.
+
+\emph{Part (ii), the law.} $H_{\infty}$ is a linear functional of the centred Gaussian process $\varepsilon$, so it is centred and Gaussian. It is stationary because $\varepsilon$ is stationary and the filter does not depend on time. Its paths are continuously differentiable because those of $\varepsilon$ are continuous, and $\dot{H}_{\infty}=\lambda(\varepsilon-H_{\infty})$.
+
+\emph{Part (ii), the moments.} By stationarity, the expectations of $\varepsilon H_{\infty}$ and of $H_{\infty}^{2}$ do not depend on $t$. Their time derivatives, computed by Itô's product rule from Equation~\eqref{eq:H} (the stochastic integral has zero mean, and $H_{\infty}$ has finite variation), therefore vanish. Using $\E\left[\varepsilon^{2}\right]=\mathrm{SD}_{\varepsilon}^{2}$,
 \begin{equation*}
-\mu :=\lambda +\min \left(\lambda ,\kappa_{\varepsilon} \right)\ge \lambda ,
+\begin{aligned}
+0&=\frac{\dd}{\dd t}\E\left[\varepsilon H_{\infty}\right]=\lambda\mathrm{SD}_{\varepsilon}^{2}-(\lambda+\kappa_{\varepsilon})\E\left[\varepsilon H_{\infty}\right], &&\text{so}\quad \E\left[\varepsilon H_{\infty}\right]=\frac{\lambda\mathrm{SD}_{\varepsilon}^{2}}{\lambda+\kappa_{\varepsilon}};\\
+0&=\frac{\dd}{\dd t}\E\left[H_{\infty}^{2}\right]=2\lambda\left(\E\left[\varepsilon H_{\infty}\right]-\E\left[H_{\infty}^{2}\right]\right), &&\text{so}\quad \sigma_{H}^{2}=\E\left[\varepsilon H_{\infty}\right].
+\end{aligned}
 \end{equation*}
-
-
-and so does the third: applying the mean value theorem to $z\mapsto {e}^{-z\rho }$ between $z=\lambda +\kappa_{\varepsilon} $ and $z=2\lambda $ gives $\left|{E}_{2}\left(\rho \right)-{E}_{1}\left(\rho \right)\right|\le \left|\lambda -\kappa_{\varepsilon} \right|\rho {e}^{-\mu \rho }$, whence $\left|X\left(\rho \right)\right|\le \left(\lambda +\kappa_{\varepsilon} \right)\rho {e}^{-\mu \rho }$. Over the sampled ranges both bounds are largest at $\rho =0.8$ s, $\lambda =10$ s\textsuperscript{-1} and $\kappa_{\varepsilon} =0.2$ s\textsuperscript{-1}, where ${E}_{1}\left(\rho \right)\le {e}^{-8.16}<3\times {10}^{-4}$ and $\left|X\left(\rho \right)\right|\le 8.16\, {e}^{-8.16}<2.4\times {10}^{-3}$.
+This gives $\sigma_{H}^{2}$. The other two moments follow from $\dot{H}_{\infty}=\lambda(\varepsilon-H_{\infty})$ and $\E\left[\varepsilon H_{\infty}\right]=\sigma_{H}^{2}$:
+\begin{equation*}
+\begin{aligned}
+\Cov\left(H_{\infty},\dot{H}_{\infty}\right)&=\lambda\left(\E\left[\varepsilon H_{\infty}\right]-\sigma_{H}^{2}\right)=0,\\
+\Var\dot{H}_{\infty}&=\lambda^{2}\left(\mathrm{SD}_{\varepsilon}^{2}-2\E\left[\varepsilon H_{\infty}\right]+\sigma_{H}^{2}\right)=\lambda^{2}\left(\mathrm{SD}_{\varepsilon}^{2}-\sigma_{H}^{2}\right)=\frac{\lambda^{2}\kappa_{\varepsilon}\mathrm{SD}_{\varepsilon}^{2}}{\lambda+\kappa_{\varepsilon}}.
+\end{aligned}
+\end{equation*}
 \end{proof}
 
+\paragraph{The moments of $H$.} By Proposition~\ref{prop:H}, $H$ is a centred Gaussian process with continuously differentiable paths, and
+\begin{equation}\label{eq:Hdot}
+\dot{H}(\tau+\rho)=\dot{H}_{\infty}(\tau+\rho)+\lambda e^{-\lambda\rho}H_{\infty}(\tau).
+\end{equation}
+We measure its three moments relative to their stationary values. The relative departures $u(\rho)$, $v(\rho)$ and $w(\rho)$ are defined by
+\begin{equation}\label{eq:moments}
+\begin{aligned}
+\sigma_{H}^{2}(\rho)&:=\Var H(\tau+\rho)=\sigma_{H}^{2}\bigl(1+u(\rho)\bigr),\\
+\sigma_{\dot{H}}^{2}(\rho)&:=\Var\dot{H}(\tau+\rho)=\sigma_{\dot{H}}^{2}\bigl(1+v(\rho)\bigr),\\
+c_{H}(\rho)&:=\Cov\left(H(\tau+\rho),\dot{H}(\tau+\rho)\right)=w(\rho)\sigma_{H}\sigma_{\dot{H}}.
+\end{aligned}
+\end{equation}
+At $\rho=0$, $H(\tau)=0$ and $\dot{H}(\tau)=\lambda\varepsilon(\tau)$. So $\sigma_{H}^{2}(0)=0$ and $\sigma_{\dot{H}}^{2}(0)=\lambda^{2}\mathrm{SD}_{\varepsilon}^{2}$: the fluctuation starts at zero and fills in, while its derivative starts above its stationary value and falls. Temporal preparation is added outside the filter (Equation~\eqref{eq:tildey}). It shifts the mean of the signal reaching the gate and leaves the three moments unchanged, so Equation~\eqref{eq:moments} holds for both models.
 
-Every mode of the transient therefore decays at least as fast as the filter gain $\lambda$, whatever $\kappa_{\varepsilon}$ is: $\kappa_{\varepsilon}$ appears in $\mu$, but only in the direction that makes the decay faster, since $\mu$ increases with $\kappa_{\varepsilon}$ up to $2\lambda $. Maintenance begins no later than ${t}_{\mathrm{offset}}={L}_{\mathrm{motion}}+D$ and the delay analysis window opens 1 s after the physical stimulus offset $D$, so $\rho \ge 1-{L}_{\mathrm{motion}}=0.8$ s throughout that window at every parameter setting sampled, and every statement below is made at the stationary moments.
+\paragraph{The delay analysis window.} Maintenance begins no later than ${t}_{\mathrm{offset}}={L}_{\mathrm{motion}}+D$ (Equation~\eqref{eq:m}). The delay analysis window opens 1 s after the physical stimulus offset $D$. Hence, at every time $t$ of the window and on every trial, $\rho=t-\tau\ge 1-{L}_{\mathrm{motion}}=0.8$ s.
+
+\begin{proposition}[the analysis window lies in the stationary regime]\label{prop:stationary}
+At every time $t$ of the delay analysis window, and over the ranges of Table~\ref{tab:params},
+\begin{equation}\label{eq:uvw_bounds}
+\left|u(\rho)\right|<6.8\times 10^{-4}, \quad \left|v(\rho)\right|<4.8\times 10^{-3}, \quad \left|w(\rho)\right|<2.8\times 10^{-3}.
+\end{equation}
+\end{proposition}
+
+Each moment of $H$ is the corresponding stationary moment plus terms proportional to $e^{-\lambda\rho}$ or $e^{-2\lambda\rho}$, whose coefficients are correlations, hence at most 1 in absolute value. On the window, $e^{-\lambda\rho}$ is small.
+
+\begin{proof}
+Write $t:=\tau+\rho$. By Proposition~\ref{prop:H}(i) and Equation~\eqref{eq:Hdot},
+\begin{equation*}
+H(t)=H_{\infty}(t)-e^{-\lambda\rho}H_{\infty}(\tau), \qquad \dot{H}(t)=\dot{H}_{\infty}(t)+\lambda e^{-\lambda\rho}H_{\infty}(\tau).
+\end{equation*}
+So each moment of $H$ is a stationary moment plus terms involving the correlations
+\begin{equation*}
+C_{0}:=\operatorname{Corr}\left(H_{\infty}(t),H_{\infty}(\tau)\right), \qquad C_{1}:=\operatorname{Corr}\left(\dot{H}_{\infty}(t),H_{\infty}(\tau)\right).
+\end{equation*}
+Expand the two variances and the covariance. Use $\Var H_{\infty}(\tau)=\sigma_{H}^{2}$ and $\Cov(H_{\infty}(t),\dot{H}_{\infty}(t))=0$ (Equation~\eqref{eq:asymp_moments}). Divide by $\sigma_{H}^{2}$, $\sigma_{\dot{H}}^{2}$ and $\sigma_{H}\sigma_{\dot{H}}$ respectively, and write $\chi:=\lambda\sigma_{H}/\sigma_{\dot{H}}=\sqrt{\lambda/\kappa_{\varepsilon}}$ (Equation~\eqref{eq:asymp_moments}). This gives the departures exactly:
+\begin{equation*}
+\begin{aligned}
+u(\rho)&=-2C_{0}e^{-\lambda\rho}+e^{-2\lambda\rho},\\
+v(\rho)&=2\chi C_{1}e^{-\lambda\rho}+\chi^{2}e^{-2\lambda\rho},\\
+w(\rho)&=\left(\chi C_{0}-C_{1}\right)e^{-\lambda\rho}-\chi e^{-2\lambda\rho}.
+\end{aligned}
+\end{equation*}
+A correlation lies between $-1$ and $1$ (Cauchy--Schwarz inequality). Hence
+\begin{equation*}
+|u(\rho)|\le 2e^{-\lambda\rho}+e^{-2\lambda\rho}, \quad |v(\rho)|\le 2\chi e^{-\lambda\rho}+\chi^{2}e^{-2\lambda\rho}, \quad |w(\rho)|\le(1+\chi)e^{-\lambda\rho}+\chi e^{-2\lambda\rho}.
+\end{equation*}
+
+\emph{Numerical values.} Over the ranges of Table~\ref{tab:params}, $\lambda\ge 10$ s\textsuperscript{-1}, and $\rho\ge 0.8$ s on the window, so $e^{-\lambda\rho}\le e^{-8}$. Also $\kappa_{\varepsilon}\ge 0.2$ s\textsuperscript{-1}, so $\chi e^{-\lambda\rho}\le\sqrt{\lambda/0.2}e^{-0.8\lambda}$. The function $\sqrt{\lambda}e^{-0.8\lambda}$ decreases for $\lambda>1/1.6$, so $\chi e^{-\lambda\rho}\le\sqrt{50}e^{-8}$. Inserting these two bounds gives $|u|\le 2e^{-8}+e^{-16}<6.8\times10^{-4}$, $|v|\le 2\sqrt{50}e^{-8}+50e^{-16}<4.8\times10^{-3}$ and $|w|\le(1+\sqrt{50})e^{-8}+\sqrt{50}e^{-16}<2.8\times10^{-3}$.
+\end{proof}
+
+Every transient term therefore decays at least as fast as $e^{-\lambda\rho}$, whatever $\kappa_{\varepsilon}$ is. The slow mean reversion of $\varepsilon$ does not slow the transient, because $\varepsilon$ starts in its stationary state.
 
 \subsection{The crossing rate}
 
-Throughout this subsection the distance to the gate is a function of $t$ and the moments of Equation~\eqref{eq:moments} are functions of the elapsed maintenance time $\rho =t-\tau $. Let $Z\left(t\right):={s}_{\mathrm{resp}}H\left(t\right)-d\left(t\right)$, so that upcrossings of $d$ by ${s}_{\mathrm{resp}}H$ are upcrossings of zero by $Z$, and $\dot{Z}=\dot{H}+\beta /\delta$. Trajectories that reach the response criterion before the end of the delay are neglected; they are premature responses, excluded from the empirical analysis and held to a small fraction of trials by the admissibility screen. Since $H$ is almost surely continuously differentiable and $\left(Z,\dot{Z}\right)$ is jointly Gaussian and non-degenerate for $\rho >0$, the Kac--Rice formula gives the expected upcrossing rate \parencite[ch. 3]{azaisLevelSetsExtrema2009}:
+The Kac--Rice formula gives the rate of upcrossings as the density of the process at the barrier, times the expected positive part of its slope there. Both factors are Gaussian quantities, computed from the moments of Equation~\eqref{eq:moments}.
 
+\paragraph{The expected positive part of a Gaussian variable.} For real $x$ and $\zeta>0$, let $\xi\sim\mathrm{N}(x,\zeta^{2})$ and
+\begin{equation}\label{eq:Psi}
+\Psi(x,\zeta):=\E\left[\xi^{+}\right]=x\Phi(x/\zeta)+\zeta\varphi(x/\zeta).
+\end{equation}
+Three properties are used below. (P1) The partial derivatives are $\partial\Psi/\partial x=\Phi(x/\zeta)\in(0,1]$ and $\partial\Psi/\partial\zeta=\varphi(x/\zeta)\in(0,\varphi(0)]$; both follow from $\varphi'(x)=-x\varphi(x)$, which makes the terms in $(x/\zeta)\varphi(x/\zeta)$ cancel. (P2) $\Psi(cx,c\zeta)=c\Psi(x,\zeta)$ for $c>0$. (P3) $\Psi(0,\zeta)=\zeta\varphi(0)$.
+
+\paragraph{The general rate.} Throughout this subsection, $d=d(t)$ and the moments of Equation~\eqref{eq:moments} are taken at $\rho=t-\tau$. Let $Z\left(t\right):={s}_{\mathrm{resp}}H\left(t\right)-d\left(t\right)$. Upcrossings of $d$ by ${s}_{\mathrm{resp}}H$ are upcrossings of zero by $Z$, and $\dot{Z}={s}_{\mathrm{resp}}\dot{H}+\beta /\delta$. Trajectories that reach the response criterion before the end of the delay are neglected. They are premature responses, excluded from the empirical analysis and held to a small fraction of trials by the admissibility screen. Since $H$ has continuously differentiable paths and $\left(Z,\dot{Z}\right)$ is jointly Gaussian and non-degenerate for $\rho >0$, the Kac--Rice formula gives the expected upcrossing rate \parencite[ch. 3]{azaisLevelSetsExtrema2009}:
 \begin{equation}
-\nu \left(t\right)={p}_{Z\left(t\right)}\left(0\right)\, \mathrm{E}\left[\dot{Z}\left(t\right){1}_{\{\dot{Z}\left(t\right)>0\}} \mid Z\left(t\right)=0\right]
+\nu \left(t\right)={p}_{Z\left(t\right)}\left(0\right) \mathrm{E}\left[\dot{Z}\left(t\right)^{+} \mid Z\left(t\right)=0\right].
 \label{eq:nu}
 \end{equation}
-
-
-Since $H$ is centred, $Z\left(t\right)\sim \mathrm{N}\left(-d\left(t\right),{\sigma }_{H}^{2}\left(\rho \right)\right)$ and ${p}_{Z\left(t\right)}\left(0\right)=\varphi \left(d\left(t\right)/{\sigma }_{H}\left(\rho \right)\right)/{\sigma }_{H}\left(\rho \right)$. Because $\left(Z,\dot{Z}\right)$ is jointly Gaussian, $\dot{Z}$ given $Z=0$ is Gaussian with mean and variance
-
+The first factor is a Gaussian density. Since $H$ is centred, $Z\left(t\right)\sim \mathrm{N}\left(-d,{\sigma }_{H}^{2}\left(\rho \right)\right)$, so ${p}_{Z\left(t\right)}\left(0\right)=\varphi \left(d/{\sigma }_{H}\left(\rho \right)\right)/{\sigma }_{H}\left(\rho \right)$. For the second factor, $\left(Z,\dot{Z}\right)$ is jointly Gaussian, so $\dot{Z}$ given $Z=0$ is Gaussian with mean and variance
 \begin{equation*}
-M\left(t\right)=\frac{\beta }{\delta }+\frac{{c}_{H}\left(\rho \right)}{{\sigma }_{H}^{2}\left(\rho \right)}d\left(t\right), \quad S\left(t\right)={\sigma }_{\dot{H}}^{2}\left(\rho \right)-\frac{{c}_{H}{\left(\rho \right)}^{2}}{{\sigma }_{H}^{2}\left(\rho \right)}
+M\left(t\right):=\frac{\beta }{\delta }+\frac{{c}_{H}\left(\rho \right)}{{\sigma }_{H}^{2}\left(\rho \right)}d, \quad S\left(t\right):={\sigma }_{\dot{H}}^{2}\left(\rho \right)-\frac{{c}_{H}{\left(\rho \right)}^{2}}{{\sigma }_{H}^{2}\left(\rho \right)}.
 \end{equation*}
-
-
-and for $\xi \sim \mathrm{N}\left(M,S\right)$ the expected positive part is $\mathrm{E}\left[\xi {1}_{\{\xi >0\}}\right]=M\Phi \left(M/\sqrt{S}\right)+\sqrt{S}\varphi \left(M/\sqrt{S}\right)$. Substituting into Equation~\eqref{eq:nu} gives the rate in general form,
-
+Its expected positive part is $\Psi\left(M(t),\sqrt{S(t)}\right)$ by Equation~\eqref{eq:Psi}. Hence
 \begin{equation}
-\nu \left(t\right)=\frac{\varphi \left(d\left(t\right)/{\sigma }_{H}\left(\rho \right)\right)}{{\sigma }_{H}\left(\rho \right)}\left[M\left(t\right)\Phi \left(\frac{M\left(t\right)}{\sqrt{S\left(t\right)}}\right)+\sqrt{S\left(t\right)}\varphi \left(\frac{M\left(t\right)}{\sqrt{S\left(t\right)}}\right)\right]
+\nu \left(t\right)=\frac{\varphi \left(d/{\sigma }_{H}\left(\rho \right)\right)}{{\sigma }_{H}\left(\rho \right)}\Psi\left(M(t),\sqrt{S(t)}\right).
 \label{eq:nu2}
 \end{equation}
 
-
-Replacing the moments by their stationary values, which Proposition~\ref{prop:stationary} licenses on the analysis window, sets ${c}_{H}=0$ and therefore $M=\beta /\delta $ and $S={\sigma }_{\dot{H}}^{2}$: both are constants, and all the time dependence is carried by the distance to the gate. Writing
-
+\paragraph{The stationary rate.} Setting $u=v=w=0$ in Equation~\eqref{eq:moments}, that is, replacing the moments by their stationary values, gives ${c}_{H}=0$, $M=\beta /\delta $ and $S={\sigma }_{\dot{H}}^{2}$. Write
 \begin{equation*}
-a\left(t\right):=\frac{d\left(t\right)}{{\sigma }_{H}}, \quad \omega :=\frac{{\sigma }_{\dot{H}}}{{\sigma }_{H}}=\sqrt{\lambda \kappa_{\varepsilon} }
+a\left(t\right):=\frac{d\left(t\right)}{{\sigma }_{H}}, \quad \omega :=\frac{{\sigma }_{\dot{H}}}{{\sigma }_{H}}=\sqrt{\lambda \kappa_{\varepsilon} }, \quad b:=\frac{\beta}{\delta\sigma_{H}}
 \end{equation*}
-
-
-for the distance to the gate in units of the fluctuation and for the characteristic frequency of the fluctuation, Equation~\eqref{eq:nu2} becomes the \emph{stationary rate}
-
+for the distance to the gate in units of the fluctuation, the characteristic frequency of the fluctuation, and the speed of temporal preparation in units of the fluctuation. By (P2) with $c=1/\sigma_{H}$, $\Psi\left(\beta/\delta,\sigma_{\dot{H}}\right)/\sigma_{H}=\Psi(b,\omega)$. Equation~\eqref{eq:nu2} then becomes the \emph{stationary rate}
 \begin{equation}
-\nustat \left(t\right)=\varphi \left(a\left(t\right)\right)\left[\frac{\beta }{\delta {\sigma }_{H}}\Phi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)+\omega \varphi \left(\frac{\beta }{\delta {\sigma }_{\dot{H}}}\right)\right]
+\nustat \left(t\right)=\varphi \left(a\left(t\right)\right)\Psi(b,\omega)=\varphi \left(a\left(t\right)\right)\left[b\Phi \left(\frac{b}{\omega}\right)+\omega \varphi \left(\frac{b}{\omega}\right)\right].
 \label{eq:nu_asymp}
 \end{equation}
-
-
-The bracket does not depend on the distance to the gate, and temporal preparation enters it only through $\beta /\delta$, the speed at which temporal preparation carries the signal toward the gate. The stationary rate is thus a product of two factors: a Gaussian in the standardized distance to the gate, which is where the conditions and the time within the delay act, and a bracket that depends on neither the motion coherence nor its duration.
+It is the product of two factors. The first is a Gaussian in the standardized distance to the gate; this is where the conditions and the time within the delay act. The second, $\Psi(b,\omega)$, depends on neither the motion coherence nor the stimulus duration, and temporal preparation enters it only through $b$.
 
 \begin{corollary}[error of the stationary rate]\label{cor:approx}
-Let $t$ be a time in the delay analysis window and $\rho =t-\tau $ the elapsed maintenance time. Write the three moments of Equation~\eqref{eq:moments} in terms of their departures from their stationary values,
+Let $t$ be a time in the delay analysis window, $a:=a(t)$, and $\eta :=\max \left(\left|u\left(\rho \right)\right|,\left|v\left(\rho \right)\right|,\left|w\left(\rho \right)\right|\right)$, with $u$, $v$ and $w$ as in Equation~\eqref{eq:moments}. If
 \begin{equation*}
-{\sigma }_{H}^{2}\left(\rho \right)={\sigma }_{H}^{2}\left(1+u\left(\rho \right)\right), \quad {\sigma }_{\dot{H}}^{2}\left(\rho \right)={\sigma }_{\dot{H}}^{2}\left(1+v\left(\rho \right)\right), \quad {c}_{H}\left(\rho \right)=w\left(\rho \right){\sigma }_{H}{\sigma }_{\dot{H}},
+\left(\sqrt{2\pi}|a|+1\right)\frac{\eta}{1-\eta}\le\frac{1}{2},
 \end{equation*}
-so that $u$ and $v$ are relative errors and $w$ is the whole of the error on ${c}_{H}$, whose stationary value is zero. By Equation~\eqref{eq:moments},
+then
 \begin{equation*}
-u\left(\rho \right)=X\left(\rho \right)-{E}_{1}\left(\rho \right), \quad v\left(\rho \right)=\frac{\lambda }{\kappa_{\varepsilon} }\left(X\left(\rho \right)+{E}_{1}\left(\rho \right)\right), \quad w\left(\rho \right)=-X\left(\rho \right)\sqrt{\lambda /\kappa_{\varepsilon} }.
-\end{equation*}
-Set $\eta \left(\rho \right):=\max \left(\left|u\left(\rho \right)\right|,\left|v\left(\rho \right)\right|,\left|w\left(\rho \right)\right|\right)$. If ${\left(a\left(t\right)+2\right)}^{2}\eta \left(\rho \right)\le 1/5$ then
-\begin{equation*}
-\left|\ln \frac{\nu \left(t\right)}{\nustat \left(t\right)}\right|\le {\left(a\left(t\right)+2\right)}^{2}\eta \left(\rho \right).
+\left|\ln \frac{\nu \left(t\right)}{\nustat \left(t\right)}\right|\le \left[\frac{a^{2}+1}{2}+2\left(\sqrt{2\pi}|a|+1\right)\right]\frac{\eta}{1-\eta}.
 \end{equation*}
 \end{corollary}
 
+The ratio of the two rates is a product of three factors. Each departs from 1 by a relative amount of order $\eta$. The first, a Gaussian density evaluated at the distance to the gate, amplifies that departure by $a^{2}/2$.
+
 \begin{proof}
-Abbreviate $a=a\left(t\right)$, $\eta =\eta \left(\rho \right)$, and likewise for $u$, $v$ and $w$. Write $g\left(m\right):=m\Phi \left(m\right)+\varphi \left(m\right)$, so that Equation~\eqref{eq:nu2} reads $\nu \left(t\right)=\varphi \left({a}_{\rho }\right)B/{\sigma }_{H}\left(\rho \right)$ with ${a}_{\rho }:=d\left(t\right)/{\sigma }_{H}\left(\rho \right)$ and $B:=\sqrt{S}\, g\left(M/\sqrt{S}\right)$, and $\nustat \left(t\right)$ is the same expression at $u=v=w=0$. Note $X\left(\rho \right)\le 0$, so $w\ge 0$ and $M\ge \beta /\delta \ge 0$, whence $g\ge g\left(0\right)=\varphi \left(0\right)$; and ${g}^{'}=\Phi \in \left(0,1\right]$. The hypothesis gives $\eta \le 1/20$, so $1/\left(1-\eta \right)\le 5/4$ throughout.
+Write $u:=u(\rho)$, $v:=v(\rho)$ and $w:=w(\rho)$. The hypothesis implies $\eta<1$, so $1+u\ge 1-\eta>0$. Two elementary facts are used. (F1) $|\ln(1+x)|\le|x|/(1-|x|)$ for $|x|<1$; this follows from $\ln(1+x)\le x$ for $x\ge 0$, and from $-\ln(1-|x|)=\ln\left(1+|x|/(1-|x|)\right)$ for $x<0$. (F2) $|\sqrt{1+z}-1|=|z|/(\sqrt{1+z}+1)\le|z|$ for $z>-1$.
 
-Take the three factors in turn. Since ${a}_{\rho }^{2}={a}^{2}/\left(1+u\right)$, $\left|\ln \varphi \left({a}_{\rho }\right)/\varphi \left(a\right)\right|=\left({a}^{2}/2\right)\left|u\right|/\left(1+u\right)\le \tfrac{5}{8}{a}^{2}\eta$, and $\left|\ln {\sigma }_{H}/{\sigma }_{H}\left(\rho \right)\right|=\tfrac{1}{2}\left|\ln \left(1+u\right)\right|\le \tfrac{5}{8}\eta$.
+\emph{The ratio as a product.} By Equation~\eqref{eq:moments}, $\sigma_{H}(\rho)=\sigma_{H}\sqrt{1+u}$, so $d/\sigma_{H}(\rho)=a/\sqrt{1+u}$. By (P2), $\nustat(t)=\varphi(a)\Psi\left(\beta/\delta,\sigma_{\dot{H}}\right)/\sigma_{H}$. Dividing Equation~\eqref{eq:nu2} by this expression,
+\begin{equation*}
+\frac{\nu(t)}{\nustat(t)}=\frac{\varphi\left(a/\sqrt{1+u}\right)}{\varphi(a)}\cdot\frac{1}{\sqrt{1+u}}\cdot\frac{\Psi\left(M,\sqrt{S}\right)}{\Psi\left(\beta/\delta,\sigma_{\dot{H}}\right)}.
+\end{equation*}
+The three factors come from the density at the gate, from its normalization, and from the slope at the gate. We show that their logarithms are bounded in absolute value by, respectively,
+\begin{equation*}
+\frac{a^{2}}{2}\cdot\frac{\eta}{1-\eta}, \qquad \frac{1}{2}\cdot\frac{\eta}{1-\eta}, \qquad 2\left(\sqrt{2\pi}|a|+1\right)\frac{\eta}{1-\eta}.
+\end{equation*}
+Their sum is the claimed bound.
 
-For the bracket, $M=\beta /\delta +w{\sigma }_{\dot{H}}a/\left(1+u\right)$ and $S={\sigma }_{\dot{H}}^{2}\left(1+v-{w}^{2}/\left(1+u\right)\right)$, so $\left|\Delta M\right|/{\sigma }_{\dot{H}}\le \tfrac{5}{4}a\eta$ and $\left|\Delta \sqrt{S}\right|/{\sigma }_{\dot{H}}\le \left|S/{\sigma }_{\dot{H}}^{2}-1\right|\le \tfrac{5}{4}\eta$. Now $\partial B/\partial M=\Phi \left(M/\sqrt{S}\right)\le 1$ and $\partial B/\partial \sqrt{S}=\varphi \left(M/\sqrt{S}\right)\le \varphi \left(0\right)$, so by the mean value theorem $\left|\Delta B\right|\le \left|\Delta M\right|+\varphi \left(0\right)\left|\Delta \sqrt{S}\right|$; and ${B}_{\mathrm{stat}}\ge {\sigma }_{\dot{H}}\varphi \left(0\right)$. Hence $\left|\Delta B\right|/{B}_{\mathrm{stat}}\le \tfrac{5}{4}\sqrt{2\pi }a\eta +\tfrac{5}{4}\eta \le 1/4$ and $\left|\ln B/{B}_{\mathrm{stat}}\right|\le \tfrac{4}{3}\left|\Delta B\right|/{B}_{\mathrm{stat}}\le \tfrac{5}{3}\sqrt{2\pi }a\eta +\tfrac{5}{3}\eta$.
+\emph{First factor.} Since $\ln\varphi(x)=-x^{2}/2-\ln\sqrt{2\pi}$, its logarithm is
+\begin{equation*}
+\frac{a^{2}}{2}\left(1-\frac{1}{1+u}\right)=\frac{a^{2}}{2}\cdot\frac{u}{1+u},
+\end{equation*}
+and $|u/(1+u)|\le\eta/(1-\eta)$ because $|u|\le\eta$ and $1+u\ge 1-\eta$.
 
-Adding the three, $\left|\ln \nu /\nustat \right|\le \left(\tfrac{5}{8}{a}^{2}+\tfrac{5}{3}\sqrt{2\pi }a+\tfrac{55}{24}\right)\eta \le \left({a}^{2}+4a+4\right)\eta$.
+\emph{Second factor.} Its logarithm is $-\tfrac{1}{2}\ln(1+u)$. By (F1), $|\ln(1+u)|\le\eta/(1-\eta)$.
+
+\emph{Third factor.} The slope at the gate has conditional mean $M$ and variance $S$. We first compare them with their stationary values, $\beta/\delta$ and $\sigma_{\dot{H}}^{2}$. Inserting $c_{H}(\rho)=w\sigma_{H}\sigma_{\dot{H}}$ and $\sigma_{H}^{2}(\rho)=\sigma_{H}^{2}(1+u)$ (Equation~\eqref{eq:moments}) into the definitions of $M$ and $S$,
+\begin{equation*}
+M-\frac{\beta}{\delta}=\sigma_{\dot{H}}a\frac{w}{1+u}, \qquad \frac{S}{\sigma_{\dot{H}}^{2}}-1=v-\frac{w^{2}}{1+u}.
+\end{equation*}
+Since $|v|\le\eta$, $|w|\le\eta$ and $1+u\ge 1-\eta$,
+\begin{equation*}
+\left|M-\frac{\beta}{\delta}\right|\le\sigma_{\dot{H}}|a|\frac{\eta}{1-\eta}, \qquad \left|\frac{S}{\sigma_{\dot{H}}^{2}}-1\right|\le\eta+\frac{\eta^{2}}{1-\eta}=\frac{\eta}{1-\eta}.
+\end{equation*}
+By (F2), the second bound gives $|\sqrt{S}-\sigma_{\dot{H}}|\le\sigma_{\dot{H}}\eta/(1-\eta)$.
+
+We then compare the values of $\Psi$ at the two points $\left(\beta/\delta,\sigma_{\dot{H}}\right)$ and $\left(M,\sqrt{S}\right)$. Both lie in the half-plane $\zeta>0$, which is convex. By the mean value theorem along the segment joining them, the difference of the two values is the sum of the two departures just bounded, weighted by the partial derivatives of $\Psi$ at a point of the segment. By (P1), these weights are at most 1 and $\varphi(0)$. Hence
+\begin{equation*}
+\left|\Psi\left(M,\sqrt{S}\right)-\Psi\left(\frac{\beta}{\delta},\sigma_{\dot{H}}\right)\right|\le\left|M-\frac{\beta}{\delta}\right|+\varphi(0)\left|\sqrt{S}-\sigma_{\dot{H}}\right|\le\sigma_{\dot{H}}\left(|a|+\varphi(0)\right)\frac{\eta}{1-\eta}.
+\end{equation*}
+The denominator of the third factor is bounded below: $\Psi$ increases in $x$ (P1) and $\beta/\delta\ge 0$, so $\Psi\left(\beta/\delta,\sigma_{\dot{H}}\right)\ge\Psi\left(0,\sigma_{\dot{H}}\right)=\sigma_{\dot{H}}\varphi(0)$ by (P3). Dividing, and using $1/\varphi(0)=\sqrt{2\pi}$, the third factor differs from 1 by at most
+\begin{equation*}
+\bar{x}:=\left(\sqrt{2\pi}|a|+1\right)\frac{\eta}{1-\eta},
+\end{equation*}
+and $\bar{x}\le 1/2$ by hypothesis. By (F1), its logarithm is at most $\bar{x}/(1-\bar{x})\le 2\bar{x}$ in absolute value.
+
 \end{proof}
 
-The moment error is therefore amplified by the squared standardized distance to the gate: $a\left(t\right)$ enters the rate through a Gaussian, so what the transient does to ${\sigma }_{H}$ it does to the rate ${a\left(t\right)}^{2}/2$ times over. Over the admissible parameter vectors, $\eta \left(\rho \right)$ stays below $2\times {10}^{-3}$ everywhere in the window. Evaluated exactly, the largest relative departure of $\nu \left(t\right)$, Equation~\eqref{eq:nu2} at the moments of Equation~\eqref{eq:moments}, from $\nustat \left(t\right)$, Equation~\eqref{eq:nu_asymp}, over the admissible parameter vectors and the whole window, is $3\times {10}^{-3}$ under Model 1 and $1.2\times {10}^{-3}$ under Model 2 (Figure~\ref{fig:approx}). Over the whole sampled box it reaches 20\%, on parameter vectors whose standardized distance to the gate is close to 40 and whose rate is therefore far too small to be measured at all; admissibility caps that distance, and with it the amplification.
+The moment error is therefore amplified by the squared standardized distance to the gate: $a\left(t\right)$ enters the rate through a Gaussian, so what the transient does to ${\sigma }_{H}^{2}$ it does to the log rate ${a\left(t\right)}^{2}/2$ times over. By Proposition~\ref{prop:stationary}, $\eta <4.8\times {10}^{-3}$ everywhere in the window, so the hypothesis holds whenever $|a(t)|\le 40$. Evaluated exactly, the largest relative departure of $\nu \left(t\right)$ (Equation~\eqref{eq:nu2} at the moments of Equation~\eqref{eq:moments}) from $\nustat \left(t\right)$ (Equation~\eqref{eq:nu_asymp}), over the admissible parameter vectors and the whole window, is $3\times {10}^{-3}$ under Model 1 and $1.2\times {10}^{-3}$ under Model 2 (Figure~\ref{fig:approx}). Over the whole sampled box it reaches 20\%, on parameter vectors whose standardized distance to the gate is close to 40 and whose rate is therefore far too small to be measured; admissibility caps that distance, and with it the amplification.
 
 \begin{corollary}[under Model 1 the delay-window rate is constant]\label{cor:flat}
 Under Model 1, at every parameter setting and at every time in the delay analysis window,
-
 \begin{equation}
-\nustat =\frac{\omega }{2\pi }{e}^{-{a}^{2}/2}, \quad a=\frac{g-\left|m\right|}{{\sigma }_{H}}
+\nustat =\frac{\omega }{2\pi }{e}^{-{a}^{2}/2}, \quad a=\frac{g-\left|m\right|}{{\sigma }_{H}}.
 \label{eq:nu1}
 \end{equation}
-
-
-which does not depend on $t$; in particular $a\left(t\right)$ is the constant $a$. Every linear or quadratic contrast of the stationary rate across the window is therefore zero, for every $\kappa_{\varepsilon}$, every $\lambda$ and every maintenance target.
-
+This does not depend on $t$. Every linear or quadratic contrast of the stationary rate across the window is therefore zero, for every $\kappa_{\varepsilon}$, every $\lambda$ and every maintenance target.
 \end{corollary}
 
 \begin{proof}
-$\beta =0$ makes $d\left(t\right)$ constant by Equation~\eqref{eq:d}, so $a\left(t\right)$ is constant. Putting $M=0$ and $S={\sigma }_{\dot{H}}^{2}$ in Equation~\eqref{eq:nu_asymp} leaves $\nustat =\varphi \left(a\right){\sigma }_{\dot{H}}\varphi \left(0\right)/{\sigma }_{H}=\omega {e}^{-{a}^{2}/2}/2\pi $, the classical Rice formula.
+Under Model 1, $\beta=0$. So $d$ is constant (Equation~\eqref{eq:d}), $a$ is constant, and $b=0$. By (P3), $\Psi(0,\omega)=\omega\varphi(0)$, and Equation~\eqref{eq:nu_asymp} gives $\nustat=\varphi(a)\omega\varphi(0)=\omega e^{-a^{2}/2}/(2\pi)$. This is the classical Rice formula.
 \end{proof}
-
 
 \begin{corollary}[under Model 2 the rate ramps, and the log rate is a parabola]\label{cor:logslope}
 Under Model 2, on the analysis window,
-
 \begin{equation}
-\frac{\dd \left(\ln \nustat \right)}{\dd t}\left(t\right)=\frac{\beta }{\delta {\sigma }_{H}}a\left(t\right), \quad \frac{{\dd }^{2}\left(\ln \nustat \right)}{\dd {t}^{2}}\left(t\right)=-{\left(\frac{\beta }{\delta {\sigma }_{H}}\right)}^{2}
+\frac{\dd \left(\ln \nustat \right)}{\dd t}\left(t\right)=b a\left(t\right), \quad \frac{{\dd }^{2}\left(\ln \nustat \right)}{\dd {t}^{2}}\left(t\right)=-{b}^{2}.
 \label{eq:slope}
 \end{equation}
-
-
-so that the rate itself rises, $\dd \nustat /\dd t=\nustat \left(t\right)\left(\beta /\delta {\sigma }_{H}\right)a\left(t\right)>0$, wherever the signal has not yet reached the gate. Let $N\left(t\right)$ be the mean of $\nustat \left(t\right)$ over the trials of a condition, write $b:=\beta /\left(\delta {\sigma }_{H}\right)$, and let ${\E}_{\nu }$ and ${\Var}_{\nu }$ be the mean and the variance of $a\left(t\right)$ over those trials, each trial weighted by its own rate $\nustat \left(t\right)$. Then
+In particular the rate rises, $\dd \nustat /\dd t=b a\left(t\right)\nustat \left(t\right)>0$, wherever the signal has not yet reached the gate ($a(t)>0$). Let $N\left(t\right)$ be the mean of $\nustat \left(t\right)$ over the trials of a condition. For a quantity $f$ that varies across trials, let ${\E}_{\nu }[f]:=\E\left[f\nustat(t)\right]/N(t)$ be its mean over those trials, each trial weighted by its rate, and ${\Var}_{\nu }[f]:={\E}_{\nu }[f^{2}]-{\E}_{\nu }[f]^{2}$. Then
 \begin{equation}
 \begin{gathered}
-\frac{\dd \left(\ln N\right)}{\dd t}\left(t\right)=b\,{\E}_{\nu }\left[a\left(t\right)\right], \qquad \frac{{\dd }^{2}\left(\ln N\right)}{\dd {t}^{2}}\left(t\right)=-{b}^{2}\left(1-{\Var}_{\nu }\left[a\left(t\right)\right]\right),\\ \frac{{\dd }^{2}N}{\dd {t}^{2}}\left(t\right)={b}^{2}N\left(t\right)\left({\E}_{\nu }\left[{a\left(t\right)}^{2}\right]-1\right).
+\frac{\dd \left(\ln N\right)}{\dd t}\left(t\right)=b{\E}_{\nu }\left[a\left(t\right)\right], \qquad \frac{{\dd }^{2}N}{\dd {t}^{2}}\left(t\right)={b}^{2}N\left(t\right)\left({\E}_{\nu }\left[{a\left(t\right)}^{2}\right]-1\right),\\ \frac{{\dd }^{2}\left(\ln N\right)}{\dd {t}^{2}}\left(t\right)=-{b}^{2}\left(1-{\Var}_{\nu }\left[a\left(t\right)\right]\right).
 \end{gathered}
 \label{eq:slope_cond}
 \end{equation}
-
 \end{corollary}
 
-\begin{proof}
-The barrier moves at constant speed, so by Equation~\eqref{eq:d} the standardized distance falls linearly, $a\left(t\right)=a\left({t}_{\mathrm{offset}}\right)-\beta \left(t-{t}_{\mathrm{offset}}\right)/\left(\delta {\sigma }_{H}\right)$. In Equation~\eqref{eq:nu_asymp} the bracket does not depend on $t$ and $\ln \varphi \left(a\right)=-{a}^{2}/2-\ln \sqrt{2\pi }$, so $\dd \left(\ln \nustat \right)/\dd t=-a\dot{a}$ with $\dot{a}=-\beta /\left(\delta {\sigma }_{H}\right)$. Differentiating once more gives the curvature.
+On a single trial, only the Gaussian factor of the stationary rate depends on time, and its argument falls linearly. The identities for the mean rate follow by averaging the single-trial identities over trials.
 
-For the mean rate, the trials of a condition differ in their maintenance target, hence in $a\left(t\right)$, but share $\beta $, $\delta $, ${\sigma }_{H}$ and the bracket of Equation~\eqref{eq:nu_asymp}, which are properties of the participant; so every trial satisfies $\dd \nustat /\dd t=b\,a\,\nustat $ with $\dot{a}=-b$. Averaging over trials gives $\dd N/\dd t=b\,\E\left[a\,\nustat \right]=b\,N\,{\E}_{\nu }\left[a\right]$, by the definition of the rate-weighted mean, which is the first identity after division by $N$. Differentiating each trial's identity once more gives ${\dd }^{2}\nustat /\dd {t}^{2}=b\left(\dot{a}\,\nustat +a\,\dd \nustat /\dd t\right)={b}^{2}\nustat \left({a}^{2}-1\right)$, and averaging gives the third identity. The second follows from ${\dd }^{2}\left(\ln N\right)/\dd {t}^{2}=\left({\dd }^{2}N/\dd {t}^{2}\right)/N-{\left(\left(\dd N/\dd t\right)/N\right)}^{2}={b}^{2}\left({\E}_{\nu }\left[{a}^{2}\right]-1-{\E}_{\nu }{\left[a\right]}^{2}\right)$.
+\begin{proof}
+\emph{A single trial.} On the window, $t>{t}_{\mathrm{offset}}$, so by Equation~\eqref{eq:d} the standardized distance falls linearly: $a(t)=a({t}_{\mathrm{offset}})-b(t-{t}_{\mathrm{offset}})$, and $\dot{a}=-b$. By Equation~\eqref{eq:nu_asymp},
+\begin{equation*}
+\ln\nustat(t)=-\frac{a(t)^{2}}{2}-\ln\sqrt{2\pi}+\ln\Psi(b,\omega),
+\end{equation*}
+and only the first term depends on $t$.
+Differentiating once gives $\dd(\ln\nustat)/\dd t=-a\dot{a}=ba$. Differentiating again gives $b\dot{a}=-b^{2}$. This proves Equation~\eqref{eq:slope}.
+
+\emph{The mean over trials.} The trials of a condition differ in their maintenance target, hence in $a(t)$. They share $b$ and $\omega$, which are properties of the participant. Every trial therefore satisfies
+\begin{equation*}
+\frac{\dd\nustat}{\dd t}=ba\nustat, \qquad
+\frac{\dd^{2}\nustat}{\dd t^{2}}=b\left(\dot{a}\nustat+a\frac{\dd\nustat}{\dd t}\right)=b^{2}\left(a^{2}-1\right)\nustat,
+\end{equation*}
+where the second identity uses the first and $\dot{a}=-b$. Averaging over trials, and using the definition of ${\E}_{\nu}$,
+\begin{equation*}
+\frac{\dd N}{\dd t}=b\E\left[a\nustat\right]=bN{\E}_{\nu}[a], \qquad
+\frac{\dd^{2}N}{\dd t^{2}}=b^{2}\E\left[\left(a^{2}-1\right)\nustat\right]=b^{2}N\left({\E}_{\nu}\left[a^{2}\right]-1\right).
+\end{equation*}
+Dividing the first by $N$ gives the first identity of Equation~\eqref{eq:slope_cond}; the second is the second identity. For the third,
+\begin{equation*}
+\frac{\dd^{2}(\ln N)}{\dd t^{2}}=\frac{1}{N}\frac{\dd^{2}N}{\dd t^{2}}-\left(\frac{1}{N}\frac{\dd N}{\dd t}\right)^{2}=b^{2}\left({\E}_{\nu}\left[a^{2}\right]-1-{\E}_{\nu}[a]^{2}\right)=-b^{2}\left(1-{\Var}_{\nu}[a]\right).
+\end{equation*}
 \end{proof}
 
-Three consequences are used in the Results. The rise of the rate is proportional to the rate: the slope of the mean rate is the product of its level and of its relative slope, so reproducing the observed value of that slope requires a model to produce both, and neither one alone. The log-rate slope of a condition is proportional to the rate-weighted mean standardized distance to the gate, so a condition whose crossings come from trials closer to the gate has a shallower log-rate slope. And the mean rate is convex wherever ${\E}_{\nu }\left[{a}^{2}\right]>1$, in particular wherever every contributing trial stands more than one fluctuation standard deviation from the gate. On a single trial the log rate is a downward parabola of curvature $-{b}^{2}$; over the trials of a condition its curvature is $-{b}^{2}\left(1-{\Var}_{\nu }\left[a\right]\right)$, which depends on the condition through the spread of the maintenance targets.
-
+Three consequences are used in the Results. First, the rise of the rate is proportional to the rate. The slope of the mean rate is the product of its level and of its relative slope, so reproducing the observed slope requires a model to produce both, and neither one alone. Second, the log-rate slope of a condition is proportional to the rate-weighted mean standardized distance to the gate. A condition whose crossings come from trials closer to the gate therefore has a shallower log-rate slope. Third, the mean rate is convex wherever ${\E}_{\nu }\left[{a}^{2}\right]>1$, in particular wherever every contributing trial stands more than one fluctuation standard deviation from the gate. On a single trial the log rate is a downward parabola of curvature $-{b}^{2}$. Over the trials of a condition its curvature is $-{b}^{2}\left(1-{\Var}_{\nu }\left[a\right]\right)$, which depends on the condition through the spread of the maintenance targets.
 
 \begin{proposition}[the stimulus-onset-window rate under the two durations]\label{prop:duration}
-Under either model, a trial that has not entered maintenance produces no PMA. Let ${D}_{s}:=0.3$ s, ${t}_{s}:={L}_{\mathrm{motion}}+{D}_{s}$, let $\tau $ be the first time at which $\left|y\right|$ reaches $\theta $ under the accumulation of the long stimulus, and let ${\nu }_{\ell }\left(\rho \right)$ be the rate of Equation~\eqref{eq:nu2} for a trial maintained at level $\ell $ for a time $\rho $. Under Model 1, the stimulus-onset-window rates after the long and the short stimulus, ${N}_{L}\left(t\right)$ and ${N}_{S}\left(t\right)$, are equal for $t\le {t}_{s}$, and for ${t}_{s}<t\le 2$ s
+Under either model, a trial that has not entered maintenance produces no PMA. Let ${D}_{s}:=0.3$ s and ${t}_{s}:={L}_{\mathrm{motion}}+{D}_{s}$. Let $\tau $ be the first time at which $\left|y\right|$ reaches $\theta $ under the accumulation of the long stimulus, and let ${\nu }_{\ell }\left(\rho \right)$ be the rate of Equation~\eqref{eq:nu2} for a trial maintained at level $\ell $ for a time $\rho $. Under Model 1, the stimulus-onset-window rates after the long and the short stimulus, ${N}_{L}\left(t\right)$ and ${N}_{S}\left(t\right)$, are equal for $t\le {t}_{s}$, and for ${t}_{s}<t\le 2$ s
 \begin{equation}
 {N}_{L}\left(t\right)-{N}_{S}\left(t\right)=\E\left[{\nu }_{\theta }\left(t-\tau \right){\1}_{\left\{{t}_{s}<\tau \le t\right\}}\right]-\E\left[{\nu }_{\left|y\left({t}_{s}\right)\right|}\left(t-{t}_{s}\right){\1}_{\left\{\tau >{t}_{s}\right\}}\right].
 \label{eq:duration}
 \end{equation}
 \end{proposition}
 
-\begin{proof}
-Maintenance begins at the first time $\left|y\right|$ reaches $\theta $ (Equation~\eqref{eq:m}). Before it, $\left|y\right|<\theta <g$ by continuity of $y$, and temporal preparation has not begun, since it starts at ${t}_{\mathrm{offset}}\ge \tau $; so the drive $\left|\tilde{y}\right|-g$ is negative and no activation occurs. This proves the first statement.
+The two durations produce the same trajectories up to $t_{s}$. After $t_{s}$, they differ only on the trials that have not reached $\theta$ by $t_{s}$. The proof sorts the trials by the time $\tau$ at which they reach $\theta$.
 
-Up to ${t}_{s}$ the two conditions follow the same equations, so their trajectories can be taken equal on $\left[0,{t}_{s}\right]$, and the two rates coincide there. Fix $t\in \left({t}_{s},2\right]$; the long stimulus is still being accumulated at $t$, since its offset is at ${L}_{\mathrm{motion}}+2$ s. Split the trials by $\tau $. If $\tau \le {t}_{s}$, the trial is maintained at $\theta $ from $\tau $ in both conditions and contributes ${\nu }_{\theta }\left(t-\tau \right)$ to both rates. If ${t}_{s}<\tau \le t$, it is maintained at $\theta $ from $\tau $ after the long stimulus and contributes ${\nu }_{\theta }\left(t-\tau \right)$; after the short stimulus it has been maintained at $\left|y\left({t}_{s}\right)\right|<\theta $ since ${t}_{s}$ and contributes ${\nu }_{\left|y\left({t}_{s}\right)\right|}\left(t-{t}_{s}\right)$. If $\tau >t$, it is still accumulating after the long stimulus and contributes nothing, by the first statement, while after the short stimulus it contributes ${\nu }_{\left|y\left({t}_{s}\right)\right|}\left(t-{t}_{s}\right)$. In each case the contribution is the Kac--Rice rate of the maintained fluctuation, which is independent of the accumulation that set the level and the onset. Taking expectations and subtracting gives Equation~\eqref{eq:duration}.
+\begin{proof}
+\emph{No PMA before maintenance.} Maintenance begins at the first time $\left|y\right|$ reaches $\theta $ (Equation~\eqref{eq:m}). Before it, $\left|y\right|<\theta <g$ by continuity of $y$. Temporal preparation has not begun either, since it starts at ${t}_{\mathrm{offset}}\ge \tau $. So the drive $\left|\tilde{y}\right|-g$ is negative, and no activation occurs.
+
+\emph{Up to $t_{s}$.} The two conditions follow the same equations on $\left[0,{t}_{s}\right]$, so their trajectories can be taken equal there, and the two rates coincide.
+
+\emph{After $t_{s}$.} Fix $t\in \left({t}_{s},2\right]$. The long stimulus is still being accumulated at $t$, since its internal offset is at ${L}_{\mathrm{motion}}+2$ s. The short stimulus has ended at $t_{s}$, so a trial that has not reached $\theta$ by $t_{s}$ is maintained at $|y(t_{s})|<\theta$ from $t_{s}$ on. The contribution of each group of trials to each rate is:
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Trials & Long stimulus & Short stimulus\\
+\midrule
+$\tau\le t_{s}$ & $\nu_{\theta}(t-\tau)$ & $\nu_{\theta}(t-\tau)$\\
+$t_{s}<\tau\le t$ & $\nu_{\theta}(t-\tau)$ & $\nu_{|y(t_{s})|}(t-t_{s})$\\
+$\tau>t$ & 0 (no maintenance yet) & $\nu_{|y(t_{s})|}(t-t_{s})$\\
+\bottomrule
+\end{tabular}
+\end{center}
+In each case the contribution is the Kac--Rice rate of the maintained fluctuation, which is independent of the accumulation that set the level and the onset. The first row cancels in the difference. Taking expectations over the other two rows gives Equation~\eqref{eq:duration}.
 \end{proof}
 
-Both terms of Equation~\eqref{eq:duration} are non-negative. The first is the rate of the trials that reach $\theta $, the level closest to the gate, during the further accumulation of the long stimulus; it is present at every coherence, including $c=0$, where trials reach $\theta $ by diffusion. The second is the rate of the trials that the short stimulus left maintained below $\theta $. Their difference has no sign fixed by the model: the second term dominates when the gate is close to $\theta $ in units of ${\sigma }_{H}$, so that trials maintained below $\theta $ cross it often. Over Model 1's admissible parameter vectors the first term dominates: the simulated stimulus-onset-window rate is significantly higher after the long stimulus at 227 of 228 vectors, and significantly higher after the short one at none. Under Model 2, temporal preparation adds to the short condition from ${t}_{\mathrm{offset}}$ onward, inside the window, and pushes the difference the other way.
+Both terms of Equation~\eqref{eq:duration} are non-negative. The first is the rate of the trials that reach $\theta $, the level closest to the gate, during the further accumulation of the long stimulus. It is present at every coherence, including $c=0$, where trials reach $\theta $ by diffusion. The second is the rate of the trials that the short stimulus left maintained below $\theta $. Their difference has no sign fixed by the model: the second term dominates when the gate is close to $\theta $ in units of ${\sigma }_{H}$, so that trials maintained below $\theta $ cross it often. Over Model 1's admissible parameter vectors the first term dominates: the simulated stimulus-onset-window rate is significantly higher after the long stimulus at 227 of 228 vectors, and significantly higher after the short one at none. Under Model 2, temporal preparation adds to the short condition from ${t}_{\mathrm{offset}}$ onward, inside the window, and pushes the difference the other way.
 
 \subsection{Additional remarks}
 
@@ -824,7 +910,7 @@ Suppose the motion-evidence accumulation of Equation~\eqref{eq:x} and the respon
 
 The leak ${\gamma }_{x}$ acts only before maintenance begins. It changes the law of $x$, hence the law of the threshold-crossing time $\tau $ and of the maintenance target $m$ of Equation~\eqref{eq:m}, and therefore the distribution across trials of the standardized distance $a$. It does not enter the maintenance dynamics: from $\tau $ onward the input to the filter is $m+\varepsilon \left(t\right)$ by Equation~\eqref{eq:y_delay}, and neither term depends on how $x$ arrived. So $H$, its moments (Equation~\eqref{eq:moments}) and the crossing rate (Equation~\eqref{eq:nu2}) are exactly as derived. The leak ${\gamma }_{q}$ acts only from ${t}_{\mathrm{RS}}$, where $q$ starts, and the delay analysis window ends before ${t}_{\mathrm{RS}}$. In particular Corollary~\ref{cor:flat} holds at every ${\gamma }_{x}$ and ${\gamma }_{q}$: a leak can move the level of Model 1's delay-window rate, not give it a time dependence.
 
-After the response signal, solving Equation~\eqref{eq:y_RS} by variation of constants gives ${s}_{\mathrm{resp}}\tilde{y}\left({t}_{\mathrm{RS}}+u\right)={s}_{\mathrm{resp}}\tilde{y}\left({t}_{\mathrm{RS}}\right)+Q\left(u\right)$ for $u\ge 0$, where $Q\left(u\right):=\int_{0}^{u}\lambda {e}^{-\lambda \left(u-v\right)}q\left({t}_{\mathrm{RS}}+v\right)\dd v$; the term ${s}_{\mathrm{resp}}\beta $ of Model 2 is constant from ${t}_{\mathrm{RS}}$ onward and is part of ${s}_{\mathrm{resp}}\tilde{y}\left({t}_{\mathrm{RS}}\right)$. The process $Q$ starts from $q\left({t}_{\mathrm{RS}}\right)=0$, is driven by ${W}_{q}$ alone, and has parameters that do not depend on the condition, so it has the same law in every condition and is independent of everything before ${t}_{\mathrm{RS}}$. The response occurs when $Q$ first reaches $g+r-{s}_{\mathrm{resp}}\tilde{y}\left({t}_{\mathrm{RS}}\right)$, so on every path a larger ${s}_{\mathrm{resp}}\tilde{y}\left({t}_{\mathrm{RS}}\right)$ gives a response no later, whatever ${\gamma }_{q}$.
+After the response signal, solving Equation~\eqref{eq:y_RS} by variation of constants gives ${s}_{\mathrm{resp}}\tilde{y}\left({t}_{\mathrm{RS}}+h\right)={s}_{\mathrm{resp}}\tilde{y}\left({t}_{\mathrm{RS}}\right)+Q\left(h\right)$ for $h\ge 0$, where $Q\left(h\right):=\int_{0}^{h}\lambda {e}^{-\lambda \left(h-h'\right)}q\left({t}_{\mathrm{RS}}+h'\right)\dd h'$; the term ${s}_{\mathrm{resp}}\beta $ of Model 2 is constant from ${t}_{\mathrm{RS}}$ onward and is part of ${s}_{\mathrm{resp}}\tilde{y}\left({t}_{\mathrm{RS}}\right)$. The process $Q$ starts from $q\left({t}_{\mathrm{RS}}\right)=0$, is driven by ${W}_{q}$ alone, and has parameters that do not depend on the condition, so it has the same law in every condition and is independent of everything before ${t}_{\mathrm{RS}}$. The response occurs when $Q$ first reaches $g+r-{s}_{\mathrm{resp}}\tilde{y}\left({t}_{\mathrm{RS}}\right)$, so on every path a larger ${s}_{\mathrm{resp}}\tilde{y}\left({t}_{\mathrm{RS}}\right)$ gives a response no later, whatever ${\gamma }_{q}$.
 
 The decomposition of Proposition~\ref{prop:duration} uses no property of the accumulation beyond $\theta <g$, and holds at every ${\gamma }_{x}$; the sign of the difference it describes is numerical with or without a leak. Re-running the parameter vectors admissible in either model over ${\gamma }_{x},{\gamma }_{q}\in \left\{0,0.25,0.5,1\right\}$ s\textsuperscript{-1}, with the same number of trials, changes no verdict of the model--data comparison (Table~\ref{tab:comparison}).
 

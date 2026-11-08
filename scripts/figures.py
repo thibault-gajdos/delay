@@ -1,7 +1,8 @@
 """
 figures.py -- the figures that show simulated dynamics: manuscript Figure 1 (the mean
 signal reaching the gate under each model, over thirty parameter vectors admissible in both
-models; ../manuscript/latex/figures/fig01.png and fig02.png) and Figure 2B (one simulated
+models; ../manuscript/latex/figures/fig01.png, panel A, Model 1, and fig02.png, panel B,
+Model 2) and Figure 2B (one simulated
 trial at the vector chosen by representative.py; fig04.png).
 
 Run representative.py first.  Usage: python3 figures.py
@@ -36,7 +37,7 @@ def cell_sty(k):
 
 # ---------------------------------------------------------------- trajectories
 def fig_trajectories(model=2, ndraw=30, n=300, fname='plots/fig_traj.pdf', png=None,
-                     dump='results/sweep_screened.jsonl'):
+                     dump='results/sweep_screened.jsonl', letter=None):
     """Manuscript Figure 1: the signal reaching the gate, time-locked to the four trial
     events. Each thin line is the mean over trials of one admissible parameter vector; the
     thick line is the mean over vectors. The vertical axis is in units of each vector's own
@@ -103,6 +104,8 @@ def fig_trajectories(model=2, ndraw=30, n=300, fname='plots/fig_traj.pdf', png=N
                  fontsize=6.5, frameon=False, loc='upper left')
     ax[0].set_xlabel('from onset (s)'); ax[1].set_xlabel('from offset (s)')
     ax[2].set_xlabel('(s)'); ax[3].set_xlabel('(s)')
+    if letter:
+        fig.text(0.005, 0.94, letter, fontsize=20, weight='bold', va='top')
     fig.savefig(fname, bbox_inches='tight')
     if png:
         fig.savefig(png, dpi=200, bbox_inches='tight')
@@ -149,8 +152,8 @@ if __name__ == '__main__':
     R = json.load(open('results/representative.json'))
     P2 = dict(R['params'], alpha=R['alpha'])
     FIG = '../manuscript/latex/figures/'
-    fig_trajectories(2, fname='plots/fig_traj_m2.pdf', png=FIG + 'fig01.png')
-    fig_trajectories(1, fname='plots/fig_traj_m1.pdf', png=FIG + 'fig02.png')
+    fig_trajectories(1, fname='plots/fig_traj_m1.pdf', png=FIG + 'fig01.png', letter='A')
+    fig_trajectories(2, fname='plots/fig_traj_m2.pdf', png=FIG + 'fig02.png', letter='B')
     fig_single(P2, png=FIG + 'fig04.png')
     print(f"figures written at the representative draw {R['draw']} "
           f"(beta = {R['beta']:.4f}, the Model 2 admissible median)")

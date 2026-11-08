@@ -11,8 +11,8 @@ D = os.path.join(os.environ.get('DELAY_DATA',
                  os.path.expanduser('~/thib/projects/delay/data/86cbw-osfstorage-archive')),
                  'analysis_behavioral_emg') + '/'
 COH = [0,12,50]; DUR = [300,2000]
-COL = {300:'#1FCBD1', 2000:'#DE5859'}
-sns.set_theme(style='darkgrid')
+COL = {300:'#B23FC7', 2000:'#258040'}
+sns.set_theme(style='white')
 plt.rcParams.update({'font.size':11,'axes.labelsize':12,'xtick.labelsize':11,'ytick.labelsize':11})
 
 def load(name, pref):

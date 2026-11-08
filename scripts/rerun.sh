@@ -31,12 +31,14 @@ python3 table_comparison.py
 step "representative parameter vector (the point Figure 2B is drawn at)"
 python3 representative.py > /dev/null && echo "wrote results/representative.json"
 
-step "figures (manuscript/latex/figures/fig01,02,04,05,07,08,09.png)"
+step "figures (manuscript/latex/figures/fig01,02,04,05,07,08,09,10,11.png)"
 python3 figures.py
 python3 fig_behavior.py
 python3 fig_delay_profiles.py
 python3 fig_approx_error.py
 python3 fig_effects.py
+python3 fig_premature.py
+python3 fig_graded.py
 
 step "statistics on the data"
 ( cd R && Rscript run_stats.R > /dev/null && echo "wrote R/stats_tables.txt and R/stats_results.csv" )

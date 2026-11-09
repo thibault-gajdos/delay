@@ -2,17 +2,17 @@
 
 The leaks of the motion-evidence accumulator (gamma_x) and of the response-signal
 accumulator (gamma_q) are varied independently over gamma_x, gamma_q in {0, 0.25, 0.5, 1}
-/s.  At every grid point the draws admissible in either model at zero leak are re-run
-(run_leak.sh) and classified exactly as the main sweep is (classify.py).
-Draws inadmissible in both models at zero leak are not re-run, so a leak can make a draw
-admissible only in a model where it was not, among draws admissible in the other.
+/s.  At every grid point all the draws of the main sweep are run (run_leak.sh), their
+admissibility is evaluated at that grid point, and they are classified exactly as the main
+sweep is (classify.py).  The draws are the same at every grid point, so the grid points
+differ only in the leaks.
 
 For every effect and model, the verdict is:
   reproduced     at least one admissible draw reproduces the observed magnitude
   unreproduced   every admissible draw is disjoint from the observed interval
   undecided      neither (no draw reproduces, some are uncertain)
 
-The zero-leak verdicts are computed on the same draws.  Writes results/leak_summary.json
+The zero-leak verdicts are those of the main sweep.  Writes results/leak_summary.json
 and prints every verdict that differs from zero leak.
 
 Usage:  python3 leak_summary.py [DUMP.jsonl]
@@ -40,17 +40,17 @@ def verdict(r):
     return 'unreproduced' if r['uncertain'] == 0 else 'undecided'
 
 
-idx = set(json.load(open(os.path.join(HERE, 'results/leak/adm_idx.json'))))
+N_DRAWS = 1200
 per_sub = observed_per_subject()
 grid = {}
 for gx in G:
     for gq in G:
         if gx == '0' and gq == '0':
-            recs = [r for r in load(os.path.join(HERE, DUMP)) if r['draw'] in idx]
+            recs = load(os.path.join(HERE, DUMP))
         else:
             recs = load_shards(os.path.join(HERE, f'results/leak/gx{gx}_gq{gq}/shard_*.jsonl'))
-        if len(recs) < len(idx):
-            raise SystemExit(f"gamma_x {gx}, gamma_q {gq}: {len(recs)} of {len(idx)} draws")
+        if len({r['draw'] for r in recs}) < N_DRAWS:
+            raise SystemExit(f"gamma_x {gx}, gamma_q {gq}: {len(recs)} of {N_DRAWS} draws")
         c = classify(recs, per_sub)
         grid[(gx, gq)] = dict(
             n_admissible={m: c['models'][m]['n_admissible'] for m in ('model1', 'model2')},
@@ -70,13 +70,13 @@ for (gx, gq), g in grid.items():
                 changes.append(dict(gamma_x=float(gx), gamma_q=float(gq), model=m,
                                     effect=k, at_zero=base['verdicts'][m][k],
                                     at_leak=g['verdicts'][m][k]))
-out = dict(source=DUMP, n_draws=len(idx), observed=classify([], per_sub)['observed'],
+out = dict(source=DUMP, n_draws=N_DRAWS, observed=classify([], per_sub)['observed'],
            grid=[dict(gamma_x=float(gx), gamma_q=float(gq), **g)
                  for (gx, gq), g in grid.items()],
            changes=changes)
 json.dump(out, open(OUT, 'w'), indent=1)
 
-print(f"{len(idx)} draws re-run at each leak. Admissible (Model 1 / Model 2):")
+print(f"{N_DRAWS} draws run at each leak. Admissible (Model 1 / Model 2):")
 print('gamma_x \\ gamma_q ' + ''.join(f'{gq:>12}' for gq in G))
 for gx in G:
     print(f'{gx:>17} ' + ''.join(

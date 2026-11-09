@@ -23,8 +23,8 @@ both = [r for r in recs if r['model1']['admissible'] and r['model2']['admissible
 if not both:
     raise SystemExit('no draw is admissible in both models')
 
-LOGDIMS = {'kappa', 'SDe', 'r', 'k', 'lam', 'sigq'}
-SAMPLED = ['g', 'theta', 'kappa', 'SDe', 'muRS', 'r', 'k', 'lam', 'sigq']
+LOGDIMS = {'kappa', 'SDe', 'k', 'lam', 'sigq'}
+SAMPLED = ['g', 'theta', 'kappa', 'SDe', 'muRS', 'k', 'lam', 'sigq']
 
 
 def coords(r):

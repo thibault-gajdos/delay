@@ -19,20 +19,21 @@ space"):
   beta     in [0.0015, 0.100] log-uniform     Model 2 only
   k        in [0.5, 2.0]      log-uniform
   lam      in [10.0, 50.0]    log-uniform
-  r        in [0.010, 0.200]  log-uniform
   muRS     in [0.30, 1.50]
   sigma_q  in [0.03, 0.30]    log-uniform
 
-Fixed: sigx = 0.100 (sets the amplitude unit), Lmotion = LRS = 0.200 s, delay = 3 s,
-Lmotor = 0.093 s.
+Fixed: sigx = 0.100 (sets the amplitude unit), r = 0.022 (the response criterion, the
+mean estimate of Dendauw et al., 2024, same response device and task without delay),
+Lmotion = LRS = 0.200 s, delay = 3 s, Lmotor = 0.093 s.
 
 The cube has 10 dimensions: the nine parameters above shared by both models, and beta,
 used in Model 2 only.
 
 Admissibility screen (see admissible()): in every condition, <=10% of trials whose
-response burst begins before the response signal, <=10% responses within 0.2 s of the
-signal, <=5% no response by the 4 s deadline; and, across conditions, a mean delay-window
-partial-activation rate in [0.02, 5] /s.  No bound is derived from the data.
+response burst begins before the response signal; and, across conditions, a mean
+delay-window partial-activation rate in [0.02, 5] /s.  The fractions of responses within
+0.2 s of the signal and of failures to respond by the 4-s deadline are recorded for every
+condition but are not screened on.  No bound is derived from the data.
 
 The production run is 1200 draws at 40000 trials per condition per model, simulated in
 batches of BATCH trials.  Resumable by draw: a draw already recorded in OUT, or in any file
@@ -66,16 +67,16 @@ DELAY_TB = DELAY_TB - DELAY_TB.mean()
 
 RATE_LO, RATE_HI = 0.02, 5.0   # delay-window PMA rate screen, /s (see admissible())
 
-FIXED = dict(sigx=0.100, Lmotion=0.200, LRS=0.200, delay=3.0, Lmotor=0.093)
+FIXED = dict(sigx=0.100, r=0.022, Lmotion=0.200, LRS=0.200, delay=3.0, Lmotor=0.093)
 
-DIMS = ['g', 'theta_ratio', 'log_kappa', 'log_SDe', 'muRS', 'log_r',
+DIMS = ['g', 'theta_ratio', 'log_kappa', 'log_SDe', 'muRS',
         'log_k', 'log_lam', 'log_sigq', 'log_beta']
 LO = dict(g=0.050, theta_ratio=0.25, log_kappa=np.log(0.20), log_SDe=np.log(0.003),
-          muRS=0.30, log_r=np.log(0.010),
+          muRS=0.30,
           log_k=np.log(0.5), log_lam=np.log(10.0), log_sigq=np.log(0.03),
           log_beta=np.log(0.0015))
 HI = dict(g=0.200, theta_ratio=0.90, log_kappa=np.log(30.0), log_SDe=np.log(0.060),
-          muRS=1.50, log_r=np.log(0.200),
+          muRS=1.50,
           log_k=np.log(2.0), log_lam=np.log(50.0), log_sigq=np.log(0.30),
           log_beta=np.log(0.100))
 
@@ -99,14 +100,13 @@ def to_param(row):
     kappa = np.exp(LO['log_kappa'] + v['log_kappa'] * (HI['log_kappa'] - LO['log_kappa']))
     SDe = np.exp(LO['log_SDe'] + v['log_SDe'] * (HI['log_SDe'] - LO['log_SDe']))
     muRS = LO['muRS'] + v['muRS'] * (HI['muRS'] - LO['muRS'])
-    r = np.exp(LO['log_r'] + v['log_r'] * (HI['log_r'] - LO['log_r']))
     k = np.exp(LO['log_k'] + v['log_k'] * (HI['log_k'] - LO['log_k']))
     lam = np.exp(LO['log_lam'] + v['log_lam'] * (HI['log_lam'] - LO['log_lam']))
     sigq = np.exp(LO['log_sigq'] + v['log_sigq'] * (HI['log_sigq'] - LO['log_sigq']))
     beta_frac = v['log_beta']  # in [0,1]; mapped to alpha below per-model
     theta = g * theta_ratio
     p = dict(FIXED)
-    p.update(g=g, theta=theta, kappa=kappa, SDe=SDe, muRS=muRS, r=r,
+    p.update(g=g, theta=theta, kappa=kappa, SDe=SDe, muRS=muRS,
              k=k, lam=lam, sigq=sigq)
     return p, beta_frac
 
@@ -246,18 +246,18 @@ def admissible(res):
     data.
 
     In every condition: at most 10% of trials whose response burst begins before the
-    response signal, at most 10% responses within 0.2 s of the signal (the response-time
-    exclusion rule of the analysis), at most 5% failures to respond by the 4-s deadline
-    (the task's own).  The first criterion contains the premature responses, whose burst
-    necessarily begins before the signal, and also excludes the regime in which temporal
-    preparation alone carries the signal above the gate during the delay, giving one
-    sustained activation of several seconds that ends in the response.
+    response signal.  This contains the premature responses, whose burst necessarily
+    begins before the signal, and also excludes the regime in which the signal is held
+    above the gate during the delay, mostly by temporal preparation, giving one sustained
+    activation of several seconds that ends in the response.
 
     Across conditions: a mean delay-window partial-activation rate in [0.02, 5] /s, which
-    excludes regimes with no muscle activity during the delay."""
+    excludes regimes with no muscle activity during the delay.
+
+    res['early'] (responses within 0.2 s of the signal) and res['noresp'] (no response by
+    the 4-s deadline) are recorded but not screened on; a criterion on either can be
+    applied afterwards to the stored records, without simulating again."""
     if (res['burst_early'] > 0.10).any(): return False
-    if (res['early'] > 0.10).any(): return False
-    if (res['noresp'] > 0.05).any(): return False
     rm = np.nanmean(res['rate'])
     if not (RATE_LO <= rm <= RATE_HI): return False
     return True
@@ -275,7 +275,6 @@ def main():
     shard_n = int(os.environ.get('SHARD_N', '1'))
     shard_i = int(os.environ.get('SHARD_I', '0'))
     # IDX, if set, is a JSON list of draw indices to evaluate instead of all of them
-    # (the leak reruns use the draws admissible at zero leak, from leak_index.py)
     draws = json.load(open(os.environ['IDX'])) if 'IDX' in os.environ else range(N_DRAWS)
     idx = [d for j, d in enumerate(draws) if j % shard_n == shard_i]
     # Resume by draw, not by line count: a draw is skipped if it is already recorded in

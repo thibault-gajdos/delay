@@ -28,8 +28,9 @@ Rscript -e 'renv::restore()'      # or renv::init() and renv::install(...) the f
    condition, both models, no leak. Writes `results/shards/`. Can be interrupted and
    relaunched, with any shard count: completed vectors are skipped.
 2. `./run_leak.sh [P]` — the leak grid: γ_x, γ_q ∈ {0, 0.25, 0.5, 1} s⁻¹, the 15
-   combinations other than (0, 0), on the vectors admissible in either model without leak.
-   Writes `results/leak/`. Same resume rule.
+   combinations other than (0, 0), each on all 1200 vectors of the main sweep, with
+   admissibility evaluated at each combination. Independent of step 1. Writes
+   `results/leak/`. Same resume rule.
 3. `uv run ./rerun.sh` — everything downstream, deterministic given steps 1 and 2: the
    comparison, the tables, the figures and the statistics on the data.
 
@@ -53,7 +54,6 @@ Simulations:
 | `run_sweep.sh`, `run_leak.sh` | parallel launch of `fused_sweep.py` |
 | `shardio.py`, `repair_shards.py` | reading shard files; removing an incomplete last line after a crash |
 | `sweep_summary.py` | concatenates the shards into `results/sweep_screened.jsonl` |
-| `leak_index.py` | the list of vectors re-run with leak (`results/leak/adm_idx.json`) |
 
 Comparison (Methods, "Model–data comparison"; Table 2; Figure 6):
 

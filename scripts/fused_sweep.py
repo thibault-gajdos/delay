@@ -46,9 +46,12 @@ fixed seed in every process, so the record of a draw does not depend on the shar
 
 The optional fourth and fifth arguments, GAMMA_X and GAMMA_Q, are the leaks of the
 motion-evidence accumulator x and of the response-signal accumulator q (sim.py's
-`gamma_x`, `gamma_q`), for the leak-robustness analysis (run_leak.sh).
+`gamma_x`, `gamma_q`), fixed for every draw; both default to zero (the main sweep).  With
+the fourth argument `sample` instead, the two leaks are sampled as two more dimensions of a
+separate Latin-hypercube cube (LEAK_DIMS, uniform over [0, LEAK_HI] /s, seed SEED_LEAK):
+the leak-robustness sweep (run_leak.sh).  The main sweep's cube is unchanged by this.
 
-Usage: python3 fused_sweep.py N_DRAWS NTR OUT_FILE [GAMMA_X [GAMMA_Q]]
+Usage: python3 fused_sweep.py N_DRAWS NTR OUT_FILE [GAMMA_X [GAMMA_Q] | sample]
 """
 import numpy as np, sys, time, json, os, glob
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -61,9 +64,13 @@ from admissibility import admissible
 N_DRAWS = int(sys.argv[1]) if len(sys.argv) > 1 else 250
 NTR = int(sys.argv[2]) if len(sys.argv) > 2 else 2000
 OUT = sys.argv[3] if len(sys.argv) > 3 else 'results/fused_sweep_results.jsonl'
-GAMMA_X = float(sys.argv[4]) if len(sys.argv) > 4 else 0.0
-GAMMA_Q = float(sys.argv[5]) if len(sys.argv) > 5 else 0.0
+LEAK_SAMPLED = len(sys.argv) > 4 and sys.argv[4] == 'sample'
+GAMMA_X = float(sys.argv[4]) if len(sys.argv) > 4 and not LEAK_SAMPLED else 0.0
+GAMMA_Q = float(sys.argv[5]) if len(sys.argv) > 5 and not LEAK_SAMPLED else 0.0
 SEED0 = 20260824
+SEED_LEAK = SEED0 + 1            # cube of the leak-robustness sweep
+LEAK_DIMS = ['gamma_x', 'gamma_q']
+LEAK_HI = 1.0                    # leaks sampled uniformly over [0, LEAK_HI] /s
 
 DELAY_TB = np.arange(20) * 0.1 + 0.05
 DELAY_TB = DELAY_TB - DELAY_TB.mean()
@@ -244,8 +251,10 @@ def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
 
 
 def main():
-    rng = np.random.default_rng(SEED0)
-    cube = lhs(N_DRAWS, DIMS, rng)
+    if LEAK_SAMPLED:
+        cube = lhs(N_DRAWS, DIMS + LEAK_DIMS, np.random.default_rng(SEED_LEAK))
+    else:
+        cube = lhs(N_DRAWS, DIMS, np.random.default_rng(SEED0))
     # Optional sharding. The draws are independent and the LHS cube is
     # regenerated identically from the fixed seed in every process, so a run can be split
     # across cores by having shard j of n take the draws i with i % n == j, each writing
@@ -271,7 +280,8 @@ def main():
             done.add(r['draw'])
     todo = [d for d in idx if d not in done]
     print(f"shard {shard_i}/{shard_n}: {len(idx) - len(todo)} of {len(idx)} draws already "
-          f"done (N_DRAWS={N_DRAWS}, NTR={NTR}, gamma_x={GAMMA_X}, gamma_q={GAMMA_Q})",
+          f"done (N_DRAWS={N_DRAWS}, NTR={NTR}, "
+          f"{'leaks sampled' if LEAK_SAMPLED else f'gamma_x={GAMMA_X}, gamma_q={GAMMA_Q}'})",
           flush=True)
     with open(OUT, 'a') as f:
         for i in todo:
@@ -285,7 +295,9 @@ def main():
 def evaluate(cube, i, gamma_x=0.0, gamma_q=0.0):
     """The record of draw i: its parameters, and each model's admissibility and per-cell
     summaries at the given leaks."""
-    p, beta_frac = to_param(cube[i])
+    if LEAK_SAMPLED:
+        gamma_x, gamma_q = (float(u) * LEAK_HI for u in cube[i][len(DIMS):])
+    p, beta_frac = to_param(cube[i][:len(DIMS)])
     beta2 = np.exp(LO['log_beta'] + beta_frac * (HI['log_beta'] - LO['log_beta']))
     # alpha := beta/Delta with Delta = t_RS - t_off = (delay+LRS) - Lmotion,
     # constant across cells since delay/LRS/Lmotion are fixed.

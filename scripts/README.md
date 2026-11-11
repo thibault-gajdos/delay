@@ -27,10 +27,9 @@ Rscript -e 'renv::restore()'      # or renv::init() and renv::install(...) the f
 1. `./run_sweep.sh [P]` — the main sweep: 1200 parameter vectors, 40000 trials per
    condition, both models, no leak. Writes `results/shards/`. Can be interrupted and
    relaunched, with any shard count: completed vectors are skipped.
-2. `./run_leak.sh [P]` — the leak grid: γ_x, γ_q ∈ {0, 0.25, 0.5, 1} s⁻¹, the 15
-   combinations other than (0, 0), each on all 1200 vectors of the main sweep, with
-   admissibility evaluated at each combination. Independent of step 1. Writes
-   `results/leak/`. Same resume rule.
+2. `./run_leak.sh [P]` — the leak-robustness sweep: 1200 vectors of a separate cube in
+   which the leaks γ_x and γ_q are two more sampled dimensions, uniform over [0, 1] s⁻¹.
+   Independent of step 1. Writes `results/leak/`. Same resume rule.
 3. `uv run ./rerun.sh` — everything downstream, deterministic given steps 1 and 2: the
    comparison, the tables, the figures and the statistics on the data.
 
@@ -62,7 +61,7 @@ Comparison (Methods, "Model–data comparison"; Table 2; Figure 6):
 |---|---|
 | `effects.py` | definition of every effect compared, observed and simulated, with standard errors |
 | `classify.py` | classification of every admissible vector: reproduces / does not reproduce / uncertain; sign when not fixed by derivation. Writes `results/classification.json` |
-| `leak_summary.py` | the same verdicts at every leak combination. Writes `results/leak_summary.json` |
+| `leak_summary.py` | the same verdicts on the leak-robustness sweep, set against the main sweep, and how each effect depends on the leaks. Writes `results/leak_summary.json` |
 | `table_comparison.py` | Table 2 (`../manuscript/latex/table_comparison.tex`) |
 | `fig_effects.py` | Figure 6 (`fig08.png`) |
 

@@ -50,10 +50,11 @@ Simulations:
 
 | file | role |
 |---|---|
-| `fused_sweep.py` | one parameter vector: simulates both models, applies the admissibility criteria, writes the simulated measures and their Monte-Carlo standard errors (one JSON line per vector) |
+| `fused_sweep.py` | one parameter vector: simulates both models, writes the simulated measures and their Monte-Carlo standard errors (one JSON line per vector) |
 | `run_sweep.sh`, `run_leak.sh` | parallel launch of `fused_sweep.py` |
 | `shardio.py`, `repair_shards.py` | reading shard files; removing an incomplete last line after a crash |
-| `sweep_summary.py` | concatenates the shards into `results/sweep_screened.jsonl` |
+| `admissibility.py` | the admissibility screen, applied in every condition to the stored per-condition quantities |
+| `sweep_summary.py` | concatenates the shards, applies the admissibility screen, writes `results/sweep_screened.jsonl` |
 
 Comparison (Methods, "Model–data comparison"; Table 2; Figure 6):
 

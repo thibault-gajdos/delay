@@ -2,8 +2,8 @@
 
 The leaks of the motion-evidence accumulator (gamma_x) and of the response-signal
 accumulator (gamma_q) are varied independently over gamma_x, gamma_q in {0, 0.25, 0.5, 1}
-/s.  At every grid point all the draws of the main sweep are run (run_leak.sh), their
-admissibility is evaluated at that grid point, and they are classified exactly as the main
+/s.  At every grid point all the draws of the main sweep are run (run_leak.sh), the
+admissibility screen of admissibility.py is re-applied at that grid point, and they are classified exactly as the main
 sweep is (classify.py).  The draws are the same at every grid point, so the grid points
 differ only in the leaks.
 
@@ -24,6 +24,7 @@ sys.path.insert(0, HERE)
 from effects import KEYS, NAMES, observed_per_subject
 from classify import classify
 from shardio import load as load_shards
+from admissibility import reapply
 
 DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
 G = ['0', '0.25', '0.5', '1']
@@ -48,7 +49,8 @@ for gx in G:
         if gx == '0' and gq == '0':
             recs = load(os.path.join(HERE, DUMP))
         else:
-            recs = load_shards(os.path.join(HERE, f'results/leak/gx{gx}_gq{gq}/shard_*.jsonl'))
+            recs = [reapply(r) for r in
+                    load_shards(os.path.join(HERE, f'results/leak/gx{gx}_gq{gq}/shard_*.jsonl'))]
         if len({r['draw'] for r in recs}) < N_DRAWS:
             raise SystemExit(f"gamma_x {gx}, gamma_q {gq}: {len(recs)} of {N_DRAWS} draws")
         c = classify(recs, per_sub)

@@ -29,11 +29,9 @@ Lmotion = LRS = 0.200 s, delay = 3 s, Lmotor = 0.093 s.
 The cube has 10 dimensions: the nine parameters above shared by both models, and beta,
 used in Model 2 only.
 
-Admissibility screen (see admissible()): in every condition, <=10% of trials whose
-response burst begins before the response signal; and, across conditions, a mean
-delay-window partial-activation rate in [0.02, 5] /s.  The fractions of responses within
-0.2 s of the signal and of failures to respond by the 4-s deadline are recorded for every
-condition but are not screened on.  No bound is derived from the data.
+Admissibility screen: admissibility.py.  The flag written with every record is the screen
+in force when the record was simulated; sweep_summary.py and leak_summary.py re-apply the
+current screen to the stored per-condition quantities.  No bound is derived from the data.
 
 The production run is 1200 draws at 40000 trials per condition per model, simulated in
 batches of BATCH trials.  Resumable by draw: a draw already recorded in OUT, or in any file
@@ -54,6 +52,7 @@ from delaymodel.sim import simulate, measures, DT
 from delaymodel.targets import CELLS
 from repair_shards import repair
 from shardio import load
+from admissibility import admissible
 
 N_DRAWS = int(sys.argv[1]) if len(sys.argv) > 1 else 250
 NTR = int(sys.argv[2]) if len(sys.argv) > 2 else 2000
@@ -64,8 +63,6 @@ SEED0 = 20260824
 
 DELAY_TB = np.arange(20) * 0.1 + 0.05
 DELAY_TB = DELAY_TB - DELAY_TB.mean()
-
-RATE_LO, RATE_HI = 0.02, 5.0   # delay-window PMA rate screen, /s (see admissible())
 
 FIXED = dict(sigx=0.100, r=0.022, Lmotion=0.200, LRS=0.200, delay=3.0, Lmotor=0.093)
 
@@ -239,28 +236,6 @@ def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
                 rate=rate, srate=srate, stim_trend=stim_trend, stim_trend_se=stim_trend_se,
                 met_mean=met_mean, met_se=met_se, pmet_mean=pmet_mean, pmet_se=pmet_se,
                 prof=prof.astype(np.int64), prof_expo=prof_expo.astype(np.int64))
-
-
-def admissible(res):
-    """A draw stands for a possible participant.  None of the bounds is derived from the
-    data.
-
-    In every condition: at most 10% of trials whose response burst begins before the
-    response signal.  This contains the premature responses, whose burst necessarily
-    begins before the signal, and also excludes the regime in which the signal is held
-    above the gate during the delay, mostly by temporal preparation, giving one sustained
-    activation of several seconds that ends in the response.
-
-    Across conditions: a mean delay-window partial-activation rate in [0.02, 5] /s, which
-    excludes regimes with no muscle activity during the delay.
-
-    res['early'] (responses within 0.2 s of the signal) and res['noresp'] (no response by
-    the 4-s deadline) are recorded but not screened on; a criterion on either can be
-    applied afterwards to the stored records, without simulating again."""
-    if (res['burst_early'] > 0.10).any(): return False
-    rm = np.nanmean(res['rate'])
-    if not (RATE_LO <= rm <= RATE_HI): return False
-    return True
 
 
 def main():

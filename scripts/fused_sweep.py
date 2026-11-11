@@ -17,14 +17,18 @@ space"):
   kappa    in [0.20, 30.0]    log-uniform     kappa_epsilon in the manuscript
   SDe      in [0.003, 0.060]  log-uniform     stationary SD of the maintenance noise
   beta     in [0.0015, 0.100] log-uniform     Model 2 only
-  k        in [0.5, 2.0]      log-uniform
-  lam      in [10.0, 50.0]    log-uniform
+  k        in [0.6, 2.4]      log-uniform     x0.5 to x2 of Dendauw et al. (2024), 1.2
+  lam      in [10.0, 40.0]    log-uniform     x0.5 to x2 of Dendauw et al. (2024), 20 /s
+  r        in [0.01, 0.04]    log-uniform     x0.5 to x2 of Dendauw et al. (2024), 0.02
   muRS     in [0.30, 1.50]
   sigma_q  in [0.03, 0.30]    log-uniform
 
-Fixed: sigx = 0.100 (sets the amplitude unit), r = 0.022 (the response criterion, the
-mean estimate of Dendauw et al., 2024, same response device and task without delay),
-Lmotion = LRS = 0.200 s, delay = 3 s, Lmotor = 0.093 s.
+Dendauw et al. (2024), Experiment 1 (same task without delay, same response device), mean
+estimates k = 1.183, lam = 21.471 /s, r = 0.022, Tr = 0.093 s, rounded to 1.2, 20, 0.02
+and 0.09 s.
+
+Fixed: sigx = 0.100 (sets the amplitude unit), Lmotion = LRS = 0.200 s, delay = 3 s,
+Lmotor = 0.09 s.
 
 The cube has 10 dimensions: the nine parameters above shared by both models, and beta,
 used in Model 2 only.
@@ -64,17 +68,17 @@ SEED0 = 20260824
 DELAY_TB = np.arange(20) * 0.1 + 0.05
 DELAY_TB = DELAY_TB - DELAY_TB.mean()
 
-FIXED = dict(sigx=0.100, r=0.022, Lmotion=0.200, LRS=0.200, delay=3.0, Lmotor=0.093)
+FIXED = dict(sigx=0.100, Lmotion=0.200, LRS=0.200, delay=3.0, Lmotor=0.090)
 
-DIMS = ['g', 'theta_ratio', 'log_kappa', 'log_SDe', 'muRS',
+DIMS = ['g', 'theta_ratio', 'log_kappa', 'log_SDe', 'muRS', 'log_r',
         'log_k', 'log_lam', 'log_sigq', 'log_beta']
 LO = dict(g=0.050, theta_ratio=0.25, log_kappa=np.log(0.20), log_SDe=np.log(0.003),
-          muRS=0.30,
-          log_k=np.log(0.5), log_lam=np.log(10.0), log_sigq=np.log(0.03),
+          muRS=0.30, log_r=np.log(0.010),
+          log_k=np.log(0.6), log_lam=np.log(10.0), log_sigq=np.log(0.03),
           log_beta=np.log(0.0015))
 HI = dict(g=0.200, theta_ratio=0.90, log_kappa=np.log(30.0), log_SDe=np.log(0.060),
-          muRS=1.50,
-          log_k=np.log(2.0), log_lam=np.log(50.0), log_sigq=np.log(0.30),
+          muRS=1.50, log_r=np.log(0.040),
+          log_k=np.log(2.4), log_lam=np.log(40.0), log_sigq=np.log(0.30),
           log_beta=np.log(0.100))
 
 
@@ -97,13 +101,14 @@ def to_param(row):
     kappa = np.exp(LO['log_kappa'] + v['log_kappa'] * (HI['log_kappa'] - LO['log_kappa']))
     SDe = np.exp(LO['log_SDe'] + v['log_SDe'] * (HI['log_SDe'] - LO['log_SDe']))
     muRS = LO['muRS'] + v['muRS'] * (HI['muRS'] - LO['muRS'])
+    r = np.exp(LO['log_r'] + v['log_r'] * (HI['log_r'] - LO['log_r']))
     k = np.exp(LO['log_k'] + v['log_k'] * (HI['log_k'] - LO['log_k']))
     lam = np.exp(LO['log_lam'] + v['log_lam'] * (HI['log_lam'] - LO['log_lam']))
     sigq = np.exp(LO['log_sigq'] + v['log_sigq'] * (HI['log_sigq'] - LO['log_sigq']))
     beta_frac = v['log_beta']  # in [0,1]; mapped to alpha below per-model
     theta = g * theta_ratio
     p = dict(FIXED)
-    p.update(g=g, theta=theta, kappa=kappa, SDe=SDe, muRS=muRS,
+    p.update(g=g, theta=theta, kappa=kappa, SDe=SDe, muRS=muRS, r=r,
              k=k, lam=lam, sigq=sigq)
     return p, beta_frac
 

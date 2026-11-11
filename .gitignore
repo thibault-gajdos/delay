@@ -21,6 +21,7 @@ scripts/results/leak/*.jsonl
 scripts/results/leak/log_*.txt
 scripts/results/leak/.shards
 scripts/results/archive_r_sampled/
+scripts/results/archive_r_fixed/
 
 # renv (renv itself manages scripts/R/renv/.gitignore once renv::init() has run;
 # this covers the same ground before that file exists)

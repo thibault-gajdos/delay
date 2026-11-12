@@ -3,41 +3,48 @@
 
 A parameter vector stands for a possible participant.  It is admissible in a model when,
 in every coherence x duration condition (the six cells of targets.CELLS):
-  - a response occurs before the response signal on at most 10% of trials;
-  - a response occurs within 0.2 s after the response signal on at most 10% of trials;
-  - no response occurs before the 4-s deadline on at most 5% of trials;
+  - at least 80% of the trials are retained by the trial exclusions of the data analysis
+    (a response before the response signal, no response before the 4-s deadline, or a
+    response time below 0.2 s exclude a trial; sim.measures, 'valid');
   - the mean partial-activation rate over the delay window (1 to 3 s after stimulus
-    offset) lies in [0.02, 5] /s.
-All fractions are taken over all the trials of the condition.
+    offset, retained trials) lies in [0.02, 5] /s.
+Model 2 is moreover restricted to beta < g - theta: in the absence of fluctuations,
+temporal preparation does not carry a trial maintained at the internal threshold to the
+gate before the response signal.
 
-The screen is applied to the per-condition quantities stored with every simulated record
-(fused_sweep.run_model), so it can be changed and re-applied without simulating again.
+The screen is applied to the parameters and per-condition quantities stored with every
+simulated record (fused_sweep.evaluate), so it can be changed and re-applied without
+simulating again.
 """
 import numpy as np
 
-MAX_PREMATURE = 0.10      # response before the response signal
-MAX_EARLY = 0.10          # response within 0.2 s after the response signal
-MAX_NORESP = 0.05         # no response before the 4-s deadline
+MIN_RETAINED = 0.80            # fraction of the trials of a condition retained
 RATE_LO, RATE_HI = 0.02, 5.0   # mean delay-window partial-activation rate, /s
 
 
-def admissible(res):
-    """True when every criterion holds in every condition.  `res` holds per-condition
-    arrays (six values each) under the keys 'prem', 'early', 'noresp' and 'rate'."""
-    prem = np.asarray(res['prem'], float)
-    early = np.asarray(res['early'], float)
-    noresp = np.asarray(res['noresp'], float)
+def admissible(res, ntr):
+    """True when both criteria hold in every condition.  `res` holds per-condition arrays
+    (six values each) under the keys 'rt_n' (retained trials) and 'rate'; `ntr` is the
+    number of trials simulated per condition."""
+    retained = np.asarray(res['rt_n'], float) / ntr
     rate = np.asarray(res['rate'], float)
-    if not np.all(prem <= MAX_PREMATURE): return False
-    if not np.all(early <= MAX_EARLY): return False
-    if not np.all(noresp <= MAX_NORESP): return False
+    if not np.all(retained >= MIN_RETAINED): return False
     if not np.all((rate >= RATE_LO) & (rate <= RATE_HI)): return False   # NaN fails
     return True
 
 
+def in_space(rec, model):
+    """The constraint on the parameter space: beta < g - theta in Model 2; none in Model 1
+    (beta = 0)."""
+    if model == 'model1':
+        return True
+    p = rec['params']
+    return rec['beta'] < p['g'] - p['theta']
+
+
 def reapply(rec):
-    """Set rec[model]['admissible'] from the stored per-condition quantities, for both
-    models of a simulated record; returns rec."""
+    """Set rec[model]['admissible'] for both models of a simulated record, from its
+    parameters and stored per-condition quantities; returns rec."""
     for m in ('model1', 'model2'):
-        rec[m]['admissible'] = bool(admissible(rec[m]['raw']))
+        rec[m]['admissible'] = bool(in_space(rec, m) and admissible(rec[m]['raw'], rec['ntr']))
     return rec

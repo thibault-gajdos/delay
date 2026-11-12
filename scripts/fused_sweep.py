@@ -59,7 +59,7 @@ from delaymodel.sim import simulate, measures, DT
 from delaymodel.targets import CELLS
 from repair_shards import repair
 from shardio import load
-from admissibility import admissible
+from admissibility import reapply
 
 N_DRAWS = int(sys.argv[1]) if len(sys.argv) > 1 else 250
 NTR = int(sys.argv[2]) if len(sys.argv) > 2 else 2000
@@ -308,9 +308,8 @@ def evaluate(cube, i, gamma_x=0.0, gamma_q=0.0):
     rec = dict(draw=i, params=p, beta=beta2, alpha=alpha2, gamma_x=gamma_x,
                gamma_q=gamma_q, ntr=NTR)
     for tag, res in (('model1', res1), ('model2', res2)):
-        adm = admissible(res)
-        rec[tag] = dict(admissible=adm, raw={k: v.tolist() for k, v in res.items()})
-    return rec
+        rec[tag] = dict(admissible=None, raw={k: v.tolist() for k, v in res.items()})
+    return reapply(rec)
 
 
 if __name__ == '__main__':

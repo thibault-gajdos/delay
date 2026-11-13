@@ -18,7 +18,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from empirical import trials
 
 CELLS = [(0.0, 0.3), (0.12, 0.3), (0.50, 0.3), (0.0, 2.0), (0.12, 2.0), (0.50, 2.0)]
-JASPDIR = os.path.join(os.environ.get('DELAY_DATA', '/home/claude/data'), 'analysis_PMA/data')
+JASPDIR = os.path.join(os.path.expanduser(os.environ.get(
+    'DELAY_DATA', '~/thib/projects/delay/data/86cbw-osfstorage-archive')), 'analysis_PMA/data')
 BINW = 0.1                       # the exports' bin width, seconds
 # the exported windows: file, and the bin indices it uses
 WINDOWS = dict(stim=('PMA_rate_stim_JASP.csv', range(0, 20)),

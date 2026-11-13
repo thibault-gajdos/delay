@@ -9,7 +9,7 @@ response signal, or a response time below 0.2 s are excluded.
 """
 import numpy as np, pandas as pd, os
 
-ROOT = os.path.expanduser(os.environ.get('DELAY_DATA', '/home/claude/data'))
+ROOT = os.path.expanduser(os.environ.get('DELAY_DATA', '~/thib/projects/delay/data/86cbw-osfstorage-archive'))
 SEG = os.path.join(ROOT, 'data/emg_segmented')
 BEH = os.path.join(ROOT, 'data/behavioral')
 SF = 1024.0

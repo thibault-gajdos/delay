@@ -60,10 +60,13 @@ SRC = {
 # Panel groups, in the order the Results take them. Each entry is (window, [keys]); the
 # figure draws one labelled block per window, three panels to a row.
 GROUPS = [
-    ('Accuracy, RT, PMT and MT', ['acc_coh', 'acc_dur', 'acc_int', 'rt_coh', 'rt_dur',
-                                  'rt_int', 'pmet_coh', 'pmet_dur', 'pmet_int', 'met_dur']),
-    ('Stimulus-onset window', ['stim_coh', 'stim_dur', 'stim_trend_coh', 'stim_trend_dur']),
-    ('Delay window', ['delay_coh', 'delay_dur', 'delay_int', 'trend', 'trend_dur', 'curv']),
+    ('Accuracy, RT, premotor time and motor time',
+     ['acc_coh', 'acc_dur', 'acc_int', 'rt_coh', 'rt_dur', 'rt_int', 'pmet_coh', 'pmet_dur',
+      'pmet_int', 'met_dur']),
+    ('Partial muscle activation rate, stimulus-onset window',
+     ['stim_coh', 'stim_dur', 'stim_trend_coh', 'stim_trend_dur']),
+    ('Partial muscle activation rate, delay window',
+     ['delay_coh', 'delay_dur', 'delay_int', 'trend', 'trend_dur', 'curv']),
 ]
 # Effects whose direction the derivations fix at every parameter setting (Results,
 # Theoretical predictions): no sign summary is reported for them (Materials and Methods,
@@ -79,20 +82,20 @@ NAMES = dict(
     rt_coh='RT,\n0% minus 50% coherence (ms)',
     rt_dur='RT, short minus long (ms)',
     rt_int='coherence effect on RT,\nshort minus long (ms)',
-    pmet_coh='PMT,\n0% minus 50% coherence (ms)',
-    pmet_dur='PMT, short minus long (ms)',
-    pmet_int='coherence effect on PMT,\nshort minus long (ms)',
-    met_dur='MT, short minus long (ms)',
-    stim_coh='mean PMA rate,\n50% minus 0% coherence (/s)',
-    stim_dur='mean PMA rate,\nshort minus long (/s)',
-    stim_trend_coh='PMA-rate slope,\n50% minus 0% coherence (/s$^2$)',
-    stim_trend_dur='PMA-rate slope,\nshort minus long (/s$^2$)',
-    delay_coh='mean PMA rate,\n50% minus 0% coherence (/s)',
-    delay_dur='mean PMA rate,\nlong minus short (/s)',
-    delay_int='coherence effect on mean PMA rate,\nlong minus short (/s)',
-    trend='PMA-rate slope (/s$^2$)',
-    trend_dur='PMA-rate slope,\nlong minus short (/s$^2$)',
-    curv='PMA-rate curvature (/s$^3$)')
+    pmet_coh='premotor time,\n0% minus 50% coherence (ms)',
+    pmet_dur='premotor time,\nshort minus long (ms)',
+    pmet_int='coherence effect on premotor time,\nshort minus long (ms)',
+    met_dur='motor time,\nshort minus long (ms)',
+    stim_coh='mean rate,\n50% minus 0% coherence (/s)',
+    stim_dur='mean rate,\nshort minus long (/s)',
+    stim_trend_coh='slope,\n50% minus 0% coherence (/s$^2$)',
+    stim_trend_dur='slope,\nshort minus long (/s$^2$)',
+    delay_coh='mean rate,\n50% minus 0% coherence (/s)',
+    delay_dur='mean rate,\nlong minus short (/s)',
+    delay_int='coherence effect on mean rate,\nlong minus short (/s)',
+    trend='slope (/s$^2$)',
+    trend_dur='slope,\nlong minus short (/s$^2$)',
+    curv='curvature (/s$^3$)')
 
 
 def effects(cells):

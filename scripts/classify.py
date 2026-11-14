@@ -15,6 +15,10 @@ magnitude is unreproduced within the explored space only if every admissible dra
 not.  The sign of a draw's effect is the observed one, the opposite one, or uncertain,
 according to whether its Monte-Carlo interval excludes zero and on which side.
 
+Every admissible draw yields every effect: the admissibility screen requires partial
+activations in every condition.  A draw without a finite estimate or standard error stops
+the classification.
+
 Sufficiency of the trial count.  Uncertain draws matter only where they decide a verdict:
 an effect that no draw reproduces, but that some draw is uncertain about, is neither
 reproduced nor established as unreproduced.  Such effects are listed at the end; if there
@@ -54,8 +58,10 @@ def classify(recs, per_sub):
         for k in KEYS:
             v = np.array([e[k] for e in est], float)
             s = np.array([e[k] for e in ses], float)
-            ok = np.isfinite(v) & np.isfinite(s)
-            v, s = v[ok], s[ok]
+            bad = ~(np.isfinite(v) & np.isfinite(s))
+            if bad.any():
+                raise SystemExit(f"{tag}, {k}: {int(bad.sum())} admissible draws without a "
+                                 f"finite estimate and standard error")
             lo, hi = v - 1.96 * s, v + 1.96 * s
             o = out['observed'][k]
             inside = (lo >= o['lo']) & (hi <= o['hi'])

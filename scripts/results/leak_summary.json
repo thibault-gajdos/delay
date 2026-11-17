@@ -1,6 +1,11 @@
 {
  "source": "results/sweep_screened.jsonl",
+ "leak_source": "results/leak/shard_*.jsonl",
  "n_draws": 1200,
+ "leak_range": [
+  0.0,
+  1.0
+ ],
  "observed": {
   "acc_coh": {
    "mean": 0.4466033334059164,
@@ -9,9 +14,9 @@
    "n": 22
   },
   "acc_dur": {
-   "mean": 0.03053328886483593,
-   "lo": 0.01729234863388219,
-   "hi": 0.04377422909578967,
+   "mean": 0.03053328886483596,
+   "lo": 0.01729234863388222,
+   "hi": 0.04377422909578969,
    "n": 22
   },
   "acc_int": {
@@ -27,9 +32,9 @@
    "n": 22
   },
   "rt_dur": {
-   "mean": 48.52891615950738,
-   "lo": 36.027001491210974,
-   "hi": 61.03083082780379,
+   "mean": 48.52891615950737,
+   "lo": 36.02700149121097,
+   "hi": 61.03083082780377,
    "n": 22
   },
   "rt_int": {
@@ -57,38 +62,38 @@
    "n": 22
   },
   "met_dur": {
-   "mean": -0.4920968689910668,
-   "lo": -2.055439485284359,
-   "hi": 1.0712457473022257,
+   "mean": -0.49209686899106975,
+   "lo": -2.0554394852843627,
+   "hi": 1.0712457473022234,
    "n": 22
   },
   "stim_coh": {
    "mean": 0.05365611463409972,
-   "lo": 0.012293959645681203,
+   "lo": 0.012293959645681196,
    "hi": 0.09501826962251825,
    "n": 22
   },
   "stim_dur": {
-   "mean": 0.057137206534332456,
-   "lo": 0.02622458717422507,
+   "mean": 0.05713720653433245,
+   "lo": 0.026224587174225062,
    "hi": 0.08804982589443984,
    "n": 22
   },
   "stim_trend_coh": {
-   "mean": 0.056400974086414424,
+   "mean": 0.05640097408641443,
    "lo": 0.01728175520781554,
-   "hi": 0.09552019296501331,
+   "hi": 0.09552019296501332,
    "n": 22
   },
   "stim_trend_dur": {
-   "mean": 0.05974045436937683,
-   "lo": 0.01950025347425125,
-   "hi": 0.09998065526450242,
+   "mean": 0.05974045436937687,
+   "lo": 0.01950025347425128,
+   "hi": 0.09998065526450245,
    "n": 22
   },
   "delay_coh": {
    "mean": 0.0928643606522972,
-   "lo": 0.012512745626654276,
+   "lo": 0.01251274562665429,
    "hi": 0.17321597567794011,
    "n": 22
   },
@@ -99,6144 +104,1623 @@
    "n": 22
   },
   "delay_int": {
-   "mean": 0.10664136772954515,
-   "lo": 0.0006868235224094799,
-   "hi": 0.21259591193668081,
+   "mean": 0.10664136772954519,
+   "lo": 0.0006868235224095215,
+   "hi": 0.21259591193668087,
    "n": 22
   },
   "trend": {
-   "mean": 0.5603614304502444,
-   "lo": 0.36404889318303313,
-   "hi": 0.7566739677174558,
+   "mean": 0.5603614304502448,
+   "lo": 0.36404889318303346,
+   "hi": 0.7566739677174561,
    "n": 22
   },
   "trend_dur": {
-   "mean": 0.13533509174933225,
-   "lo": 0.05374186905034571,
-   "hi": 0.21692831444831878,
+   "mean": 0.1353350917493323,
+   "lo": 0.05374186905034574,
+   "hi": 0.2169283144483189,
    "n": 22
   },
   "curv": {
-   "mean": 0.20987668008304416,
-   "lo": 0.10945729414136425,
-   "hi": 0.3102960660247241,
+   "mean": 0.20987668008304422,
+   "lo": 0.10945729414136428,
+   "hi": 0.31029606602472415,
    "n": 22
   }
  },
- "grid": [
-  {
-   "gamma_x": 0.0,
-   "gamma_q": 0.0,
-   "n_admissible": {
-    "model1": 111,
-    "model2": 135
+ "no_leak": {
+  "n_admissible": {
+   "model1": 115,
+   "model2": 122
+  },
+  "verdicts": {
+   "model1": {
+    "acc_coh": "reproduced",
+    "acc_dur": "reproduced",
+    "acc_int": "reproduced",
+    "rt_coh": "reproduced",
+    "rt_dur": "reproduced",
+    "rt_int": "reproduced",
+    "pmet_coh": "reproduced",
+    "pmet_dur": "reproduced",
+    "pmet_int": "reproduced",
+    "met_dur": "reproduced",
+    "stim_coh": "reproduced",
+    "stim_dur": "unreproduced",
+    "stim_trend_coh": "reproduced",
+    "stim_trend_dur": "unreproduced",
+    "delay_coh": "reproduced",
+    "delay_dur": "reproduced",
+    "delay_int": "undecided",
+    "trend": "unreproduced",
+    "trend_dur": "unreproduced",
+    "curv": "unreproduced"
    },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
+   "model2": {
+    "acc_coh": "reproduced",
+    "acc_dur": "reproduced",
+    "acc_int": "reproduced",
+    "rt_coh": "reproduced",
+    "rt_dur": "reproduced",
+    "rt_int": "reproduced",
+    "pmet_coh": "reproduced",
+    "pmet_dur": "reproduced",
+    "pmet_int": "reproduced",
+    "met_dur": "reproduced",
+    "stim_coh": "reproduced",
+    "stim_dur": "reproduced",
+    "stim_trend_coh": "reproduced",
+    "stim_trend_dur": "reproduced",
+    "delay_coh": "reproduced",
+    "delay_dur": "reproduced",
+    "delay_int": "undecided",
+    "trend": "reproduced",
+    "trend_dur": "reproduced",
+    "curv": "reproduced"
+   }
+  },
+  "counts": {
+   "model1": {
+    "acc_coh": {
+     "n": 115,
+     "min": 0.4300652265488451,
+     "max": 0.5031375,
+     "reproduces": 13,
+     "does_not": 93,
+     "uncertain": 9,
+     "sign_observed": 115,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
     },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
+    "acc_dur": {
+     "n": 115,
+     "min": 0.0009600824991148338,
+     "max": 0.07318353640885727,
+     "reproduces": 56,
+     "does_not": 38,
+     "uncertain": 21,
+     "sign_observed": 113,
+     "sign_opposite": 0,
+     "sign_uncertain": 2
+    },
+    "acc_int": {
+     "n": 115,
+     "min": -0.0010323124207474166,
+     "max": 0.19719835500357585,
+     "reproduces": 44,
+     "does_not": 51,
+     "uncertain": 20,
+     "sign_observed": 113,
+     "sign_opposite": 0,
+     "sign_uncertain": 2
+    },
+    "rt_coh": {
+     "n": 115,
+     "min": 0.37658968308007523,
+     "max": 69.98570759595488,
+     "reproduces": 22,
+     "does_not": 91,
+     "uncertain": 2,
+     "sign_observed": 111,
+     "sign_opposite": 0,
+     "sign_uncertain": 4
+    },
+    "rt_dur": {
+     "n": 115,
+     "min": -0.31055263330515004,
+     "max": 78.1791583582685,
+     "reproduces": 11,
+     "does_not": 104,
+     "uncertain": 0,
+     "sign_observed": 113,
+     "sign_opposite": 0,
+     "sign_uncertain": 2
+    },
+    "rt_int": {
+     "n": 115,
+     "min": -0.34190010441953467,
+     "max": 84.60469009916783,
+     "reproduces": 77,
+     "does_not": 30,
+     "uncertain": 8,
+     "sign_observed": 110,
+     "sign_opposite": 0,
+     "sign_uncertain": 5
+    },
+    "pmet_coh": {
+     "n": 115,
+     "min": 0.3995231365307439,
+     "max": 146.8107652262859,
+     "reproduces": 25,
+     "does_not": 83,
+     "uncertain": 7,
+     "sign_observed": 111,
+     "sign_opposite": 0,
+     "sign_uncertain": 4
+    },
+    "pmet_dur": {
+     "n": 115,
+     "min": -0.9426953316271081,
+     "max": 259.99454087473407,
+     "reproduces": 14,
+     "does_not": 99,
+     "uncertain": 2,
+     "sign_observed": 113,
+     "sign_opposite": 0,
+     "sign_uncertain": 2
+    },
+    "pmet_int": {
+     "n": 115,
+     "min": -0.007787215622889754,
+     "max": 179.58510832953422,
+     "reproduces": 61,
+     "does_not": 49,
+     "uncertain": 5,
+     "sign_observed": 109,
+     "sign_opposite": 0,
+     "sign_uncertain": 6
+    },
+    "met_dur": {
+     "n": 115,
+     "min": -231.8646961824822,
+     "max": 0.6321426983221662,
+     "reproduces": 44,
+     "does_not": 55,
+     "uncertain": 16,
+     "sign_observed": 106,
+     "sign_opposite": 0,
+     "sign_uncertain": 9
+    },
+    "stim_coh": {
+     "n": 115,
+     "min": 0.0010715644468601033,
+     "max": 1.198117219967907,
+     "reproduces": 57,
+     "does_not": 43,
+     "uncertain": 15,
+     "sign_observed": 114,
+     "sign_opposite": 0,
+     "sign_uncertain": 1
+    },
+    "stim_dur": {
+     "n": 115,
+     "min": -0.8114054521975651,
+     "max": 0.0010689974600506594,
+     "reproduces": 0,
+     "does_not": 115,
+     "uncertain": 0,
+     "sign_observed": 0,
+     "sign_opposite": 113,
+     "sign_uncertain": 2
+    },
+    "stim_trend_coh": {
+     "n": 115,
+     "min": -0.09048943615931981,
+     "max": 0.398601600288874,
+     "reproduces": 9,
+     "does_not": 99,
+     "uncertain": 7,
+     "sign_observed": 37,
+     "sign_opposite": 51,
+     "sign_uncertain": 27
+    },
+    "stim_trend_dur": {
+     "n": 115,
+     "min": -0.9649854970203713,
+     "max": -0.0007103483365725697,
+     "reproduces": 0,
+     "does_not": 115,
+     "uncertain": 0,
+     "sign_observed": 0,
+     "sign_opposite": 112,
+     "sign_uncertain": 3
+    },
+    "delay_coh": {
+     "n": 115,
+     "min": 0.0005845419030549234,
+     "max": 1.038532421727718,
+     "reproduces": 67,
+     "does_not": 40,
+     "uncertain": 8,
+     "sign_observed": 113,
+     "sign_opposite": 0,
+     "sign_uncertain": 2
+    },
+    "delay_dur": {
+     "n": 115,
+     "min": -0.001000570632483988,
+     "max": 1.5575625167142488,
+     "reproduces": 12,
+     "does_not": 101,
+     "uncertain": 2,
+     "sign_observed": 114,
+     "sign_opposite": 0,
+     "sign_uncertain": 1
+    },
+    "delay_int": {
+     "n": 115,
+     "min": -1.5788207324858552,
+     "max": -0.000405494884635052,
+     "reproduces": 0,
+     "does_not": 114,
+     "uncertain": 1,
+     "sign_observed": 0,
+     "sign_opposite": 113,
+     "sign_uncertain": 2
+    },
+    "trend": {
+     "n": 115,
+     "min": -0.06899799944813564,
+     "max": 0.004344965503220529,
+     "reproduces": 0,
+     "does_not": 115,
+     "uncertain": 0,
+     "sign_observed": 4,
+     "sign_opposite": 69,
+     "sign_uncertain": 42
+    },
+    "trend_dur": {
+     "n": 115,
+     "min": -0.04712225373072193,
+     "max": 0.0058260152752932625,
+     "reproduces": 0,
+     "does_not": 115,
+     "uncertain": 0,
+     "sign_observed": 5,
+     "sign_opposite": 30,
+     "sign_uncertain": 80
+    },
+    "curv": {
+     "n": 115,
+     "min": -0.10566444134496131,
+     "max": 0.0064772212055528655,
+     "reproduces": 0,
+     "does_not": 115,
+     "uncertain": 0,
+     "sign_observed": 2,
+     "sign_opposite": 74,
+     "sign_uncertain": 39
     }
    },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 14,
-      "does_not": 90,
-      "uncertain": 7,
-      "sign_observed": 111,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+   "model2": {
+    "acc_coh": {
+     "n": 122,
+     "min": 0.4356887567748433,
+     "max": 0.5044467145392824,
+     "reproduces": 14,
+     "does_not": 97,
+     "uncertain": 11,
+     "sign_observed": 122,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "acc_dur": {
+     "n": 122,
+     "min": 0.0009166327074842662,
+     "max": 0.07444899099647362,
+     "reproduces": 56,
+     "does_not": 48,
+     "uncertain": 18,
+     "sign_observed": 119,
+     "sign_opposite": 0,
+     "sign_uncertain": 3
+    },
+    "acc_int": {
+     "n": 122,
+     "min": 0.007318016816597828,
+     "max": 0.1928716260115939,
+     "reproduces": 42,
+     "does_not": 66,
+     "uncertain": 14,
+     "sign_observed": 122,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "rt_coh": {
+     "n": 122,
+     "min": 0.1510909961227047,
+     "max": 86.0493235376717,
+     "reproduces": 24,
+     "does_not": 95,
+     "uncertain": 3,
+     "sign_observed": 117,
+     "sign_opposite": 0,
+     "sign_uncertain": 5
+    },
+    "rt_dur": {
+     "n": 122,
+     "min": 0.29429476680029043,
+     "max": 82.93499577587923,
+     "reproduces": 9,
+     "does_not": 112,
+     "uncertain": 1,
+     "sign_observed": 119,
+     "sign_opposite": 0,
+     "sign_uncertain": 3
+    },
+    "rt_int": {
+     "n": 122,
+     "min": -0.25187171370577577,
+     "max": 89.46982508171169,
+     "reproduces": 84,
+     "does_not": 29,
+     "uncertain": 9,
+     "sign_observed": 114,
+     "sign_opposite": 0,
+     "sign_uncertain": 8
+    },
+    "pmet_coh": {
+     "n": 122,
+     "min": 0.8704786515834617,
+     "max": 206.81369650478564,
+     "reproduces": 29,
+     "does_not": 83,
+     "uncertain": 10,
+     "sign_observed": 117,
+     "sign_opposite": 0,
+     "sign_uncertain": 5
+    },
+    "pmet_dur": {
+     "n": 122,
+     "min": 0.7225279923989969,
+     "max": 313.2070456731537,
+     "reproduces": 13,
+     "does_not": 103,
+     "uncertain": 6,
+     "sign_observed": 120,
+     "sign_opposite": 0,
+     "sign_uncertain": 2
+    },
+    "pmet_int": {
+     "n": 122,
+     "min": -0.15047114788135918,
+     "max": 322.004891094951,
+     "reproduces": 59,
+     "does_not": 56,
+     "uncertain": 7,
+     "sign_observed": 117,
+     "sign_opposite": 0,
+     "sign_uncertain": 5
+    },
+    "met_dur": {
+     "n": 122,
+     "min": -284.3885023849,
+     "max": 0.003252742728790392,
+     "reproduces": 34,
+     "does_not": 77,
+     "uncertain": 11,
+     "sign_observed": 116,
+     "sign_opposite": 0,
+     "sign_uncertain": 6
+    },
+    "stim_coh": {
+     "n": 122,
+     "min": -0.0002625056250703088,
+     "max": 1.2156261234866075,
+     "reproduces": 48,
+     "does_not": 66,
+     "uncertain": 8,
+     "sign_observed": 114,
+     "sign_opposite": 0,
+     "sign_uncertain": 8
+    },
+    "stim_dur": {
+     "n": 122,
+     "min": -0.7769151498645895,
+     "max": 0.14175846120707844,
+     "reproduces": 10,
+     "does_not": 110,
+     "uncertain": 2,
+     "sign_observed": 62,
+     "sign_opposite": 50,
+     "sign_uncertain": 10
+    },
+    "stim_trend_coh": {
+     "n": 122,
+     "min": -0.07874026997550865,
+     "max": 0.38131722820820635,
+     "reproduces": 22,
+     "does_not": 91,
+     "uncertain": 9,
+     "sign_observed": 74,
+     "sign_opposite": 21,
+     "sign_uncertain": 27
+    },
+    "stim_trend_dur": {
+     "n": 122,
+     "min": -0.9040723381372444,
+     "max": 0.2368467651854203,
+     "reproduces": 25,
+     "does_not": 90,
+     "uncertain": 7,
+     "sign_observed": 70,
+     "sign_opposite": 42,
+     "sign_uncertain": 10
+    },
+    "delay_coh": {
+     "n": 122,
+     "min": 0.0018132854023762274,
+     "max": 1.1404762518532074,
+     "reproduces": 66,
+     "does_not": 48,
+     "uncertain": 8,
+     "sign_observed": 121,
+     "sign_opposite": 0,
+     "sign_uncertain": 1
+    },
+    "delay_dur": {
+     "n": 122,
+     "min": 0.0003426322129401818,
+     "max": 1.7158089808019261,
+     "reproduces": 11,
+     "does_not": 110,
+     "uncertain": 1,
+     "sign_observed": 121,
+     "sign_opposite": 0,
+     "sign_uncertain": 1
+    },
+    "delay_int": {
+     "n": 122,
+     "min": -1.7469289176017955,
+     "max": -0.0021012868682502572,
+     "reproduces": 0,
+     "does_not": 120,
+     "uncertain": 2,
+     "sign_observed": 0,
+     "sign_opposite": 120,
+     "sign_uncertain": 2
+    },
+    "trend": {
+     "n": 122,
+     "min": -0.0393765179377321,
+     "max": 0.9559272218296619,
+     "reproduces": 6,
+     "does_not": 116,
+     "uncertain": 0,
+     "sign_observed": 108,
+     "sign_opposite": 14,
+     "sign_uncertain": 0
+    },
+    "trend_dur": {
+     "n": 122,
+     "min": -0.026572148633509887,
+     "max": 0.7263233751368304,
+     "reproduces": 17,
+     "does_not": 103,
+     "uncertain": 2,
+     "sign_observed": 81,
+     "sign_opposite": 9,
+     "sign_uncertain": 32
+    },
+    "curv": {
+     "n": 122,
+     "min": -0.20727679040702124,
+     "max": 0.6160146136455125,
+     "reproduces": 8,
+     "does_not": 112,
+     "uncertain": 2,
+     "sign_observed": 50,
+     "sign_opposite": 50,
+     "sign_uncertain": 22
+    }
+   }
+  }
+ },
+ "leak_sampled": {
+  "n_admissible": {
+   "model1": 127,
+   "model2": 132
+  },
+  "verdicts": {
+   "model1": {
+    "acc_coh": "reproduced",
+    "acc_dur": "reproduced",
+    "acc_int": "reproduced",
+    "rt_coh": "reproduced",
+    "rt_dur": "reproduced",
+    "rt_int": "reproduced",
+    "pmet_coh": "reproduced",
+    "pmet_dur": "reproduced",
+    "pmet_int": "reproduced",
+    "met_dur": "reproduced",
+    "stim_coh": "reproduced",
+    "stim_dur": "unreproduced",
+    "stim_trend_coh": "reproduced",
+    "stim_trend_dur": "unreproduced",
+    "delay_coh": "reproduced",
+    "delay_dur": "reproduced",
+    "delay_int": "undecided",
+    "trend": "unreproduced",
+    "trend_dur": "unreproduced",
+    "curv": "unreproduced"
+   },
+   "model2": {
+    "acc_coh": "reproduced",
+    "acc_dur": "reproduced",
+    "acc_int": "reproduced",
+    "rt_coh": "reproduced",
+    "rt_dur": "reproduced",
+    "rt_int": "reproduced",
+    "pmet_coh": "reproduced",
+    "pmet_dur": "reproduced",
+    "pmet_int": "reproduced",
+    "met_dur": "reproduced",
+    "stim_coh": "reproduced",
+    "stim_dur": "reproduced",
+    "stim_trend_coh": "reproduced",
+    "stim_trend_dur": "reproduced",
+    "delay_coh": "reproduced",
+    "delay_dur": "reproduced",
+    "delay_int": "undecided",
+    "trend": "reproduced",
+    "trend_dur": "reproduced",
+    "curv": "reproduced"
+   }
+  },
+  "counts": {
+   "model1": {
+    "acc_coh": {
+     "n": 127,
+     "min": 0.43271429448579984,
+     "max": 0.5044749870554303,
+     "reproduces": 10,
+     "does_not": 111,
+     "uncertain": 6,
+     "sign_observed": 127,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "acc_dur": {
+     "n": 127,
+     "min": 0.002228472999851183,
+     "max": 0.06697030685886957,
+     "reproduces": 59,
+     "does_not": 42,
+     "uncertain": 26,
+     "sign_observed": 125,
+     "sign_opposite": 0,
+     "sign_uncertain": 2
+    },
+    "acc_int": {
+     "n": 127,
+     "min": 0.006712769112082961,
+     "max": 0.19537113604701561,
+     "reproduces": 46,
+     "does_not": 61,
+     "uncertain": 20,
+     "sign_observed": 125,
+     "sign_opposite": 0,
+     "sign_uncertain": 2
+    },
+    "rt_coh": {
+     "n": 127,
+     "min": 0.49216851220890145,
+     "max": 127.20948979596763,
+     "reproduces": 17,
+     "does_not": 104,
+     "uncertain": 6,
+     "sign_observed": 126,
+     "sign_opposite": 0,
+     "sign_uncertain": 1
+    },
+    "rt_dur": {
+     "n": 127,
+     "min": 0.7275509868278629,
+     "max": 92.64257686710731,
+     "reproduces": 8,
+     "does_not": 117,
+     "uncertain": 2,
+     "sign_observed": 127,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "rt_int": {
+     "n": 127,
+     "min": 0.2194966187415992,
+     "max": 160.5143892922819,
+     "reproduces": 89,
+     "does_not": 29,
+     "uncertain": 9,
+     "sign_observed": 125,
+     "sign_opposite": 0,
+     "sign_uncertain": 2
+    },
+    "pmet_coh": {
+     "n": 127,
+     "min": 0.665259057135853,
+     "max": 133.0006690248496,
+     "reproduces": 22,
+     "does_not": 99,
+     "uncertain": 6,
+     "sign_observed": 127,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "pmet_dur": {
+     "n": 127,
+     "min": 0.8429939084436122,
+     "max": 110.63911932313111,
+     "reproduces": 18,
+     "does_not": 108,
+     "uncertain": 1,
+     "sign_observed": 127,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "pmet_int": {
+     "n": 127,
+     "min": -0.15166651776837847,
+     "max": 169.56820698715242,
+     "reproduces": 67,
+     "does_not": 49,
+     "uncertain": 11,
+     "sign_observed": 125,
+     "sign_opposite": 0,
+     "sign_uncertain": 2
+    },
+    "met_dur": {
+     "n": 127,
+     "min": -49.52065317447596,
+     "max": 3.708141766459408,
+     "reproduces": 59,
+     "does_not": 59,
+     "uncertain": 9,
+     "sign_observed": 109,
+     "sign_opposite": 1,
+     "sign_uncertain": 17
+    },
+    "stim_coh": {
+     "n": 127,
+     "min": 0.0017497646829843314,
+     "max": 0.7525440095567155,
+     "reproduces": 66,
+     "does_not": 54,
+     "uncertain": 7,
+     "sign_observed": 127,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "stim_dur": {
+     "n": 127,
+     "min": -0.2814063652560573,
+     "max": -0.00010396722934601955,
+     "reproduces": 0,
+     "does_not": 127,
+     "uncertain": 0,
+     "sign_observed": 0,
+     "sign_opposite": 126,
+     "sign_uncertain": 1
+    },
+    "stim_trend_coh": {
+     "n": 127,
+     "min": -0.17540735456351003,
+     "max": 0.2143125004416416,
+     "reproduces": 18,
+     "does_not": 108,
+     "uncertain": 1,
+     "sign_observed": 48,
+     "sign_opposite": 45,
+     "sign_uncertain": 34
+    },
+    "stim_trend_dur": {
+     "n": 127,
+     "min": -0.3295918211297809,
+     "max": -0.0011845560915803395,
+     "reproduces": 0,
+     "does_not": 127,
+     "uncertain": 0,
+     "sign_observed": 0,
+     "sign_opposite": 125,
+     "sign_uncertain": 2
+    },
+    "delay_coh": {
+     "n": 127,
+     "min": 0.0006371673359334244,
+     "max": 0.696436972161664,
+     "reproduces": 77,
+     "does_not": 38,
+     "uncertain": 12,
+     "sign_observed": 126,
+     "sign_opposite": 0,
+     "sign_uncertain": 1
+    },
+    "delay_dur": {
+     "n": 127,
+     "min": 0.0006331766694097456,
+     "max": 0.525780285570587,
+     "reproduces": 13,
+     "does_not": 114,
+     "uncertain": 0,
+     "sign_observed": 126,
+     "sign_opposite": 0,
+     "sign_uncertain": 1
+    },
+    "delay_int": {
+     "n": 127,
+     "min": -0.9020896661238262,
+     "max": -0.0003257453321333509,
+     "reproduces": 0,
+     "does_not": 126,
+     "uncertain": 1,
+     "sign_observed": 0,
+     "sign_opposite": 126,
+     "sign_uncertain": 1
+    },
+    "trend": {
+     "n": 127,
+     "min": -0.10378622048601241,
+     "max": 0.0029164334987896653,
+     "reproduces": 0,
+     "does_not": 127,
+     "uncertain": 0,
+     "sign_observed": 6,
+     "sign_opposite": 72,
+     "sign_uncertain": 49
+    },
+    "trend_dur": {
+     "n": 127,
+     "min": -0.04856604292442773,
+     "max": 0.004717139970283291,
+     "reproduces": 0,
+     "does_not": 127,
+     "uncertain": 0,
+     "sign_observed": 5,
+     "sign_opposite": 40,
+     "sign_uncertain": 82
+    },
+    "curv": {
+     "n": 127,
+     "min": -0.11870325100240812,
+     "max": 0.0051024706816494,
+     "reproduces": 0,
+     "does_not": 127,
+     "uncertain": 0,
+     "sign_observed": 3,
+     "sign_opposite": 74,
+     "sign_uncertain": 50
+    }
+   },
+   "model2": {
+    "acc_coh": {
+     "n": 132,
+     "min": 0.43450019100882287,
+     "max": 0.5041946203063981,
+     "reproduces": 14,
+     "does_not": 114,
+     "uncertain": 4,
+     "sign_observed": 132,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "acc_dur": {
+     "n": 132,
+     "min": 0.0033630746929748934,
+     "max": 0.07099782800768745,
+     "reproduces": 63,
+     "does_not": 49,
+     "uncertain": 20,
+     "sign_observed": 132,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "acc_int": {
+     "n": 132,
+     "min": 0.01062436186071869,
+     "max": 0.1919756161624413,
+     "reproduces": 40,
+     "does_not": 68,
+     "uncertain": 24,
+     "sign_observed": 132,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "rt_coh": {
+     "n": 132,
+     "min": 0.5538278206681235,
+     "max": 93.83920124199918,
+     "reproduces": 24,
+     "does_not": 100,
+     "uncertain": 8,
+     "sign_observed": 131,
+     "sign_opposite": 0,
+     "sign_uncertain": 1
+    },
+    "rt_dur": {
+     "n": 132,
+     "min": 0.8216187560503019,
+     "max": 83.92003049499677,
+     "reproduces": 12,
+     "does_not": 117,
+     "uncertain": 3,
+     "sign_observed": 132,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "rt_int": {
+     "n": 132,
+     "min": 1.6083254861772311,
+     "max": 132.70597906369642,
+     "reproduces": 88,
+     "does_not": 40,
+     "uncertain": 4,
+     "sign_observed": 132,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "pmet_coh": {
+     "n": 132,
+     "min": 0.830121357530994,
+     "max": 131.89271135368242,
+     "reproduces": 36,
+     "does_not": 90,
+     "uncertain": 6,
+     "sign_observed": 132,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "pmet_dur": {
+     "n": 132,
+     "min": 0.8681777178250472,
+     "max": 145.13522534909615,
+     "reproduces": 22,
+     "does_not": 109,
+     "uncertain": 1,
+     "sign_observed": 132,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "pmet_int": {
+     "n": 132,
+     "min": 1.7117830917268706,
+     "max": 210.64534924523906,
+     "reproduces": 54,
+     "does_not": 68,
+     "uncertain": 10,
+     "sign_observed": 131,
+     "sign_opposite": 0,
+     "sign_uncertain": 1
+    },
+    "met_dur": {
+     "n": 132,
+     "min": -117.11414233914276,
+     "max": 4.4743247824639845,
+     "reproduces": 44,
+     "does_not": 81,
+     "uncertain": 7,
+     "sign_observed": 125,
+     "sign_opposite": 1,
+     "sign_uncertain": 6
+    },
+    "stim_coh": {
+     "n": 132,
+     "min": 0.0,
+     "max": 0.5695990635093835,
+     "reproduces": 54,
+     "does_not": 70,
+     "uncertain": 8,
+     "sign_observed": 129,
+     "sign_opposite": 0,
+     "sign_uncertain": 3
+    },
+    "stim_dur": {
+     "n": 132,
+     "min": -0.14488139456545104,
+     "max": 0.12823718425585837,
+     "reproduces": 11,
+     "does_not": 120,
+     "uncertain": 1,
+     "sign_observed": 65,
+     "sign_opposite": 58,
+     "sign_uncertain": 9
+    },
+    "stim_trend_coh": {
+     "n": 132,
+     "min": -0.060607769544454196,
+     "max": 0.26959312980453604,
+     "reproduces": 19,
+     "does_not": 107,
+     "uncertain": 6,
+     "sign_observed": 89,
+     "sign_opposite": 17,
+     "sign_uncertain": 26
+    },
+    "stim_trend_dur": {
+     "n": 132,
+     "min": -0.16222336698780068,
+     "max": 0.22673683235969946,
+     "reproduces": 23,
+     "does_not": 104,
+     "uncertain": 5,
+     "sign_observed": 72,
+     "sign_opposite": 49,
+     "sign_uncertain": 11
+    },
+    "delay_coh": {
+     "n": 132,
+     "min": 0.002366570029980494,
+     "max": 0.7067688151248954,
+     "reproduces": 85,
+     "does_not": 40,
+     "uncertain": 7,
+     "sign_observed": 132,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "delay_dur": {
+     "n": 132,
+     "min": 0.0033724642229478116,
+     "max": 0.7317991447618264,
+     "reproduces": 12,
+     "does_not": 118,
+     "uncertain": 2,
+     "sign_observed": 132,
+     "sign_opposite": 0,
+     "sign_uncertain": 0
+    },
+    "delay_int": {
+     "n": 132,
+     "min": -1.1546326779395377,
+     "max": -0.0009581844365685009,
+     "reproduces": 0,
+     "does_not": 130,
+     "uncertain": 2,
+     "sign_observed": 0,
+     "sign_opposite": 130,
+     "sign_uncertain": 2
+    },
+    "trend": {
+     "n": 132,
+     "min": -0.06611408621518913,
+     "max": 0.8529444202467591,
+     "reproduces": 11,
+     "does_not": 121,
+     "uncertain": 0,
+     "sign_observed": 115,
+     "sign_opposite": 13,
+     "sign_uncertain": 4
+    },
+    "trend_dur": {
+     "n": 132,
+     "min": -0.05063176402809756,
+     "max": 0.6381292134616898,
+     "reproduces": 18,
+     "does_not": 109,
+     "uncertain": 5,
+     "sign_observed": 87,
+     "sign_opposite": 6,
+     "sign_uncertain": 39
+    },
+    "curv": {
+     "n": 132,
+     "min": -0.26936178494687363,
+     "max": 0.7089332951951136,
+     "reproduces": 9,
+     "does_not": 122,
+     "uncertain": 1,
+     "sign_observed": 44,
+     "sign_opposite": 66,
+     "sign_uncertain": 22
+    }
+   }
+  }
+ },
+ "changes": [],
+ "dependence": {
+  "model1": {
+   "thirds": {
+    "gamma_x": [
+     {
+      "range": [
+       0.0,
+       0.3333333333333333
+      ],
+      "n_draws": 400,
+      "n_admissible": 47
      },
-     "acc_dur": {
-      "reproduces": 54,
-      "does_not": 37,
-      "uncertain": 20,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
+     {
+      "range": [
+       0.3333333333333333,
+       0.6666666666666666
+      ],
+      "n_draws": 400,
+      "n_admissible": 34
      },
-     "acc_int": {
-      "reproduces": 38,
-      "does_not": 50,
-      "uncertain": 23,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
+     {
+      "range": [
+       0.6666666666666666,
+       1.0
+      ],
+      "n_draws": 400,
+      "n_admissible": 46
+     }
+    ],
+    "gamma_q": [
+     {
+      "range": [
+       0.0,
+       0.3333333333333333
+      ],
+      "n_draws": 400,
+      "n_admissible": 40
      },
-     "rt_coh": {
-      "reproduces": 20,
-      "does_not": 88,
-      "uncertain": 3,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
+     {
+      "range": [
+       0.3333333333333333,
+       0.6666666666666666
+      ],
+      "n_draws": 400,
+      "n_admissible": 39
      },
-     "rt_dur": {
-      "reproduces": 4,
-      "does_not": 106,
-      "uncertain": 1,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
+     {
+      "range": [
+       0.6666666666666666,
+       1.0
+      ],
+      "n_draws": 400,
+      "n_admissible": 48
+     }
+    ]
+   },
+   "spearman": {
+    "acc_coh": {
+     "gamma_x": {
+      "rho": 0.08651457630296212,
+      "p": 0.33347170641430246,
+      "n": 127
      },
-     "rt_int": {
-      "reproduces": 80,
-      "does_not": 23,
-      "uncertain": 8,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_coh": {
-      "reproduces": 23,
-      "does_not": 82,
-      "uncertain": 6,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_dur": {
-      "reproduces": 5,
-      "does_not": 104,
-      "uncertain": 2,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 66,
-      "does_not": 39,
-      "uncertain": 6,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "met_dur": {
-      "reproduces": 56,
-      "does_not": 49,
-      "uncertain": 6,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 10
-     },
-     "stim_coh": {
-      "reproduces": 59,
-      "does_not": 45,
-      "uncertain": 7,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 109,
-      "sign_uncertain": 2
-     },
-     "stim_trend_coh": {
-      "reproduces": 8,
-      "does_not": 96,
-      "uncertain": 7,
-      "sign_observed": 36,
-      "sign_opposite": 47,
-      "sign_uncertain": 28
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 107,
-      "sign_uncertain": 4
-     },
-     "delay_coh": {
-      "reproduces": 68,
-      "does_not": 32,
-      "uncertain": 11,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "delay_dur": {
-      "reproduces": 5,
-      "does_not": 106,
-      "uncertain": 0,
-      "sign_observed": 108,
-      "sign_opposite": 1,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 107,
-      "uncertain": 4,
-      "sign_observed": 0,
-      "sign_opposite": 105,
-      "sign_uncertain": 6
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 4,
-      "sign_opposite": 58,
-      "sign_uncertain": 49
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 1,
-      "sign_opposite": 31,
-      "sign_uncertain": 79
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 1,
-      "sign_opposite": 62,
-      "sign_uncertain": 48
+     "gamma_q": {
+      "rho": -0.135516263592051,
+      "p": 0.12873541296692118,
+      "n": 127
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 21,
-      "does_not": 105,
-      "uncertain": 9,
-      "sign_observed": 135,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "acc_dur": {
+     "gamma_x": {
+      "rho": -0.014300946756655417,
+      "p": 0.8732133885399226,
+      "n": 127
      },
-     "acc_dur": {
-      "reproduces": 48,
-      "does_not": 60,
-      "uncertain": 27,
-      "sign_observed": 133,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
+     "gamma_q": {
+      "rho": 0.008805539932508434,
+      "p": 0.92173049586297,
+      "n": 127
+     }
+    },
+    "acc_int": {
+     "gamma_x": {
+      "rho": 0.03279082302212223,
+      "p": 0.7143810909957248,
+      "n": 127
      },
-     "acc_int": {
-      "reproduces": 38,
-      "does_not": 74,
-      "uncertain": 23,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
+     "gamma_q": {
+      "rho": -0.007938460817397824,
+      "p": 0.9294166915482184,
+      "n": 127
+     }
+    },
+    "rt_coh": {
+     "gamma_x": {
+      "rho": -0.027541479190101237,
+      "p": 0.7585646424251337,
+      "n": 127
      },
-     "rt_coh": {
-      "reproduces": 24,
-      "does_not": 107,
-      "uncertain": 4,
-      "sign_observed": 131,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
+     "gamma_q": {
+      "rho": 0.055311445444319464,
+      "p": 0.5368137656279489,
+      "n": 127
+     }
+    },
+    "rt_dur": {
+     "gamma_x": {
+      "rho": -0.07688296775403074,
+      "p": 0.3902671866151136,
+      "n": 127
      },
-     "rt_dur": {
-      "reproduces": 8,
-      "does_not": 125,
-      "uncertain": 2,
-      "sign_observed": 134,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
+     "gamma_q": {
+      "rho": 0.09358009936257967,
+      "p": 0.2953462261672594,
+      "n": 127
+     }
+    },
+    "rt_int": {
+     "gamma_x": {
+      "rho": -0.051690804274465686,
+      "p": 0.563836661282736,
+      "n": 127
      },
-     "rt_int": {
-      "reproduces": 93,
-      "does_not": 32,
-      "uncertain": 10,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
+     "gamma_q": {
+      "rho": 0.07419970941132359,
+      "p": 0.40706807073704365,
+      "n": 127
+     }
+    },
+    "pmet_coh": {
+     "gamma_x": {
+      "rho": -0.054825178102737154,
+      "p": 0.5404053189064224,
+      "n": 127
      },
-     "pmet_coh": {
-      "reproduces": 25,
-      "does_not": 102,
-      "uncertain": 8,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
+     "gamma_q": {
+      "rho": 0.09079138545181852,
+      "p": 0.3100348624904218,
+      "n": 127
+     }
+    },
+    "pmet_dur": {
+     "gamma_x": {
+      "rho": -0.10698467379077614,
+      "p": 0.2312385003195253,
+      "n": 127
      },
-     "pmet_dur": {
-      "reproduces": 11,
-      "does_not": 124,
-      "uncertain": 0,
-      "sign_observed": 134,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
+     "gamma_q": {
+      "rho": 0.12897215973003373,
+      "p": 0.14842572988965858,
+      "n": 127
+     }
+    },
+    "pmet_int": {
+     "gamma_x": {
+      "rho": -0.07157503749531309,
+      "p": 0.4239073620327931,
+      "n": 127
      },
-     "pmet_int": {
-      "reproduces": 56,
-      "does_not": 68,
-      "uncertain": 11,
-      "sign_observed": 126,
-      "sign_opposite": 1,
-      "sign_uncertain": 8
+     "gamma_q": {
+      "rho": 0.12235775215598049,
+      "p": 0.17055479077170665,
+      "n": 127
+     }
+    },
+    "met_dur": {
+     "gamma_x": {
+      "rho": 0.14917275965504312,
+      "p": 0.09416024163895301,
+      "n": 127
      },
-     "met_dur": {
-      "reproduces": 38,
-      "does_not": 93,
-      "uncertain": 4,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 11
+     "gamma_q": {
+      "rho": -0.1344382733408324,
+      "p": 0.13183317213983872,
+      "n": 127
+     }
+    },
+    "stim_coh": {
+     "gamma_x": {
+      "rho": -0.08241938507686539,
+      "p": 0.3569438098027806,
+      "n": 127
      },
-     "stim_coh": {
-      "reproduces": 49,
-      "does_not": 79,
-      "uncertain": 7,
-      "sign_observed": 116,
-      "sign_opposite": 0,
-      "sign_uncertain": 19
+     "gamma_q": {
+      "rho": 0.058750468691413565,
+      "p": 0.5117566055053625,
+      "n": 127
+     }
+    },
+    "stim_dur": {
+     "gamma_x": {
+      "rho": 0.13307320959880015,
+      "p": 0.13583737820010006,
+      "n": 127
      },
-     "stim_dur": {
-      "reproduces": 16,
-      "does_not": 117,
-      "uncertain": 2,
-      "sign_observed": 77,
-      "sign_opposite": 44,
-      "sign_uncertain": 14
+     "gamma_q": {
+      "rho": -0.09331060179977502,
+      "p": 0.29674527302572673,
+      "n": 127
+     }
+    },
+    "stim_trend_coh": {
+     "gamma_x": {
+      "rho": 0.06298040869891264,
+      "p": 0.481785113647308,
+      "n": 127
      },
-     "stim_trend_coh": {
-      "reproduces": 25,
-      "does_not": 105,
-      "uncertain": 5,
-      "sign_observed": 82,
-      "sign_opposite": 11,
-      "sign_uncertain": 42
+     "gamma_q": {
+      "rho": -0.06691155793025871,
+      "p": 0.4547994936758471,
+      "n": 127
+     }
+    },
+    "stim_trend_dur": {
+     "gamma_x": {
+      "rho": 0.11285503374578176,
+      "p": 0.2064897318381738,
+      "n": 127
      },
-     "stim_trend_dur": {
-      "reproduces": 30,
-      "does_not": 101,
-      "uncertain": 4,
-      "sign_observed": 80,
-      "sign_opposite": 35,
-      "sign_uncertain": 20
+     "gamma_q": {
+      "rho": -0.07995289651293588,
+      "p": 0.3715647521268225,
+      "n": 127
+     }
+    },
+    "delay_coh": {
+     "gamma_x": {
+      "rho": -0.08574123547056617,
+      "p": 0.33782712772435913,
+      "n": 127
      },
-     "delay_coh": {
-      "reproduces": 71,
-      "does_not": 51,
-      "uncertain": 13,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
+     "gamma_q": {
+      "rho": 0.06016240157480315,
+      "p": 0.5016465811056263,
+      "n": 127
+     }
+    },
+    "delay_dur": {
+     "gamma_x": {
+      "rho": -0.11597769028871391,
+      "p": 0.1941273135712654,
+      "n": 127
      },
-     "delay_dur": {
-      "reproduces": 22,
-      "does_not": 107,
-      "uncertain": 6,
-      "sign_observed": 134,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
+     "gamma_q": {
+      "rho": 0.08022825271841019,
+      "p": 0.369914524398246,
+      "n": 127
+     }
+    },
+    "delay_int": {
+     "gamma_x": {
+      "rho": 0.0943592988376453,
+      "p": 0.2913257435629007,
+      "n": 127
      },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 132,
-      "uncertain": 3,
-      "sign_observed": 0,
-      "sign_opposite": 132,
-      "sign_uncertain": 3
+     "gamma_q": {
+      "rho": -0.05791268278965128,
+      "p": 0.5178047751012562,
+      "n": 127
+     }
+    },
+    "trend": {
+     "gamma_x": {
+      "rho": 0.22512420322459692,
+      "p": 0.010937482063745852,
+      "n": 127
      },
-     "trend": {
-      "reproduces": 15,
-      "does_not": 120,
-      "uncertain": 0,
-      "sign_observed": 117,
-      "sign_opposite": 15,
-      "sign_uncertain": 3
+     "gamma_q": {
+      "rho": -0.27901199850018743,
+      "p": 0.0014904031035854533,
+      "n": 127
+     }
+    },
+    "trend_dur": {
+     "gamma_x": {
+      "rho": 0.20794666291713537,
+      "p": 0.018977383493148273,
+      "n": 127
      },
-     "trend_dur": {
-      "reproduces": 24,
-      "does_not": 108,
-      "uncertain": 3,
-      "sign_observed": 88,
-      "sign_opposite": 13,
-      "sign_uncertain": 34
+     "gamma_q": {
+      "rho": -0.12379311961004873,
+      "p": 0.1655565154566805,
+      "n": 127
+     }
+    },
+    "curv": {
+     "gamma_x": {
+      "rho": 0.20731978815148105,
+      "p": 0.019348646679765928,
+      "n": 127
      },
-     "curv": {
-      "reproduces": 7,
-      "does_not": 127,
-      "uncertain": 1,
-      "sign_observed": 51,
-      "sign_opposite": 69,
-      "sign_uncertain": 15
+     "gamma_q": {
+      "rho": -0.30999835958005245,
+      "p": 0.00039001433357995326,
+      "n": 127
      }
     }
    }
   },
-  {
-   "gamma_x": 0.0,
-   "gamma_q": 0.25,
-   "n_admissible": {
-    "model1": 111,
-    "model2": 135
+  "model2": {
+   "thirds": {
+    "gamma_x": [
+     {
+      "range": [
+       0.0,
+       0.3333333333333333
+      ],
+      "n_draws": 400,
+      "n_admissible": 47
+     },
+     {
+      "range": [
+       0.3333333333333333,
+       0.6666666666666666
+      ],
+      "n_draws": 400,
+      "n_admissible": 46
+     },
+     {
+      "range": [
+       0.6666666666666666,
+       1.0
+      ],
+      "n_draws": 400,
+      "n_admissible": 39
+     }
+    ],
+    "gamma_q": [
+     {
+      "range": [
+       0.0,
+       0.3333333333333333
+      ],
+      "n_draws": 400,
+      "n_admissible": 42
+     },
+     {
+      "range": [
+       0.3333333333333333,
+       0.6666666666666666
+      ],
+      "n_draws": 400,
+      "n_admissible": 47
+     },
+     {
+      "range": [
+       0.6666666666666666,
+       1.0
+      ],
+      "n_draws": 400,
+      "n_admissible": 43
+     }
+    ]
    },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 14,
-      "does_not": 90,
-      "uncertain": 7,
-      "sign_observed": 111,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+   "spearman": {
+    "acc_coh": {
+     "gamma_x": {
+      "rho": -0.0005426473887703297,
+      "p": 0.9950728979950947,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 54,
-      "does_not": 37,
-      "uncertain": 20,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "acc_int": {
-      "reproduces": 38,
-      "does_not": 50,
-      "uncertain": 23,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_coh": {
-      "reproduces": 21,
-      "does_not": 88,
-      "uncertain": 2,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 5,
-      "does_not": 106,
-      "uncertain": 0,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_int": {
-      "reproduces": 79,
-      "does_not": 23,
-      "uncertain": 9,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_coh": {
-      "reproduces": 25,
-      "does_not": 82,
-      "uncertain": 4,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_dur": {
-      "reproduces": 5,
-      "does_not": 103,
-      "uncertain": 3,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 66,
-      "does_not": 40,
-      "uncertain": 5,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "met_dur": {
-      "reproduces": 58,
-      "does_not": 48,
-      "uncertain": 5,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 12
-     },
-     "stim_coh": {
-      "reproduces": 59,
-      "does_not": 45,
-      "uncertain": 7,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 109,
-      "sign_uncertain": 2
-     },
-     "stim_trend_coh": {
-      "reproduces": 8,
-      "does_not": 96,
-      "uncertain": 7,
-      "sign_observed": 36,
-      "sign_opposite": 47,
-      "sign_uncertain": 28
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 107,
-      "sign_uncertain": 4
-     },
-     "delay_coh": {
-      "reproduces": 68,
-      "does_not": 32,
-      "uncertain": 11,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "delay_dur": {
-      "reproduces": 5,
-      "does_not": 106,
-      "uncertain": 0,
-      "sign_observed": 108,
-      "sign_opposite": 1,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 107,
-      "uncertain": 4,
-      "sign_observed": 0,
-      "sign_opposite": 105,
-      "sign_uncertain": 6
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 4,
-      "sign_opposite": 58,
-      "sign_uncertain": 49
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 1,
-      "sign_opposite": 31,
-      "sign_uncertain": 79
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 1,
-      "sign_opposite": 62,
-      "sign_uncertain": 48
+     "gamma_q": {
+      "rho": -0.0727773632554669,
+      "p": 0.4069369789268677,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 21,
-      "does_not": 105,
-      "uncertain": 9,
-      "sign_observed": 135,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "acc_dur": {
+     "gamma_x": {
+      "rho": -0.06269664445638731,
+      "p": 0.4751149864681486,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 48,
-      "does_not": 60,
-      "uncertain": 27,
-      "sign_observed": 133,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "acc_int": {
-      "reproduces": 38,
-      "does_not": 74,
-      "uncertain": 23,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "rt_coh": {
-      "reproduces": 24,
-      "does_not": 107,
-      "uncertain": 4,
-      "sign_observed": 131,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 8,
-      "does_not": 124,
-      "uncertain": 3,
-      "sign_observed": 134,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "rt_int": {
-      "reproduces": 91,
-      "does_not": 33,
-      "uncertain": 11,
-      "sign_observed": 127,
-      "sign_opposite": 0,
-      "sign_uncertain": 8
-     },
-     "pmet_coh": {
-      "reproduces": 26,
-      "does_not": 102,
-      "uncertain": 7,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 10,
-      "does_not": 123,
-      "uncertain": 2,
-      "sign_observed": 134,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 54,
-      "does_not": 70,
-      "uncertain": 11,
-      "sign_observed": 125,
-      "sign_opposite": 1,
-      "sign_uncertain": 9
-     },
-     "met_dur": {
-      "reproduces": 38,
-      "does_not": 92,
-      "uncertain": 5,
-      "sign_observed": 125,
-      "sign_opposite": 0,
-      "sign_uncertain": 10
-     },
-     "stim_coh": {
-      "reproduces": 49,
-      "does_not": 79,
-      "uncertain": 7,
-      "sign_observed": 116,
-      "sign_opposite": 0,
-      "sign_uncertain": 19
-     },
-     "stim_dur": {
-      "reproduces": 16,
-      "does_not": 117,
-      "uncertain": 2,
-      "sign_observed": 77,
-      "sign_opposite": 44,
-      "sign_uncertain": 14
-     },
-     "stim_trend_coh": {
-      "reproduces": 25,
-      "does_not": 105,
-      "uncertain": 5,
-      "sign_observed": 82,
-      "sign_opposite": 11,
-      "sign_uncertain": 42
-     },
-     "stim_trend_dur": {
-      "reproduces": 30,
-      "does_not": 101,
-      "uncertain": 4,
-      "sign_observed": 80,
-      "sign_opposite": 35,
-      "sign_uncertain": 20
-     },
-     "delay_coh": {
-      "reproduces": 71,
-      "does_not": 51,
-      "uncertain": 13,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "delay_dur": {
-      "reproduces": 22,
-      "does_not": 107,
-      "uncertain": 6,
-      "sign_observed": 134,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 132,
-      "uncertain": 3,
-      "sign_observed": 0,
-      "sign_opposite": 132,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 15,
-      "does_not": 120,
-      "uncertain": 0,
-      "sign_observed": 117,
-      "sign_opposite": 15,
-      "sign_uncertain": 3
-     },
-     "trend_dur": {
-      "reproduces": 24,
-      "does_not": 108,
-      "uncertain": 3,
-      "sign_observed": 88,
-      "sign_opposite": 13,
-      "sign_uncertain": 34
-     },
-     "curv": {
-      "reproduces": 7,
-      "does_not": 127,
-      "uncertain": 1,
-      "sign_observed": 51,
-      "sign_opposite": 69,
-      "sign_uncertain": 15
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 0.0,
-   "gamma_q": 0.5,
-   "n_admissible": {
-    "model1": 111,
-    "model2": 135
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 14,
-      "does_not": 90,
-      "uncertain": 7,
-      "sign_observed": 111,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 54,
-      "does_not": 37,
-      "uncertain": 20,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "acc_int": {
-      "reproduces": 38,
-      "does_not": 50,
-      "uncertain": 23,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_coh": {
-      "reproduces": 21,
-      "does_not": 87,
-      "uncertain": 3,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 5,
-      "does_not": 105,
-      "uncertain": 1,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_int": {
-      "reproduces": 78,
-      "does_not": 23,
-      "uncertain": 10,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_coh": {
-      "reproduces": 24,
-      "does_not": 81,
-      "uncertain": 6,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 7,
-      "does_not": 102,
-      "uncertain": 2,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 66,
-      "does_not": 41,
-      "uncertain": 4,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "met_dur": {
-      "reproduces": 60,
-      "does_not": 47,
-      "uncertain": 4,
-      "sign_observed": 96,
-      "sign_opposite": 1,
-      "sign_uncertain": 14
-     },
-     "stim_coh": {
-      "reproduces": 59,
-      "does_not": 45,
-      "uncertain": 7,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 109,
-      "sign_uncertain": 2
-     },
-     "stim_trend_coh": {
-      "reproduces": 8,
-      "does_not": 96,
-      "uncertain": 7,
-      "sign_observed": 36,
-      "sign_opposite": 47,
-      "sign_uncertain": 28
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 107,
-      "sign_uncertain": 4
-     },
-     "delay_coh": {
-      "reproduces": 68,
-      "does_not": 32,
-      "uncertain": 11,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "delay_dur": {
-      "reproduces": 5,
-      "does_not": 106,
-      "uncertain": 0,
-      "sign_observed": 108,
-      "sign_opposite": 1,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 107,
-      "uncertain": 4,
-      "sign_observed": 0,
-      "sign_opposite": 105,
-      "sign_uncertain": 6
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 4,
-      "sign_opposite": 58,
-      "sign_uncertain": 49
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 1,
-      "sign_opposite": 31,
-      "sign_uncertain": 79
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 1,
-      "sign_opposite": 62,
-      "sign_uncertain": 48
+     "gamma_q": {
+      "rho": 0.04978789791967774,
+      "p": 0.5707613489702598,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 21,
-      "does_not": 105,
-      "uncertain": 9,
-      "sign_observed": 135,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "acc_int": {
+     "gamma_x": {
+      "rho": -0.03513641842287884,
+      "p": 0.6891780896079072,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 48,
-      "does_not": 60,
-      "uncertain": 27,
-      "sign_observed": 133,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "acc_int": {
-      "reproduces": 38,
-      "does_not": 74,
-      "uncertain": 23,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "rt_coh": {
-      "reproduces": 25,
-      "does_not": 108,
-      "uncertain": 2,
-      "sign_observed": 131,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 9,
-      "does_not": 125,
-      "uncertain": 1,
-      "sign_observed": 134,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "rt_int": {
-      "reproduces": 92,
-      "does_not": 34,
-      "uncertain": 9,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "pmet_coh": {
-      "reproduces": 26,
-      "does_not": 102,
-      "uncertain": 7,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 10,
-      "does_not": 122,
-      "uncertain": 3,
-      "sign_observed": 134,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 54,
-      "does_not": 70,
-      "uncertain": 11,
-      "sign_observed": 127,
-      "sign_opposite": 1,
-      "sign_uncertain": 7
-     },
-     "met_dur": {
-      "reproduces": 38,
-      "does_not": 90,
-      "uncertain": 7,
-      "sign_observed": 121,
-      "sign_opposite": 1,
-      "sign_uncertain": 13
-     },
-     "stim_coh": {
-      "reproduces": 49,
-      "does_not": 79,
-      "uncertain": 7,
-      "sign_observed": 116,
-      "sign_opposite": 0,
-      "sign_uncertain": 19
-     },
-     "stim_dur": {
-      "reproduces": 16,
-      "does_not": 117,
-      "uncertain": 2,
-      "sign_observed": 77,
-      "sign_opposite": 44,
-      "sign_uncertain": 14
-     },
-     "stim_trend_coh": {
-      "reproduces": 25,
-      "does_not": 105,
-      "uncertain": 5,
-      "sign_observed": 82,
-      "sign_opposite": 11,
-      "sign_uncertain": 42
-     },
-     "stim_trend_dur": {
-      "reproduces": 30,
-      "does_not": 101,
-      "uncertain": 4,
-      "sign_observed": 80,
-      "sign_opposite": 35,
-      "sign_uncertain": 20
-     },
-     "delay_coh": {
-      "reproduces": 71,
-      "does_not": 51,
-      "uncertain": 13,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "delay_dur": {
-      "reproduces": 22,
-      "does_not": 107,
-      "uncertain": 6,
-      "sign_observed": 134,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 132,
-      "uncertain": 3,
-      "sign_observed": 0,
-      "sign_opposite": 132,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 15,
-      "does_not": 120,
-      "uncertain": 0,
-      "sign_observed": 117,
-      "sign_opposite": 15,
-      "sign_uncertain": 3
-     },
-     "trend_dur": {
-      "reproduces": 24,
-      "does_not": 108,
-      "uncertain": 3,
-      "sign_observed": 88,
-      "sign_opposite": 13,
-      "sign_uncertain": 34
-     },
-     "curv": {
-      "reproduces": 7,
-      "does_not": 127,
-      "uncertain": 1,
-      "sign_observed": 51,
-      "sign_opposite": 69,
-      "sign_uncertain": 15
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 0.0,
-   "gamma_q": 1.0,
-   "n_admissible": {
-    "model1": 111,
-    "model2": 135
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 14,
-      "does_not": 90,
-      "uncertain": 7,
-      "sign_observed": 111,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 54,
-      "does_not": 37,
-      "uncertain": 20,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "acc_int": {
-      "reproduces": 39,
-      "does_not": 50,
-      "uncertain": 22,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_coh": {
-      "reproduces": 22,
-      "does_not": 84,
-      "uncertain": 5,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 5,
-      "does_not": 105,
-      "uncertain": 1,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_int": {
-      "reproduces": 75,
-      "does_not": 29,
-      "uncertain": 7,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_coh": {
-      "reproduces": 25,
-      "does_not": 80,
-      "uncertain": 6,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 6,
-      "does_not": 101,
-      "uncertain": 4,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 65,
-      "does_not": 41,
-      "uncertain": 5,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "met_dur": {
-      "reproduces": 61,
-      "does_not": 46,
-      "uncertain": 4,
-      "sign_observed": 91,
-      "sign_opposite": 3,
-      "sign_uncertain": 17
-     },
-     "stim_coh": {
-      "reproduces": 59,
-      "does_not": 45,
-      "uncertain": 7,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 109,
-      "sign_uncertain": 2
-     },
-     "stim_trend_coh": {
-      "reproduces": 8,
-      "does_not": 96,
-      "uncertain": 7,
-      "sign_observed": 36,
-      "sign_opposite": 46,
-      "sign_uncertain": 29
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 107,
-      "sign_uncertain": 4
-     },
-     "delay_coh": {
-      "reproduces": 68,
-      "does_not": 32,
-      "uncertain": 11,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "delay_dur": {
-      "reproduces": 5,
-      "does_not": 106,
-      "uncertain": 0,
-      "sign_observed": 108,
-      "sign_opposite": 1,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 107,
-      "uncertain": 4,
-      "sign_observed": 0,
-      "sign_opposite": 105,
-      "sign_uncertain": 6
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 4,
-      "sign_opposite": 58,
-      "sign_uncertain": 49
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 1,
-      "sign_opposite": 31,
-      "sign_uncertain": 79
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 111,
-      "uncertain": 0,
-      "sign_observed": 1,
-      "sign_opposite": 62,
-      "sign_uncertain": 48
+     "gamma_q": {
+      "rho": 0.05798500414812186,
+      "p": 0.5089865079143682,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 21,
-      "does_not": 105,
-      "uncertain": 9,
-      "sign_observed": 135,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "rt_coh": {
+     "gamma_x": {
+      "rho": -0.05115495191831069,
+      "p": 0.5602183213784212,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 48,
-      "does_not": 60,
-      "uncertain": 27,
-      "sign_observed": 133,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "acc_int": {
-      "reproduces": 38,
-      "does_not": 74,
-      "uncertain": 23,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "rt_coh": {
-      "reproduces": 25,
-      "does_not": 101,
-      "uncertain": 9,
-      "sign_observed": 131,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 8,
-      "does_not": 125,
-      "uncertain": 2,
-      "sign_observed": 134,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "rt_int": {
-      "reproduces": 89,
-      "does_not": 38,
-      "uncertain": 8,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "pmet_coh": {
-      "reproduces": 26,
-      "does_not": 100,
-      "uncertain": 9,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 11,
-      "does_not": 121,
-      "uncertain": 3,
-      "sign_observed": 134,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 54,
-      "does_not": 72,
-      "uncertain": 9,
-      "sign_observed": 126,
-      "sign_opposite": 1,
-      "sign_uncertain": 8
-     },
-     "met_dur": {
-      "reproduces": 38,
-      "does_not": 90,
-      "uncertain": 7,
-      "sign_observed": 122,
-      "sign_opposite": 1,
-      "sign_uncertain": 12
-     },
-     "stim_coh": {
-      "reproduces": 49,
-      "does_not": 79,
-      "uncertain": 7,
-      "sign_observed": 116,
-      "sign_opposite": 0,
-      "sign_uncertain": 19
-     },
-     "stim_dur": {
-      "reproduces": 16,
-      "does_not": 117,
-      "uncertain": 2,
-      "sign_observed": 77,
-      "sign_opposite": 44,
-      "sign_uncertain": 14
-     },
-     "stim_trend_coh": {
-      "reproduces": 25,
-      "does_not": 105,
-      "uncertain": 5,
-      "sign_observed": 82,
-      "sign_opposite": 11,
-      "sign_uncertain": 42
-     },
-     "stim_trend_dur": {
-      "reproduces": 30,
-      "does_not": 101,
-      "uncertain": 4,
-      "sign_observed": 80,
-      "sign_opposite": 35,
-      "sign_uncertain": 20
-     },
-     "delay_coh": {
-      "reproduces": 71,
-      "does_not": 51,
-      "uncertain": 13,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "delay_dur": {
-      "reproduces": 22,
-      "does_not": 107,
-      "uncertain": 6,
-      "sign_observed": 134,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 132,
-      "uncertain": 3,
-      "sign_observed": 0,
-      "sign_opposite": 132,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 15,
-      "does_not": 120,
-      "uncertain": 0,
-      "sign_observed": 117,
-      "sign_opposite": 15,
-      "sign_uncertain": 3
-     },
-     "trend_dur": {
-      "reproduces": 24,
-      "does_not": 108,
-      "uncertain": 3,
-      "sign_observed": 88,
-      "sign_opposite": 13,
-      "sign_uncertain": 34
-     },
-     "curv": {
-      "reproduces": 7,
-      "does_not": 127,
-      "uncertain": 1,
-      "sign_observed": 51,
-      "sign_opposite": 69,
-      "sign_uncertain": 15
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 0.25,
-   "gamma_q": 0.0,
-   "n_admissible": {
-    "model1": 109,
-    "model2": 135
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "reproduced",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 13,
-      "does_not": 87,
-      "uncertain": 9,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 45,
-      "does_not": 36,
-      "uncertain": 28,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_int": {
-      "reproduces": 36,
-      "does_not": 50,
-      "uncertain": 23,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_coh": {
-      "reproduces": 19,
-      "does_not": 88,
-      "uncertain": 2,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 4,
-      "does_not": 104,
-      "uncertain": 1,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_int": {
-      "reproduces": 78,
-      "does_not": 21,
-      "uncertain": 10,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_coh": {
-      "reproduces": 21,
-      "does_not": 82,
-      "uncertain": 6,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_dur": {
-      "reproduces": 5,
-      "does_not": 100,
-      "uncertain": 4,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 67,
-      "does_not": 39,
-      "uncertain": 3,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "met_dur": {
-      "reproduces": 54,
-      "does_not": 47,
-      "uncertain": 8,
-      "sign_observed": 100,
-      "sign_opposite": 0,
-      "sign_uncertain": 9
-     },
-     "stim_coh": {
-      "reproduces": 58,
-      "does_not": 45,
-      "uncertain": 6,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 105,
-      "sign_uncertain": 4
-     },
-     "stim_trend_coh": {
-      "reproduces": 11,
-      "does_not": 90,
-      "uncertain": 8,
-      "sign_observed": 38,
-      "sign_opposite": 47,
-      "sign_uncertain": 24
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 104,
-      "sign_uncertain": 5
-     },
-     "delay_coh": {
-      "reproduces": 65,
-      "does_not": 33,
-      "uncertain": 11,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "delay_dur": {
-      "reproduces": 5,
-      "does_not": 104,
-      "uncertain": 0,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 106,
-      "uncertain": 3,
-      "sign_observed": 0,
-      "sign_opposite": 106,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 3,
-      "sign_opposite": 58,
-      "sign_uncertain": 48
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 3,
-      "sign_opposite": 36,
-      "sign_uncertain": 70
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 2,
-      "sign_opposite": 63,
-      "sign_uncertain": 44
+     "gamma_q": {
+      "rho": 0.07640892654954527,
+      "p": 0.38386552760286374,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 24,
-      "does_not": 107,
-      "uncertain": 4,
-      "sign_observed": 135,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "rt_dur": {
+     "gamma_x": {
+      "rho": -0.08251892743656503,
+      "p": 0.34687989824287013,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 44,
-      "does_not": 62,
-      "uncertain": 29,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "acc_int": {
-      "reproduces": 35,
-      "does_not": 74,
-      "uncertain": 26,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "rt_coh": {
-      "reproduces": 24,
-      "does_not": 108,
-      "uncertain": 3,
-      "sign_observed": 132,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 9,
-      "does_not": 125,
-      "uncertain": 1,
-      "sign_observed": 133,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_int": {
-      "reproduces": 93,
-      "does_not": 31,
-      "uncertain": 11,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_coh": {
-      "reproduces": 27,
-      "does_not": 104,
-      "uncertain": 4,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 11,
-      "does_not": 123,
-      "uncertain": 1,
-      "sign_observed": 132,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 55,
-      "does_not": 72,
-      "uncertain": 8,
-      "sign_observed": 128,
-      "sign_opposite": 1,
-      "sign_uncertain": 6
-     },
-     "met_dur": {
-      "reproduces": 36,
-      "does_not": 92,
-      "uncertain": 7,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "stim_coh": {
-      "reproduces": 51,
-      "does_not": 78,
-      "uncertain": 6,
-      "sign_observed": 114,
-      "sign_opposite": 0,
-      "sign_uncertain": 21
-     },
-     "stim_dur": {
-      "reproduces": 17,
-      "does_not": 118,
-      "uncertain": 0,
-      "sign_observed": 77,
-      "sign_opposite": 45,
-      "sign_uncertain": 13
-     },
-     "stim_trend_coh": {
-      "reproduces": 26,
-      "does_not": 104,
-      "uncertain": 5,
-      "sign_observed": 85,
-      "sign_opposite": 10,
-      "sign_uncertain": 40
-     },
-     "stim_trend_dur": {
-      "reproduces": 30,
-      "does_not": 99,
-      "uncertain": 6,
-      "sign_observed": 79,
-      "sign_opposite": 37,
-      "sign_uncertain": 19
-     },
-     "delay_coh": {
-      "reproduces": 73,
-      "does_not": 52,
-      "uncertain": 10,
-      "sign_observed": 131,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "delay_dur": {
-      "reproduces": 22,
-      "does_not": 109,
-      "uncertain": 4,
-      "sign_observed": 133,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 1,
-      "does_not": 129,
-      "uncertain": 5,
-      "sign_observed": 1,
-      "sign_opposite": 129,
-      "sign_uncertain": 5
-     },
-     "trend": {
-      "reproduces": 14,
-      "does_not": 120,
-      "uncertain": 1,
-      "sign_observed": 117,
-      "sign_opposite": 15,
-      "sign_uncertain": 3
-     },
-     "trend_dur": {
-      "reproduces": 25,
-      "does_not": 107,
-      "uncertain": 3,
-      "sign_observed": 95,
-      "sign_opposite": 16,
-      "sign_uncertain": 24
-     },
-     "curv": {
-      "reproduces": 7,
-      "does_not": 127,
-      "uncertain": 1,
-      "sign_observed": 51,
-      "sign_opposite": 70,
-      "sign_uncertain": 14
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 0.25,
-   "gamma_q": 0.25,
-   "n_admissible": {
-    "model1": 109,
-    "model2": 135
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "reproduced",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 13,
-      "does_not": 87,
-      "uncertain": 9,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 45,
-      "does_not": 36,
-      "uncertain": 28,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_int": {
-      "reproduces": 36,
-      "does_not": 50,
-      "uncertain": 23,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_coh": {
-      "reproduces": 19,
-      "does_not": 87,
-      "uncertain": 3,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 5,
-      "does_not": 103,
-      "uncertain": 1,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_int": {
-      "reproduces": 77,
-      "does_not": 21,
-      "uncertain": 11,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_coh": {
-      "reproduces": 21,
-      "does_not": 82,
-      "uncertain": 6,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_dur": {
-      "reproduces": 5,
-      "does_not": 100,
-      "uncertain": 4,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 67,
-      "does_not": 39,
-      "uncertain": 3,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "met_dur": {
-      "reproduces": 58,
-      "does_not": 47,
-      "uncertain": 4,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 10
-     },
-     "stim_coh": {
-      "reproduces": 58,
-      "does_not": 45,
-      "uncertain": 6,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 105,
-      "sign_uncertain": 4
-     },
-     "stim_trend_coh": {
-      "reproduces": 11,
-      "does_not": 90,
-      "uncertain": 8,
-      "sign_observed": 38,
-      "sign_opposite": 47,
-      "sign_uncertain": 24
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 104,
-      "sign_uncertain": 5
-     },
-     "delay_coh": {
-      "reproduces": 65,
-      "does_not": 33,
-      "uncertain": 11,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "delay_dur": {
-      "reproduces": 5,
-      "does_not": 104,
-      "uncertain": 0,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 106,
-      "uncertain": 3,
-      "sign_observed": 0,
-      "sign_opposite": 106,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 3,
-      "sign_opposite": 58,
-      "sign_uncertain": 48
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 3,
-      "sign_opposite": 36,
-      "sign_uncertain": 70
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 2,
-      "sign_opposite": 63,
-      "sign_uncertain": 44
+     "gamma_q": {
+      "rho": 0.09925751227478827,
+      "p": 0.25749390621574897,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 24,
-      "does_not": 107,
-      "uncertain": 4,
-      "sign_observed": 135,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "rt_int": {
+     "gamma_x": {
+      "rho": -0.07630457128247405,
+      "p": 0.3845172503810883,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 44,
-      "does_not": 62,
-      "uncertain": 29,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "acc_int": {
-      "reproduces": 35,
-      "does_not": 74,
-      "uncertain": 26,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "rt_coh": {
-      "reproduces": 24,
-      "does_not": 105,
-      "uncertain": 6,
-      "sign_observed": 132,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 9,
-      "does_not": 125,
-      "uncertain": 1,
-      "sign_observed": 133,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_int": {
-      "reproduces": 90,
-      "does_not": 32,
-      "uncertain": 13,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_coh": {
-      "reproduces": 27,
-      "does_not": 103,
-      "uncertain": 5,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 10,
-      "does_not": 122,
-      "uncertain": 3,
-      "sign_observed": 132,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 53,
-      "does_not": 73,
-      "uncertain": 9,
-      "sign_observed": 129,
-      "sign_opposite": 1,
-      "sign_uncertain": 5
-     },
-     "met_dur": {
-      "reproduces": 37,
-      "does_not": 92,
-      "uncertain": 6,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "stim_coh": {
-      "reproduces": 51,
-      "does_not": 78,
-      "uncertain": 6,
-      "sign_observed": 114,
-      "sign_opposite": 0,
-      "sign_uncertain": 21
-     },
-     "stim_dur": {
-      "reproduces": 17,
-      "does_not": 118,
-      "uncertain": 0,
-      "sign_observed": 77,
-      "sign_opposite": 45,
-      "sign_uncertain": 13
-     },
-     "stim_trend_coh": {
-      "reproduces": 26,
-      "does_not": 104,
-      "uncertain": 5,
-      "sign_observed": 85,
-      "sign_opposite": 10,
-      "sign_uncertain": 40
-     },
-     "stim_trend_dur": {
-      "reproduces": 30,
-      "does_not": 99,
-      "uncertain": 6,
-      "sign_observed": 79,
-      "sign_opposite": 37,
-      "sign_uncertain": 19
-     },
-     "delay_coh": {
-      "reproduces": 73,
-      "does_not": 52,
-      "uncertain": 10,
-      "sign_observed": 131,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "delay_dur": {
-      "reproduces": 22,
-      "does_not": 109,
-      "uncertain": 4,
-      "sign_observed": 133,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 1,
-      "does_not": 129,
-      "uncertain": 5,
-      "sign_observed": 1,
-      "sign_opposite": 129,
-      "sign_uncertain": 5
-     },
-     "trend": {
-      "reproduces": 14,
-      "does_not": 120,
-      "uncertain": 1,
-      "sign_observed": 117,
-      "sign_opposite": 15,
-      "sign_uncertain": 3
-     },
-     "trend_dur": {
-      "reproduces": 25,
-      "does_not": 107,
-      "uncertain": 3,
-      "sign_observed": 95,
-      "sign_opposite": 16,
-      "sign_uncertain": 24
-     },
-     "curv": {
-      "reproduces": 7,
-      "does_not": 127,
-      "uncertain": 1,
-      "sign_observed": 51,
-      "sign_opposite": 70,
-      "sign_uncertain": 14
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 0.25,
-   "gamma_q": 0.5,
-   "n_admissible": {
-    "model1": 109,
-    "model2": 135
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "reproduced",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 13,
-      "does_not": 87,
-      "uncertain": 9,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 45,
-      "does_not": 36,
-      "uncertain": 28,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_int": {
-      "reproduces": 36,
-      "does_not": 50,
-      "uncertain": 23,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_coh": {
-      "reproduces": 20,
-      "does_not": 86,
-      "uncertain": 3,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 6,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_int": {
-      "reproduces": 76,
-      "does_not": 22,
-      "uncertain": 11,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_coh": {
-      "reproduces": 22,
-      "does_not": 80,
-      "uncertain": 7,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_dur": {
-      "reproduces": 6,
-      "does_not": 100,
-      "uncertain": 3,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 67,
-      "does_not": 39,
-      "uncertain": 3,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "met_dur": {
-      "reproduces": 58,
-      "does_not": 46,
-      "uncertain": 5,
-      "sign_observed": 93,
-      "sign_opposite": 0,
-      "sign_uncertain": 16
-     },
-     "stim_coh": {
-      "reproduces": 58,
-      "does_not": 45,
-      "uncertain": 6,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 105,
-      "sign_uncertain": 4
-     },
-     "stim_trend_coh": {
-      "reproduces": 11,
-      "does_not": 90,
-      "uncertain": 8,
-      "sign_observed": 38,
-      "sign_opposite": 47,
-      "sign_uncertain": 24
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 104,
-      "sign_uncertain": 5
-     },
-     "delay_coh": {
-      "reproduces": 65,
-      "does_not": 33,
-      "uncertain": 11,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "delay_dur": {
-      "reproduces": 5,
-      "does_not": 104,
-      "uncertain": 0,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 106,
-      "uncertain": 3,
-      "sign_observed": 0,
-      "sign_opposite": 106,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 3,
-      "sign_opposite": 58,
-      "sign_uncertain": 48
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 3,
-      "sign_opposite": 36,
-      "sign_uncertain": 70
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 2,
-      "sign_opposite": 63,
-      "sign_uncertain": 44
+     "gamma_q": {
+      "rho": 0.10675543821385523,
+      "p": 0.2230925492132383,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 24,
-      "does_not": 107,
-      "uncertain": 4,
-      "sign_observed": 135,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "pmet_coh": {
+     "gamma_x": {
+      "rho": -0.004878608735579406,
+      "p": 0.9557256613041389,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 44,
-      "does_not": 62,
-      "uncertain": 29,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "acc_int": {
-      "reproduces": 35,
-      "does_not": 74,
-      "uncertain": 26,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "rt_coh": {
-      "reproduces": 24,
-      "does_not": 105,
-      "uncertain": 6,
-      "sign_observed": 132,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 8,
-      "does_not": 124,
-      "uncertain": 3,
-      "sign_observed": 133,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_int": {
-      "reproduces": 90,
-      "does_not": 34,
-      "uncertain": 11,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_coh": {
-      "reproduces": 27,
-      "does_not": 102,
-      "uncertain": 6,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 10,
-      "does_not": 121,
-      "uncertain": 4,
-      "sign_observed": 132,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 53,
-      "does_not": 73,
-      "uncertain": 9,
-      "sign_observed": 130,
-      "sign_opposite": 1,
-      "sign_uncertain": 4
-     },
-     "met_dur": {
-      "reproduces": 37,
-      "does_not": 91,
-      "uncertain": 7,
-      "sign_observed": 126,
-      "sign_opposite": 1,
-      "sign_uncertain": 8
-     },
-     "stim_coh": {
-      "reproduces": 51,
-      "does_not": 78,
-      "uncertain": 6,
-      "sign_observed": 114,
-      "sign_opposite": 0,
-      "sign_uncertain": 21
-     },
-     "stim_dur": {
-      "reproduces": 17,
-      "does_not": 118,
-      "uncertain": 0,
-      "sign_observed": 77,
-      "sign_opposite": 45,
-      "sign_uncertain": 13
-     },
-     "stim_trend_coh": {
-      "reproduces": 26,
-      "does_not": 104,
-      "uncertain": 5,
-      "sign_observed": 85,
-      "sign_opposite": 10,
-      "sign_uncertain": 40
-     },
-     "stim_trend_dur": {
-      "reproduces": 30,
-      "does_not": 99,
-      "uncertain": 6,
-      "sign_observed": 79,
-      "sign_opposite": 37,
-      "sign_uncertain": 19
-     },
-     "delay_coh": {
-      "reproduces": 73,
-      "does_not": 52,
-      "uncertain": 10,
-      "sign_observed": 131,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "delay_dur": {
-      "reproduces": 22,
-      "does_not": 109,
-      "uncertain": 4,
-      "sign_observed": 133,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 1,
-      "does_not": 129,
-      "uncertain": 5,
-      "sign_observed": 1,
-      "sign_opposite": 129,
-      "sign_uncertain": 5
-     },
-     "trend": {
-      "reproduces": 14,
-      "does_not": 120,
-      "uncertain": 1,
-      "sign_observed": 117,
-      "sign_opposite": 15,
-      "sign_uncertain": 3
-     },
-     "trend_dur": {
-      "reproduces": 25,
-      "does_not": 107,
-      "uncertain": 3,
-      "sign_observed": 95,
-      "sign_opposite": 16,
-      "sign_uncertain": 24
-     },
-     "curv": {
-      "reproduces": 7,
-      "does_not": 127,
-      "uncertain": 1,
-      "sign_observed": 51,
-      "sign_opposite": 70,
-      "sign_uncertain": 14
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 0.25,
-   "gamma_q": 1.0,
-   "n_admissible": {
-    "model1": 109,
-    "model2": 135
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "reproduced",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 13,
-      "does_not": 87,
-      "uncertain": 9,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 45,
-      "does_not": 36,
-      "uncertain": 28,
-      "sign_observed": 109,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_int": {
-      "reproduces": 36,
-      "does_not": 50,
-      "uncertain": 23,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_coh": {
-      "reproduces": 22,
-      "does_not": 84,
-      "uncertain": 3,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 4,
-      "does_not": 103,
-      "uncertain": 2,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_int": {
-      "reproduces": 74,
-      "does_not": 28,
-      "uncertain": 7,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_coh": {
-      "reproduces": 23,
-      "does_not": 80,
-      "uncertain": 6,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_dur": {
-      "reproduces": 7,
-      "does_not": 98,
-      "uncertain": 4,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 66,
-      "does_not": 40,
-      "uncertain": 3,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "met_dur": {
-      "reproduces": 59,
-      "does_not": 45,
-      "uncertain": 5,
-      "sign_observed": 90,
-      "sign_opposite": 2,
-      "sign_uncertain": 17
-     },
-     "stim_coh": {
-      "reproduces": 58,
-      "does_not": 45,
-      "uncertain": 6,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 105,
-      "sign_uncertain": 4
-     },
-     "stim_trend_coh": {
-      "reproduces": 11,
-      "does_not": 90,
-      "uncertain": 8,
-      "sign_observed": 38,
-      "sign_opposite": 47,
-      "sign_uncertain": 24
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 104,
-      "sign_uncertain": 5
-     },
-     "delay_coh": {
-      "reproduces": 65,
-      "does_not": 34,
-      "uncertain": 10,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "delay_dur": {
-      "reproduces": 5,
-      "does_not": 104,
-      "uncertain": 0,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 106,
-      "uncertain": 3,
-      "sign_observed": 0,
-      "sign_opposite": 106,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 3,
-      "sign_opposite": 58,
-      "sign_uncertain": 48
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 3,
-      "sign_opposite": 36,
-      "sign_uncertain": 70
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 109,
-      "uncertain": 0,
-      "sign_observed": 2,
-      "sign_opposite": 63,
-      "sign_uncertain": 44
+     "gamma_q": {
+      "rho": 0.11257324435307559,
+      "p": 0.19873780269931976,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 24,
-      "does_not": 107,
-      "uncertain": 4,
-      "sign_observed": 135,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "pmet_dur": {
+     "gamma_x": {
+      "rho": -0.02390257392266231,
+      "p": 0.7855862093605591,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 44,
-      "does_not": 62,
-      "uncertain": 29,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "acc_int": {
-      "reproduces": 35,
-      "does_not": 74,
-      "uncertain": 26,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "rt_coh": {
-      "reproduces": 26,
-      "does_not": 102,
-      "uncertain": 7,
-      "sign_observed": 132,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 8,
-      "does_not": 126,
-      "uncertain": 1,
-      "sign_observed": 133,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_int": {
-      "reproduces": 90,
-      "does_not": 39,
-      "uncertain": 6,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_coh": {
-      "reproduces": 27,
-      "does_not": 101,
-      "uncertain": 7,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 12,
-      "does_not": 120,
-      "uncertain": 3,
-      "sign_observed": 132,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 52,
-      "does_not": 75,
-      "uncertain": 8,
-      "sign_observed": 129,
-      "sign_opposite": 1,
-      "sign_uncertain": 5
-     },
-     "met_dur": {
-      "reproduces": 37,
-      "does_not": 91,
-      "uncertain": 7,
-      "sign_observed": 124,
-      "sign_opposite": 1,
-      "sign_uncertain": 10
-     },
-     "stim_coh": {
-      "reproduces": 51,
-      "does_not": 78,
-      "uncertain": 6,
-      "sign_observed": 114,
-      "sign_opposite": 0,
-      "sign_uncertain": 21
-     },
-     "stim_dur": {
-      "reproduces": 17,
-      "does_not": 118,
-      "uncertain": 0,
-      "sign_observed": 77,
-      "sign_opposite": 45,
-      "sign_uncertain": 13
-     },
-     "stim_trend_coh": {
-      "reproduces": 26,
-      "does_not": 104,
-      "uncertain": 5,
-      "sign_observed": 85,
-      "sign_opposite": 10,
-      "sign_uncertain": 40
-     },
-     "stim_trend_dur": {
-      "reproduces": 30,
-      "does_not": 99,
-      "uncertain": 6,
-      "sign_observed": 79,
-      "sign_opposite": 37,
-      "sign_uncertain": 19
-     },
-     "delay_coh": {
-      "reproduces": 73,
-      "does_not": 52,
-      "uncertain": 10,
-      "sign_observed": 131,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "delay_dur": {
-      "reproduces": 22,
-      "does_not": 109,
-      "uncertain": 4,
-      "sign_observed": 133,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 1,
-      "does_not": 129,
-      "uncertain": 5,
-      "sign_observed": 1,
-      "sign_opposite": 129,
-      "sign_uncertain": 5
-     },
-     "trend": {
-      "reproduces": 14,
-      "does_not": 120,
-      "uncertain": 1,
-      "sign_observed": 117,
-      "sign_opposite": 15,
-      "sign_uncertain": 3
-     },
-     "trend_dur": {
-      "reproduces": 25,
-      "does_not": 107,
-      "uncertain": 3,
-      "sign_observed": 95,
-      "sign_opposite": 16,
-      "sign_uncertain": 24
-     },
-     "curv": {
-      "reproduces": 7,
-      "does_not": 127,
-      "uncertain": 1,
-      "sign_observed": 51,
-      "sign_opposite": 70,
-      "sign_uncertain": 14
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 0.5,
-   "gamma_q": 0.0,
-   "n_admissible": {
-    "model1": 108,
-    "model2": 131
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 13,
-      "does_not": 87,
-      "uncertain": 8,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 47,
-      "does_not": 37,
-      "uncertain": 24,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "acc_int": {
-      "reproduces": 37,
-      "does_not": 50,
-      "uncertain": 21,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_coh": {
-      "reproduces": 19,
-      "does_not": 86,
-      "uncertain": 3,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 4,
-      "does_not": 103,
-      "uncertain": 1,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_int": {
-      "reproduces": 79,
-      "does_not": 20,
-      "uncertain": 9,
-      "sign_observed": 103,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_coh": {
-      "reproduces": 21,
-      "does_not": 79,
-      "uncertain": 8,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_dur": {
-      "reproduces": 5,
-      "does_not": 100,
-      "uncertain": 3,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 67,
-      "does_not": 37,
-      "uncertain": 4,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "met_dur": {
-      "reproduces": 55,
-      "does_not": 47,
-      "uncertain": 6,
-      "sign_observed": 98,
-      "sign_opposite": 0,
-      "sign_uncertain": 10
-     },
-     "stim_coh": {
-      "reproduces": 60,
-      "does_not": 42,
-      "uncertain": 6,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 104,
-      "sign_uncertain": 4
-     },
-     "stim_trend_coh": {
-      "reproduces": 13,
-      "does_not": 90,
-      "uncertain": 5,
-      "sign_observed": 40,
-      "sign_opposite": 44,
-      "sign_uncertain": 24
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 103,
-      "sign_uncertain": 5
-     },
-     "delay_coh": {
-      "reproduces": 66,
-      "does_not": 34,
-      "uncertain": 8,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "delay_dur": {
-      "reproduces": 5,
-      "does_not": 102,
-      "uncertain": 1,
-      "sign_observed": 105,
-      "sign_opposite": 1,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 106,
-      "uncertain": 2,
-      "sign_observed": 0,
-      "sign_opposite": 105,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 4,
-      "sign_opposite": 55,
-      "sign_uncertain": 49
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 3,
-      "sign_opposite": 34,
-      "sign_uncertain": 71
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 61,
-      "sign_uncertain": 47
+     "gamma_q": {
+      "rho": 0.12397927504395966,
+      "p": 0.15667711291827532,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 19,
-      "does_not": 103,
-      "uncertain": 9,
-      "sign_observed": 131,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "pmet_int": {
+     "gamma_x": {
+      "rho": -0.023704298915226997,
+      "p": 0.7873223756972186,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 46,
-      "does_not": 60,
-      "uncertain": 25,
-      "sign_observed": 126,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "acc_int": {
-      "reproduces": 35,
-      "does_not": 72,
-      "uncertain": 24,
-      "sign_observed": 126,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "rt_coh": {
-      "reproduces": 25,
-      "does_not": 103,
-      "uncertain": 3,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 9,
-      "does_not": 120,
-      "uncertain": 2,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_int": {
-      "reproduces": 93,
-      "does_not": 30,
-      "uncertain": 8,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "pmet_coh": {
-      "reproduces": 25,
-      "does_not": 101,
-      "uncertain": 5,
-      "sign_observed": 125,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 10,
-      "does_not": 119,
-      "uncertain": 2,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 52,
-      "does_not": 70,
-      "uncertain": 9,
-      "sign_observed": 124,
-      "sign_opposite": 1,
-      "sign_uncertain": 6
-     },
-     "met_dur": {
-      "reproduces": 35,
-      "does_not": 90,
-      "uncertain": 6,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 9
-     },
-     "stim_coh": {
-      "reproduces": 46,
-      "does_not": 78,
-      "uncertain": 7,
-      "sign_observed": 114,
-      "sign_opposite": 0,
-      "sign_uncertain": 17
-     },
-     "stim_dur": {
-      "reproduces": 17,
-      "does_not": 113,
-      "uncertain": 1,
-      "sign_observed": 76,
-      "sign_opposite": 44,
-      "sign_uncertain": 11
-     },
-     "stim_trend_coh": {
-      "reproduces": 26,
-      "does_not": 99,
-      "uncertain": 6,
-      "sign_observed": 84,
-      "sign_opposite": 12,
-      "sign_uncertain": 35
-     },
-     "stim_trend_dur": {
-      "reproduces": 30,
-      "does_not": 99,
-      "uncertain": 2,
-      "sign_observed": 79,
-      "sign_opposite": 38,
-      "sign_uncertain": 14
-     },
-     "delay_coh": {
-      "reproduces": 69,
-      "does_not": 49,
-      "uncertain": 13,
-      "sign_observed": 127,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "delay_dur": {
-      "reproduces": 24,
-      "does_not": 106,
-      "uncertain": 1,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 127,
-      "uncertain": 4,
-      "sign_observed": 1,
-      "sign_opposite": 126,
-      "sign_uncertain": 4
-     },
-     "trend": {
-      "reproduces": 13,
-      "does_not": 118,
-      "uncertain": 0,
-      "sign_observed": 113,
-      "sign_opposite": 16,
-      "sign_uncertain": 2
-     },
-     "trend_dur": {
-      "reproduces": 25,
-      "does_not": 104,
-      "uncertain": 2,
-      "sign_observed": 90,
-      "sign_opposite": 15,
-      "sign_uncertain": 26
-     },
-     "curv": {
-      "reproduces": 7,
-      "does_not": 122,
-      "uncertain": 2,
-      "sign_observed": 50,
-      "sign_opposite": 66,
-      "sign_uncertain": 15
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 0.5,
-   "gamma_q": 0.25,
-   "n_admissible": {
-    "model1": 108,
-    "model2": 131
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 13,
-      "does_not": 87,
-      "uncertain": 8,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 47,
-      "does_not": 37,
-      "uncertain": 24,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "acc_int": {
-      "reproduces": 37,
-      "does_not": 50,
-      "uncertain": 21,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_coh": {
-      "reproduces": 20,
-      "does_not": 86,
-      "uncertain": 2,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 4,
-      "does_not": 103,
-      "uncertain": 1,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_int": {
-      "reproduces": 76,
-      "does_not": 20,
-      "uncertain": 12,
-      "sign_observed": 103,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_coh": {
-      "reproduces": 21,
-      "does_not": 79,
-      "uncertain": 8,
-      "sign_observed": 103,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 5,
-      "does_not": 100,
-      "uncertain": 3,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 67,
-      "does_not": 37,
-      "uncertain": 4,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "met_dur": {
-      "reproduces": 57,
-      "does_not": 47,
-      "uncertain": 4,
-      "sign_observed": 96,
-      "sign_opposite": 0,
-      "sign_uncertain": 12
-     },
-     "stim_coh": {
-      "reproduces": 60,
-      "does_not": 42,
-      "uncertain": 6,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 104,
-      "sign_uncertain": 4
-     },
-     "stim_trend_coh": {
-      "reproduces": 13,
-      "does_not": 90,
-      "uncertain": 5,
-      "sign_observed": 40,
-      "sign_opposite": 44,
-      "sign_uncertain": 24
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 103,
-      "sign_uncertain": 5
-     },
-     "delay_coh": {
-      "reproduces": 66,
-      "does_not": 34,
-      "uncertain": 8,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "delay_dur": {
-      "reproduces": 5,
-      "does_not": 102,
-      "uncertain": 1,
-      "sign_observed": 105,
-      "sign_opposite": 1,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 106,
-      "uncertain": 2,
-      "sign_observed": 0,
-      "sign_opposite": 105,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 4,
-      "sign_opposite": 55,
-      "sign_uncertain": 49
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 3,
-      "sign_opposite": 34,
-      "sign_uncertain": 71
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 61,
-      "sign_uncertain": 47
+     "gamma_q": {
+      "rho": 0.1329955701189128,
+      "p": 0.12845286096100889,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 19,
-      "does_not": 103,
-      "uncertain": 9,
-      "sign_observed": 131,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "met_dur": {
+     "gamma_x": {
+      "rho": -0.004048984362363229,
+      "p": 0.9632488619600106,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 46,
-      "does_not": 60,
-      "uncertain": 25,
-      "sign_observed": 126,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "acc_int": {
-      "reproduces": 35,
-      "does_not": 72,
-      "uncertain": 24,
-      "sign_observed": 126,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "rt_coh": {
-      "reproduces": 25,
-      "does_not": 101,
-      "uncertain": 5,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 10,
-      "does_not": 121,
-      "uncertain": 0,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_int": {
-      "reproduces": 87,
-      "does_not": 32,
-      "uncertain": 12,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 7
-     },
-     "pmet_coh": {
-      "reproduces": 24,
-      "does_not": 99,
-      "uncertain": 8,
-      "sign_observed": 125,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 9,
-      "does_not": 119,
-      "uncertain": 3,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 52,
-      "does_not": 70,
-      "uncertain": 9,
-      "sign_observed": 124,
-      "sign_opposite": 1,
-      "sign_uncertain": 6
-     },
-     "met_dur": {
-      "reproduces": 36,
-      "does_not": 89,
-      "uncertain": 6,
-      "sign_observed": 121,
-      "sign_opposite": 0,
-      "sign_uncertain": 10
-     },
-     "stim_coh": {
-      "reproduces": 46,
-      "does_not": 78,
-      "uncertain": 7,
-      "sign_observed": 114,
-      "sign_opposite": 0,
-      "sign_uncertain": 17
-     },
-     "stim_dur": {
-      "reproduces": 17,
-      "does_not": 113,
-      "uncertain": 1,
-      "sign_observed": 76,
-      "sign_opposite": 44,
-      "sign_uncertain": 11
-     },
-     "stim_trend_coh": {
-      "reproduces": 26,
-      "does_not": 99,
-      "uncertain": 6,
-      "sign_observed": 84,
-      "sign_opposite": 12,
-      "sign_uncertain": 35
-     },
-     "stim_trend_dur": {
-      "reproduces": 30,
-      "does_not": 99,
-      "uncertain": 2,
-      "sign_observed": 79,
-      "sign_opposite": 38,
-      "sign_uncertain": 14
-     },
-     "delay_coh": {
-      "reproduces": 69,
-      "does_not": 49,
-      "uncertain": 13,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "delay_dur": {
-      "reproduces": 24,
-      "does_not": 106,
-      "uncertain": 1,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 127,
-      "uncertain": 4,
-      "sign_observed": 1,
-      "sign_opposite": 126,
-      "sign_uncertain": 4
-     },
-     "trend": {
-      "reproduces": 13,
-      "does_not": 118,
-      "uncertain": 0,
-      "sign_observed": 113,
-      "sign_opposite": 16,
-      "sign_uncertain": 2
-     },
-     "trend_dur": {
-      "reproduces": 25,
-      "does_not": 104,
-      "uncertain": 2,
-      "sign_observed": 90,
-      "sign_opposite": 15,
-      "sign_uncertain": 26
-     },
-     "curv": {
-      "reproduces": 7,
-      "does_not": 122,
-      "uncertain": 2,
-      "sign_observed": 51,
-      "sign_opposite": 66,
-      "sign_uncertain": 14
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 0.5,
-   "gamma_q": 0.5,
-   "n_admissible": {
-    "model1": 108,
-    "model2": 131
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 13,
-      "does_not": 87,
-      "uncertain": 8,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 47,
-      "does_not": 37,
-      "uncertain": 24,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "acc_int": {
-      "reproduces": 37,
-      "does_not": 50,
-      "uncertain": 21,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_coh": {
-      "reproduces": 20,
-      "does_not": 83,
-      "uncertain": 5,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 5,
-      "does_not": 102,
-      "uncertain": 1,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_int": {
-      "reproduces": 75,
-      "does_not": 24,
-      "uncertain": 9,
-      "sign_observed": 103,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_coh": {
-      "reproduces": 22,
-      "does_not": 78,
-      "uncertain": 8,
-      "sign_observed": 103,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 5,
-      "does_not": 99,
-      "uncertain": 4,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 67,
-      "does_not": 37,
-      "uncertain": 4,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "met_dur": {
-      "reproduces": 58,
-      "does_not": 45,
-      "uncertain": 5,
-      "sign_observed": 93,
-      "sign_opposite": 0,
-      "sign_uncertain": 15
-     },
-     "stim_coh": {
-      "reproduces": 60,
-      "does_not": 42,
-      "uncertain": 6,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 104,
-      "sign_uncertain": 4
-     },
-     "stim_trend_coh": {
-      "reproduces": 13,
-      "does_not": 90,
-      "uncertain": 5,
-      "sign_observed": 40,
-      "sign_opposite": 44,
-      "sign_uncertain": 24
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 103,
-      "sign_uncertain": 5
-     },
-     "delay_coh": {
-      "reproduces": 66,
-      "does_not": 34,
-      "uncertain": 8,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "delay_dur": {
-      "reproduces": 5,
-      "does_not": 102,
-      "uncertain": 1,
-      "sign_observed": 105,
-      "sign_opposite": 1,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 106,
-      "uncertain": 2,
-      "sign_observed": 0,
-      "sign_opposite": 105,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 4,
-      "sign_opposite": 55,
-      "sign_uncertain": 49
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 3,
-      "sign_opposite": 34,
-      "sign_uncertain": 71
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 61,
-      "sign_uncertain": 47
+     "gamma_q": {
+      "rho": -0.09619468518624806,
+      "p": 0.2725418239528787,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 19,
-      "does_not": 103,
-      "uncertain": 9,
-      "sign_observed": 131,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "stim_coh": {
+     "gamma_x": {
+      "rho": 0.04412140691771065,
+      "p": 0.6154285704714422,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 46,
-      "does_not": 60,
-      "uncertain": 25,
-      "sign_observed": 126,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "acc_int": {
-      "reproduces": 35,
-      "does_not": 72,
-      "uncertain": 24,
-      "sign_observed": 126,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "rt_coh": {
-      "reproduces": 24,
-      "does_not": 99,
-      "uncertain": 8,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 9,
-      "does_not": 121,
-      "uncertain": 1,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_int": {
-      "reproduces": 87,
-      "does_not": 32,
-      "uncertain": 12,
-      "sign_observed": 125,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_coh": {
-      "reproduces": 24,
-      "does_not": 99,
-      "uncertain": 8,
-      "sign_observed": 125,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 9,
-      "does_not": 118,
-      "uncertain": 4,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 50,
-      "does_not": 70,
-      "uncertain": 11,
-      "sign_observed": 125,
-      "sign_opposite": 1,
-      "sign_uncertain": 5
-     },
-     "met_dur": {
-      "reproduces": 36,
-      "does_not": 89,
-      "uncertain": 6,
-      "sign_observed": 119,
-      "sign_opposite": 1,
-      "sign_uncertain": 11
-     },
-     "stim_coh": {
-      "reproduces": 46,
-      "does_not": 78,
-      "uncertain": 7,
-      "sign_observed": 114,
-      "sign_opposite": 0,
-      "sign_uncertain": 17
-     },
-     "stim_dur": {
-      "reproduces": 17,
-      "does_not": 113,
-      "uncertain": 1,
-      "sign_observed": 76,
-      "sign_opposite": 44,
-      "sign_uncertain": 11
-     },
-     "stim_trend_coh": {
-      "reproduces": 26,
-      "does_not": 99,
-      "uncertain": 6,
-      "sign_observed": 84,
-      "sign_opposite": 12,
-      "sign_uncertain": 35
-     },
-     "stim_trend_dur": {
-      "reproduces": 30,
-      "does_not": 99,
-      "uncertain": 2,
-      "sign_observed": 79,
-      "sign_opposite": 38,
-      "sign_uncertain": 14
-     },
-     "delay_coh": {
-      "reproduces": 69,
-      "does_not": 49,
-      "uncertain": 13,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "delay_dur": {
-      "reproduces": 24,
-      "does_not": 106,
-      "uncertain": 1,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 127,
-      "uncertain": 4,
-      "sign_observed": 1,
-      "sign_opposite": 126,
-      "sign_uncertain": 4
-     },
-     "trend": {
-      "reproduces": 13,
-      "does_not": 118,
-      "uncertain": 0,
-      "sign_observed": 113,
-      "sign_opposite": 16,
-      "sign_uncertain": 2
-     },
-     "trend_dur": {
-      "reproduces": 25,
-      "does_not": 104,
-      "uncertain": 2,
-      "sign_observed": 90,
-      "sign_opposite": 15,
-      "sign_uncertain": 26
-     },
-     "curv": {
-      "reproduces": 7,
-      "does_not": 122,
-      "uncertain": 2,
-      "sign_observed": 50,
-      "sign_opposite": 66,
-      "sign_uncertain": 15
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 0.5,
-   "gamma_q": 1.0,
-   "n_admissible": {
-    "model1": 108,
-    "model2": 131
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 13,
-      "does_not": 87,
-      "uncertain": 8,
-      "sign_observed": 108,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 47,
-      "does_not": 37,
-      "uncertain": 24,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "acc_int": {
-      "reproduces": 38,
-      "does_not": 50,
-      "uncertain": 20,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_coh": {
-      "reproduces": 20,
-      "does_not": 84,
-      "uncertain": 4,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 3,
-      "does_not": 101,
-      "uncertain": 4,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_int": {
-      "reproduces": 73,
-      "does_not": 28,
-      "uncertain": 7,
-      "sign_observed": 104,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_coh": {
-      "reproduces": 25,
-      "does_not": 78,
-      "uncertain": 5,
-      "sign_observed": 103,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 7,
-      "does_not": 98,
-      "uncertain": 3,
-      "sign_observed": 106,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 66,
-      "does_not": 37,
-      "uncertain": 5,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "met_dur": {
-      "reproduces": 59,
-      "does_not": 43,
-      "uncertain": 6,
-      "sign_observed": 88,
-      "sign_opposite": 3,
-      "sign_uncertain": 17
-     },
-     "stim_coh": {
-      "reproduces": 60,
-      "does_not": 42,
-      "uncertain": 6,
-      "sign_observed": 107,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 104,
-      "sign_uncertain": 4
-     },
-     "stim_trend_coh": {
-      "reproduces": 13,
-      "does_not": 90,
-      "uncertain": 5,
-      "sign_observed": 40,
-      "sign_opposite": 44,
-      "sign_uncertain": 24
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 103,
-      "sign_uncertain": 5
-     },
-     "delay_coh": {
-      "reproduces": 66,
-      "does_not": 34,
-      "uncertain": 8,
-      "sign_observed": 105,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "delay_dur": {
-      "reproduces": 5,
-      "does_not": 102,
-      "uncertain": 1,
-      "sign_observed": 105,
-      "sign_opposite": 1,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 106,
-      "uncertain": 2,
-      "sign_observed": 0,
-      "sign_opposite": 105,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 4,
-      "sign_opposite": 55,
-      "sign_uncertain": 49
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 3,
-      "sign_opposite": 34,
-      "sign_uncertain": 71
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 108,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 61,
-      "sign_uncertain": 47
+     "gamma_q": {
+      "rho": 0.08108926027768935,
+      "p": 0.3553265587190265,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 19,
-      "does_not": 103,
-      "uncertain": 9,
-      "sign_observed": 131,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "stim_dur": {
+     "gamma_x": {
+      "rho": 0.03482857038501875,
+      "p": 0.6917625941618646,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 46,
-      "does_not": 60,
-      "uncertain": 25,
-      "sign_observed": 126,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "acc_int": {
-      "reproduces": 35,
-      "does_not": 72,
-      "uncertain": 24,
-      "sign_observed": 126,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "rt_coh": {
-      "reproduces": 26,
-      "does_not": 100,
-      "uncertain": 5,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 6,
-      "does_not": 123,
-      "uncertain": 2,
-      "sign_observed": 129,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_int": {
-      "reproduces": 85,
-      "does_not": 36,
-      "uncertain": 10,
-      "sign_observed": 125,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_coh": {
-      "reproduces": 24,
-      "does_not": 98,
-      "uncertain": 9,
-      "sign_observed": 125,
-      "sign_opposite": 0,
-      "sign_uncertain": 6
-     },
-     "pmet_dur": {
-      "reproduces": 12,
-      "does_not": 117,
-      "uncertain": 2,
-      "sign_observed": 128,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 51,
-      "does_not": 73,
-      "uncertain": 7,
-      "sign_observed": 125,
-      "sign_opposite": 1,
-      "sign_uncertain": 5
-     },
-     "met_dur": {
-      "reproduces": 35,
-      "does_not": 88,
-      "uncertain": 8,
-      "sign_observed": 119,
-      "sign_opposite": 1,
-      "sign_uncertain": 11
-     },
-     "stim_coh": {
-      "reproduces": 46,
-      "does_not": 78,
-      "uncertain": 7,
-      "sign_observed": 114,
-      "sign_opposite": 0,
-      "sign_uncertain": 17
-     },
-     "stim_dur": {
-      "reproduces": 17,
-      "does_not": 113,
-      "uncertain": 1,
-      "sign_observed": 76,
-      "sign_opposite": 44,
-      "sign_uncertain": 11
-     },
-     "stim_trend_coh": {
-      "reproduces": 26,
-      "does_not": 99,
-      "uncertain": 6,
-      "sign_observed": 84,
-      "sign_opposite": 12,
-      "sign_uncertain": 35
-     },
-     "stim_trend_dur": {
-      "reproduces": 30,
-      "does_not": 99,
-      "uncertain": 2,
-      "sign_observed": 79,
-      "sign_opposite": 38,
-      "sign_uncertain": 14
-     },
-     "delay_coh": {
-      "reproduces": 69,
-      "does_not": 49,
-      "uncertain": 13,
-      "sign_observed": 127,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "delay_dur": {
-      "reproduces": 24,
-      "does_not": 106,
-      "uncertain": 1,
-      "sign_observed": 130,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 127,
-      "uncertain": 4,
-      "sign_observed": 1,
-      "sign_opposite": 126,
-      "sign_uncertain": 4
-     },
-     "trend": {
-      "reproduces": 13,
-      "does_not": 118,
-      "uncertain": 0,
-      "sign_observed": 113,
-      "sign_opposite": 16,
-      "sign_uncertain": 2
-     },
-     "trend_dur": {
-      "reproduces": 25,
-      "does_not": 104,
-      "uncertain": 2,
-      "sign_observed": 90,
-      "sign_opposite": 15,
-      "sign_uncertain": 26
-     },
-     "curv": {
-      "reproduces": 7,
-      "does_not": 122,
-      "uncertain": 2,
-      "sign_observed": 51,
-      "sign_opposite": 66,
-      "sign_uncertain": 14
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 1.0,
-   "gamma_q": 0.0,
-   "n_admissible": {
-    "model1": 103,
-    "model2": 126
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 13,
-      "does_not": 83,
-      "uncertain": 7,
-      "sign_observed": 103,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 41,
-      "does_not": 36,
-      "uncertain": 26,
-      "sign_observed": 100,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "acc_int": {
-      "reproduces": 30,
-      "does_not": 49,
-      "uncertain": 24,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_coh": {
-      "reproduces": 20,
-      "does_not": 82,
-      "uncertain": 1,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 5,
-      "does_not": 98,
-      "uncertain": 0,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_int": {
-      "reproduces": 74,
-      "does_not": 20,
-      "uncertain": 9,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_coh": {
-      "reproduces": 21,
-      "does_not": 75,
-      "uncertain": 7,
-      "sign_observed": 98,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 5,
-      "does_not": 94,
-      "uncertain": 4,
-      "sign_observed": 102,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 64,
-      "does_not": 35,
-      "uncertain": 4,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "met_dur": {
-      "reproduces": 50,
-      "does_not": 46,
-      "uncertain": 7,
-      "sign_observed": 92,
-      "sign_opposite": 0,
-      "sign_uncertain": 11
-     },
-     "stim_coh": {
-      "reproduces": 54,
-      "does_not": 43,
-      "uncertain": 6,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 100,
-      "sign_uncertain": 3
-     },
-     "stim_trend_coh": {
-      "reproduces": 14,
-      "does_not": 81,
-      "uncertain": 8,
-      "sign_observed": 38,
-      "sign_opposite": 41,
-      "sign_uncertain": 24
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 98,
-      "sign_uncertain": 5
-     },
-     "delay_coh": {
-      "reproduces": 61,
-      "does_not": 34,
-      "uncertain": 8,
-      "sign_observed": 100,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "delay_dur": {
-      "reproduces": 6,
-      "does_not": 97,
-      "uncertain": 0,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 101,
-      "uncertain": 2,
-      "sign_observed": 0,
-      "sign_opposite": 101,
-      "sign_uncertain": 2
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 7,
-      "sign_opposite": 56,
-      "sign_uncertain": 40
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 2,
-      "sign_opposite": 34,
-      "sign_uncertain": 67
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 59,
-      "sign_uncertain": 44
+     "gamma_q": {
+      "rho": -0.022363333733361853,
+      "p": 0.7990913745845848,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 21,
-      "does_not": 98,
-      "uncertain": 7,
-      "sign_observed": 126,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "stim_trend_coh": {
+     "gamma_x": {
+      "rho": 0.04346918649851554,
+      "p": 0.6206658737153262,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 44,
-      "does_not": 61,
-      "uncertain": 21,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "acc_int": {
-      "reproduces": 32,
-      "does_not": 69,
-      "uncertain": 25,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_coh": {
-      "reproduces": 24,
-      "does_not": 96,
-      "uncertain": 6,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 10,
-      "does_not": 115,
-      "uncertain": 1,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_int": {
-      "reproduces": 91,
-      "does_not": 28,
-      "uncertain": 7,
-      "sign_observed": 120,
-      "sign_opposite": 1,
-      "sign_uncertain": 5
-     },
-     "pmet_coh": {
-      "reproduces": 23,
-      "does_not": 95,
-      "uncertain": 8,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_dur": {
-      "reproduces": 6,
-      "does_not": 114,
-      "uncertain": 6,
-      "sign_observed": 123,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "pmet_int": {
-      "reproduces": 53,
-      "does_not": 65,
-      "uncertain": 8,
-      "sign_observed": 120,
-      "sign_opposite": 1,
-      "sign_uncertain": 5
-     },
-     "met_dur": {
-      "reproduces": 37,
-      "does_not": 84,
-      "uncertain": 5,
-      "sign_observed": 118,
-      "sign_opposite": 0,
-      "sign_uncertain": 8
-     },
-     "stim_coh": {
-      "reproduces": 45,
-      "does_not": 74,
-      "uncertain": 7,
-      "sign_observed": 111,
-      "sign_opposite": 0,
-      "sign_uncertain": 15
-     },
-     "stim_dur": {
-      "reproduces": 15,
-      "does_not": 109,
-      "uncertain": 2,
-      "sign_observed": 72,
-      "sign_opposite": 41,
-      "sign_uncertain": 13
-     },
-     "stim_trend_coh": {
-      "reproduces": 27,
-      "does_not": 93,
-      "uncertain": 6,
-      "sign_observed": 82,
-      "sign_opposite": 9,
-      "sign_uncertain": 35
-     },
-     "stim_trend_dur": {
-      "reproduces": 29,
-      "does_not": 92,
-      "uncertain": 5,
-      "sign_observed": 77,
-      "sign_opposite": 36,
-      "sign_uncertain": 13
-     },
-     "delay_coh": {
-      "reproduces": 67,
-      "does_not": 50,
-      "uncertain": 9,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_dur": {
-      "reproduces": 21,
-      "does_not": 103,
-      "uncertain": 2,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 123,
-      "uncertain": 3,
-      "sign_observed": 2,
-      "sign_opposite": 121,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 11,
-      "does_not": 114,
-      "uncertain": 1,
-      "sign_observed": 110,
-      "sign_opposite": 14,
-      "sign_uncertain": 2
-     },
-     "trend_dur": {
-      "reproduces": 24,
-      "does_not": 99,
-      "uncertain": 3,
-      "sign_observed": 91,
-      "sign_opposite": 12,
-      "sign_uncertain": 23
-     },
-     "curv": {
-      "reproduces": 8,
-      "does_not": 118,
-      "uncertain": 0,
-      "sign_observed": 47,
-      "sign_opposite": 63,
-      "sign_uncertain": 16
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 1.0,
-   "gamma_q": 0.25,
-   "n_admissible": {
-    "model1": 103,
-    "model2": 126
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 13,
-      "does_not": 83,
-      "uncertain": 7,
-      "sign_observed": 103,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 41,
-      "does_not": 36,
-      "uncertain": 26,
-      "sign_observed": 100,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "acc_int": {
-      "reproduces": 30,
-      "does_not": 49,
-      "uncertain": 24,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_coh": {
-      "reproduces": 19,
-      "does_not": 81,
-      "uncertain": 3,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 5,
-      "does_not": 97,
-      "uncertain": 1,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_int": {
-      "reproduces": 72,
-      "does_not": 22,
-      "uncertain": 9,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_coh": {
-      "reproduces": 22,
-      "does_not": 74,
-      "uncertain": 7,
-      "sign_observed": 98,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 6,
-      "does_not": 93,
-      "uncertain": 4,
-      "sign_observed": 102,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 63,
-      "does_not": 35,
-      "uncertain": 5,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "met_dur": {
-      "reproduces": 52,
-      "does_not": 45,
-      "uncertain": 6,
-      "sign_observed": 92,
-      "sign_opposite": 0,
-      "sign_uncertain": 11
-     },
-     "stim_coh": {
-      "reproduces": 54,
-      "does_not": 43,
-      "uncertain": 6,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 100,
-      "sign_uncertain": 3
-     },
-     "stim_trend_coh": {
-      "reproduces": 14,
-      "does_not": 81,
-      "uncertain": 8,
-      "sign_observed": 38,
-      "sign_opposite": 41,
-      "sign_uncertain": 24
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 98,
-      "sign_uncertain": 5
-     },
-     "delay_coh": {
-      "reproduces": 61,
-      "does_not": 34,
-      "uncertain": 8,
-      "sign_observed": 100,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "delay_dur": {
-      "reproduces": 6,
-      "does_not": 97,
-      "uncertain": 0,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 101,
-      "uncertain": 2,
-      "sign_observed": 0,
-      "sign_opposite": 101,
-      "sign_uncertain": 2
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 7,
-      "sign_opposite": 56,
-      "sign_uncertain": 40
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 2,
-      "sign_opposite": 34,
-      "sign_uncertain": 67
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 59,
-      "sign_uncertain": 44
+     "gamma_q": {
+      "rho": -0.0021758073184348792,
+      "p": 0.9802460869628218,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 21,
-      "does_not": 98,
-      "uncertain": 7,
-      "sign_observed": 126,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "stim_trend_dur": {
+     "gamma_x": {
+      "rho": 0.05911204103249099,
+      "p": 0.5007722077844533,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 44,
-      "does_not": 61,
-      "uncertain": 21,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "acc_int": {
-      "reproduces": 32,
-      "does_not": 69,
-      "uncertain": 25,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_coh": {
-      "reproduces": 24,
-      "does_not": 95,
-      "uncertain": 7,
-      "sign_observed": 123,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 10,
-      "does_not": 116,
-      "uncertain": 0,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_int": {
-      "reproduces": 89,
-      "does_not": 28,
-      "uncertain": 9,
-      "sign_observed": 119,
-      "sign_opposite": 1,
-      "sign_uncertain": 6
-     },
-     "pmet_coh": {
-      "reproduces": 23,
-      "does_not": 95,
-      "uncertain": 8,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_dur": {
-      "reproduces": 7,
-      "does_not": 113,
-      "uncertain": 6,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 52,
-      "does_not": 66,
-      "uncertain": 8,
-      "sign_observed": 120,
-      "sign_opposite": 1,
-      "sign_uncertain": 5
-     },
-     "met_dur": {
-      "reproduces": 37,
-      "does_not": 84,
-      "uncertain": 5,
-      "sign_observed": 118,
-      "sign_opposite": 0,
-      "sign_uncertain": 8
-     },
-     "stim_coh": {
-      "reproduces": 45,
-      "does_not": 74,
-      "uncertain": 7,
-      "sign_observed": 111,
-      "sign_opposite": 0,
-      "sign_uncertain": 15
-     },
-     "stim_dur": {
-      "reproduces": 15,
-      "does_not": 109,
-      "uncertain": 2,
-      "sign_observed": 72,
-      "sign_opposite": 41,
-      "sign_uncertain": 13
-     },
-     "stim_trend_coh": {
-      "reproduces": 27,
-      "does_not": 93,
-      "uncertain": 6,
-      "sign_observed": 82,
-      "sign_opposite": 9,
-      "sign_uncertain": 35
-     },
-     "stim_trend_dur": {
-      "reproduces": 29,
-      "does_not": 92,
-      "uncertain": 5,
-      "sign_observed": 77,
-      "sign_opposite": 36,
-      "sign_uncertain": 13
-     },
-     "delay_coh": {
-      "reproduces": 67,
-      "does_not": 50,
-      "uncertain": 9,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_dur": {
-      "reproduces": 21,
-      "does_not": 103,
-      "uncertain": 2,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 123,
-      "uncertain": 3,
-      "sign_observed": 2,
-      "sign_opposite": 121,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 11,
-      "does_not": 114,
-      "uncertain": 1,
-      "sign_observed": 110,
-      "sign_opposite": 14,
-      "sign_uncertain": 2
-     },
-     "trend_dur": {
-      "reproduces": 24,
-      "does_not": 99,
-      "uncertain": 3,
-      "sign_observed": 93,
-      "sign_opposite": 12,
-      "sign_uncertain": 21
-     },
-     "curv": {
-      "reproduces": 8,
-      "does_not": 118,
-      "uncertain": 0,
-      "sign_observed": 47,
-      "sign_opposite": 63,
-      "sign_uncertain": 16
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 1.0,
-   "gamma_q": 0.5,
-   "n_admissible": {
-    "model1": 103,
-    "model2": 126
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 13,
-      "does_not": 83,
-      "uncertain": 7,
-      "sign_observed": 103,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 41,
-      "does_not": 36,
-      "uncertain": 26,
-      "sign_observed": 100,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "acc_int": {
-      "reproduces": 30,
-      "does_not": 49,
-      "uncertain": 24,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_coh": {
-      "reproduces": 20,
-      "does_not": 80,
-      "uncertain": 3,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 4,
-      "does_not": 97,
-      "uncertain": 2,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_int": {
-      "reproduces": 71,
-      "does_not": 23,
-      "uncertain": 9,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_coh": {
-      "reproduces": 22,
-      "does_not": 74,
-      "uncertain": 7,
-      "sign_observed": 98,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 7,
-      "does_not": 93,
-      "uncertain": 3,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 62,
-      "does_not": 35,
-      "uncertain": 6,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "met_dur": {
-      "reproduces": 53,
-      "does_not": 45,
-      "uncertain": 5,
-      "sign_observed": 89,
-      "sign_opposite": 0,
-      "sign_uncertain": 14
-     },
-     "stim_coh": {
-      "reproduces": 54,
-      "does_not": 43,
-      "uncertain": 6,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 100,
-      "sign_uncertain": 3
-     },
-     "stim_trend_coh": {
-      "reproduces": 14,
-      "does_not": 81,
-      "uncertain": 8,
-      "sign_observed": 38,
-      "sign_opposite": 41,
-      "sign_uncertain": 24
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 98,
-      "sign_uncertain": 5
-     },
-     "delay_coh": {
-      "reproduces": 61,
-      "does_not": 34,
-      "uncertain": 8,
-      "sign_observed": 100,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "delay_dur": {
-      "reproduces": 6,
-      "does_not": 97,
-      "uncertain": 0,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 101,
-      "uncertain": 2,
-      "sign_observed": 0,
-      "sign_opposite": 101,
-      "sign_uncertain": 2
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 7,
-      "sign_opposite": 56,
-      "sign_uncertain": 40
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 2,
-      "sign_opposite": 34,
-      "sign_uncertain": 67
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 59,
-      "sign_uncertain": 44
+     "gamma_q": {
+      "rho": 0.007111811450903454,
+      "p": 0.9354957407869005,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 21,
-      "does_not": 98,
-      "uncertain": 7,
-      "sign_observed": 126,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "delay_coh": {
+     "gamma_x": {
+      "rho": 0.007737943053330759,
+      "p": 0.9298306229501879,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 44,
-      "does_not": 61,
-      "uncertain": 21,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "acc_int": {
-      "reproduces": 32,
-      "does_not": 69,
-      "uncertain": 25,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_coh": {
-      "reproduces": 24,
-      "does_not": 95,
-      "uncertain": 7,
-      "sign_observed": 123,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_dur": {
-      "reproduces": 8,
-      "does_not": 116,
-      "uncertain": 2,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_int": {
-      "reproduces": 89,
-      "does_not": 30,
-      "uncertain": 7,
-      "sign_observed": 120,
-      "sign_opposite": 1,
-      "sign_uncertain": 5
-     },
-     "pmet_coh": {
-      "reproduces": 24,
-      "does_not": 96,
-      "uncertain": 6,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_dur": {
-      "reproduces": 8,
-      "does_not": 112,
-      "uncertain": 6,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 51,
-      "does_not": 67,
-      "uncertain": 8,
-      "sign_observed": 120,
-      "sign_opposite": 1,
-      "sign_uncertain": 5
-     },
-     "met_dur": {
-      "reproduces": 38,
-      "does_not": 84,
-      "uncertain": 4,
-      "sign_observed": 115,
-      "sign_opposite": 1,
-      "sign_uncertain": 10
-     },
-     "stim_coh": {
-      "reproduces": 45,
-      "does_not": 74,
-      "uncertain": 7,
-      "sign_observed": 111,
-      "sign_opposite": 0,
-      "sign_uncertain": 15
-     },
-     "stim_dur": {
-      "reproduces": 15,
-      "does_not": 109,
-      "uncertain": 2,
-      "sign_observed": 72,
-      "sign_opposite": 41,
-      "sign_uncertain": 13
-     },
-     "stim_trend_coh": {
-      "reproduces": 27,
-      "does_not": 93,
-      "uncertain": 6,
-      "sign_observed": 82,
-      "sign_opposite": 9,
-      "sign_uncertain": 35
-     },
-     "stim_trend_dur": {
-      "reproduces": 29,
-      "does_not": 92,
-      "uncertain": 5,
-      "sign_observed": 77,
-      "sign_opposite": 36,
-      "sign_uncertain": 13
-     },
-     "delay_coh": {
-      "reproduces": 67,
-      "does_not": 50,
-      "uncertain": 9,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_dur": {
-      "reproduces": 21,
-      "does_not": 103,
-      "uncertain": 2,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 123,
-      "uncertain": 3,
-      "sign_observed": 2,
-      "sign_opposite": 121,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 11,
-      "does_not": 114,
-      "uncertain": 1,
-      "sign_observed": 110,
-      "sign_opposite": 14,
-      "sign_uncertain": 2
-     },
-     "trend_dur": {
-      "reproduces": 24,
-      "does_not": 99,
-      "uncertain": 3,
-      "sign_observed": 92,
-      "sign_opposite": 12,
-      "sign_uncertain": 22
-     },
-     "curv": {
-      "reproduces": 8,
-      "does_not": 118,
-      "uncertain": 0,
-      "sign_observed": 47,
-      "sign_opposite": 63,
-      "sign_uncertain": 16
-     }
-    }
-   }
-  },
-  {
-   "gamma_x": 1.0,
-   "gamma_q": 1.0,
-   "n_admissible": {
-    "model1": 103,
-    "model2": 126
-   },
-   "verdicts": {
-    "model1": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "unreproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "unreproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "unreproduced",
-     "trend_dur": "unreproduced",
-     "curv": "unreproduced"
-    },
-    "model2": {
-     "acc_coh": "reproduced",
-     "acc_dur": "reproduced",
-     "acc_int": "reproduced",
-     "rt_coh": "reproduced",
-     "rt_dur": "reproduced",
-     "rt_int": "reproduced",
-     "pmet_coh": "reproduced",
-     "pmet_dur": "reproduced",
-     "pmet_int": "reproduced",
-     "met_dur": "reproduced",
-     "stim_coh": "reproduced",
-     "stim_dur": "reproduced",
-     "stim_trend_coh": "reproduced",
-     "stim_trend_dur": "reproduced",
-     "delay_coh": "reproduced",
-     "delay_dur": "reproduced",
-     "delay_int": "undecided",
-     "trend": "reproduced",
-     "trend_dur": "reproduced",
-     "curv": "reproduced"
-    }
-   },
-   "counts": {
-    "model1": {
-     "acc_coh": {
-      "reproduces": 13,
-      "does_not": 83,
-      "uncertain": 7,
-      "sign_observed": 103,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
-     },
-     "acc_dur": {
-      "reproduces": 41,
-      "does_not": 36,
-      "uncertain": 26,
-      "sign_observed": 100,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "acc_int": {
-      "reproduces": 30,
-      "does_not": 49,
-      "uncertain": 24,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "rt_coh": {
-      "reproduces": 20,
-      "does_not": 80,
-      "uncertain": 3,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "rt_dur": {
-      "reproduces": 5,
-      "does_not": 96,
-      "uncertain": 2,
-      "sign_observed": 100,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "rt_int": {
-      "reproduces": 71,
-      "does_not": 27,
-      "uncertain": 5,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_coh": {
-      "reproduces": 23,
-      "does_not": 73,
-      "uncertain": 7,
-      "sign_observed": 98,
-      "sign_opposite": 0,
-      "sign_uncertain": 5
-     },
-     "pmet_dur": {
-      "reproduces": 9,
-      "does_not": 91,
-      "uncertain": 3,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "pmet_int": {
-      "reproduces": 60,
-      "does_not": 35,
-      "uncertain": 8,
-      "sign_observed": 99,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "met_dur": {
-      "reproduces": 55,
-      "does_not": 43,
-      "uncertain": 5,
-      "sign_observed": 87,
-      "sign_opposite": 1,
-      "sign_uncertain": 15
-     },
-     "stim_coh": {
-      "reproduces": 54,
-      "does_not": 43,
-      "uncertain": 6,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "stim_dur": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 100,
-      "sign_uncertain": 3
-     },
-     "stim_trend_coh": {
-      "reproduces": 14,
-      "does_not": 81,
-      "uncertain": 8,
-      "sign_observed": 38,
-      "sign_opposite": 41,
-      "sign_uncertain": 24
-     },
-     "stim_trend_dur": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 98,
-      "sign_uncertain": 5
-     },
-     "delay_coh": {
-      "reproduces": 61,
-      "does_not": 34,
-      "uncertain": 8,
-      "sign_observed": 100,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
-     },
-     "delay_dur": {
-      "reproduces": 6,
-      "does_not": 97,
-      "uncertain": 0,
-      "sign_observed": 101,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 101,
-      "uncertain": 2,
-      "sign_observed": 0,
-      "sign_opposite": 101,
-      "sign_uncertain": 2
-     },
-     "trend": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 7,
-      "sign_opposite": 56,
-      "sign_uncertain": 40
-     },
-     "trend_dur": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 2,
-      "sign_opposite": 34,
-      "sign_uncertain": 67
-     },
-     "curv": {
-      "reproduces": 0,
-      "does_not": 103,
-      "uncertain": 0,
-      "sign_observed": 0,
-      "sign_opposite": 59,
-      "sign_uncertain": 44
+     "gamma_q": {
+      "rho": 0.01853349543184818,
+      "p": 0.8329446195611432,
+      "n": 132
      }
     },
-    "model2": {
-     "acc_coh": {
-      "reproduces": 21,
-      "does_not": 98,
-      "uncertain": 7,
-      "sign_observed": 126,
-      "sign_opposite": 0,
-      "sign_uncertain": 0
+    "delay_dur": {
+     "gamma_x": {
+      "rho": -0.02028666391864463,
+      "p": 0.8174057392566936,
+      "n": 132
      },
-     "acc_dur": {
-      "reproduces": 44,
-      "does_not": 61,
-      "uncertain": 21,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
+     "gamma_q": {
+      "rho": 0.02974125111529691,
+      "p": 0.7349669300168173,
+      "n": 132
+     }
+    },
+    "delay_int": {
+     "gamma_x": {
+      "rho": 0.038507093549279156,
+      "p": 0.6611198361803928,
+      "n": 132
      },
-     "acc_int": {
-      "reproduces": 32,
-      "does_not": 69,
-      "uncertain": 25,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
+     "gamma_q": {
+      "rho": -0.02661581086651395,
+      "p": 0.7619374109298687,
+      "n": 132
+     }
+    },
+    "trend": {
+     "gamma_x": {
+      "rho": 0.0031150047220758342,
+      "p": 0.971722215494966,
+      "n": 132
      },
-     "rt_coh": {
-      "reproduces": 26,
-      "does_not": 93,
-      "uncertain": 7,
-      "sign_observed": 123,
-      "sign_opposite": 0,
-      "sign_uncertain": 3
+     "gamma_q": {
+      "rho": -0.12034771174988126,
+      "p": 0.16927401899355426,
+      "n": 132
+     }
+    },
+    "trend_dur": {
+     "gamma_x": {
+      "rho": 0.032172728838056275,
+      "p": 0.7142041617680255,
+      "n": 132
      },
-     "rt_dur": {
-      "reproduces": 7,
-      "does_not": 117,
-      "uncertain": 2,
-      "sign_observed": 125,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
+     "gamma_q": {
+      "rho": -0.15040202866639182,
+      "p": 0.0851858231489975,
+      "n": 132
+     }
+    },
+    "curv": {
+     "gamma_x": {
+      "rho": -0.037745300099659276,
+      "p": 0.667421867031095,
+      "n": 132
      },
-     "rt_int": {
-      "reproduces": 86,
-      "does_not": 32,
-      "uncertain": 8,
-      "sign_observed": 119,
-      "sign_opposite": 1,
-      "sign_uncertain": 6
-     },
-     "pmet_coh": {
-      "reproduces": 23,
-      "does_not": 93,
-      "uncertain": 10,
-      "sign_observed": 122,
-      "sign_opposite": 0,
-      "sign_uncertain": 4
-     },
-     "pmet_dur": {
-      "reproduces": 11,
-      "does_not": 113,
-      "uncertain": 2,
-      "sign_observed": 125,
-      "sign_opposite": 0,
-      "sign_uncertain": 1
-     },
-     "pmet_int": {
-      "reproduces": 50,
-      "does_not": 68,
-      "uncertain": 8,
-      "sign_observed": 121,
-      "sign_opposite": 1,
-      "sign_uncertain": 4
-     },
-     "met_dur": {
-      "reproduces": 37,
-      "does_not": 83,
-      "uncertain": 6,
-      "sign_observed": 114,
-      "sign_opposite": 1,
-      "sign_uncertain": 11
-     },
-     "stim_coh": {
-      "reproduces": 45,
-      "does_not": 74,
-      "uncertain": 7,
-      "sign_observed": 111,
-      "sign_opposite": 0,
-      "sign_uncertain": 15
-     },
-     "stim_dur": {
-      "reproduces": 15,
-      "does_not": 109,
-      "uncertain": 2,
-      "sign_observed": 72,
-      "sign_opposite": 41,
-      "sign_uncertain": 13
-     },
-     "stim_trend_coh": {
-      "reproduces": 27,
-      "does_not": 93,
-      "uncertain": 6,
-      "sign_observed": 82,
-      "sign_opposite": 9,
-      "sign_uncertain": 35
-     },
-     "stim_trend_dur": {
-      "reproduces": 29,
-      "does_not": 92,
-      "uncertain": 5,
-      "sign_observed": 77,
-      "sign_opposite": 36,
-      "sign_uncertain": 13
-     },
-     "delay_coh": {
-      "reproduces": 67,
-      "does_not": 50,
-      "uncertain": 9,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_dur": {
-      "reproduces": 21,
-      "does_not": 103,
-      "uncertain": 2,
-      "sign_observed": 124,
-      "sign_opposite": 0,
-      "sign_uncertain": 2
-     },
-     "delay_int": {
-      "reproduces": 0,
-      "does_not": 123,
-      "uncertain": 3,
-      "sign_observed": 2,
-      "sign_opposite": 121,
-      "sign_uncertain": 3
-     },
-     "trend": {
-      "reproduces": 11,
-      "does_not": 114,
-      "uncertain": 1,
-      "sign_observed": 110,
-      "sign_opposite": 14,
-      "sign_uncertain": 2
-     },
-     "trend_dur": {
-      "reproduces": 24,
-      "does_not": 99,
-      "uncertain": 3,
-      "sign_observed": 92,
-      "sign_opposite": 12,
-      "sign_uncertain": 22
-     },
-     "curv": {
-      "reproduces": 8,
-      "does_not": 118,
-      "uncertain": 0,
-      "sign_observed": 47,
-      "sign_opposite": 63,
-      "sign_uncertain": 16
+     "gamma_q": {
+      "rho": -0.16403082654589282,
+      "p": 0.06019034384509856,
+      "n": 132
      }
     }
    }
   }
- ],
- "changes": [
-  {
-   "gamma_x": 0.25,
-   "gamma_q": 0.0,
-   "model": "model2",
-   "effect": "delay_int",
-   "at_zero": "undecided",
-   "at_leak": "reproduced"
-  },
-  {
-   "gamma_x": 0.25,
-   "gamma_q": 0.25,
-   "model": "model2",
-   "effect": "delay_int",
-   "at_zero": "undecided",
-   "at_leak": "reproduced"
-  },
-  {
-   "gamma_x": 0.25,
-   "gamma_q": 0.5,
-   "model": "model2",
-   "effect": "delay_int",
-   "at_zero": "undecided",
-   "at_leak": "reproduced"
-  },
-  {
-   "gamma_x": 0.25,
-   "gamma_q": 1.0,
-   "model": "model2",
-   "effect": "delay_int",
-   "at_zero": "undecided",
-   "at_leak": "reproduced"
-  }
- ]
+ }
 }

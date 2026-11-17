@@ -45,8 +45,8 @@ def morey_boot(A, B=10000):
 
 panels = [('accuracy','accuracy','p(correct)','A'),
           ('mean_RT','mean_RT','Mean RT (s)','B'),
-          ('mean_PMET','mean_PMT','Mean PMT (s)','C'),
-          ('mean_MET','mean_MT','Mean MT (s)','D')]
+          ('mean_PMET','mean_PMT','Mean premotor time (s)','C'),
+          ('mean_MET','mean_MT','Mean motor time (s)','D')]
 
 fig, axes = plt.subplots(1, 4, figsize=(16.6, 4.138))
 x = np.arange(3)

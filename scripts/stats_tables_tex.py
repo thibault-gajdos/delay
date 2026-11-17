@@ -68,7 +68,9 @@ def sel(measure, period):
 
 
 open(OUT + 'table_behav.tex', 'w').write(tabular(
-    [(m, sel(m, 'behaviour')) for m in ('Accuracy', 'Mean RT', 'Mean PMT', 'Mean MT')],
+    [(lab, sel(m, 'behaviour')) for lab, m in (('Accuracy', 'Accuracy'), ('Mean RT', 'Mean RT'),
+                                              ('Mean premotor time', 'Mean PMT'),
+                                              ('Mean motor time', 'Mean MT'))],
     est=False))
 for measure, periods, fname in (('PMA', ('stimulus', 'delay'), 'table_pma.tex'),
                                 ('LRP', ('stimulus', 'delay', 'RS', 'response'),

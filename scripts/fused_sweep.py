@@ -238,7 +238,7 @@ def run_model(p, alpha, model, seed0, gamma_x=0.0, gamma_q=0.0):
         h, expo = counts_profile(m, D + 1, D + 3, 20)
         prof[k] = h; prof_expo[k] = expo
         rate[k] = h.sum() / (expo * 2.0) if expo > 0 else np.nan
-        if (h > 0).sum() >= 4 and expo > 0:
+        if expo > 0:
             trend[k], trend_se[k], curv[k], curv_se[k] = trend_contrasts(h, expo, DELAY_TB)
         else:
             trend[k] = trend_se[k] = curv[k] = curv_se[k] = np.nan

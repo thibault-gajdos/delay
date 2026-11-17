@@ -58,7 +58,7 @@ def fig_delay_profiles(fname=None):
         a.set_title(f'{name}, {keep.sum()} admissible parameter vectors', fontsize=8)
         a.set_ylim(0, 3.2)
         a.axhline(1.0, color='0.75', lw=.7, ls=':')
-    ax[0].set_ylabel('PMA rate,\nrelative to its own window mean')
+    ax[0].set_ylabel('Partial muscle activation rate,\nrelative to its own window mean')
     ax[1].legend([plt.Line2D([], [], color=C_M2, lw=.4),
                   plt.Line2D([], [], color=C_M2, lw=2.0),
                   plt.Line2D([], [], color=C_OBS, lw=1.2, marker='o', ms=3)],

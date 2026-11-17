@@ -603,14 +603,16 @@ This appendix derives the rate at which the maintained motor-preparatory signal 
 Notation follows the Theoretical framework (Materials and Methods) and Table~\ref{tab:params}. $\varphi$ and $\Phi$ are the standard normal density and distribution function.
 
 \paragraph{The maintained fluctuation.} Fix a trial. Let $\tau$ be the time at which it enters maintenance, ${s}_{\mathrm{resp}}$ its selected response, and $m$ its maintenance target (Equation~\eqref{eq:m}). Write $\rho :=t-\tau $ for the elapsed maintenance time. For $t\ge \tau $, write $y\left(t\right)=m+H\left(t\right)$: $H$ is the fluctuation of the motor-preparatory signal about the maintenance target. By Equations~\eqref{eq:epsilon} and~\eqref{eq:y_delay},
-\begin{eqnarray}
-    \dd \varepsilon \left(t\right) &=& -\kappa_{\varepsilon} \varepsilon \left(t\right) \dd t+{\sigma }_{\varepsilon } \dd {W}_{\varepsilon }\left(t\right), \qquad \varepsilon \left(\tau \right)\sim \mathrm{N}\left(0,{\mathrm{SD}}_{\varepsilon }^{2}\right), \nonumber \\
-    \dd H\left(t\right) &= &\lambda \left(\varepsilon \left(t\right)-H\left(t\right)\right) \dd t,
+\begin{equation}
+\begin{aligned}
+    \dd \varepsilon \left(t\right) &= -\kappa_{\varepsilon} \varepsilon \left(t\right) \dd t+{\sigma }_{\varepsilon } \dd {W}_{\varepsilon }\left(t\right), \qquad \varepsilon \left(\tau \right)\sim \mathrm{N}\left(0,{\mathrm{SD}}_{\varepsilon }^{2}\right),\\
+    \dd H\left(t\right) &= \lambda \left(\varepsilon \left(t\right)-H\left(t\right)\right) \dd t,
+\end{aligned}
 \label{eq:H}
-\end{eqnarray}
-with ${\sigma }_{\varepsilon }={\mathrm{SD}}_{\varepsilon }\sqrt{2\kappa_{\varepsilon} }$. So ${\mathrm{SD}}_{\varepsilon }^{2}$ is the stationary variance of $\varepsilon$, and the maintenance noise starts in its stationary state. It is independent of ${W}_{\varepsilon }$ and of the motion-evidence noise. Also $H\left(\tau \right)=0$, because the filter output is continuous and $m$ is its value at $\tau $.
+\end{equation}
+with ${\sigma }_{\varepsilon }={\mathrm{SD}}_{\varepsilon }\sqrt{2\kappa_{\varepsilon} }$. So ${\mathrm{SD}}_{\varepsilon }^{2}$ is the stationary variance of $\varepsilon$, and the maintenance noise starts in its stationary state. $\varepsilon(\tau)$ and ${W}_{\varepsilon }$ are independent of each other and of the motion-evidence noise. Also $H\left(\tau \right)=0$, because the filter output is continuous and $m$ is its value at $\tau $.
 
-\paragraph{The distance to the gate.} Write $\delta :={t}_{\mathrm{RS}}-{t}_{\mathrm{offset}}$ for the length of the preparation window. The distance from the maintenance target to the gate is
+\paragraph{The distance to the gate.} Write $\delta :={t}_{\mathrm{RS}}-{t}_{\mathrm{offset}}$ for the length of the preparation window. The distance from the maintenance target to the gate is, for $t\le t_{\mathrm{RS}}$,
 \begin{equation}
 d\left(t\right):=g-\left|m\right|-\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}.
 \label{eq:d}
@@ -619,7 +621,7 @@ Under Model 1, $\beta =0$ and $d$ is constant. Under Model 2, temporal preparati
 
 \paragraph{Partial muscle activations as upcrossings.} A partial muscle activation on the selected channel begins when ${s}_{\mathrm{resp}}H$ crosses $d\left(t\right)$ upward. Since $\varepsilon$ is symmetric and independent of ${s}_{\mathrm{resp}}$, ${s}_{\mathrm{resp}}H$ has the same law as $H$.
 
-The non-selected channel activates when ${s}_{\mathrm{resp}}H$ falls below $-\left(g+\left|m\right|+\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}\right)$. By the same symmetry, its rate is that of the selected channel with $d\left(t\right)$ replaced by this distance. This distance is larger than $d\left(t\right)$ by $2\left|m\right|+2\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}$, and the barrier moves away from the signal rather than toward it. In the stationary regime established below, the rate of the non-selected channel is therefore at most that of the selected channel, with equality only when $m=0$ and $\beta =0$. Under Model 1 the ratio of the two rates is ${e}^{-2g\left|m\right|/{\sigma }_{H}^{2}}$. The non-selected channel is not considered further.
+The non-selected channel activates when ${s}_{\mathrm{resp}}H$ falls below $-\left(g+\left|m\right|+\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}\right)$. By the same symmetry, its rate is that of the selected channel with $d\left(t\right)$ replaced by this distance and $\beta$ by $(-\beta)$. This distance is larger than $d\left(t\right)$ by $2\left|m\right|+2\frac{\beta }{\delta }{\left(t-{t}_{\mathrm{offset}}\right)}^{+}$, and the barrier moves away from the signal rather than toward it. In the stationary regime established below, the rate of the non-selected channel is therefore at most that of the selected channel, with equality only when $m=0$ and $\beta =0$. Under Model 1 the ratio of the two rates is ${e}^{-2g\left|m\right|/{\sigma }_{H}^{2}}$. The non-selected channel is not considered further.
 
 \subsection{The maintained fluctuation}
 
@@ -642,10 +644,10 @@ and $\Cov\left(H_{\infty}(t),\dot{H}_{\infty}(t)\right)=0$.
 \end{enumerate}
 \end{proposition}
 
-Part (i) holds because $H$ and $H_{\infty}$ are driven by the same input and differ only in their starting value; the filter forgets that difference at the rate $\lambda$. Part (ii) follows from the fact that the expectations of products of stationary processes do not change in time.
+Part (i) holds because $H$ and $H_{\infty}$ are driven by the same input and differ only in their starting value; the filter forgets that difference at the rate $\lambda$. Part (ii) follows from the fact that $\varepsilon$ and $H_{\infty}$ are jointly stationary, so the expectations of their products do not change in time.
 
 \begin{proof}
-\emph{The extension.} The stationary Ornstein--Uhlenbeck process is time-reversible. Since $\varepsilon(\tau)$ is drawn from its stationary law, $\varepsilon$ can be extended to a stationary process on the whole real line whose restriction to $[\tau,\infty)$ has the law of Equation~\eqref{eq:H}. Only this restriction enters $H$, so the law of $H$ is unchanged.
+\emph{The extension.} Extend $W_{\varepsilon}$ to a two-sided Wiener process on the whole real line, and let $\varepsilon(t):=\sigma_{\varepsilon}\int_{-\infty}^{t}e^{-\kappa_{\varepsilon}(t-s)}\dd W_{\varepsilon}(s)$. This is a stationary Ornstein--Uhlenbeck process on the whole real line. On $[\tau,\infty)$ it solves the first line of Equation~\eqref{eq:H}, and $\varepsilon(\tau)\sim\mathrm{N}\left(0,\mathrm{SD}_{\varepsilon}^{2}\right)$ is independent of the increments of $W_{\varepsilon}$ after $\tau$. So its restriction to $[\tau,\infty)$ has the law of Equation~\eqref{eq:H}. Only this restriction enters $H$, so the law of $H$ is unchanged.
 
 \emph{Part (i).} Differentiating the integral that defines $H_{\infty}$ gives $\dd H_{\infty}(t)=\lambda\left(\varepsilon(t)-H_{\infty}(t)\right)\dd t$. This is the equation that $H$ solves (Equation~\eqref{eq:H}). The difference $D:=H_{\infty}-H$ therefore solves $\dd D=-\lambda D\dd t$ on $[\tau,\infty)$. Its initial value is $D(\tau)=H_{\infty}(\tau)$, since $H(\tau)=0$. Hence $D(\tau+\rho)=e^{-\lambda\rho}H_{\infty}(\tau)$.
 
@@ -731,7 +733,7 @@ Three properties are used below. (P1) The partial derivatives are $\partial\Psi/
 
 \paragraph{The general rate.} Throughout this subsection, $d=d(t)$ and the moments of Equation~\eqref{eq:moments} are taken at $\rho=t-\tau$. Let $Z\left(t\right):={s}_{\mathrm{resp}}H\left(t\right)-d\left(t\right)$. Upcrossings of $d$ by ${s}_{\mathrm{resp}}H$ are upcrossings of zero by $Z$, and $\dot{Z}={s}_{\mathrm{resp}}\dot{H}+\beta /\delta$. Trajectories that reach the response criterion before the end of the delay are neglected. They are premature responses, excluded from the empirical analysis and, together with the other excluded trials, held to at most 20\% of the trials of each condition by the admissibility screen. Since $H$ has continuously differentiable paths and $\left(Z,\dot{Z}\right)$ is jointly Gaussian and non-degenerate for $\rho >0$, the Kac--Rice formula gives the expected upcrossing rate \parencite[ch. 3]{azaisLevelSetsExtrema2009}:
 \begin{equation}
-\nu \left(t\right)={p}_{Z\left(t\right)}\left(0\right) \mathrm{E}\left[\dot{Z}\left(t\right)^{+} \mid Z\left(t\right)=0\right].
+\nu \left(t\right)={p}_{Z\left(t\right)}\left(0\right) \E\left[\dot{Z}\left(t\right)^{+} \mid Z\left(t\right)=0\right].
 \label{eq:nu}
 \end{equation}
 The first factor is a Gaussian density. Since $H$ is centred, $Z\left(t\right)\sim \mathrm{N}\left(-d,{\sigma }_{H}^{2}\left(\rho \right)\right)$, so ${p}_{Z\left(t\right)}\left(0\right)=\varphi \left(d/{\sigma }_{H}\left(\rho \right)\right)/{\sigma }_{H}\left(\rho \right)$. For the second factor, $\left(Z,\dot{Z}\right)$ is jointly Gaussian, so $\dot{Z}$ given $Z=0$ is Gaussian with mean and variance
@@ -899,7 +901,7 @@ $\tau>t$ & 0 (no maintenance yet) & $\nu_{|y(t_{s})|}(t-t_{s})$\\
 In each case the contribution is the Kac--Rice rate of the maintained fluctuation, which is independent of the accumulation that set the level and the onset. The first row cancels in the difference. Taking expectations over the other two rows gives Equation~\eqref{eq:duration}.
 \end{proof}
 
-Both terms of Equation~\eqref{eq:duration} are non-negative. The first is the rate of the trials that reach $\theta $, the level closest to the gate, during the further accumulation of the long stimulus. It is present at every coherence, including $c=0$, where trials reach $\theta $ by diffusion. The second is the rate of the trials that the short stimulus left maintained below $\theta $. Their difference has no sign fixed by the model: the second term dominates when the gate is close to $\theta $ in units of ${\sigma }_{H}$, so that trials maintained below $\theta $ cross it often. Over Model 1's admissible parameter vectors the first term dominates: the simulated stimulus-onset-window rate is significantly higher after the long stimulus at 113 of 115 vectors, and significantly higher after the short one at none. Under Model 2, temporal preparation adds to the short condition from ${t}_{\mathrm{offset}}$ onward, inside the window, and pushes the difference the other way.
+Both terms of Equation~\eqref{eq:duration} are non-negative. The first is the rate of the trials that reach $\theta $, the level closest to the gate, during the further accumulation of the long stimulus. It is present at every coherence, including $c=0$, where trials reach $\theta $ by diffusion. The second is the rate of the trials that the short stimulus left maintained below $\theta $. Their difference has no sign fixed by the model: the second term dominates when the levels left below $\theta$ are close to the gate in units of ${\sigma }_{H}$: their rates then approach that of $\theta$, and the second term counts more trials. Over Model 1's admissible parameter vectors the first term dominates: the simulated stimulus-onset-window rate is significantly higher after the long stimulus at 113 of 115 vectors, and significantly higher after the short one at none. Under Model 2, temporal preparation adds to the short condition from ${t}_{\mathrm{offset}}$ onward, inside the window, and pushes the difference the other way.
 
 \subsection{Additional remarks}
 

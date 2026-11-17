@@ -10,7 +10,9 @@ lambda, so by the time the analysis window opens it is spent.  The window opens 
 the physical stimulus offset, and maintenance begins at the latest Lmotion after it, so the
 elapsed maintenance time in the window is at least 1 - Lmotion = 0.8 s.
 
-Restricted to the admissible parameter vectors, which is where the model is used.
+Restricted to the admissible parameter vectors, which is where the model is used.  For
+each vector the error is the largest over maintenance targets |m| from 0 to theta: the
+error grows with the standardized distance to the gate, which is largest at |m| = 0.
 
 Writes plots/fig_approx_error.pdf and the manuscript's copy,
 ../manuscript/latex/figures/fig09.png.  Usage: python3 fig_approx_error.py [DUMP.jsonl]
@@ -54,8 +56,9 @@ def rate_stat(l, k, s2, bd, d):
 
 import sys, os
 DUMP = sys.argv[1] if len(sys.argv) > 1 else 'results/sweep_screened.jsonl'
-rho = np.geomspace(0.02, 3.0, 500)
 RHO0 = 1.0 - 0.2          # start of the delay window in elapsed maintenance time: 1 s - Lmotion
+rho = np.unique(np.r_[np.geomspace(0.02, 3.0, 500), RHO0])
+MFRAC = np.linspace(0.0, 1.0, 41)   # |m| / theta
 fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.9), sharey=True)
 for ax, mod, col, nm in [(axes[0], 'model1', C_M1, 'Model 1'),
                          (axes[1], 'model2', C_M2, 'Model 2')]:
@@ -66,11 +69,15 @@ for ax, mod, col, nm in [(axes[0], 'model1', C_M1, 'Model 1'),
         l, k, s2 = p['lam'], p['kappa'], p['SDe']**2
         beta = j['beta'] if mod == 'model2' else 0.0
         bd = beta/(3.0 + p['LRS'] - p['Lmotion'])
-        d = (p['g'] - p['theta']) - bd*rho
-        if np.any(d <= 0): continue
-        with np.errstate(all='ignore'):
-            e = np.abs(rate(rho, l, k, s2, bd, d)/rate_stat(l, k, s2, bd, d) - 1)
-        if not np.all(np.isfinite(e)): continue
+        e = np.zeros_like(rho); ok = True
+        for f in MFRAC:
+            d = (p['g'] - f*p['theta']) - bd*rho
+            if np.any(d <= 0): ok = False; break
+            with np.errstate(all='ignore'):
+                ef = np.abs(rate(rho, l, k, s2, bd, d)/rate_stat(l, k, s2, bd, d) - 1)
+            if not np.all(np.isfinite(ef)): ok = False; break
+            e = np.maximum(e, ef)
+        if not ok: continue
         ax.plot(rho, np.maximum(100*e, 1e-7), color=col, lw=.35, alpha=.15, zorder=1)
         n += 1; worst = max(worst, e[rho >= RHO0].max())
     ax.axvspan(RHO0, 3.0, color='0.90', zorder=0)

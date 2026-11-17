@@ -177,7 +177,7 @@ The delayed-report extension specifies the locus and onset of maintenance, the m
 m = \begin{cases} s_{\mathrm{resp}}\theta, & \text{if } \theta \text{ was reached},\\ y(L_{\mathrm{motion}}+D), & \text{otherwise},\end{cases}
 \label{eq:m}
 \end{equation}
-where $s_{\mathrm{resp}}\in\{-1,+1\}$ codes the selected response, with $-1$ denoting the left-hand response and $+1$ the right-hand response, following the sign convention defined for $y(t)$. If the internal threshold $\theta$ is reached, $y(t)$ is set to the threshold value in the selected direction. Otherwise, the state attained when encoded motion evidence ceases is retained. Thus, the model does not require every trial to enter maintenance at the same level of motor preparation: weaker or briefer evidence can leave a lower maintained state.
+where $s_{\mathrm{resp}}:=\operatorname{sign}y(\tau)\in\{-1,+1\}$, the sign of the motor-preparatory signal at maintenance onset, codes the selected response, with $-1$ denoting the left-hand response and $+1$ the right-hand response, following the sign convention defined for $y(t)$. If the internal threshold $\theta$ is reached, $y(t)$ is set to the threshold value in the selected direction. Otherwise, the state attained when encoded motion evidence ceases is retained. Thus, the model does not require every trial to enter maintenance at the same level of motor preparation: weaker or briefer evidence can leave a lower maintained state.
 
 \emph{Maintenance dynamics.} The maintenance mechanism is identical in the two candidate models. Once maintenance begins, the input to the low-pass filter generating $y(t)$ switches from the evolving decision variable $x(t)$ to the maintenance target $m$. Because the filter causes $y(t)$ to track its input, a constant input $m$ causes $y(t)$ to converge toward $m$ and remain there in the absence of noise. Such stable maintenance has a plausible neural basis in attractor dynamics, in which strong recurrent interactions can sustain a stable activity state after the external evidence driving the system is no longer present \parencite{wangDecisionMakingRecurrent2008}. At the same time, neural activity within such recurrent networks is intrinsically variable, making perfectly stationary maintenance at the single-trial level unlikely. To capture this variability without specifying its detailed circuit-level origin, we allowed the effective maintenance input to fluctuate around $m$. These fluctuations, denoted $\varepsilon(t)$, followed an Ornstein--Uhlenbeck process:
 \begin{equation}
@@ -288,7 +288,7 @@ The first subsection concerns accuracy, RT, premotor time and motor time. Each o
 
 The two models differ in one term, the temporal preparation of magnitude $\beta$, which enters through $\delta:=t_{\mathrm{RS}}-t_{\mathrm{offset}}=3+L_{\mathrm{RS}}-L_{\mathrm{motion}}$. Stimulus duration cancels from $\delta$, so temporal preparation adds the same amount in all six coherence $\times$ duration conditions and can generate no effect of coherence, of duration, or of their interaction. Every prediction below therefore holds in both models, with the same sign.
 
-The choice is the sign of $x$ when accumulation stops. By Equation~\eqref{eq:x} its drift is $skc$, so accuracy rises with coherence and with the time for which Equation~\eqref{eq:x} runs, hence with duration. The duration benefit is confined to intermediate coherence, which is a coherence $\times$ duration interaction on accuracy: at $c=0$ the drift vanishes and accuracy is 50\% whatever the duration, and at the highest coherence the threshold $\theta$ is typically reached within the short stimulus, so accumulation stops before the extra time can be used.
+The choice is $s_{\mathrm{resp}}$, the sign of $y$ when accumulation stops. The signal $y$ follows $x$ (Equation~\eqref{eq:y}), whose drift is $skc$ by Equation~\eqref{eq:x}, so accuracy rises with coherence and with the time for which Equation~\eqref{eq:x} runs, hence with duration. The duration benefit is confined to intermediate coherence, which is a coherence $\times$ duration interaction on accuracy: at $c=0$ the drift vanishes and accuracy is 50\% whatever the duration, and at the highest coherence the threshold $\theta$ is typically reached within the short stimulus, so accumulation stops before the extra time can be used.
 
 After the RS, the second accumulation carries the signal from the maintenance target $m$ to the response criterion, at the drift $\mu_{\mathrm{RS}}$ of Equation~\eqref{eq:q}, which does not depend on the condition. Coherence and duration therefore act on RT only through $m$ (Appendix, Remark~\ref{rem:leak}). By Equation~\eqref{eq:m}, $m$ is $s_{\mathrm{resp}}\theta$ on trials that reached the threshold and $y(L_{\mathrm{motion}}+D)$ on the others. Higher coherence or longer stimulus duration increases $|m|$ on average, which shortens RT. Once the threshold is reached, however, $|m|$ is fixed at $\theta$. After a longer stimulus, more trials reach $\theta$, which reduces the differences in $|m|$ across coherence levels. At most parameter values, this produces a coherence $\times$ duration interaction on RT: the coherence effect is larger after the 0.3-s stimulus than after the 2-s stimulus.
 
@@ -356,24 +356,24 @@ a(t):=\frac{g-|m|-\dfrac{\beta}{\delta}\left(t-t_{\mathrm{offset}}\right)^{+}}{\
 \label{eq:a}
 \end{equation}
 Here $(t-t_{\mathrm{offset}})^{+}$ is the time elapsed since the internal stimulus offset, set to zero before it. Temporal preparation reduces the distance to the gate at the constant speed $\beta/\delta$. As long as $a(t)$ is positive, a smaller value means that motor preparation is closer to the gate relative to the fluctuations, which makes partial muscle activations more frequent. Writing $\sigma_{\dot{H}}$ for the standard deviation of the time derivative of the settled fluctuation and $\omega:=\sqrt{\lambda\kappa_{\varepsilon}}$ for its characteristic frequency, the rate on the window is its stationary form:
-\begin{equation}
+\begin{equation*}
 \nustat(t)=\varphi\left(a(t)\right)\left[\frac{\beta}{\delta\sigma_{H}}\Phi\left(\frac{\beta}{\delta\sigma_{\dot{H}}}\right)+\omega\,\varphi\left(\frac{\beta}{\delta\sigma_{\dot{H}}}\right)\right],
 \tag{\ref{eq:nu_asymp}}
-\end{equation}
-where $\varphi$ and $\Phi$ are the standard normal density and distribution function. Evaluated exactly over the admissible parameter vectors, the exact rate and its stationary form differ by at most $3.1\times10^{-3}$ in relative terms under Model 1 and $2.3\times10^{-3}$ under Model 2 (Fig.~\ref{fig:approx}; Appendix, Corollary~\ref{cor:approx}). Setting $\beta=0$ (Model 1) makes $a(t)$ constant, equal to $a=(g-|m|)/\sigma_{H}$, and recovers the classical Rice formula, in which the rate falls as a Gaussian in the standardized distance to the gate:
-\begin{equation}
+\end{equation*}
+where $\varphi$ and $\Phi$ are the standard normal density and distribution function. Evaluated exactly over the admissible parameter vectors and over maintenance targets $|m|$ from 0 to $\theta$, the exact rate and its stationary form differ by at most $4.2\times10^{-3}$ in relative terms under Model 1 and $3.3\times10^{-3}$ under Model 2 (Fig.~\ref{fig:approx}; Appendix, Corollary~\ref{cor:approx}). Setting $\beta=0$ (Model 1) makes $a(t)$ constant, equal to $a=(g-|m|)/\sigma_{H}$, and recovers the classical Rice formula, in which the rate falls as a Gaussian in the standardized distance to the gate:
+\begin{equation*}
 \nustat=\frac{\omega}{2\pi}e^{-a^{2}/2}.
 \tag{\ref{eq:nu1}}
-\end{equation}
+\end{equation*}
 Three properties of the delay-window partial muscle activation rate follow: whether it ramps over the window, the shape of any ramp, and how its level differs across conditions.
 
 \paragraph{The slope}
 
-Under Model 1 the numerator of $a$ is the constant $g-|m|$ and the denominator is constant as well, so by Equation~\eqref{eq:nu1} the rate does not depend on time. Model 1 predicts a slope of zero, at every value of $\kappa_{\varepsilon}$, of $\lambda$, and of the maintenance target (Appendix, Corollary~\ref{cor:flat}). Under Model 2 the numerator falls at the constant speed $\beta/\delta$, so the rate rises throughout the delay. Taking logarithms in Equation~\eqref{eq:nu_asymp} gives that rise in closed form (Appendix, Corollary~\ref{cor:logslope}):
-\begin{equation}
+Under Model 1 the numerator of $a$ is the constant $g-|m|$ and the denominator is constant as well, so by Equation~\eqref{eq:nu1} the stationary rate does not depend on time. Model 1's stationary rate has a slope of zero, at every value of $\kappa_{\varepsilon}$, of $\lambda$, and of the maintenance target (Appendix, Corollary~\ref{cor:flat}). Under Model 2 the numerator falls at the constant speed $\beta/\delta$, so the rate rises throughout the delay. Taking logarithms in Equation~\eqref{eq:nu_asymp} gives that rise in closed form (Appendix, Corollary~\ref{cor:logslope}):
+\begin{equation*}
 \frac{\dd\left(\ln\nustat\right)}{\dd t}(t)=\frac{\beta}{\delta\sigma_{H}}\,a(t), \qquad \frac{\dd^{2}\left(\ln\nustat\right)}{\dd t^{2}}(t)=-\left(\frac{\beta}{\delta\sigma_{H}}\right)^{2}.
 \tag{\ref{eq:slope}}
-\end{equation}
+\end{equation*}
 The observed slope is that of the rate, not of its logarithm. The time derivative of the rate,
 \begin{equation*}
 \frac{\dd\nustat}{\dd t}(t)=\nustat(t)\,\frac{\beta}{\delta\sigma_{H}}\,a(t),
@@ -382,7 +382,7 @@ is the product of two quantities: how often partial muscle activations occur, an
 
 \paragraph{The curvature}
 
-Under Model 1 the rate is constant, so its curvature is zero at every parameter value. Under Model 2, the mean rate of a condition is convex wherever the rate-weighted mean of $a(t)^{2}$ exceeds 1 (Appendix, Corollary~\ref{cor:logslope}), in particular wherever every contributing trial stands more than one fluctuation standard deviation from the gate. A positive curvature is therefore excluded by Model 1 and produced by Model 2 over that part of its parameter space.
+Under Model 1 the stationary rate is constant, so its curvature is zero at every parameter value. Under Model 2, the mean rate of a condition is convex wherever the rate-weighted mean of $a(t)^{2}$ exceeds 1 (Appendix, Corollary~\ref{cor:logslope}), in particular wherever every contributing trial stands more than one fluctuation standard deviation from the gate. A positive curvature is therefore absent from Model 1's stationary rate and produced by Model 2 over that part of its parameter space.
 
 \paragraph{The coherence $\times$ duration interaction}
 
@@ -395,9 +395,9 @@ The two EEG measures provide complementary indices of effector-selective prepara
 
 \paragraph{Partial muscle activation rate}
 
-Figure~\ref{fig:pmaeeg}A shows that the partial muscle activation rate continued to increase during the delay. Its slope across the delay window was 0.560 s$^{-2}$ [0.364, 0.757] (F(1,21) = 35.24, p < .001, $\eta_{p}^{2}$ = 0.627; Table~\ref{tab:pma}). This increase is best attributed to temporal preparation rather than to continued evidence accumulation: the effect of coherence on the slope, the marker of accumulation, was not significant in this window (F(1.70,35.61) = 0.52, p = .567, $\eta_{p}^{2}$ = 0.024), nor was its interaction with duration (F(1.74,36.45) = 0.51, p = .580, $\eta_{p}^{2}$ = 0.024). Model 1 cannot produce this slope at any parameter value (Theoretical predictions, above).
+Figure~\ref{fig:pmaeeg}A shows that the partial muscle activation rate continued to increase during the delay. Its slope across the delay window was 0.560 s$^{-2}$ [0.364, 0.757] (F(1,21) = 35.24, p < .001, $\eta_{p}^{2}$ = 0.627; Table~\ref{tab:pma}). This increase is best attributed to temporal preparation rather than to continued evidence accumulation: the effect of coherence on the slope, the marker of accumulation, was not significant in this window (F(1.70,35.61) = 0.52, p = .567, $\eta_{p}^{2}$ = 0.024), nor was its interaction with duration (F(1.74,36.45) = 0.51, p = .580, $\eta_{p}^{2}$ = 0.024). Model 1's stationary rate is constant at every parameter value (Theoretical predictions, above).
 
-The rate did not merely rise; it accelerated. Its curvature was 0.210 s$^{-3}$ [0.109, 0.310] (F(1,21) = 18.89, p < .001, $\eta_{p}^{2}$ = 0.474), the sign Model 1 excludes. Neither duration (F(1,21) = 0.75, p = .396) nor coherence (F(1.95,40.89) = 1.86, p = .170) modulated the curvature.
+The rate did not merely rise; it accelerated. Its curvature was 0.210 s$^{-3}$ [0.109, 0.310] (F(1,21) = 18.89, p < .001, $\eta_{p}^{2}$ = 0.474), a sign absent from Model 1's stationary rate. Neither duration (F(1,21) = 0.75, p = .396) nor coherence (F(1.95,40.89) = 1.86, p = .170) modulated the curvature.
 
 The mean rate was higher after the 2-s than after the 0.3-s stimulus (F(1,21) = 33.19, p < .001, $\eta_{p}^{2}$ = 0.612), and this difference increased over the window (duration effect on the slope: F(1,21) = 11.90, p = .002, $\eta_{p}^{2}$ = 0.362). This is the reverse of the ordering seen in the stimulus-onset window, consistent with the different temporal alignment of the two windows. The mean rate was higher at higher coherence (F(1.96,41.15) = 3.36, p = .045, $\eta_{p}^{2}$ = 0.138), and a duration $\times$ coherence interaction (F(1.92,40.42) = 3.47, p = .042, $\eta_{p}^{2}$ = 0.142) showed a larger coherence effect after the 2-s than after the 0.3-s stimulus. This is the direction the derivation allows only where the 0\%-coherence, 2-s condition has mostly not reached $\theta$ (Theoretical predictions, above). It is also the opposite of the coherence $\times$ duration interaction on mean premotor time, whose coherence effect was larger after the 0.3-s stimulus. Selective exclusion of the most prepared trials through responses before the RS is an unlikely explanation, because such responses were rare (Fig.~\ref{fig:premature}).
 
@@ -416,7 +416,7 @@ Six effects were compared (Table~\ref{tab:comparison}; Fig.~\ref{fig:effects}O--
 
 \paragraph{The slope}
 
-The slope of Model 1's rate is zero (Corollary~\ref{cor:flat}). Over its 115 admissible vectors, the simulated slope ranges from $-$0.069 to 0.004 s$^{-2}$, and no vector reproduces the observed 0.560 s$^{-2}$ [0.364, 0.757]. The negative values come from the measurement, not from the model: the activation that becomes the response is excluded from the partial muscle activation count wherever it begins, and in the model it occasionally begins inside the last bins of the window (Appendix, Remark~\ref{rem:scope}). Over Model 2's 122 vectors the slope ranges from $-$0.039 to 0.956 s$^{-2}$, and 6 vectors reproduce the observed value. Figure~\ref{fig:shape} shows the profiles: every admissible vector of Model 1 is flat, whereas Model 2's fan out, many of them tracking the observed rise.
+The slope of Model 1's stationary rate is zero (Corollary~\ref{cor:flat}). Over its 115 admissible vectors, the simulated slope ranges from $-$0.069 to 0.004 s$^{-2}$, and no vector reproduces the observed 0.560 s$^{-2}$ [0.364, 0.757]. These values depart from zero because of the measurement, not of the stationary rate (Appendix, Remark~\ref{rem:scope}). The activation that becomes the response is excluded from the partial muscle activation count wherever it begins, and in the model it occasionally begins inside the last bins of the window, which lowers the slope. The rate is measured on the trials that did not respond before the RS, which changes it in a direction the derivation does not fix. Over Model 2's 122 vectors the slope ranges from $-$0.039 to 0.956 s$^{-2}$, and 6 vectors reproduce the observed value. Figure~\ref{fig:shape} shows the profiles: every admissible vector of Model 1 is flat, whereas Model 2's fan out, many of them tracking the observed rise.
 
 The duration effect on the slope (2 s minus 0.3 s; 0.135 s$^{-2}$ [0.054, 0.217]) separates the models in the same way. No Model 1 vector reproduces it (values from $-$0.047 to 0.006 s$^{-2}$; observed sign at 5 vectors, opposite sign at 30, uncertain at 80), whereas 17 Model 2 vectors do (values from $-$0.027 to 0.726 s$^{-2}$; observed sign at 81, opposite at 9, uncertain at 32).
 
@@ -528,7 +528,7 @@ In conclusion, delayed decision reports are not generated by storing an abstract
 
 \begin{center}\includegraphics[width=\linewidth]{figures/fig07.png}\end{center}
 
-\captionof{figure}{\textbf{Shape of the delay-window partial muscle activation rate, one line per admissible parameter vector.} Each thin line is the delay-window partial muscle activation rate at one admissible vector, divided by its own mean over the window, so that vectors whose rates differ by two orders of magnitude can be compared on shape; the thick line is the median over vectors and the black points the observed profile, normalized the same way. Every admissible vector of Model 1 is flat, as Corollary~\ref{cor:flat} requires, apart from a decline in the last bins caused by the exclusion of the response-related activation from the partial muscle activation count (Remark~\ref{rem:scope}); Model 2's vectors fan out, many of them tracking the observed rise.}\label{fig:shape}
+\captionof{figure}{\textbf{Shape of the delay-window partial muscle activation rate, one line per admissible parameter vector.} Each thin line is the delay-window partial muscle activation rate at one admissible vector, divided by its own mean over the window, so that vectors whose rates differ by two orders of magnitude can be compared on shape; the thick line is the median over vectors and the black points the observed profile, normalized the same way. Every admissible vector of Model 1 is flat, as Corollary~\ref{cor:flat} requires of the stationary rate, apart from departures in the last bins caused by the measurement (Remark~\ref{rem:scope}); Model 2's vectors fan out, many of them tracking the observed rise.}\label{fig:shape}
 
 \begin{center}\includegraphics[width=\linewidth]{figures/fig08.png}\end{center}
 
@@ -536,7 +536,7 @@ In conclusion, delayed decision reports are not generated by storing an abstract
 
 \begin{center}\includegraphics[width=\linewidth]{figures/fig09.png}\end{center}
 
-\captionof{figure}{\textbf{Error of the stationary approximation, over the admissible parameter vectors.} Each thin line is one admissible vector: the relative difference between the exact partial muscle activation rate, Equation~\eqref{eq:nu2} with the transient moments of Equation~\eqref{eq:moments}, and its stationary form, Equation~\eqref{eq:nu_asymp}, as a function of elapsed maintenance time. Both axes are logarithmic. The shaded band marks elapsed maintenance times of 0.8 s and more, which contain the whole delay analysis window (Proposition~\ref{prop:stationary}). Left, Model 1; right, Model 2. Inside the window the largest departure is 0.31\% under Model 1 and 0.23\% under Model 2.}\label{fig:approx}
+\captionof{figure}{\textbf{Error of the stationary approximation, over the admissible parameter vectors.} Each thin line is one admissible vector: the largest, over maintenance targets $|m|$ from 0 to $\theta$, of the relative difference between the exact partial muscle activation rate, Equation~\eqref{eq:nu2} with the transient moments of Equation~\eqref{eq:moments}, and its stationary form, Equation~\eqref{eq:nu_asymp}, as a function of elapsed maintenance time. Both axes are logarithmic. The shaded band marks elapsed maintenance times of 0.8 s and more, which contain the whole delay analysis window (Proposition~\ref{prop:stationary}). Left, Model 1; right, Model 2. Inside the window the largest departure is 0.42\% under Model 1 and 0.33\% under Model 2.}\label{fig:approx}
 
 
 \section{Tables}
@@ -692,7 +692,7 @@ At every time $t$ of the delay analysis window, and over the ranges of Table~\re
 \end{equation}
 \end{proposition}
 
-Each moment of $H$ is the corresponding stationary moment plus terms proportional to $e^{-\lambda\rho}$ or $e^{-2\lambda\rho}$, whose coefficients are correlations, hence at most 1 in absolute value. On the window, $e^{-\lambda\rho}$ is small.
+Each moment of $H$ is the corresponding stationary moment plus terms proportional to $e^{-\lambda\rho}$ or $e^{-2\lambda\rho}$, whose coefficients are bounded in absolute value by 1 or by $\sqrt{\lambda/\kappa_{\varepsilon}}$. On the window, $e^{-\lambda\rho}$ is small.
 
 \begin{proof}
 Write $t:=\tau+\rho$. By Proposition~\ref{prop:H}(i) and Equation~\eqref{eq:Hdot},
@@ -729,7 +729,7 @@ The Kac--Rice formula gives the rate of upcrossings as the density of the proces
 \begin{equation}\label{eq:Psi}
 \Psi(x,\zeta):=\E\left[\xi^{+}\right]=x\Phi(x/\zeta)+\zeta\varphi(x/\zeta).
 \end{equation}
-Three properties are used below. (P1) The partial derivatives are $\partial\Psi/\partial x=\Phi(x/\zeta)\in(0,1]$ and $\partial\Psi/\partial\zeta=\varphi(x/\zeta)\in(0,\varphi(0)]$; both follow from $\varphi'(x)=-x\varphi(x)$, which makes the terms in $(x/\zeta)\varphi(x/\zeta)$ cancel. (P2) $\Psi(cx,c\zeta)=c\Psi(x,\zeta)$ for $c>0$. (P3) $\Psi(0,\zeta)=\zeta\varphi(0)$.
+Three properties are used below. (P1) The partial derivatives are $\partial\Psi/\partial x=\Phi(x/\zeta)\in(0,1)$ and $\partial\Psi/\partial\zeta=\varphi(x/\zeta)\in(0,\varphi(0)]$; both follow from $\varphi'(x)=-x\varphi(x)$, which makes the terms in $(x/\zeta)\varphi(x/\zeta)$ cancel. (P2) $\Psi(cx,c\zeta)=c\Psi(x,\zeta)$ for $c>0$. (P3) $\Psi(0,\zeta)=\zeta\varphi(0)$.
 
 \paragraph{The general rate.} Throughout this subsection, $d=d(t)$ and the moments of Equation~\eqref{eq:moments} are taken at $\rho=t-\tau$. Let $Z\left(t\right):={s}_{\mathrm{resp}}H\left(t\right)-d\left(t\right)$. Upcrossings of $d$ by ${s}_{\mathrm{resp}}H$ are upcrossings of zero by $Z$, and $\dot{Z}={s}_{\mathrm{resp}}\dot{H}+\beta /\delta$. Trajectories that reach the response criterion before the end of the delay are neglected. They are premature responses, excluded from the empirical analysis and, together with the other excluded trials, held to at most 20\% of the trials of each condition by the admissibility screen. Since $H$ has continuously differentiable paths and $\left(Z,\dot{Z}\right)$ is jointly Gaussian and non-degenerate for $\rho >0$, the Kac--Rice formula gives the expected upcrossing rate \parencite[ch. 3]{azaisLevelSetsExtrema2009}:
 \begin{equation}
@@ -758,7 +758,7 @@ for the distance to the gate in units of the fluctuation, the characteristic fre
 It is the product of two factors. The first is a Gaussian in the standardized distance to the gate; this is where the conditions and the time within the delay act. The second, $\Psi(b,\omega)$, depends on neither the motion coherence nor the stimulus duration, and temporal preparation enters it only through $b$.
 
 \begin{corollary}[error of the stationary rate]\label{cor:approx}
-Let $t$ be a time in the delay analysis window, $a:=a(t)$, and $\eta :=\max \left(\left|u\left(\rho \right)\right|,\left|v\left(\rho \right)\right|,\left|w\left(\rho \right)\right|\right)$, with $u$, $v$ and $w$ as in Equation~\eqref{eq:moments}. If
+Let $t$ be a time in the delay analysis window, $a:=a(t)$, and $\eta :=\max \left(\left|u\left(\rho \right)\right|,\left|v\left(\rho \right)\right|,\left|w\left(\rho \right)\right|\right)$, with $u$, $v$ and $w$ as in Equation~\eqref{eq:moments}. If $\eta<1$ and
 \begin{equation*}
 \left(\sqrt{2\pi}|a|+1\right)\frac{\eta}{1-\eta}\le\frac{1}{2},
 \end{equation*}
@@ -768,10 +768,10 @@ then
 \end{equation*}
 \end{corollary}
 
-The ratio of the two rates is a product of three factors. Each departs from 1 by a relative amount of order $\eta$. The first, a Gaussian density evaluated at the distance to the gate, amplifies that departure by $a^{2}/2$.
+The ratio of the two rates is a product of three factors. Each departs from 1 by a relative amount of order $\eta$. The first, a Gaussian density evaluated at the distance to the gate, amplifies that departure by $a^{2}/2$. The third, the expected positive part of the slope at the gate, amplifies it by $\sqrt{2\pi}|a|+1$.
 
 \begin{proof}
-Write $u:=u(\rho)$, $v:=v(\rho)$ and $w:=w(\rho)$. The hypothesis implies $\eta<1$, so $1+u\ge 1-\eta>0$. Two elementary facts are used. (F1) $|\ln(1+x)|\le|x|/(1-|x|)$ for $|x|<1$; this follows from $\ln(1+x)\le x$ for $x\ge 0$, and from $-\ln(1-|x|)=\ln\left(1+|x|/(1-|x|)\right)$ for $x<0$. (F2) $|\sqrt{1+z}-1|=|z|/(\sqrt{1+z}+1)\le|z|$ for $z>-1$.
+Write $u:=u(\rho)$, $v:=v(\rho)$ and $w:=w(\rho)$. Since $\eta<1$, $1+u\ge 1-\eta>0$. Two elementary facts are used. (F1) $|\ln(1+x)|\le|x|/(1-|x|)$ for $|x|<1$; this follows from $\ln(1+x)\le x$ for $x\ge 0$, and from $-\ln(1-|x|)=\ln\left(1+|x|/(1-|x|)\right)$ for $x<0$. (F2) $|\sqrt{1+z}-1|=|z|/(\sqrt{1+z}+1)\le|z|$ for $z>-1$.
 
 \emph{The ratio as a product.} By Equation~\eqref{eq:moments}, $\sigma_{H}(\rho)=\sigma_{H}\sqrt{1+u}$, so $d/\sigma_{H}(\rho)=a/\sqrt{1+u}$. By (P2), $\nustat(t)=\varphi(a)\Psi\left(\beta/\delta,\sigma_{\dot{H}}\right)/\sigma_{H}$. Dividing Equation~\eqref{eq:nu2} by this expression,
 \begin{equation*}
@@ -813,9 +813,9 @@ and $\bar{x}\le 1/2$ by hypothesis. By (F1), its logarithm is at most $\bar{x}/(
 
 \end{proof}
 
-The moment error is therefore amplified by the squared standardized distance to the gate: $a\left(t\right)$ enters the rate through a Gaussian, so what the transient does to ${\sigma }_{H}^{2}$ it does to the log rate ${a\left(t\right)}^{2}/2$ times over. By Proposition~\ref{prop:stationary}, $\eta <4.8\times {10}^{-3}$ everywhere in the window, so the hypothesis holds whenever $|a(t)|\le 40$. Evaluated exactly, the largest relative departure of $\nu \left(t\right)$ (Equation~\eqref{eq:nu2} at the moments of Equation~\eqref{eq:moments}) from $\nustat \left(t\right)$ (Equation~\eqref{eq:nu_asymp}), over the admissible parameter vectors and the whole window, is $3.1\times {10}^{-3}$ under Model 1 and $2.3\times {10}^{-3}$ under Model 2 (Figure~\ref{fig:approx}). Over the whole sampled box it reaches 20\%, on parameter vectors whose standardized distance to the gate is close to 40 and whose rate is therefore far too small to be measured; admissibility caps that distance, and with it the amplification.
+The moment error is therefore amplified by the squared standardized distance to the gate: $a\left(t\right)$ enters the rate through a Gaussian, so what the transient does to ${\sigma }_{H}^{2}$ it does to the log rate ${a\left(t\right)}^{2}/2$ times over. By Proposition~\ref{prop:stationary}, $\eta <4.8\times {10}^{-3}$ everywhere in the window, so the hypothesis holds whenever $|a(t)|\le 40$. Evaluated exactly, the largest relative departure of $\nu \left(t\right)$ (Equation~\eqref{eq:nu2} at the moments of Equation~\eqref{eq:moments}) from $\nustat \left(t\right)$ (Equation~\eqref{eq:nu_asymp}), over the admissible parameter vectors, the maintenance targets $|m|$ from 0 to $\theta$ and the whole window, is $4.2\times {10}^{-3}$ under Model 1 and $3.3\times {10}^{-3}$ under Model 2 (Figure~\ref{fig:approx}).
 
-\begin{corollary}[under Model 1 the delay-window rate is constant]\label{cor:flat}
+\begin{corollary}[under Model 1 the stationary rate is constant]\label{cor:flat}
 Under Model 1, at every parameter setting and at every time in the delay analysis window,
 \begin{equation}
 \nustat =\frac{\omega }{2\pi }{e}^{-{a}^{2}/2}, \quad a=\frac{g-\left|m\right|}{{\sigma }_{H}}.
@@ -921,11 +921,11 @@ The decomposition of Proposition~\ref{prop:duration} uses no property of the acc
 The quantity computed above is the expected upcrossing rate of an unabsorbed Gaussian process, and the quantity measured is neither of those things exactly. Three idealizations separate them.
 \begin{enumerate}
 \item In the simulations every upcrossing is counted, whereas in the recorded EMG, activity periods closer together than 25 ms are merged at detection. How often two upcrossings fall that close is set by the characteristic frequency $\omega =\sqrt{\lambda \kappa_{\varepsilon} }$. Under Model 1, merging would lower the rate by the same factor at every time in the window, so it cannot create a slope where the model predicts none.
-\item The response criterion is an absorbing boundary: a delay-window crossing that reaches it ends the trial as a premature response, and conditioning on survival destroys the Gaussianity Equation~\eqref{eq:nu} rests on. Absorption removes preferentially the trials closest to the gate, and preferentially late in the window, so it depresses the late rate and lowers the measured slope below the computed one.
+\item The response criterion is an absorbing boundary: a delay-window crossing that reaches it ends the trial as a premature response. The rate is measured on the retained trials, which did not respond before the RS, in the simulations as in the data. Conditioning on this survival removes the Gaussianity on which Equation~\eqref{eq:nu} rests, and changes the measured rate in a direction that the derivation does not fix.
 \item The activation that becomes the overt response is not a partial muscle activation and is excluded from the count wherever it begins. In the model it occasionally begins before the response signal, and therefore inside the last bins of the delay window; in the data this is essentially never so. This too removes events late in the window and lowers the measured slope.
 \end{enumerate}
 \end{remark}
-The first idealization cannot create a slope under Model 1, and the last two lower the slope. What is derived above therefore bounds from above what either model can be measured to do on the delay-window slope, and the flatness of Corollary~\ref{cor:flat} is not an artefact of them.
+The simulations include the last two idealizations exactly as the data analysis does; only the first separates the simulated count from the recorded one.
 
 
 
@@ -938,8 +938,8 @@ The first idealization cannot create a slope under Model 1, and the last two low
 
 \section{Supplemental Material}
 
-\setcounter{figure}{0}\renewcommand{\thefigure}{S\arabic{figure}}
-\setcounter{table}{0}\renewcommand{\thetable}{S\arabic{table}}
+\setcounter{figure}{0}\renewcommand{\thefigure}{S\arabic{figure}}\renewcommand{\theHfigure}{S\arabic{figure}}
+\setcounter{table}{0}\renewcommand{\thetable}{S\arabic{table}}\renewcommand{\theHtable}{S\arabic{table}}
 
 \textbf{Graded Motor-Preparatory Dynamics Preserve Perceptual Decisions over Short Delays} Johan A. Achard, Thibault Gajdos Preuss, Mathieu Servant
 

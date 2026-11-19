@@ -12,7 +12,7 @@ models, with beta set to zero in Model 1, so the two are compared at identical p
 Ranges (Table 1; their justification is in Methods, "Evaluation over the parameter
 space"):
 
-  g        in [0.050, 0.200]
+  g        in [0.050, 0.200]  log-uniform
   theta/g  in [0.25, 0.90]                    sampled as a ratio, so that theta < g
   kappa    in [0.20, 30.0]    log-uniform     kappa_epsilon in the manuscript
   SDe      in [0.003, 0.060]  log-uniform     stationary SD of the maintenance noise
@@ -20,7 +20,7 @@ space"):
   k        in [0.6, 2.4]      log-uniform     x0.5 to x2 of Dendauw et al. (2024), 1.2
   lam      in [10.0, 40.0]    log-uniform     x0.5 to x2 of Dendauw et al. (2024), 20 /s
   r        in [0.01, 0.04]    log-uniform     x0.5 to x2 of Dendauw et al. (2024), 0.02
-  muRS     in [0.30, 1.50]
+  muRS     in [0.30, 1.50]    log-uniform
   sigma_q  in [0.03, 0.30]    log-uniform
 
 Dendauw et al. (2024), Experiment 1 (same task without delay, same response device), mean
@@ -77,14 +77,14 @@ DELAY_TB = DELAY_TB - DELAY_TB.mean()
 
 FIXED = dict(sigx=0.100, Lmotion=0.200, LRS=0.200, delay=3.0, Lmotor=0.090)
 
-DIMS = ['g', 'theta_ratio', 'log_kappa', 'log_SDe', 'muRS', 'log_r',
+DIMS = ['log_g', 'theta_ratio', 'log_kappa', 'log_SDe', 'log_muRS', 'log_r',
         'log_k', 'log_lam', 'log_sigq', 'log_beta']
-LO = dict(g=0.050, theta_ratio=0.25, log_kappa=np.log(0.20), log_SDe=np.log(0.003),
-          muRS=0.30, log_r=np.log(0.010),
+LO = dict(log_g=np.log(0.050), theta_ratio=0.25, log_kappa=np.log(0.20), log_SDe=np.log(0.003),
+          log_muRS=np.log(0.30), log_r=np.log(0.010),
           log_k=np.log(0.6), log_lam=np.log(10.0), log_sigq=np.log(0.03),
           log_beta=np.log(0.0015))
-HI = dict(g=0.200, theta_ratio=0.90, log_kappa=np.log(30.0), log_SDe=np.log(0.060),
-          muRS=1.50, log_r=np.log(0.040),
+HI = dict(log_g=np.log(0.200), theta_ratio=0.90, log_kappa=np.log(30.0), log_SDe=np.log(0.060),
+          log_muRS=np.log(1.50), log_r=np.log(0.040),
           log_k=np.log(2.4), log_lam=np.log(40.0), log_sigq=np.log(0.30),
           log_beta=np.log(0.100))
 
@@ -103,11 +103,11 @@ def lhs(n, dims, rng):
 
 def to_param(row):
     v = dict(zip(DIMS, row))
-    g = LO['g'] + v['g'] * (HI['g'] - LO['g'])
+    g = np.exp(LO['log_g'] + v['log_g'] * (HI['log_g'] - LO['log_g']))
     theta_ratio = LO['theta_ratio'] + v['theta_ratio'] * (HI['theta_ratio'] - LO['theta_ratio'])
     kappa = np.exp(LO['log_kappa'] + v['log_kappa'] * (HI['log_kappa'] - LO['log_kappa']))
     SDe = np.exp(LO['log_SDe'] + v['log_SDe'] * (HI['log_SDe'] - LO['log_SDe']))
-    muRS = LO['muRS'] + v['muRS'] * (HI['muRS'] - LO['muRS'])
+    muRS = np.exp(LO['log_muRS'] + v['log_muRS'] * (HI['log_muRS'] - LO['log_muRS']))
     r = np.exp(LO['log_r'] + v['log_r'] * (HI['log_r'] - LO['log_r']))
     k = np.exp(LO['log_k'] + v['log_k'] * (HI['log_k'] - LO['log_k']))
     lam = np.exp(LO['log_lam'] + v['log_lam'] * (HI['log_lam'] - LO['log_lam']))

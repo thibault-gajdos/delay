@@ -15,9 +15,8 @@ scripts/.venv/
 
 # regenerable / large / log outputs.  The small JSON in scripts/results/ ARE tracked --
 # they are the numbers the manuscript cites.  The sweep dumps are large and regenerable.
-scripts/results/shards/
+scripts/results/shards/log_*.txt
 scripts/results/*.jsonl
-scripts/results/leak/*.jsonl
 scripts/results/leak/log_*.txt
 scripts/results/leak/.shards
 scripts/results/archive_r_sampled/
